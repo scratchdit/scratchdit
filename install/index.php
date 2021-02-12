@@ -51,7 +51,7 @@ if(file_exists(MYBB_ROOT."/inc/config.php"))
 	}
 }
 
-require_once MYBB_ROOT.'inc/class_xml.php';
+require_once MYBB_ROOT.'inc/class_xmlparser.php';
 require_once MYBB_ROOT.'inc/functions_user.php';
 require_once MYBB_ROOT.'inc/class_language.php';
 $lang = new MyLanguage();
@@ -1779,7 +1779,7 @@ function insert_templates()
 	// 1.8: Stylesheet Colors
 	$contents = @file_get_contents(INSTALL_ROOT.'resources/mybb_theme_colors.xml');
 
-	require_once MYBB_ROOT."inc/class_xml.php";
+	require_once MYBB_ROOT."inc/class_xmlparser.php";
 	$parser = new XMLParser($contents);
 	$tree = $parser->get_tree();
 

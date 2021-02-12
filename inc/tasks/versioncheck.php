@@ -18,7 +18,7 @@ function task_versioncheck($task)
 	);
 
 	// Check for the latest version
-	require_once MYBB_ROOT.'inc/class_xml.php';
+	require_once MYBB_ROOT.'inc/class_xmlparser.php';
 	$contents = fetch_remote_file("https://mybb.com/version_check.php");
 
 	if(!$contents)

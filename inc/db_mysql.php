@@ -1231,10 +1231,7 @@ class DB_MySQL implements DB_Base
 	 */
 	function create_fulltext_index($table, $column, $name="")
 	{
-		$this->write_query("
-			ALTER TABLE {$this->table_prefix}$table
-			ADD FULLTEXT $name ($column)
-		");
+		$this->write_query("ALTER TABLE {$this->table_prefix}$table ADD FULLTEXT $name ($column)");
 	}
 
 	/**

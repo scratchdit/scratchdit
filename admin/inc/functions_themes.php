@@ -19,7 +19,7 @@ function import_theme_xml($xml, $options=array())
 {
 	global $mybb, $db;
 
-	include_once MYBB_ROOT."inc/class_xml.php";
+	include_once MYBB_ROOT."inc/class_xmlparser.php";
 
 	$parser = new XMLParser($xml);
 	$tree   = $parser->get_tree();

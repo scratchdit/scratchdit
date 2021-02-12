@@ -37,7 +37,7 @@ if($mybb->input['action'] == "version_check")
 		"last_check" => TIME_NOW
 	);
 
-	require_once MYBB_ROOT."inc/class_xml.php";
+	require_once MYBB_ROOT."inc/class_xmlparser.php";
 	$contents = fetch_remote_file("https://mybb.com/version_check.php");
 
 	if(!$contents)

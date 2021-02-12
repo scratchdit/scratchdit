@@ -144,7 +144,7 @@ if($mybb->input['action'] == "browse")
 	$page->output_nav_tabs($sub_tabs, 'browse_themes');
 
 	// Process search requests
-	require_once MYBB_ROOT."inc/class_xml.php";
+	require_once MYBB_ROOT."inc/class_xmlparser.php";
 
 	$keywords = "";
 	if($mybb->input['keywords'])

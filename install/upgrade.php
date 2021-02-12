@@ -46,7 +46,7 @@ $mybb->config = &$config;
 
 // Include the files necessary for installation
 require_once MYBB_ROOT."inc/class_timers.php";
-require_once MYBB_ROOT."inc/class_xml.php";
+require_once MYBB_ROOT."inc/class_xmlparser.php";
 require_once MYBB_ROOT.'inc/class_language.php';
 
 $lang = new MyLanguage();
