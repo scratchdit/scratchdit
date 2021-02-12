@@ -1,9 +1,7 @@
 <?php
 /**
- * MyBB 1.6 English Language Pack
- * Copyright 2010 MyBB Group, All Rights Reserved
- *
- * $Id$
+ * MyBB 1.8 English Language Pack
+ * Copyright 2014 MyBB Group, All Rights Reserved
  */
 
 $l['nav_width'] = "180";
@@ -14,8 +12,8 @@ $l['mcp_nav_home'] = "Mod CP Home";
 $l['mcp_nav_forums'] = "Forums &amp; Posts";
 $l['mcp_nav_announcements'] = "Announcements";
 $l['mcp_nav_modqueue'] = "Moderation Queue";
-$l['mcp_nav_reported_posts'] = "Reported Posts";
-$l['mcp_nav_all_reported_posts'] = "All Reported Posts";
+$l['mcp_nav_report_center'] = "Report Center";
+$l['mcp_nav_all_reports'] = "All Reports";
 $l['mcp_nav_modlogs'] = "Moderator Logs";
 $l['mcp_nav_users'] = "Users";
 $l['mcp_nav_editprofile'] = "Profile Editor";
@@ -30,11 +28,9 @@ $l['mcp_nav_modqueue_attachments'] = "Attachment Moderation Queue";
 
 $l['modcp'] = "Moderator Control Panel";
 
-$l['view_all_reported_posts'] = "View all Reported Posts";
-$l['all_reported_posts'] = "All Reported Posts";
-$l['all_reported_posts_note'] = "All Reported Posts (Unread reports are highlighted)";
-$l['reported_posts'] = "Reported Posts";
-$l['reported_posts_note'] = "Reported Posts (Reports in your forums are highlighted)";
+$l['view_all_reports'] = "View All Reports";
+$l['all_reports'] = "All Reports";
+$l['report_center'] = "Report Center";
 $l['post_id'] = "Post ID";
 $l['poster'] = "Poster";
 $l['thread'] = "Thread";
@@ -42,12 +38,34 @@ $l['reporter'] = "Reporter";
 $l['report_reason'] = "Reason";
 $l['report_time'] = "Reported";
 $l['mark_read'] = "Mark Selected as Read";
-$l['no_reports'] = "There are currently no unread reported posts.";
-$l['error_noselected_reports'] = "Sorry, but you did not select any reported posts to mark as read. Either that or the selected posts have already been marked read by another user.";
+$l['no_reports'] = "There are currently no unread reports.";
+$l['no_logs'] = "No moderator actions are currently logged.";
+$l['error_noselected_reports'] = "Sorry, but you did not select any reported content to mark as read.";
 $l['error_missing_ipaddress'] = "Sorry, but you did not enter in an IP Address to find.";
 $l['error_no_results'] = "Sorry, there were no results found with the criteria you selected.";
-$l['redirect_reportsmarked'] = "The selected reported posts have been marked as read.";
+$l['redirect_reportsmarked'] = "The selected reported content have been marked as read.";
+$l['redirect_allreportsmarked'] = "All reported content has been marked as read.";
 $l['redirect_modnotes'] = "The moderator notes have been updated.";
+
+$l['for'] = "For";
+$l['report_info'] = "Reported Content";
+$l['report_type'] = "Report Reason";
+$l['report_count'] = "# of Reports";
+$l['report_lastpost'] = "Last Reported";
+
+$l['report_reason_other'] = "Other Reason";
+
+$l['report_info_post'] = "A <a href=\"{1}\">Post</a> by {2}";
+$l['report_info_post_thread'] = "<br /><span class=\"smalltext\">In <a href=\"{1}\">{2}</a></span>";
+$l['report_info_profile'] = "Profile of {1}";
+$l['report_info_reputation'] = "<a href=\"{1}\">Reputation</a> from {2}";
+$l['report_info_rep_profile'] = "<br /><span class=\"smalltext\">On {1}'s profile</span>";
+$l['report_info_lastreporter'] = "{1}<br />by {2}";
+
+$l['page_selected'] = "All <strong>{1}</strong> unread reports on this page are selected.";
+$l['all_selected'] = "All <strong>{1}</strong> unread reports are selected.";
+$l['select_all'] = "Select all <strong>{1}</strong> unread reports.";
+$l['clear_selection'] = "Clear Selection.";
 
 $l['moderator_notes'] = "Moderator Notes";
 $l['notes_public_all'] = "These notes are public to all moderators.";
@@ -79,12 +97,13 @@ $l['find'] = "Find";
 $l['modlogs'] = "Moderator Logs";
 $l['action'] = "Action";
 $l['all_moderators'] = "All Moderators";
-$l['date'] = "Date";
 $l['ip'] = "IP Address";
-$l['info_on_ip'] = "Information on This IP Address";
+$l['info_on_ip'] = "Information on this IP Address";
+$l['search_ip_sfs']  = "Search this IP on Stop Forum Spam";
 $l['information']  = "Information";
 $l['filter_modlogs'] = "Filter Moderator Logs";
-$l['forum'] = "Forum:";
+$l['forum'] = "Forum";
+$l['post'] = "Post";
 $l['from_moderator'] = "From Moderator:";
 $l['na_deleted'] = "N/A - Been Deleted";
 $l['sort_by'] = "Sort by:";
@@ -102,7 +121,7 @@ $l['users'] = "Users";
 $l['regdate'] = "Registration Date";
 $l['lastvisit'] = "Last Visit";
 $l['postnum'] = "Post Count";
-$l['username_contains'] = "Username contains";
+$l['username_contains'] = "Username contains:";
 $l['no_user_results'] = "No users were found with the specified search criteria.";
 $l['edit_profile'] = "Edit Profile of {1}";
 $l['birthday'] = "Date of Birth:";
@@ -113,9 +132,9 @@ $l['profile_optional'] = "Optional Fields";
 $l['website_url'] = "Website URL:";
 $l['birthdate'] = "Birthdate:";
 $l['icq_number'] = "ICQ Number:";
-$l['aim_screenname'] = "AIM Screen Name:";
-$l['yahoo_id'] = "Yahoo ID:";
-$l['msn'] = "MSN ID:";
+$l['skype_id'] = "Skype ID:";
+$l['google_id'] = "Google Hangouts ID:";
+$l['away_notice'] = "This option will allow you to select whether you are away or not.";
 $l['additional_information'] = "Additional Information";
 $l['update_profile'] = "Update Profile";
 $l['custom_usertitle'] = "Custom User Title";
@@ -126,6 +145,16 @@ $l['current_custom_usertitle'] = "Current Custom User Title:";
 $l['revert_usertitle'] = "Revert to group default";
 $l['additional_contact_details'] = "Additional Contact Details";
 $l['current_username'] = "Username:";
+$l['away_information'] = "Away Information";
+$l['away_status'] = "Away Status:";
+$l['away_status_desc'] = "Allows you to leave an away message if you are going away for a while.";
+$l['im_away'] = "I'm Away";
+$l['im_here'] = "I'm Here";
+$l['away_reason'] = "Away Reason:";
+$l['away_reason_desc'] = "Allows you to enter a small description of why you are away  (max 200 characters).";
+$l['return_date'] = "Return Date:";
+$l['return_date_desc'] = "If you know when you will be back, you can enter your return date here.";
+$l['error_modcp_return_date_past'] = "You cannot return in the past!";
 $l['usergroup'] = "Primary Group";
 $l['redirect_user_updated'] = "The users profile has successfully been updated.";
 $l['posts_awaiting_moderation'] = "Posts Awaiting Moderation";
@@ -154,6 +183,7 @@ $l['ban_bannedby'] = "Banned By";
 $l['ban_movegroup'] = "Move to Banned Group:";
 $l['ban_liftafter'] = "Lift Ban After:";
 $l['no_banned'] = "There are currently no banned users.";
+$l['no_banned_group'] = "There are currently no banned groups.";
 $l['redirect_banuser'] = "The user has successfully been banned.";
 $l['redirect_banuser_updated'] = "The user's ban has successfully been updated.";
 $l['invalid_username'] = "The username you entered was invalid. Please ensure you enter a valid username.";
@@ -181,12 +211,17 @@ $l['redirect_threadsmoderated'] = "The selected threads have been moderated.";
 $l['redirect_postsmoderated'] = "The selected posts have been moderated.";
 $l['redirect_attachmentsmoderated'] = "The selected attachments have been moderated.";
 $l['multi_approve_posts'] = "Selected Posts Approved";
+$l['multi_delete_posts'] = "Selected Posts Deleted Permanently";
+$l['multi_soft_delete_posts'] = "Selected Posts Soft Deleted";
 $l['multi_approve_threads'] = "Selected Threads Approved";
-$l['multi_delete_threads'] = "Selected Threads Deleted";
+$l['multi_delete_threads'] = "Selected Threads Deleted Permanently";
+$l['multi_soft_delete_threads'] = "Selected Threads Soft Deleted";
 $l['edited_user'] = "Edited User's Profile";
 $l['edited_user_info'] = "<strong>User:</strong> <a href=\"{2}\">{1}</a>";
+$l['edited_user_ban'] = "Edited User Ban";
 $l['banned_user'] = "Banned User";
 $l['lifted_ban'] = "Lifted User Ban";
+$l['no_bans_ending'] = "There are no bans ending soon.";
 
 $l['warning_logs'] = "Warning Logs";
 $l['warned_user'] = "Warned User";
@@ -214,9 +249,9 @@ $l['suspend_posts'] = "Suspend this user's posting privileges";
 $l['modpost_length'] = "Moderate for:";
 $l['suspost_length'] = "Suspend for:";
 
-$l['moderateposts_for'] = "Moderated until {1}, {2}.<br />Untick this option to remove, or extend below.";
-$l['suspendposting_for'] = "Suspended until {1}, {2}.<br />Untick this option to remove, or extend below.";
-$l['suspendsignature_for'] = "Suspended until {1}, {2}.<br />Untick this option to remove, or extend below.";
+$l['moderateposts_for'] = "Moderated until {1}.<br />Untick this option to remove, or extend below.";
+$l['suspendposting_for'] = "Suspended until {1}.<br />Untick this option to remove, or extend below.";
+$l['suspendsignature_for'] = "Suspended until {1}.<br />Untick this option to remove, or extend below.";
 $l['suspendposting_perm'] = "Suspended permanently.<br />Untick this option to remove, or change below.";
 $l['moderateposts_perm'] = "Moderated permanently.<br />Untick this option to remove, or change below.";
 $l['suspendsignature_perm'] = "Suspended permanently.<br />Untick this option to remove, or change below.";
@@ -279,4 +314,19 @@ $l['error_invalid_start_date'] = "The starting date for the announcement is inva
 $l['error_invalid_end_date'] = "The ending date for the announcement is invalid.";
 $l['error_end_before_start'] = "The ending date must be after the start date.";
 $l['error_invalid_announcement'] = "The specified announcement is invalid.";
-?>
+
+$l['announcement_added'] = "Announcement Added";
+$l['announcement_edited'] = "Announcement Edited";
+$l['announcement_deleted'] = "Announcement Deleted";
+
+$l['preview'] = 'Preview';
+
+$l['you_cannot_view_mod_logs'] = "You do not have sufficient permission to view the Moderator Logs.";
+$l['you_cannot_view_reported_posts'] = "You do not have sufficient permission to view Reported Posts.";
+$l['you_cannot_manage_announcements'] = "You do not have sufficient permission to manage Announcements.";
+$l['you_cannot_moderate_threads'] = "You do not have sufficient permission to moderate threads.";
+$l['you_cannot_moderate_posts'] = "You do not have sufficient permission to moderate posts.";
+$l['you_cannot_moderate_attachments'] = "You do not have sufficient permission to moderate attachments.";
+$l['you_cannot_use_mod_queue'] = "You do not have sufficient permission to use the Mod Queue.";
+
+$l['post'] = 'Post';

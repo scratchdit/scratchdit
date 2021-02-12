@@ -1,18 +1,24 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
- *
- * $Id$
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  */
 
+/**
+ * @param int    $is_install
+ * @param string $prev_version
+ * @param string $current_version
+ * @param string $charset
+ *
+ * @return array
+ */
 function build_server_stats($is_install=1, $prev_version='', $current_version='', $charset='')
 {
 	$info = array();
-	
+
 	// Is this an upgrade or an install?
 	if($is_install == 1)
 	{
@@ -22,23 +28,23 @@ function build_server_stats($is_install=1, $prev_version='', $current_version=''
 	{
 		$info['is_install'] = 0;
 	}
-	
+
 	// If we are upgrading....
 	if($info['is_install'] == 0)
 	{
 		// What was the previous version?
 		$info['prev_version'] = $prev_version;
 	}
-	
+
 	// What's our current version?
 	$info['current_version'] = $current_version;
-	
+
 	// What is our current charset?
 	$info['charset'] = $charset;
 
 	// Parse phpinfo into array
 	$phpinfo = parse_php_info();
-	
+
 	// PHP Version
 	$info['phpversion'] = phpversion();
 
@@ -62,7 +68,7 @@ function build_server_stats($is_install=1, $prev_version='', $current_version=''
 	{
 		$info['sqlite'] = $phpinfo['sqlite']['SQLite Library'];
 	}
-	
+
 	// Iconv Library Extension Version
 	$info['iconvlib'] = 0;
 	if(array_key_exists('iconv', $phpinfo))
@@ -85,17 +91,17 @@ function build_server_stats($is_install=1, $prev_version='', $current_version=''
 	{
 		$info['cgimode'] = 1;
 	}
-	
+
 	// Server Software
 	$info['server_software'] = $_SERVER['SERVER_SOFTWARE'];
-	
+
 	// Allow url fopen php.ini setting
 	$info['allow_url_fopen'] = 0;
 	if(ini_get('safe_mode') == 0 && ini_get('allow_url_fopen'))
 	{
 		$info['allow_url_fopen'] = 1;
 	}
-	
+
 	// Check classes, extensions, php info, functions, and php ini settings
 	$check = array(
 		'classes' => array(
@@ -104,7 +110,7 @@ function build_server_stats($is_install=1, $prev_version='', $current_version=''
 			'xmlwriter' => array('bitwise' => 4, 'title' => 'XMLWriter'),
 			'imagemagick' => array('bitwise' => 8, 'title' => 'Imagick'),
 		),
-		
+
 		'extensions' => array(
 			'zendopt' => array('bitwise' => 1, 'title' => 'Zend Optimizer'),
 			'xcache' => array('bitwise' => 2, 'title' => 'XCache'),
@@ -117,15 +123,15 @@ function build_server_stats($is_install=1, $prev_version='', $current_version=''
 			'pdo_oci' => array('bitwise' => 256, 'title' => 'pdo_oci'),
 			'pdo_odbc' => array('bitwise' => 512, 'title' => 'pdo_odbc'),
 		),
-		
+
 		'phpinfo' => array(
 			'zlib' => array('bitwise' => 1, 'title' => 'zlib'),
 			'mbstring' => array('bitwise' => 2, 'title' => 'mbstring'),
 			'exif' => array('bitwise' => 4, 'title' => 'exif'),
 			'zlib' => array('bitwise' => 8, 'title' => 'zlib'),
-			
+
 		),
-		
+
 		'functions' => array(
 			'sockets' => array('bitwise' => 1, 'title' => 'fsockopen'),
 			'mcrypt' => array('bitwise' => 2, 'title' => 'mcrypt_encrypt'),
@@ -139,18 +145,22 @@ function build_server_stats($is_install=1, $prev_version='', $current_version=''
 			'curl' => array('bitwise' => 512, 'title' => 'curl_init'),
 			'iconv' => array('bitwise' => 1024, 'title' => 'iconv'),
 		),
-		
+
 		'php_ini' => array(
 			'post_max_size' => 'post_max_size',
 			'upload_max_filesize' => 'upload_max_filesize',
 			'safe_mode' => 'safe_mode',
 		),
 	);
-	
+
 	foreach($check as $cat_name => $category)
 	{
 		foreach($category as $name => $what)
 		{
+			if(!isset($info[$cat_name]))
+			{
+				$info[$cat_name] = 0;
+			}
 			switch($cat_name)
 			{
 				case "classes":
@@ -190,82 +200,32 @@ function build_server_stats($is_install=1, $prev_version='', $current_version=''
 			}
 		}
 	}
-	
+
 	// Host URL & hostname
+	// Dropped fetching host details since v.1.8.16 as http://www.whoishostingthis.com API seems to be down and this info is not required by MyBB.
 	$info['hosturl'] = $info['hostname'] = "unknown/local";
 	if($_SERVER['HTTP_HOST'] == 'localhost')
 	{
 		$info['hosturl'] = $info['hostname'] = "localhost";
 	}
 
-	// Check the hosting company
-	if(strpos($_SERVER['HTTP_HOST'], ".") !== false)
-	{
-		$host_url = "http://www.whoishostingthis.com/".str_replace(array('http://', 'www.'), '', $_SERVER['HTTP_HOST']);
-
-		$hosting = fetch_remote_file($host_url);
-
-		if($hosting)
-		{
-			preg_match('#We believe \<a href\="http:\/\/www.whoishostingthis.com\/linkout\/\?t\=[0-9]&url\=?([^"]*)" (title="([^"]*)" )target\=\_blank\>([^<]*)\<\/a\>#ism', $hosting, $matches);
-			
-			$info['hosturl'] = "unknown/no-url";
-			if(isset($matches[1]) && strlen(trim($matches[1])) != 0 && strpos($matches[1], '.') !== false)
-			{
-				$info['hosturl'] = strtolower($matches[1]);
-			}
-			else if(isset($matches[3]) && strlen(trim($matches[3])) != 0 && strpos($matches[3], '.') !== false)
-			{
-				$info['hosturl'] = strtolower($matches[3]);
-			}
-
-			if(isset($matches[4]) && strlen(trim($matches[4])) != 0)
-			{
-				$info['hostname'] = $matches[4];
-			}
-			elseif(isset($matches[3]) && strlen(trim($matches[3])) != 0)
-			{
-				$info['hostname'] = $matches[3];
-			}
-			elseif(isset($matches[2]) && strlen(trim($matches[2])) != 0)
-			{
-				$info['hostname'] = str_replace(array('title=', '"'), '', $matches[2][0]);
-			}
-			elseif(strlen(trim($info['hosturl'])) != 0 && $info['hosturl'] != "unknown/no-url")
-			{
-				$info['hostname'] = $info['hosturl'];
-			}
-			else
-			{
-				$info['hostname'] = "unknown/no-name";
-			}
-		}
-	}
-
 	if(isset($_SERVER['HTTP_USER_AGENT']))
 	{
 		$info['useragent'] = $_SERVER['HTTP_USER_AGENT'];
 	}
-	
+
 	// We need a unique ID for the host so hash it to keep it private and send it over
-	if($_SERVER['HTTP_HOST'] == "localhost")
-	{
-		$id = $_SERVER['HTTP_HOST'].time();
-	}
-	else
-	{
-		$id = $_SERVER['HTTP_HOST'];
-	}
+	$id = $_SERVER['HTTP_HOST'].time();
 
 	if(function_exists('sha1'))
 	{
-		$info['id'] = sha1($id);
+		$info['clientid'] = sha1($id);
 	}
 	else
 	{
-		$info['id'] = md5($id);
+		$info['clientid'] = md5($id);
 	}
-	
+
 	$string = "";
 	$amp = "";
 	foreach($info as $key => $value)
@@ -274,15 +234,15 @@ function build_server_stats($is_install=1, $prev_version='', $current_version=''
 		$amp = "&amp;";
 	}
 
-	$server_stats_url = 'http://www.mybb.com/stats.php?'.$string;
+	$server_stats_url = 'https://community.mybb.com/server_stats.php?'.$string;
 
 	$return = array();
 	$return['info_sent_success'] = false;
-	if(fetch_remote_file($url) !== false)
+	if(fetch_remote_file($server_stats_url) !== false)
 	{
 		$return['info_sent_success'] = true;
 	}
-	$return['info_image'] = "<img src='http://www.mybb.com/stats.php?{$string}&amp;img=1' />";
+	$return['info_image'] = "<img src='".$server_stats_url."&amp;img=1' />";
 	$return['info_get_string'] = $string;
 
 	return $return;
@@ -306,7 +266,7 @@ function parse_php_info()
 	$phpinfo_html = preg_replace("#<td[^>]*>([^<]+)<\/td>#", "<info>$1</info>", $phpinfo_html);
 	$phpinfo_html = preg_split("#(<h2[^>]*>[^<]+<\/h2>)#", $phpinfo_html, -1, PREG_SPLIT_DELIM_CAPTURE);
 	$modules = array();
-	
+
 	for($i=1; $i < count($phpinfo_html); $i++)
 	{
 		if(preg_match("#<h2[^>]*>([^<]+)<\/h2>#", $phpinfo_html[$i], $match))
@@ -318,7 +278,7 @@ function parse_php_info()
 				$pat = '<info>([^<]+)<\/info>';
 				$pat3 = "/$pat\s*$pat\s*$pat/";
 				$pat2 = "/$pat\s*$pat/";
-				
+
 				// 3 columns
 				if(preg_match($pat3, $one, $match))
 				{
@@ -335,4 +295,3 @@ function parse_php_info()
 	return $modules;
 }
 
-?>

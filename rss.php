@@ -1,16 +1,18 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
- *
- * $Id$
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  */
 
 /* Redirect traffic using old URI to new URI. */
-$_SERVER['QUERY_STRING'] = str_replace(array("\n", "\r"), "", $_SERVER['QUERY_STRING']); 
-header("Location: syndication.php?".$_SERVER['QUERY_STRING']);
+$string = '';
+if(isset($_SERVER['QUERY_STRING']) && $_SERVER['QUERY_STRING'] != '')
+{
+	$string .= '?'.str_replace(array("\n", "\r"), "", $_SERVER['QUERY_STRING']);
+}
 
-?>
+header('Location: syndication.php'.$string);
+

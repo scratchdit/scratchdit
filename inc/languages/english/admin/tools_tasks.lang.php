@@ -1,9 +1,7 @@
 <?php
 /**
- * MyBB 1.6 English Language Pack
- * Copyright 2010 MyBB Group, All Rights Reserved
- * 
- * $Id$
+ * MyBB 1.8 English Language Pack
+ * Copyright 2014 MyBB Group, All Rights Reserved
  */
 
 $l['task_manager'] = "Task Manager";
@@ -13,7 +11,7 @@ $l['edit_task'] = "Edit Task";
 $l['edit_task_desc'] = "Below you can edit the various settings for this scheduled task.";
 $l['task_logs'] = "Task Logs";
 $l['view_task_logs'] = "View Task Logs";
-$l['view_task_logs_desc'] = "When a task is run and logging is enabled, any results or errors will be listed below. Entries older than 30 days are automatically deleted.";
+$l['view_task_logs_desc'] = "When a task has ran and logging is enabled, any results or errors will be listed below. Entries older than 30 days are automatically deleted.";
 $l['scheduled_tasks'] = "Scheduled Tasks";
 $l['scheduled_tasks_desc'] = "Here you can manage tasks which are automatically run on your board. To run a task now click the icon to the right of the task.";
 
@@ -49,12 +47,10 @@ $l['data'] = "Data";
 $l['no_task_logs'] = "There are currently no log entries for any of the scheduled tasks.";
 $l['next_run'] = "Next Run";
 $l['run_task_now'] = "Run this task now";
-$l['run_task'] = "Run task";
 $l['disable_task'] = "Disable Task";
+$l['run_task'] = "Run Task";
 $l['enable_task'] = "Enable Task";
 $l['delete_task'] = "Delete Task";
-$l['alt_enabled'] = "Enabled";
-$l['alt_disabled'] = "Disabled";
 
 $l['error_invalid_task'] = "The specified task does not exist.";
 $l['error_missing_title'] = "You did not enter a title for this scheduled task";
@@ -74,6 +70,6 @@ $l['success_task_disabled'] = "The selected task has been disabled successfully.
 $l['success_task_run'] = "The selected task has been run successfully.";
 
 $l['confirm_task_deletion'] = "Are you sure you wish to delete this scheduled task?";
-$l['confirm_task_enable'] = "<strong>WARNING:</strong> You are about to enable a task that is only meant to be run via a cron (Please see the <a href=\"http://wiki.mybb.com/\" target=\"_blank\">MyBB Wiki</a> for more information). Continue?";
+$l['confirm_task_enable'] = "<strong>WARNING:</strong> You are about to enable a task that is only meant to be run via cron (Please see the <a href=\"https://docs.mybb.com/1.8/administration/task-manager\" target=\"_blank\" rel=\"noopener\">MyBB Docs</a> for more information). Continue?";
+$l['no_tasks'] = "There are no tasks on your forum at this time.";
 
-?>

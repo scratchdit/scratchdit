@@ -1,21 +1,19 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
- *
- * $Id$
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  */
 
 /**
  * Build a mini calendar for a specific month
  *
- * @param array The calendar array for the calendar
- * @param int The month of the year
- * @param int The year
- * @param array Optional events cache for this calendar
+ * @param array $calendar The calendar array for the calendar
+ * @param int $month The month of the year
+ * @param int $year The year
+ * @param array $events_cache Optional events cache for this calendar
  * @return string The built mini calendar
  */
 function build_mini_calendar($calendar, $month, $year, &$events_cache)
@@ -27,7 +25,7 @@ function build_mini_calendar($calendar, $month, $year, &$events_cache)
 	{
 		$year = my_date("Y");
 	}
-	
+
 	// Then the month
 	if($month < 1 || $month > 12)
 	{
@@ -35,7 +33,7 @@ function build_mini_calendar($calendar, $month, $year, &$events_cache)
 	}
 
 	$weekdays = fetch_weekday_structure($calendar['startofweek']);
-	
+
 	$calendar_permissions = get_calendar_permissions($calendar['cid']);
 
 	$month_link = get_calendar_link($calendar['cid'], $year, $month);
@@ -44,19 +42,20 @@ function build_mini_calendar($calendar, $month, $year, &$events_cache)
 	$prev_month = get_prev_month($month, $year);
 
 	$month_start_weekday = gmdate("w", gmmktime(0, 0, 0, $month, $calendar['startofweek']+1, $year));
+
+	$prev_month_days = gmdate("t", gmmktime(0, 0, 0, $prev_month['month'], 1, $prev_month['year']));
 	if($month_start_weekday != $weekdays[0] || $calendar['startofweek'] != 0)
 	{
-		$day = gmdate("t", gmmktime(0, 0, 0, $prev_month['month'], 1, $prev_month['year']));
+		$prev_days = $day = gmdate("t", gmmktime(0, 0, 0, $prev_month['month'], 1, $prev_month['year']));
 		$day -= array_search(($month_start_weekday), $weekdays);
 		$day += $calendar['startofweek']+1;
+		if($day > $prev_month_days+1)
+		{
+			// Go one week back
+			$day -= 7;
+		}
 		$calendar_month = $prev_month['month'];
 		$calendar_year = $prev_month['year'];
-
-		if($day > 31 && $calendar['startofweek'] == 1 && $prev_month_days == 30)
-		{
-			// We need to fix it for these days
-			$day = 25;
-		}
 	}
 	else
 	{
@@ -65,8 +64,6 @@ function build_mini_calendar($calendar, $month, $year, &$events_cache)
 		$calendar_year = $year;
 	}
 
-	$prev_month_days = gmdate("t", gmmktime(0, 0, 0, $prev_month['month'], 1, $prev_month['year']));
-
 	// So now we fetch events for this month
 	$start_timestamp = gmmktime(0, 0, 0, $calendar_month, $day, $year);
 	$num_days = gmdate("t", gmmktime(0, 0, 0, $month, 1, $year));
@@ -74,18 +71,21 @@ function build_mini_calendar($calendar, $month, $year, &$events_cache)
 
 	if(!$events_cache)
 	{
-		$events_cache = get_events($calendar['cid'], $start_timestamp, $end_timestamp, $calendar_permissions['canmoderateevents']);
+		$events_cache = get_events($calendar, $start_timestamp, $end_timestamp, $calendar_permissions['canmoderateevents']);
 	}
 
 	$today = my_date("dnY");
 
 	// Build weekday headers
+	$weekday_headers = '';
 	foreach($weekdays as $weekday)
 	{
 		$weekday_name = fetch_weekday_name($weekday, true);
 		eval("\$weekday_headers .= \"".$templates->get("calendar_mini_weekdayheader")."\";");
 	}
 
+	$in_month = 0;
+	$day_bits = $calendar_rows = '';
 	for($row = 0; $row < 6; ++$row) // Iterate weeks (each week gets a row)
 	{
 		foreach($weekdays as $weekday_id => $weekday)
@@ -127,8 +127,9 @@ function build_mini_calendar($calendar, $month, $year, &$events_cache)
 				break;
 			}
 
+			$link_to_day = false;
 			// Any events on this specific day?
-			if(@count($events_cache["$day-$calendar_month-$calendar_year"]) > 0)
+			if(!empty($events_cache["$day-$calendar_month-$calendar_year"]))
 			{
 				$link_to_day = true;
 			}
@@ -150,14 +151,14 @@ function build_mini_calendar($calendar, $month, $year, &$events_cache)
 			}
 			if($link_to_day)
 			{
-				$day_link = "<a href=\"".get_calendar_link($calendar['cid'], $calendar_year, $calendar_month, $day)."\">{$day}</a>";
+				$calendar['link'] = get_calendar_link($calendar['cid'], $calendar_year, $calendar_month, $day);
+				eval("\$day_link = \"".$templates->get("calendar_mini_weekrow_day_link")."\";");
 			}
 			else
 			{
 				$day_link = $day;
 			}
 			eval("\$day_bits .= \"".$templates->get("calendar_mini_weekrow_day")."\";");
-			$link_to_day = false;
 			++$day;
 		}
 		if($day_bits)
@@ -166,7 +167,7 @@ function build_mini_calendar($calendar, $month, $year, &$events_cache)
 		}
 		$day_bits = "";
 	}
-	eval("\$mini_calendar .= \"".$templates->get("calendar_mini")."\";");
+	eval("\$mini_calendar = \"".$templates->get("calendar_mini")."\";");
 	return $mini_calendar;
 }
 
@@ -196,7 +197,7 @@ function cache_calendars()
 /**
  * Fetch the calendar permissions for the current user for one or more calendars
  *
- * @param int Optional calendar ID. If none specified, permissions for all calendars are returned
+ * @param int $cid Optional calendar ID. If none specified, permissions for all calendars are returned
  * @return array Array of permissions
  */
 function get_calendar_permissions($cid=0)
@@ -255,8 +256,11 @@ function get_calendar_permissions($cid=0)
 
 	if($cid > 0)
 	{
-		$permissions = fetch_calendar_permissions($cid, $gid, $calendar_permissions[$cid]);
-		if(!$permissions)
+		if(isset($calendar_permissions[$cid]))
+		{
+			$permissions = fetch_calendar_permissions($cid, $gid, $calendar_permissions[$cid]);
+		}
+		if(empty($permissions))
 		{
 			$permissions = $group_permissions;
 		}
@@ -265,8 +269,11 @@ function get_calendar_permissions($cid=0)
 	{
 		foreach($calendars as $calendar)
 		{
-			$permissions[$calendar['cid']] = fetch_calendar_permissions($calendar['cid'], $gid, $calendar_permissions[$calendar['cid']]);
-			if(!$permissions[$calendar['cid']])
+			if(isset($calendar_permissions[$calendar['cid']]))
+			{
+				$permissions[$calendar['cid']] = fetch_calendar_permissions($calendar['cid'], $gid, $calendar_permissions[$calendar['cid']]);
+			}
+			if(empty($permissions[$calendar['cid']]))
 			{
 				$permissions[$calendar['cid']] = $group_permissions;
 			}
@@ -276,19 +283,24 @@ function get_calendar_permissions($cid=0)
 }
 
 /**
+ * Fetch the calendar permissions
  *
+ * @param int $cid Calendar ID
+ * @param string $gid User group ID, comma seperated
+ * @param array Array of permissions for this calendar and group
+ * @return array|void Array of current permissions or nothing if an error occured
  */
 function fetch_calendar_permissions($cid, $gid, $calendar_permissions)
 {
 	$groups = explode(",", $gid);
-	
+
 	if(!is_array($calendar_permissions))
 	{
 		return;
 	}
 
 	$current_permissions = array();
-	
+
 	foreach($groups as $gid)
 	{
 		// If this calendar has permissions set for this group
@@ -304,7 +316,7 @@ function fetch_calendar_permissions($cid, $gid, $calendar_permissions)
 			}
 		}
 	}
-	
+
 	if(count($current_permissions) == 0)
 	{
 		return;
@@ -315,12 +327,12 @@ function fetch_calendar_permissions($cid, $gid, $calendar_permissions)
 /**
  * Build a calendar select list to jump between calendars
  *
- * @param int The selected calendar ID
+ * @param int $selected The selected calendar ID
  * @return string The calendar select
  */
 function build_calendar_jump($selected=0)
 {
-	global $db, $mybb;
+	global $db, $mybb, $templates, $lang, $gobutton;
 
 	$calendar_permissions = get_calendar_permissions();
 
@@ -330,6 +342,8 @@ function build_calendar_jump($selected=0)
 	{
 		return;
 	}
+
+	$jump_options = '';
 
 	foreach($calendars as $calendar)
 	{
@@ -343,16 +357,19 @@ function build_calendar_jump($selected=0)
 		{
 			$sel = "selected=\"selected\"";
 		}
-		$jump_options .= "<option value=\"{$calendar['cid']}\" $sel>{$calendar['name']}</option>\n";
+
+		eval("\$jump_options .= \"".$templates->get("calendar_jump_option")."\";");
 	}
-	return "<select name=\"calendar\">\n{$jump_options}</select>";
+
+	eval("\$calendar_jump = \"".$templates->get("calendar_jump")."\";");
+	return $calendar_jump;
 }
 
 /**
  * Fetch the next calendar month from a specified month/year
  *
- * @param int The month
- * @param int The year
+ * @param int $month The month
+ * @param int $year The year
  * @return array Array of the next month and next year
  */
 function get_next_month($month, $year)
@@ -376,8 +393,8 @@ function get_next_month($month, $year)
 /**
  * Fetch the previous calendar month from a specified month/year
  *
- * @param int The month
- * @param int The year
+ * @param int $month The month
+ * @param int $year The year
  * @return array Array of the previous month and previous year
  */
 function get_prev_month($month, $year)
@@ -401,41 +418,44 @@ function get_prev_month($month, $year)
 /**
  * Fetch the events for a specific calendar and date range
  *
- * @param int The calendar ID
- * @param int Start time stamp
- * @param int End time stmap
- * @param int 1 to fetch unapproved events too
- * @param int The user ID to fetch private events for (0 fetches none)
+ * @param int $calendar The calendar ID
+ * @param int $start Start time stamp
+ * @param int $end End time stmap
+ * @param int $unapproved 1 to fetch unapproved events too
+ * @param int $private The user ID to fetch private events for (0 fetches none)
  * @return array Array of events
  */
 function get_events($calendar, $start, $end, $unapproved=0, $private=1)
 {
 	global $db, $mybb;
-	
-	// We take in to account timezones here - we add/subtract 12 hours from our GMT time ranges
-	$start -= 12*3600;
-	$end += 12*3600;
 
+	// We take in to account timezones here - we either add 14 hours or subtract 12 hours from our GMT time ranges
+	$start -= 12*3600;
+	$end += 14*3600;
+
+	$visible_where = '';
 	if($unapproved != 1)
 	{
 		$visible_where = " AND e.visible='1'";
 	}
+
+	$events_cache = array();
 	$query = $db->query("
 		SELECT u.*, e.*
 		FROM ".TABLE_PREFIX."events e
 		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=e.uid)
-		WHERE e.cid='{$calendar}' {$visible_where} AND ((e.endtime>={$start} AND e.starttime<={$end}) OR (e.endtime=0 AND e.starttime>={$start} AND e.starttime<={$end})) AND ((e.uid='{$mybb->user['uid']}' AND private='1') OR private!='1')
+		WHERE e.cid='{$calendar['cid']}' {$visible_where} AND ((e.endtime>={$start} AND e.starttime<={$end}) OR (e.endtime=0 AND e.starttime>={$start} AND e.starttime<={$end})) AND ((e.uid='{$mybb->user['uid']}' AND private='1') OR private!='1')
 		ORDER BY endtime DESC
 	");
 	while($event = $db->fetch_array($query))
 	{
 		if($event['ignoretimezone'] == 0)
 		{
-			$offset = $event['timezone'];
+			$offset = (float)$event['timezone'];
 		}
 		else
 		{
-			$offset = $mybb->user['timezone'];
+			$offset = (float)$mybb->user['timezone'];
 		}
 		$event['starttime_user'] = $event['starttime']+($offset*3600);
 
@@ -450,11 +470,11 @@ function get_events($calendar, $start, $end, $unapproved=0, $private=1)
 		{
 			$event_date = explode("-", gmdate("j-n-Y", $event['starttime_user']));
 			$event['endtime_user'] = $event['endtime']+($offset*3600);
-			$event['weekday_start'] = $calendar['weekstart'];
+			$event['weekday_start'] = $calendar['startofweek'];
 
 			$start_day = gmmktime(0, 0, 0, $event_date[1], $event_date[0], $event_date[2]);
 
-			$event['repeats'] = @unserialize($event['repeats']);
+			$event['repeats'] = my_unserialize($event['repeats']);
 
 			// Event does not repeat - just goes over a few days
 			if($event['repeats']['repeats'] == 0)
@@ -474,7 +494,7 @@ function get_events($calendar, $start, $end, $unapproved=0, $private=1)
 			}
 			$first = "";
 			$event_date = explode("-", gmdate("j-n-Y", $range_start));
-			
+
 			// Get rid of hour/minutes because sometimes they cause the events to stretch into the next day
 			$range_end = gmmktime(23, 59, 59, gmdate("n", $event['endtime_user']), gmdate("j", $event['endtime_user']), gmdate("Y", $event['endtime_user']));
 			while($range_start < $range_end)
@@ -493,9 +513,13 @@ function get_events($calendar, $start, $end, $unapproved=0, $private=1)
 					}
 					else if(!$first)
 					{
-						$count = count($events_cache["{$day_date}"]);
+						if(!isset($events_cache[$day_date]) || !is_array($events_cache[$day_date]))
+						{
+							$events_cache[$day_date] = array();
+						}
+						$count = count($events_cache[$day_date]);
 						$first = $day_date;
-						$events_cache["{$day_date}"][] = $event;
+						$events_cache[$day_date][] = $event;
 					}
 				}
 				if($event['repeats']['repeats'] == 0)
@@ -515,11 +539,11 @@ function get_events($calendar, $start, $end, $unapproved=0, $private=1)
 /**
  * Fetch the birthdays for one or more months or a specific day
  *
- * @param mixed Integer of the month or array of months
- * @param int Day of the specific month (if only one month specified above)
+ * @param int|array $months Integer of the month or array of months
+ * @param int $day Day of the specific month (if only one month specified above)
  * @return array Array of birthdays
  */
-function get_birthdays($months, $day="")
+function get_birthdays($months, $day=0)
 {
 	global $db;
 
@@ -550,6 +574,8 @@ function get_birthdays($months, $day="")
 
 	$where = implode(" OR ", $where);
 
+	$bdays = array();
+
 	$query = $db->simple_select("users", "uid, username, birthday, birthdayprivacy, usergroup, displaygroup", $where);
 	while($user = $db->fetch_array($query))
 	{
@@ -569,6 +595,10 @@ function get_birthdays($months, $day="")
 	}
 	if($day)
 	{
+		if(!isset($bdays["$day-$month"]))
+		{
+			return array();
+		}
 		return $bdays["$day-$month"];
 	}
 	return $bdays;
@@ -577,7 +607,7 @@ function get_birthdays($months, $day="")
 /**
  * Fetch an ordered list of weekdays depended on a specified starting day
  *
- * @param int The weekday we want to start the week with
+ * @param int $week_start The weekday we want to start the week with
  * @return array Ordered list of weekdays dependant on start of week
  */
 function fetch_weekday_structure($week_start)
@@ -612,9 +642,9 @@ function fetch_weekday_structure($week_start)
 /**
  * Fetch a weekday name based on a number
  *
- * @param int The weekday number
- * @param boolean True to fetch the short name ('S'), false to fetch full name
- * @param string The weekday name
+ * @param int $weekday The weekday number
+ * @param boolean $short True to fetch the short name ('S'), false to fetch full name
+ * @return string The weekday name
  */
 function fetch_weekday_name($weekday, $short=false)
 {
@@ -650,7 +680,7 @@ function fetch_weekday_name($weekday, $short=false)
 			$short_weekday_name = $lang->short_sunday;
 			break;
 	}
-	
+
 	if($short == true)
 	{
 		return $short_weekday_name;
@@ -664,16 +694,16 @@ function fetch_weekday_name($weekday, $short=false)
 /**
  * Fetches the next occurance for a repeating event.
  *
- * @param array The event array
- * @param array The range of start/end timestamps
- * @param int The last occurance of this event
- * @param boolean True if this is our first iteration of this function (Does some special optimised calculations on false)
+ * @param array $event The event array
+ * @param array $range The range of start/end timestamps
+ * @param int $last_occurance The last occurance of this event
+ * @param boolean $first True if this is our first iteration of this function (Does some special optimised calculations on false)
  * @return int The next occurance timestamp
  */
 function fetch_next_occurance($event, $range, $last_occurance, $first=false)
 {
 	$new_time = $last_occurance;
-	
+
 	$repeats = $event['repeats'];
 
 	$start_day = explode("-", gmdate("j-n-Y", $event['starttime_user']));
@@ -890,7 +920,7 @@ function fetch_next_occurance($event, $range, $last_occurance, $first=false)
 /**
  * Fetch a friendly repetition value for a specific event (Repeats every x months etc)
  *
- * @param array The array of the event
+ * @param array $event The array of the event
  * @return string The friendly repetition string
  */
 function fetch_friendly_repetition($event)
@@ -915,7 +945,7 @@ function fetch_friendly_repetition($event)
 
 	if(!is_array($event['repeats']))
 	{
-		$event['repeats'] = @unserialize($event['repeats']);
+		$event['repeats'] = my_unserialize($event['repeats']);
 		if(!is_array($event['repeats']))
 		{
 			return false;
@@ -924,7 +954,7 @@ function fetch_friendly_repetition($event)
 
 	$repeats = $event['repeats'];
 
-	switch($repeats['repeats'])
+	switch($repeats)
 	{
 		case 1:
 			if($repeats['days'] <= 1)
@@ -939,14 +969,15 @@ function fetch_friendly_repetition($event)
 		case 3:
 			if($event['repeats']['days'] || count($event['repeats']['days']) == 7)
 			{
+				$weekdays  = null;
 				foreach($event['repeats']['days'] as $id => $weekday)
 				{
 					$weekday_name = fetch_weekday_name($weekday);
-					if($event['repeats']['days'][$id+1] && $weekdays)
+					if($event['repeats']['days'][$id+1] && $weekday)
 					{
 						$weekdays .= $lang->comma;
 					}
-					else if(!$event['repeats']['days'][$id+1] && $weekdays)
+					else if(!$event['repeats']['days'][$id+1] && $weekday)
 					{
 						$weekdays .= " {$lang->and} ";
 					}
@@ -1000,7 +1031,7 @@ function fetch_friendly_repetition($event)
 				else
 				{
 					return $lang->sprintf($lang->every_x_months_on_weekday, $occurance, $weekday_name, $event['repeats']['months']);
-				} 
+				}
 			}
 			break;
 		case 5:
@@ -1037,9 +1068,9 @@ function fetch_friendly_repetition($event)
 /**
  * Fetch a timestamp for "the first/second etc weekday" for a month.
  *
- * @param array The repetition array from the event
- * @param int The month of the year
- * @param int The year
+ * @param array $repeats The repetition array from the event
+ * @param int $month The month of the year
+ * @param int $year The year
  * @return int The UNIX timestamp
  */
 function fetch_weekday_monthly_repetition($repeats, $month, $year)
@@ -1066,4 +1097,3 @@ function fetch_weekday_monthly_repetition($repeats, $month, $year)
 	}
 	return gmmktime(0, 0, 0, $month, $day, $year);
 }
-?>

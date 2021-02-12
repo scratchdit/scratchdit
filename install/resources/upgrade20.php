@@ -1,12 +1,10 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * Website: http://www.mybboard.com
- * License: http://mybb.com/about/license
- *
- * $Id$
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  */
 
 /**
@@ -49,4 +47,4 @@ function upgrade20_dbchanges()
 	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
 	$output->print_footer("20_done");
 }
-?>
+

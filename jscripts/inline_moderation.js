@@ -1,219 +1,214 @@
 var inlineModeration = {
 	init: function()
 	{
-		inlineModeration.inlineCount = 0;
 		if(!inlineType || !inlineId)
 		{
 			return false;
 		}
 
-		inlineModeration.cookieName = "inlinemod_"+inlineType+inlineId;
-		inputs = document.getElementsByTagName("input");
+		inlineModeration.cookieName = 'inlinemod_'+inlineType+inlineId;
+		var inputs = $('input');
 
-		if(!inputs)
+		if(!inputs.length)
 		{
 			return false;
 		}
 
-		inlineCookie = Cookie.get(inlineModeration.cookieName);
+		var inlineIds = inlineModeration.getCookie(inlineModeration.cookieName);
+		var removedIds = inlineModeration.getCookie(inlineModeration.cookieName+'_removed');
+		var allChecked = true;
 
-		if(inlineCookie)
+		$(inputs).each(function() {
+			var element = $(this);
+			if((element.attr('name') != 'allbox') && (element.attr('type') == 'checkbox') && (element.attr('id')) && (element.attr('id').split('_')[0] == 'inlinemod'))
+			{
+				$(element).on('click', inlineModeration.checkItem);
+			}
+
+			if(element.attr('id'))
+			{
+				var inlineCheck = element.attr('id').split('_');
+				var id = inlineCheck[1];
+
+				if(inlineCheck[0] == 'inlinemod')
+				{
+					if(inlineIds.indexOf(id) != -1 || (inlineIds.indexOf('ALL') != -1 && removedIds.indexOf(id) == -1))
+					{
+						element.prop('checked', true);
+						var post = element.parents('.post');
+						var thread = element.parents('.inline_row');
+						var fieldset = element.parents('fieldset');
+						if(post.length)
+						{
+							post.addClass('trow_selected');
+						}
+						else if(thread.length)
+						{
+							thread.addClass('trow_selected');
+						}
+						
+						if(fieldset.length)
+						{
+							fieldset.addClass('inline_selected');
+						}
+
+					}
+					else
+					{
+						element.prop('checked', false);
+						var post = element.parents('.post');
+						var thread = element.parents('.inline_row');
+						if(post.length)
+						{
+							post.removeClass('trow_selected');
+						}
+						else if(thread.length)
+						{
+							thread.removeClass('trow_selected');
+						}
+					}
+					allChecked = false;
+				}
+			}
+		});
+
+		inlineModeration.updateCookies(inlineIds, removedIds);
+
+		if(inlineIds.indexOf('ALL') != -1 && removedIds.length == 0)
 		{
-			inlineIds = inlineCookie.split("|");
+			var allSelectedRow = $('#allSelectedrow');
+			if(allSelectedRow)
+			{
+				allSelectedRow.show();
+			}
 		}
-		
-		for(var i=0; i < inputs.length; i++)
+		else if(inlineIds.indexOf('ALL') == -1 && allChecked == true)
 		{
-			var element = inputs[i];
-			if((element.name != "allbox") && (element.type == "checkbox") && (element.id.split("_")[0] == "inlinemod"))
+			var selectRow = $('#selectAllrow');
+			if(selectRow)
 			{
-				Event.observe(element, "click", inlineModeration.checkItem);
+				selectRow.show();
 			}
-
-			if(inlineCookie)
-			{
-				inlineCheck = element.id.split("_");
-				id = inlineCheck[1];
-
-				if(inlineIds.indexOf('ALL') != -1)
-				{
-					inlineModeration.clearChecked();
-					inlineCookie = null;
-				}
-				else if(inlineIds.indexOf(id) != -1)
-				{
-					element.checked = true;
-					var tr = element.up('tr');
-					var fieldset = element.up('fieldset');
-					
-					if(tr)
-					{
-						tr.addClassName('trow_selected');
-					}
-					
-					if(fieldset)
-					{
-						fieldset.addClassName('inline_selected');	
-					}
-				}
-				else
-				{
-					element.checked = false;
-					var tr = element.up('tr');
-					if(tr)
-					{
-						tr.removeClassName('trow_selected');
-					}
-				}
-			}
-		}
-		
-		if(inlineCookie)
-		{
-			goButton = $("inline_go");
-			if(inlineIds)
-			{
-				var inlineCount = 0;
-				inlineIds.each(function(item) {
-					if(item != '') inlineCount++;
-				});
-				inlineModeration.inlineCount = inlineCount;
-			}
-			goButton.value = go_text+" ("+(inlineModeration.inlineCount)+")";
 		}
 		return true;
 	},
 
-	checkItem: function(e)
+	checkItem: function()
 	{
-		element = Event.element(e);
+		var element = $(this);
 
-		if(!element)
+		if(!element || !element.attr('id'))
 		{
 			return false;
 		}
 
-		inlineCheck = element.id.split("_");
-		id = inlineCheck[1];
+		var inlineCheck = element.attr('id').split('_');
+		var id = inlineCheck[1];
 
 		if(!id)
 		{
 			return false;
 		}
 
-		var newIds = new Array();
-		var remIds = new Array();
-		inlineCookie = Cookie.get(inlineModeration.cookieName);
+		var inlineIds = inlineModeration.getCookie(inlineModeration.cookieName);
+		var removedIds = inlineModeration.getCookie(inlineModeration.cookieName+'_removed');
 
-		if(inlineCookie)
+		if(element.prop('checked') == true)
 		{
-			inlineIds = inlineCookie.split("|");
-			inlineIds.each(function(item) {
-				if(item != "" && item != null)
+			if(inlineIds.indexOf('ALL') == -1)
+			{
+				inlineIds = inlineModeration.addId(inlineIds, id);
+			}
+			else
+			{
+				removedIds = inlineModeration.removeId(removedIds, id);
+				if(removedIds.length == 0)
 				{
-					if(item != id)
+					var allSelectedRow = $('#allSelectedrow');
+					if(allSelectedRow)
 					{
-						newIds[newIds.length] = item;
+						allSelectedRow.show();
 					}
 				}
-			});
-		}
-
-		if(element.checked == true)
-		{
-			inlineModeration.inlineCount++;
-			newIds[newIds.length] = id;
-			var tr = element.up('tr');
-			if(tr)
+			}
+			var post = element.parents('.post');
+			var thread = element.parents('.inline_row');
+			if(post.length)
 			{
-				tr.addClassName('trow_selected');
+				post.addClass('trow_selected');
+			}
+			else if(thread.length)
+			{
+				thread.addClass('trow_selected');
 			}
 		}
 		else
 		{
-			inlineModeration.inlineCount--;
-			var tr = element.up('tr');
-			if(tr)
+			if(inlineIds.indexOf('ALL') == -1)
 			{
-				tr.removeClassName('trow_selected');
+				inlineIds = inlineModeration.removeId(inlineIds, id);
+				var selectRow = $('#selectAllrow');
+				if(selectRow)
+				{
+					selectRow.hide();
+				}
 			}
-
-			if(inlineCookie.indexOf("ALL") != -1)
+			else
 			{
-				// We've already selected all threads, add this to our "no-go" cookie
-				remIds[remIds.length] = id;
+				removedIds = inlineModeration.addId(removedIds, id);
+				var allSelectedRow = $('#allSelectedrow');
+				if(allSelectedRow)
+				{
+					allSelectedRow.hide();
+				}
+			}
+			var post = element.parents('.post');
+			var thread = element.parents('.inline_row');
+			if(post.length)
+			{
+				post.removeClass('trow_selected');
+			}
+			else if(thread.length)
+			{
+				thread.removeClass('trow_selected');
 			}
 		}
 
-		goButton = $("inline_go");
-
-		if(remIds.length)
-		{
-			inlineData = "|"+remIds.join("|")+"|";
-			Cookie.set(inlineModeration.cookieName + '_removed', inlineData, 3600000);
-
-			// Get the right count for us
-			var count = goButton.value.replace(/[^\d]/g, '');
-			inlineModeration.inlineCount = count;
-			inlineModeration.inlineCount--;
-		}
-		else
-		{
-			inlineData = "|"+newIds.join("|")+"|";
-			Cookie.set(inlineModeration.cookieName, inlineData, 3600000);
-		}
-
-		if(inlineModeration.inlineCount < 0)
-		{
-			inlineModeration.inlineCount = 0;
-		}
-
-		goButton.value = go_text+" ("+inlineModeration.inlineCount+")";
+		inlineModeration.updateCookies(inlineIds, removedIds);
 
 		return true;
 	},
 
 	clearChecked: function()
 	{
-		var selectRow = document.getElementById("selectAllrow");
-		if(selectRow)
-		{
-			selectRow.style.display = "none";
-		}
-		
-		var allSelectedRow = document.getElementById("allSelectedrow");
-		if(allSelectedRow)
-		{
-			allSelectedRow.style.display = "none";
-		}
-		
-		inputs = document.getElementsByTagName("input");
+		$('#selectAllrow').hide();
+		$('#allSelectedrow').hide();
 
-		if(!inputs)
+		var inputs = $('input');
+
+		if(!inputs.length)
 		{
 			return false;
 		}
 
-		$H(inputs).each(function(element) {
-			var element = element.value;
-			if(!element.value) return;
-			if(element.type == "checkbox" && (element.id.split("_")[0] == "inlinemod" || element.name == "allbox"))
+		$(inputs).each(function() {
+			var element = $(this);
+			if(!element.val()) return;
+			if(element.attr('type') == 'checkbox' && ((element.attr('id') && element.attr('id').split('_')[0] == 'inlinemod') || element.attr('name') == 'allbox'))
 			{
-				element.checked = false;
+				element.prop('checked', false);
 			}
 		});
 
-		$$('tr.trow_selected').each(function(element) {
-			element.removeClassName('trow_selected');
+		$('.trow_selected').each(function() {
+			$(this).removeClass('trow_selected');
 		});
 
-		$$('fieldset.inline_selected').each(function(element) {
-			element.removeClassName('inline_selected');
+		$('fieldset.inline_selected').each(function() {
+			$(this).removeClass('inline_selected');
 		});
 
-		inlineModeration.inlineCount = 0;
-		goButton = $("inline_go");
-		goButton.value = go_text+" (0)";
+		$('#inline_go').val(go_text+' (0)');
 		Cookie.unset(inlineModeration.cookieName);
 		Cookie.unset(inlineModeration.cookieName + '_removed');
 
@@ -222,113 +217,207 @@ var inlineModeration = {
 
 	checkAll: function(master)
 	{
-		inputs = document.getElementsByTagName("input");
+		inputs = $('input');
+		master = $(master);
 
-		if(!inputs)
+		if(!inputs.length)
 		{
 			return false;
 		}
 
-		inlineCookie = Cookie.get(inlineModeration.cookieName);
-
-		if(inlineCookie)
-		{
-			inlineIds = inlineCookie.split("|");
-		}
+		var inlineIds = inlineModeration.getCookie(inlineModeration.cookieName);
+		var removedIds = inlineModeration.getCookie(inlineModeration.cookieName+'_removed');
 
 		var newIds = new Array();
-		$H(inputs).each(function(element) {
-			var element = element.value;
-			if(!element.value) return;
-			inlineCheck = element.id.split("_");
-			if((element.name != "allbox") && (element.type == "checkbox") && (inlineCheck[0] == "inlinemod"))
+		$(inputs).each(function() {
+			var element = $(this);
+			if(!element.val() || !element.attr('id')) return;
+			inlineCheck = element.attr('id').split('_');
+			if((element.attr('name') != 'allbox') && (element.attr('type') == 'checkbox') && (inlineCheck[0] == 'inlinemod'))
 			{
-				id = inlineCheck[1];
-				var changed = (element.checked != master.checked);
-				element.checked = master.checked;
+				var id = inlineCheck[1];
+				var changed = (element.prop('checked') != master.prop('checked'));
 
-				var tr = element.up('tr');
-				var fieldset = element.up('fieldset');
-				if(tr && master.checked == true)
+				var post = element.parents('.post');
+				var fieldset = element.parents('fieldset');
+				var thread = element.parents('.inline_row');
+				if(post.length)
 				{
-					tr.addClassName('trow_selected');
-				}
-				else
-				{
-					tr.removeClassName('trow_selected');
-				}
-				
-				if(typeof(fieldset) != "undefined")
-				{
-					if(master.checked == true)
+					if(master.prop('checked') == true)
 					{
-						fieldset.addClassName('inline_selected');
+						post.addClass('trow_selected');
 					}
 					else
 					{
-						fieldset.removeClassName('inline_selected');
+						post.removeClass('trow_selected');
+					}
+				}
+				else if(thread.length)
+				{
+					if(master.prop('checked') == true)
+					{
+						thread.addClass('trow_selected');
+					}
+					else
+					{
+						thread.removeClass('trow_selected');
 					}
 				}
 				
+				if(fieldset.length)
+				{
+					if(master.prop('checked') == true)
+					{
+						fieldset.addClass('inline_selected');
+					}
+					else
+					{
+						fieldset.removeClass('inline_selected');
+					}
+				}
+
 				if(changed)
 				{
-					if(master.checked == true)
+					element.trigger('click');
+					
+					if(master.prop('checked') == true)
 					{
-						inlineModeration.inlineCount++;
-						newIds[newIds.length] = id;
+						if(inlineIds.indexOf('ALL') == -1)
+						{
+							inlineIds = inlineModeration.addId(inlineIds, id);
+						}
+						else
+						{
+							removedIds = inlineModeration.removeId(removedIds, id);
+						}
 					}
 					else
 					{
-						inlineModeration.inlineCount--;
+						if(inlineIds.indexOf('ALL') == -1)
+						{
+							inlineIds = inlineModeration.removeId(inlineIds, id);
+						}
+						else
+						{
+							removedIds = inlineModeration.addId(removedIds, id);
+						}
 					}
 				}
 			}
 		});
 
-		inlineData = "|"+newIds.join("|")+"|";
-		goButton = $("inline_go");
+		var count = inlineModeration.updateCookies(inlineIds, removedIds);
 
-		if(inlineModeration.inlineCount < 0)
+		if(count < all_text)
 		{
-			inlineModeration.inlineCount = 0;
-		}
-		
-		if(inlineModeration.inlineCount < all_text)
-		{
-			var selectRow = document.getElementById("selectAllrow");
-			if(selectRow)
+			var selectRow = $('#selectAllrow');
+			if(selectRow.length)
 			{
-				if(master.checked == true)
+				if(master.prop('checked') == true)
 				{
-					selectRow.style.display = "table-row";
+					selectRow.show();
 				}
 				else
 				{
-					selectRow.style.display = "none";
+					selectRow.hide();
 				}
 			}
 		}
-		
-		goButton.value = go_text+" ("+inlineModeration.inlineCount+")";
-		Cookie.set(inlineModeration.cookieName, inlineData, 3600000);
+
+		if(inlineIds.indexOf('ALL') == -1 || removedIds.length != 0)
+		{
+			$('#allSelectedrow').hide();
+		}
+		else if(inlineIds.indexOf('ALL') != -1 && removedIds.length == 0)
+		{
+			$('#allSelectedrow').show();
+		}
 	},
-		
+
 	selectAll: function()
 	{
-		goButton.value = go_text+" ("+all_text+")";
-		Cookie.set(inlineModeration.cookieName, "|ALL|", 3600000);
-		
-		var selectRow = document.getElementById("selectAllrow");
-		if(selectRow)
+		inlineModeration.updateCookies(new Array('ALL'), new Array());
+
+		$('#selectAllrow').hide();
+		$('#allSelectedrow').show();
+	},
+
+	getCookie: function(name)
+	{
+		var inlineCookie = Cookie.get(name);
+
+		var ids = new Array();
+		if(inlineCookie)
 		{
-			selectRow.style.display = "none";
+			var inlineIds = inlineCookie.split('|');
+			$.each(inlineIds, function(index, item) {
+				if(item != '' && item != null)
+				{
+					ids.push(item);
+				}
+			});
 		}
-		
-		var allSelectedRow = document.getElementById("allSelectedrow");
-		if(allSelectedRow)
+		return ids;
+	},
+
+	setCookie: function(name, array)
+	{
+		if(array.length != 0)
 		{
-			allSelectedRow.style.display = "table-row";
+			var data = '|'+array.join('|')+'|';
+			Cookie.set(name, data, 60 * 60 * 1000);
 		}
+		else
+		{
+			Cookie.unset(name);
+		}
+	},
+
+	updateCookies: function(inlineIds, removedIds)
+	{
+		if(inlineIds.indexOf('ALL') != -1)
+		{
+			var count = all_text - removedIds.length;
+		}
+		else
+		{
+			var count = inlineIds.length;
+		}
+		if(count < 0)
+		{
+			count = 0;
+		}
+		$('#inline_go').val(go_text+' ('+count+')');
+		if(count == 0)
+		{
+			inlineModeration.clearChecked();
+		}
+		else
+		{
+			inlineModeration.setCookie(inlineModeration.cookieName, inlineIds);
+			inlineModeration.setCookie(inlineModeration.cookieName+'_removed', removedIds);
+		}
+		return count;
+	},
+
+	addId: function(array, id)
+	{
+		if(array.indexOf(id) == -1)
+		{
+			array.push(id);
+		}
+		return array;
+	},
+
+	removeId: function(array, id)
+	{
+		var position = array.indexOf(id);
+		if(position != -1)
+		{
+			array.splice(position, 1);
+		}
+		return array;
 	}
 };
-Event.observe(document, "dom:loaded", inlineModeration.init);
+
+$(inlineModeration.init);

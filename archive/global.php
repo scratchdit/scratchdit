@@ -1,12 +1,10 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
- *
- * $Id$
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  */
 
 // If archive mode does not work, uncomment the line below and try again
@@ -21,6 +19,8 @@ require_once MYBB_ROOT."inc/functions_archive.php";
 require_once MYBB_ROOT."inc/class_session.php";
 require_once MYBB_ROOT."inc/class_parser.php";
 $parser = new postParser;
+
+$shutdown_queries = $shutdown_functions = array();
 
 $groupscache = $cache->read("usergroups");
 if(!is_array($groupscache))
@@ -84,8 +84,22 @@ if($endpart != "index.php")
 	{
 		$action = $action2 = $todo[0];
 	}
-	$page = intval($todo[2]);
-	$id = intval($todo[1]);
+	if(!empty($todo[2]))
+	{
+		$page = (int)$todo[2];
+	}
+	else
+	{
+		$page = 1;
+	}
+	if(!empty($todo[1]))
+	{
+		$id = (int)$todo[1];
+	}
+	else
+	{
+		$id = 0;
+	}
 
 	// Get the thread, announcement or forum information.
 	if($action == "announcement")
@@ -130,19 +144,19 @@ if($endpart != "index.php")
 // Define the full MyBB version location of this page.
 if($action == "thread")
 {
-	define(MYBB_LOCATION, get_thread_link($id));
+	define('MYBB_LOCATION', get_thread_link($id));
 }
 elseif($action == "forum")
 {
-	define(MYBB_LOCATION, get_forum_link($id));
+	define('MYBB_LOCATION', get_forum_link($id));
 }
 elseif($action == "announcement")
 {
-	define(MYBB_LOCATION, get_announcement_link($id));
+	define('MYBB_LOCATION', get_announcement_link($id));
 }
 else
 {
-	define(MYBB_LOCATION, INDEX_URL);
+	define('MYBB_LOCATION', INDEX_URL);
 }
 
 // Initialise session
@@ -173,10 +187,24 @@ if(is_banned_ip($session->ipaddress))
 // If our board is closed..
 if($mybb->settings['boardclosed'] == 1)
 {
-	if($mybb->usergroup['cancp'] != 1)
+	if($mybb->usergroup['canviewboardclosed'] != 1)
 	{
+		if(!$mybb->settings['boardclosed_reason'])
+		{
+			$mybb->settings['boardclosed_reason'] = $lang->boardclosed_reason;
+		}
+
 		$lang->error_boardclosed .= "<blockquote>".$mybb->settings['boardclosed_reason']."</blockquote>";
 		archive_error($lang->error_boardclosed);
+	}
+}
+
+// Do we require users to login?
+if($mybb->settings['forcelogin'] == 1)
+{
+	if($mybb->user['uid'] == 0)
+	{
+		archive_error($lang->error_mustlogin);
 	}
 }
 
@@ -198,4 +226,3 @@ if($mybb->usergroup['canview'] == 0)
 {
 	archive_error_no_permission();
 }
-?>

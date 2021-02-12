@@ -1,12 +1,10 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
- *
- * $Id$
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  */
 
  // Disallow direct access to this file for security reasons
@@ -18,7 +16,7 @@ if(!defined("IN_MYBB"))
 /**
  * SMTP mail handler class.
  */
- 
+
 if(!defined('MYBB_SSL'))
 {
 	define('MYBB_SSL', 1);
@@ -86,7 +84,7 @@ class SmtpMail extends MailHandler
 	 * @var integer
 	 */
 	public $port = 25;
-	
+
 	/**
 	 * SMTP default secure port.
 	 *
@@ -100,34 +98,27 @@ class SmtpMail extends MailHandler
 	 * @var string
 	 */
 	public $host = '';
-	
-	/**
-	 * The last received response from the SMTP server.
-	 *
-	 * @var string
-	 */
-	public $data = '';
-	
-	/**
-	 * The last received response code from the SMTP server.
-	 *
-	 * @var string
-	 */
-	public $code = 0;
-	
+
 	/**
 	 * The last received error message from the SMTP server.
 	 *
 	 * @var string
 	 */
 	public $last_error = '';
-	
+
 	/**
 	 * Are we keeping the connection to the SMTP server alive?
 	 *
 	 * @var boolean
 	 */
 	public $keep_alive = false;
+
+	/**
+	 * Whether to use TLS encryption.
+	 *
+	 * @var boolean
+	 */
+	public $use_tls = false;
 
 	function __construct()
 	{
@@ -140,7 +131,7 @@ class SmtpMail extends MailHandler
 				$protocol = 'ssl://';
 				break;
 			case MYBB_TLS:
-				$protocol = 'tls://';
+				$this->use_tls = true;
 				break;
 		}
 
@@ -152,8 +143,27 @@ class SmtpMail extends MailHandler
 		{
 			$this->host = $mybb->settings['smtp_host'];
 		}
-		
-		$this->helo = $this->host;
+
+		$local = array('127.0.0.1', '::1', 'localhost');
+		if(!in_array($this->host, $local))
+		{
+			if(function_exists('gethostname') && gethostname() !== false)
+			{
+				$this->helo = gethostname();
+			}
+			elseif(function_exists('php_uname'))
+			{
+				$helo = php_uname('n');
+				if(!empty($helo))
+				{
+					$this->helo = $helo;
+				}
+			}
+			elseif(!empty($_SERVER['SERVER_NAME']))
+			{
+				$this->helo = $_SERVER['SERVER_NAME'];
+			}
+		}
 
 		$this->host = $protocol . $this->host;
 
@@ -169,7 +179,7 @@ class SmtpMail extends MailHandler
 		{
 			$this->port = $mybb->settings['smtp_port'];
 		}
-	
+
 		$this->password = $mybb->settings['smtp_pass'];
 		$this->username = $mybb->settings['smtp_user'];
 	}
@@ -177,7 +187,7 @@ class SmtpMail extends MailHandler
 	/**
 	 * Sends the email.
 	 *
-	 * @return true/false whether or not the email got sent or not.
+	 * @return bool whether or not the email got sent or not.
 	 */
 	function send()
 	{
@@ -185,34 +195,37 @@ class SmtpMail extends MailHandler
 
 		if(!$this->connected())
 		{
-			$this->connect();
+			if(!$this->connect())
+			{
+				$this->close();
+			}
 		}
-		
+
 		if($this->connected())
 		{
-			if(!$this->send_data('MAIL FROM:<'.$this->from.'>', '250'))
+			if(!$this->send_data('MAIL FROM:<'.$this->from.'>', 250))
 			{
 				$this->fatal_error("The mail server does not understand the MAIL FROM command. Reason: ".$this->get_error());
 				return false;
 			}
-			
+
 			// Loop through recipients
 			$emails = explode(',', $this->to);
 			foreach($emails as $to)
 			{
 				$to = trim($to);
-				if(!$this->send_data('RCPT TO:<'.$to.'>', '250'))
+				if(!$this->send_data('RCPT TO:<'.$to.'>', 250))
 				{
 					$this->fatal_error("The mail server does not understand the RCPT TO command. Reason: ".$this->get_error());
 					return false;
 				}
 			}
 
-			if($this->send_data('DATA', '354'))
+			if($this->send_data('DATA', 354))
 			{
 				$this->send_data('Date: ' . gmdate('r'));
 				$this->send_data('To: ' . $this->to);
-				
+
 				$this->send_data('Subject: ' . $this->subject);
 
 				// Only send additional headers if we've got any
@@ -220,7 +233,7 @@ class SmtpMail extends MailHandler
 				{
 					$this->send_data(trim($this->headers));
 				}
-				
+
 				$this->send_data("");
 
 				// Queue the actual message
@@ -233,7 +246,10 @@ class SmtpMail extends MailHandler
 				return false;
 			}
 
-			$this->send_data('.', '250');
+			if(!$this->send_data('.', 250))
+			{
+				$this->fatal_error("Mail may not be delivered. Reason: ".$this->get_error());
+			}
 
 			if(!$this->keep_alive)
 			{
@@ -257,7 +273,7 @@ class SmtpMail extends MailHandler
 		global $lang, $mybb;
 
 		$this->connection = @fsockopen($this->host, $this->port, $error_number, $error_string, $this->timeout);
-		
+
 		// DIRECTORY_SEPARATOR checks if running windows
 		if(function_exists('stream_set_timeout') && DIRECTORY_SEPARATOR != '\\')
 		{
@@ -274,26 +290,52 @@ class SmtpMail extends MailHandler
 				return false;
 			}
 
-			if(!empty($this->username) && !empty($this->password))
+			if($this->use_tls || (!empty($this->username) && !empty($this->password)))
 			{
-				$data = $this->send_data('EHLO ' . $this->helo, '250');
+				$helo = 'EHLO';
+			}
+			else
+			{
+				$helo = 'HELO';
+			}
+
+			$data = $this->send_data("{$helo} {$this->helo}", 250);
+			if(!$data)
+			{
+				$this->fatal_error("The server did not understand the {$helo} command");
+				return false;
+			}
+
+			if($this->use_tls && preg_match("#250( |-)STARTTLS#mi", $data))
+			{
+				if(!$this->send_data('STARTTLS', 220))
+				{
+					$this->fatal_error("The server did not understand the STARTTLS command. Reason: ".$this->get_error());
+					return false;
+				}
+				if(!@stream_socket_enable_crypto($this->connection, true, STREAM_CRYPTO_METHOD_TLS_CLIENT))
+				{
+					$this->fatal_error("Failed to start TLS encryption");
+					return false;
+				}
+				// Resend EHLO to get updated service list
+				$data = $this->send_data("{$helo} {$this->helo}", 250);
 				if(!$data)
 				{
 					$this->fatal_error("The server did not understand the EHLO command");
 					return false;
 				}
-				preg_match("#250-AUTH( |=)(.+)$#mi", $data, $matches);
-				if(!$this->auth($matches[2]))
+			}
+
+			if(!empty($this->username) && !empty($this->password))
+			{
+				if(!preg_match("#250( |-)AUTH( |=)(.+)$#mi", $data, $matches))
 				{
-					$this->fatal_error("MyBB was unable to authenticate you against the SMTP server");
+					$this->fatal_error("The server did not understand the AUTH command");
 					return false;
 				}
-			}
-			else
-			{
-				if(!$this->send_data('HELO ' . $this->helo, '250'))
+				if(!$this->auth($matches[3]))
 				{
-					$this->fatal_error("The server did not understand the HELO command");
 					return false;
 				}
 			}
@@ -301,23 +343,23 @@ class SmtpMail extends MailHandler
 		}
 		else
 		{
-			$this->fatal_error("Unable to connect to the mail server with the given details.<br /><br />{$error_number}: {$error_string}");
+			$this->fatal_error("Unable to connect to the mail server with the given details. Reason: {$error_number}: {$error_string}");
 			return false;
 		}
 	}
-	
+
 	/**
 	 * Authenticate against the SMTP server.
 	 *
-	 * @param string A list of authentication methods supported by the server
+	 * @param string $auth_methods A list of authentication methods supported by the server
 	 * @return boolean True on success
 	 */
 	function auth($auth_methods)
 	{
 		global $lang, $mybb;
-		
-		$auth_methods = explode(" ", $auth_methods);
-		
+
+		$auth_methods = explode(" ", trim($auth_methods));
+
 		if(in_array("LOGIN", $auth_methods))
 		{
 			if(!$this->send_data("AUTH LOGIN", 334))
@@ -329,14 +371,14 @@ class SmtpMail extends MailHandler
 				$this->fatal_error("The SMTP server did not respond correctly to the AUTH LOGIN command");
 				return false;
 			}
-			
-			if(!$this->send_data(base64_encode($this->username), '334'))
+
+			if(!$this->send_data(base64_encode($this->username), 334))
 			{
 				$this->fatal_error("The SMTP server rejected the supplied SMTP username. Reason: ".$this->get_error());
 				return false;
 			}
-			
-			if(!$this->send_data(base64_encode($this->password), '235'))
+
+			if(!$this->send_data(base64_encode($this->password), 235))
 			{
 				$this->fatal_error("The SMTP server rejected the supplied SMTP password. Reason: ".$this->get_error());
 				return false;
@@ -344,7 +386,7 @@ class SmtpMail extends MailHandler
 		}
 		else if(in_array("PLAIN", $auth_methods))
 		{
-			if(!$this->send_data("AUTH PLAIN", '334'))
+			if(!$this->send_data("AUTH PLAIN", 334))
 			{
 				if($this->code == 503)
 				{
@@ -354,6 +396,28 @@ class SmtpMail extends MailHandler
 				return false;
 			}
 			$auth = base64_encode(chr(0).$this->username.chr(0).$this->password);
+			if(!$this->send_data($auth, 235))
+			{
+				$this->fatal_error("The SMTP server rejected the supplied login username and password. Reason: ".$this->get_error());
+				return false;
+			}
+		}
+		else if(in_array("CRAM-MD5", $auth_methods))
+		{
+			$data = $this->send_data("AUTH CRAM-MD5", 334);
+			if(!$data)
+			{
+				if($this->code == 503)
+				{
+					return true;
+				}
+				$this->fatal_error("The SMTP server did not respond correctly to the AUTH CRAM-MD5 command");
+				return false;
+			}
+
+			$challenge = base64_decode(substr($data, 4));
+			$auth = base64_encode($this->username.' '.$this->cram_md5_response($this->password, $challenge));
+
 			if(!$this->send_data($auth, 235))
 			{
 				$this->fatal_error("The SMTP server rejected the supplied login username and password. Reason: ".$this->get_error());
@@ -387,8 +451,9 @@ class SmtpMail extends MailHandler
 				break;
 			}
 		}
+		$string = trim($string);
 		$this->data = $string;
-		$this->code = substr(trim($this->data), 0, 3);
+		$this->code = substr($this->data, 0, 3);
 		return $string;
 	}
 
@@ -409,8 +474,8 @@ class SmtpMail extends MailHandler
 	/**
 	 * Send data through to the SMTP server.
 	 *
-	 * @param string The data to be sent
-	 * @param int The response code expected back from the server (if we have one)
+	 * @param string $data The data to be sent
+	 * @param int|bool $status_num The response code expected back from the server (if we have one)
 	 * @return boolean True on success
 	 */
 	function send_data($data, $status_num = false)
@@ -446,8 +511,8 @@ class SmtpMail extends MailHandler
 	/**
 	 * Checks if the received status code matches the one we expect.
 	 *
-	 * @param int The status code we expected back from the server
-	 * @param boolean True if it matches
+	 * @param int $status_num The status code we expected back from the server
+	 * @return string|bool
 	 */
 	function check_status($status_num)
 	{
@@ -460,7 +525,7 @@ class SmtpMail extends MailHandler
 			return false;
 		}
 	}
-	
+
 	/**
 	 * Close the connection to the SMTP server.
 	 */
@@ -473,7 +538,7 @@ class SmtpMail extends MailHandler
 			$this->status = 0;
 		}
 	}
-	
+
 	/**
 	 * Get the last error message response from the SMTP server
 	 *
@@ -485,18 +550,45 @@ class SmtpMail extends MailHandler
 		{
 			$this->last_error = "N/A";
 		}
-		
+
 		return $this->last_error;
 	}
-	
+
 	/**
 	 * Set the last error message response from the SMTP server
 	 *
-	 * @param string The error message response
+	 * @param string $error The error message response
 	 */
 	function set_error($error)
 	{
 		$this->last_error = $error;
 	}
+
+	/**
+	 * Generate a CRAM-MD5 response from a server challenge.
+	 *
+	 * @param string $password Password.
+	 * @param string $challenge Challenge sent from SMTP server.
+	 *
+	 * @return string CRAM-MD5 response.
+	 */
+	function cram_md5_response($password, $challenge)
+	{
+		if(strlen($password) > 64)
+		{
+			$password = pack('H32', md5($password));
+		}
+
+		if(strlen($password) < 64)
+		{
+			$password = str_pad($password, 64, chr(0));
+		}
+
+		$k_ipad = substr($password, 0, 64) ^ str_repeat(chr(0x36), 64);
+		$k_opad = substr($password, 0, 64) ^ str_repeat(chr(0x5C), 64);
+
+		$inner = pack('H32', md5($k_ipad.$challenge));
+
+		return md5($k_opad.$inner);
+	}
 }
-?>

@@ -1,44 +1,42 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
- *
- * $Id$
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  */
 
 class timer {
-	
+
 	/**
 	 * The timer name.
 	 *
 	 * @var string
 	 */
 	public $name;
-	
+
 	/**
 	 * The start time of this timer.
 	 *
 	 * @var int
 	 */
 	public $start;
-	
+
 	/**
 	 * The end time of this timer.
 	 *
 	 * @var int
 	 */
 	public $end;
-	
+
 	/**
 	 * The total time this timer has run.
 	 *
 	 * @var int
 	 */
 	public $totaltime;
-	
+
 	/**
 	 * The formatted total time this timer has run.
 	 *
@@ -54,14 +52,14 @@ class timer {
 	{
 		$this->add();
 	}
-	
+
 	/**
 	 * Starts the timer.
 	 *
 	 */
 	function add()
 	{
-		if(!$this->start) 
+		if(!$this->start)
 		{
 			$this->start = microtime(true);
 		}
@@ -89,7 +87,7 @@ class timer {
 			return false;
 		}
 	}
-	
+
 	/**
 	 * Stops the timer.
 	 *
@@ -105,8 +103,9 @@ class timer {
 			$this->formatted = $this->format($totaltime);
 			return $this->formatted;
 		}
+		return '';
 	}
-	
+
 	/**
 	 * Removes the timer.
 	 *
@@ -119,16 +118,15 @@ class timer {
 		$this->totaltime = "";
 		$this->formatted = "";
 	}
-	
+
 	/**
 	 * Formats the timer time in a pretty way.
 	 *
-	 * @param string The time string.
-	 * @return The formatted time string.
+	 * @param string $string The time string.
+	 * @return string The formatted time string.
 	 */
 	function format($string)
 	{
 		return number_format($string, 7);
 	}
 }
-?>

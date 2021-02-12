@@ -1,18 +1,16 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
- *
- * $Id$
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  */
 
 /**
  * Execute a scheduled task.
  *
- * @param int The task ID. If none specified, the next task due to be ran is executed
+ * @param int $tid The task ID. If none specified, the next task due to be ran is executed
  * @return boolean True if successful, false on failure
  */
 function run_task($tid=0)
@@ -52,13 +50,28 @@ function run_task($tid=0)
 		$db->update_query("tasks", array("locked" => TIME_NOW), "tid='{$task['tid']}'");
 	}
 
+    $file = basename($task['file'], '.php');
+
 	// The task file does not exist
-	if(!file_exists(MYBB_ROOT."inc/tasks/{$task['file']}.php"))
+	if(!file_exists(MYBB_ROOT."inc/tasks/{$file}.php"))
 	{
 		if($task['logging'] == 1)
 		{
 			add_task_log($task, $lang->missing_task);
 		}
+
+		// If task file does not exist, disable task and inform the administrator
+		$updated_task = array(
+			"enabled" => 0,
+			"locked" => 0
+		);
+		$db->update_query("tasks", $updated_task, "tid='{$task['tid']}'");
+
+		$subject = $lang->sprintf($lang->email_broken_task_subject, $mybb->settings['bbname']);
+		$message = $lang->sprintf($lang->email_broken_task, $mybb->settings['bbname'], $mybb->settings['bburl'], $task['title']);
+
+		my_mail($mybb->settings['adminemail'], $subject, $message, $mybb->settings['adminemail']);
+
 		$cache->update_tasks();
 		return false;
 	}
@@ -68,8 +81,8 @@ function run_task($tid=0)
 		// Update the nextrun time now, so if the task causes a fatal error, it doesn't get stuck first in the queue
 		$nextrun = fetch_next_run($task);
 		$db->update_query("tasks", array("nextrun" => $nextrun), "tid='{$task['tid']}'");
-		
-		include_once MYBB_ROOT."inc/tasks/{$task['file']}.php";
+
+		include_once MYBB_ROOT."inc/tasks/{$file}.php";
 		$function = "task_{$task['file']}";
 		if(function_exists($function))
 		{
@@ -91,20 +104,20 @@ function run_task($tid=0)
 /**
  * Adds information to the scheduled task log.
  *
- * @param int The task array to create the log entry for
- * @param string The message to log
+ * @param int $task The task array to create the log entry for
+ * @param string $message The message to log
  */
 function add_task_log($task, $message)
 {
 	global $db;
-	
+
 	if(!$task['logging'])
 	{
-		return;	
+		return;
 	}
-	
+
 	$log_entry = array(
-		"tid" => intval($task['tid']),
+		"tid" => (int)$task['tid'],
 		"dateline" => TIME_NOW,
 		"data" => $db->escape_string($message)
 	);
@@ -114,7 +127,7 @@ function add_task_log($task, $message)
 /**
  * Generate the next run time for a particular task.
  *
- * @param array The task array as fetched from the database.
+ * @param array $task The task array as fetched from the database.
  * @return int The next run time as a UNIX timestamp
  */
 function fetch_next_run($task)
@@ -126,6 +139,7 @@ function fetch_next_run($task)
 	$next_weekday = $current_weekday = date("w", $time);
 	$next_month = $current_month = date("m", $time);
 	$next_year = $current_year = date("Y", $time);
+	$reset_day = $reset_hour = $reset_month = $reset_year = 0;
 
 	if($task['minute'] == "*")
 	{
@@ -285,7 +299,7 @@ function fetch_next_run($task)
 				$next_day += 7;
 			}
 		}
-		if($next_month == $current_month && $next_day == $current_day && $new_hour < $current_hour)
+		if($next_month == $current_month && $next_day == $current_day && $next_hour < $current_hour)
 		{
 			$reset_year = 1;
 		}
@@ -320,9 +334,9 @@ function fetch_next_run($task)
 /**
  * Builds the next run time bit for a particular item (day, hour, month etc). Used by fetch_next_run().
  *
- * @param string A string containing the run timse for this particular item
- * @param int The current value (be it current day etc)
- * @return int The new or found value
+ * @param string $data A string containing the run times for this particular item
+ * @param int $bit The current value (be it current day etc)
+ * @return int|bool The new or found value or boolean if nothing is found
  */
 function build_next_run_bit($data, $bit)
 {
@@ -341,7 +355,7 @@ function build_next_run_bit($data, $bit)
 /**
  * Fetches the fist run bit for a particular item (day, hour, month etc). Used by fetch_next_run().
  *
- * @param string A string containing the run times for this particular item
+ * @param string $data A string containing the run times for this particular item
  * @return int The first run time
  */
 function fetch_first_run_time($data)
@@ -354,8 +368,8 @@ function fetch_first_run_time($data)
 /**
  * Checks if a specific run time exists for a particular item (day, hour, month etc). Used by fetch_next_run().
  *
- * @param string A string containing the run times for this particular item
- * @param int The bit we're checking for
+ * @param string $data A string containing the run times for this particular item
+ * @param int $bit The bit we're checking for
  * @return boolean True if it exists, false if it does not
  */
 function run_time_exists($data, $bit)
@@ -368,4 +382,3 @@ function run_time_exists($data, $bit)
 	}
 	return false;
 }
-?>

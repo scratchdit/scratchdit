@@ -1,12 +1,10 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
- *
- * $Id$
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  */
 
 /**
@@ -16,14 +14,28 @@
  */
 
 class XMLParser {
-	
+
+	/**
+	 * @var string
+	 */
 	public $data;
+	/**
+	 * @var array
+	 */
 	public $vals;
+	/**
+	 * @var int
+	 */
 	public $collapse_dups = 1;
+	/**
+	 * @var int
+	 */
 	public $index_numeric = 0;
 
 	/**
 	 * Initialize the parser and store the XML data to be parsed.
+	 *
+	 * @param string $data
 	 */
 	function __construct($data)
 	{
@@ -52,15 +64,16 @@ class XMLParser {
 	/**
 	 * Private: Build a completed tag by fetching all child nodes and attributes
 	 *
-	 * @param array Array of values from the current tag
-	 * @param array Array of child nodes
-	 * @param int Internal counter
-	 * @param string Type of tag. Complete is a single line tag with attributes
+	 * @param array $thisvals Array of values from the current tag
+	 * @param array $vals Array of child nodes
+	 * @param int $i Internal counter
+	 * @param string $type Type of tag. Complete is a single line tag with attributes
 	 * @return array Completed tag array
 	 */
 	function build_tag($thisvals, $vals, &$i, $type)
 	{
-		$tag['tag'] = $thisvals['tag'];
+		$tag = array('tag' => $thisvals['tag']);
+
 		if(isset($thisvals['attributes']))
 		{
 			$tag['attributes'] = $thisvals['attributes'];
@@ -68,7 +81,10 @@ class XMLParser {
 
 		if($type == "complete")
 		{
-			$tag['value'] = $thisvals['value'];
+			if(isset($thisvals['value']))
+			{
+				$tag['value'] = $thisvals['value'];
+			}
 		}
 		else
 		{
@@ -76,15 +92,15 @@ class XMLParser {
 		}
 		return $tag;
 	}
-	
+
 	/**
 	 * Fetch the children for from a specific node array
 	 *
-	 * @param array Array of children
-	 * @param int Internal counter
+	 * @param array $vals Array of children
+	 * @param int $i Internal counter
 	 * @return array Array of child nodes
 	 */
-	function get_children($vals, &$i)
+	function get_children($vals=array(), &$i)
 	{
 		$children = array();
 
@@ -135,7 +151,7 @@ class XMLParser {
 /**
  * Kill off unnecessary tags and return a clean array of XML data
  *
- * @param array Array of parsed XML data
+ * @param array $array Array of parsed XML data
  * @return array Cleaned array of XML data
  */
 function kill_tags($array)
@@ -154,7 +170,7 @@ function kill_tags($array)
 			// if the array no longer has any key/val sets
 			// and therefore is at the deepest level, then
 			// store the string value
-			if(count($array[$key]) <= 0)
+			if(is_array($array[$key]) && count($array[$key]) <= 0)
 			{
 				$array[$key] = $val['value'];
 			}
@@ -163,4 +179,3 @@ function kill_tags($array)
 
 	return $array;
 }
-?>

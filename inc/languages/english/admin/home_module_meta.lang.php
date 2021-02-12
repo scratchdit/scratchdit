@@ -1,16 +1,13 @@
 <?php
 /**
- * MyBB 1.6 English Language Pack
- * Copyright 2010 MyBB Group, All Rights Reserved
- * 
- * $Id$
+ * MyBB 1.8 English Language Pack
+ * Copyright 2014 MyBB Group, All Rights Reserved
  */
- 
+
 $l['home'] = "Home";
 
 $l['dashboard'] = "Dashboard";
 $l['preferences'] = "Preferences";
-$l['version_check'] = "Version Check";
 $l['mybb_credits'] = "MyBB Credits";
 
 $l['add_new_forum'] = "Add New Forum";
@@ -21,5 +18,6 @@ $l['plugins'] = "Plugins";
 $l['database_backups'] = "Database Backups";
 $l['quick_access'] = "Quick Access";
 $l['online_admins'] = "Online Admins";
+$l['ipaddress'] = "IP Address:";
+$l['mybb_documentation'] = "MyBB Documentation";
 
-?>

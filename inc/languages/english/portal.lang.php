@@ -1,13 +1,12 @@
 <?php
 /**
- * MyBB 1.6 English Language Pack
- * Copyright 2010 MyBB Group, All Rights Reserved
- * 
- * $Id$
+ * MyBB 1.8 English Language Pack
+ * Copyright 2014 MyBB Group, All Rights Reserved
  */
 
 $l['nav_portal'] = "Portal";
 $l['posted_by'] = "Posted by:";
+$l['forum'] = "Forum:";
 $l['replies'] = "Replies";
 $l['no_replies'] = "No Replies";
 $l['latest_threads'] = "Latest Threads";
@@ -27,7 +26,6 @@ $l['num_threads'] = "Forum threads:";
 $l['num_posts'] = "Forum posts:";
 $l['full_stats'] = "Full Statistics";
 $l['welcome'] = "Welcome, {1}";
-$l['guest'] = "Guest";
 $l['guest_welcome_registration'] = "You have to <a href=\"{1}\">register</a> before you can post on our site.";
 $l['username'] = "Username";
 $l['password'] = "Password";
@@ -43,10 +41,10 @@ $l['new_post'] = "1 new post";
 $l['view_new'] = "View New Posts";
 $l['view_todays'] = "View Today's Posts";
 $l['online'] = "Online Users";
-$l['online_user'] = "There is currently 1 user online"; 
+$l['online_user'] = "There is currently 1 user online";
 $l['online_users'] = "There are currently <b>{1}</b> online users.";
 $l['online_counts'] = "<b>{1}</b> Member(s) | <b>{2}</b> Guest(s)";
-$l['no_one'] = "no-one";
 $l['print_this_item'] = "Print this item";
 $l['send_to_friend'] = "Send this item to a friend";
-?>
+$l['latest_announcements'] = "Latest Announcements";
+$l['portal_disabled'] = "You cannot use the portal functionality as it has been disabled by the Administrator.";

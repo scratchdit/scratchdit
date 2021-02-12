@@ -1,9 +1,7 @@
 <?php
 /**
- * MyBB 1.6 English Language Pack
- * Copyright 2010 MyBB Group, All Rights Reserved
- * 
- * $Id$
+ * MyBB 1.8 English Language Pack
+ * Copyright 2014 MyBB Group, All Rights Reserved
  */
 
 $l['calendars'] = "Calendars";
@@ -67,4 +65,3 @@ $l['success_calendar_orders_updated'] = "The calendar display orders have been u
 
 $l['confirm_calendar_deletion'] = "Are you sure you wish to delete this calendar?";
 
-?>

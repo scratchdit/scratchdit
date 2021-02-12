@@ -1,12 +1,10 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
- *
- * $Id$
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  */
 
 /**
@@ -16,145 +14,120 @@ function rebuild_stats()
 {
 	global $db;
 
-	$query = $db->simple_select("forums", "SUM(threads) AS numthreads");
-	$stats['numthreads'] = $db->fetch_field($query, 'numthreads');
-	
-	if(!$stats['numthreads'])
-	{
-		$stats['numthreads'] = 0;
-	}
-	
-	$query = $db->simple_select("forums", "SUM(posts) AS numposts");
-	$stats['numposts'] = $db->fetch_field($query, 'numposts');
-	
-	if(!$stats['numposts'])
-	{
-		$stats['numposts'] = 0;
-	}
-	
-	$query = $db->simple_select("forums", "SUM(unapprovedthreads) AS numunapprovedthreads");
-	$stats['numunapprovedthreads'] = $db->fetch_field($query, 'numunapprovedthreads');
-	
-	if(!$stats['numunapprovedthreads'])
-	{
-		$stats['numunapprovedthreads'] = 0;
-	}
-	
-	$query = $db->simple_select("forums", "SUM(unapprovedposts) AS numunapprovedposts");
-	$stats['numunapprovedposts'] = $db->fetch_field($query, 'numunapprovedposts');
-	
-	if(!$stats['numunapprovedposts'])
-	{
-		$stats['numunapprovedposts'] = 0;
-	}
+	$query = $db->simple_select("forums", "SUM(threads) AS numthreads, SUM(posts) AS numposts, SUM(unapprovedthreads) AS numunapprovedthreads, SUM(unapprovedposts) AS numunapprovedposts, SUM(deletedthreads) AS numdeletedthreads, SUM(deletedposts) AS numdeletedposts");
+	$stats = $db->fetch_array($query);
 
 	$query = $db->simple_select("users", "COUNT(uid) AS users");
 	$stats['numusers'] = $db->fetch_field($query, 'users');
-	
-	if(!$stats['numusers'])
-	{
-		$stats['numusers'] = 0;
-	}
 
-	update_stats($stats);
+	update_stats($stats, true);
 }
 
 /**
  * Completely rebuild the counters for a particular forum (useful if they become out of sync)
+ *
+ * @param int $fid The forum ID
  */
 function rebuild_forum_counters($fid)
 {
 	global $db;
 
 	// Fetch the number of threads and replies in this forum (Approved only)
-	$query = $db->query("
-		SELECT COUNT(tid) AS threads, SUM(replies) AS replies
-		FROM ".TABLE_PREFIX."threads
-		WHERE fid='$fid' AND visible='1' AND closed	NOT LIKE 'moved|%'
-	");
+	$query = $db->simple_select('threads', 'COUNT(tid) AS threads, SUM(replies) AS replies, SUM(unapprovedposts) AS unapprovedposts, SUM(deletedposts) AS deletedposts', "fid='$fid' AND visible='1'");
 	$count = $db->fetch_array($query);
 	$count['posts'] = $count['threads'] + $count['replies'];
-	
-	if(!$count['posts'])
-	{
-		$count['posts'] = 0;
-	}
 
 	// Fetch the number of threads and replies in this forum (Unapproved only)
-	$query = $db->query("
-		SELECT COUNT(tid) AS threads, SUM(replies) AS impliedunapproved
-		FROM ".TABLE_PREFIX."threads
-		WHERE fid='$fid' AND visible='0' AND closed NOT LIKE 'moved|%'
-	");
-	$count2 = $db->fetch_array($query); 
- 	$count['unapprovedthreads'] = $count2['threads']; 
-	$count['unapprovedposts'] = $count2['impliedunapproved']+$count2['threads'];
-	
-	if(!$count['unapprovedthreads'])
-	{
-		$count['unapprovedthreads'] = 0;
-	}
+	$query = $db->simple_select('threads', 'COUNT(tid) AS threads, SUM(replies)+SUM(unapprovedposts)+SUM(deletedposts) AS impliedunapproved', "fid='$fid' AND visible='0'");
+	$count2 = $db->fetch_array($query);
+ 	$count['unapprovedthreads'] = $count2['threads'];
+	$count['unapprovedposts'] += $count2['impliedunapproved']+$count2['threads'];
 
-	$query = $db->query("
-		SELECT SUM(unapprovedposts) AS posts
-		FROM ".TABLE_PREFIX."threads
-		WHERE fid='$fid' AND closed NOT LIKE 'moved|%'
-	");
-	$count['unapprovedposts'] += $db->fetch_field($query, "posts");
-	
-	if(!$count['unapprovedposts'])
-	{
-		$count['unapprovedposts'] = 0;
-	}
+	// Fetch the number of threads and replies in this forum (Soft deleted only)
+	$query = $db->simple_select('threads', 'COUNT(tid) AS threads, SUM(replies)+SUM(unapprovedposts)+SUM(deletedposts) AS implieddeleted', "fid='$fid' AND visible='-1'");
+	$count3 = $db->fetch_array($query);
+ 	$count['deletedthreads'] = $count3['threads'];
+	$count['deletedposts'] += $count3['implieddeleted']+$count3['threads'];
 
 	update_forum_counters($fid, $count);
+	update_forum_lastpost($fid);
 }
 
 /**
  * Completely rebuild the counters for a particular thread (useful if they become out of sync)
- * 
- * @param int The thread ID 
- * @param array Optional thread array so we don't have to query it 
+ *
+ * @param int $tid The thread ID
  */
 function rebuild_thread_counters($tid)
 {
 	global $db;
 
-	if(!$thread['tid']) 
- 	{ 
- 		$thread = get_thread($tid); 
- 	} 
- 		 
- 	$query = $db->simple_select("posts", "COUNT(*) AS replies", "tid='{$tid}' AND pid!='{$thread['firstpost']}' AND visible='1'"); 
+ 	$thread = get_thread($tid);
+	$count = array();
+
+ 	$query = $db->simple_select("posts", "COUNT(pid) AS replies", "tid='{$tid}' AND pid!='{$thread['firstpost']}' AND visible='1'");
  	$count['replies'] = $db->fetch_field($query, "replies");
-	if($count['replies'] < 0)
-	{
-		$count['replies'] = 0;
-	}
 
 	// Unapproved posts
-	$query = $db->simple_select("posts", "COUNT(pid) AS totunposts", "tid='{$tid}' AND pid != '{$thread['firstpost']}' AND visible='0'");
-	$count['unapprovedposts'] = $db->fetch_field($query, "totunposts");
-	
-	if(!$count['unapprovedposts'])
-	{
-		$count['unapprovedposts'] = 0;
-	}
+	$query = $db->simple_select("posts", "COUNT(pid) AS unapprovedposts", "tid='{$tid}' AND pid != '{$thread['firstpost']}' AND visible='0'");
+	$count['unapprovedposts'] = $db->fetch_field($query, "unapprovedposts");
+
+	// Soft deleted posts
+	$query = $db->simple_select("posts", "COUNT(pid) AS deletedposts", "tid='{$tid}' AND pid != '{$thread['firstpost']}' AND visible='-1'");
+	$count['deletedposts'] = $db->fetch_field($query, "deletedposts");
 
 	// Attachment count
 	$query = $db->query("
 			SELECT COUNT(aid) AS attachment_count
 			FROM ".TABLE_PREFIX."attachments a
 			LEFT JOIN ".TABLE_PREFIX."posts p ON (a.pid=p.pid)
-			WHERE p.tid='$tid'
+			WHERE p.tid='$tid' AND a.visible=1
 	");
 	$count['attachmentcount'] = $db->fetch_field($query, "attachment_count");
-	
-	if(!$count['attachmentcount'])
-	{
-		$count['attachmentcount'] = 0;
-	}
 
 	update_thread_counters($tid, $count);
+	update_thread_data($tid);
 }
-?>
+
+/**
+ * Completely rebuild poll counters for a particular poll (useful if they become out of sync)
+ *
+ * @param int $pid The poll ID
+ */
+function rebuild_poll_counters($pid)
+{
+	global $db;
+
+	$query = $db->simple_select("polls", "pid, numoptions", "pid='".(int)$pid."'");
+	$poll = $db->fetch_array($query);
+
+	$votes = array();
+	$query = $db->simple_select("pollvotes", "voteoption, COUNT(vid) AS vote_count", "pid='{$poll['pid']}'", array('group_by' => 'voteoption'));
+	while($vote = $db->fetch_array($query))
+	{
+		$votes[$vote['voteoption']] = $vote['vote_count'];
+	}
+
+	$voteslist = '';
+	$numvotes = 0;
+	for($i = 1; $i <= $poll['numoptions']; ++$i)
+	{
+		if(trim($voteslist != ''))
+		{
+			$voteslist .= "||~|~||";
+		}
+
+		if(!isset($votes[$i]) || (int)$votes[$i] <= 0)
+		{
+			$votes[$i] = "0";
+		}
+		$voteslist .= $votes[$i];
+		$numvotes = $numvotes + $votes[$i];
+	}
+
+	$updatedpoll = array(
+		"votes" => $db->escape_string($voteslist),
+		"numvotes" => (int)$numvotes
+	);
+	$db->update_query("polls", $updatedpoll, "pid='{$poll['pid']}'");
+}

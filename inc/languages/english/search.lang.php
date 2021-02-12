@@ -1,9 +1,7 @@
 <?php
 /**
- * MyBB 1.6 English Language Pack
- * Copyright 2010 MyBB Group, All Rights Reserved
- *
- * $Id$
+ * MyBB 1.8 English Language Pack
+ * Copyright 2014 MyBB Group, All Rights Reserved
  */
 
 $l['nav_search'] = "Search";
@@ -35,6 +33,8 @@ $l['sorting_options'] = "Sorting Options";
 $l['sort_lastpost'] = "Sort Results by last post date";
 $l['sort_author'] = "Sort Results by author";
 $l['sort_forum'] = "Sort Results by forum";
+$l['sort_views'] = "Sort Results by view count";
+$l['sort_replies'] = "Sort Results by reply count";
 $l['sort_in'] = "in";
 $l['sort_asc'] = "ascending";
 $l['sort_desc'] = "descending";
@@ -65,13 +65,18 @@ $l['close_threads'] = "Close Threads";
 $l['open_threads'] = "Open Threads";
 $l['stick_threads'] = "Stick Threads";
 $l['unstick_threads'] = "Unstick Threads";
-$l['delete_threads'] = "Delete Threads";
-$l['move_threads'] = "Move Threads";
+$l['soft_delete_threads'] = "Soft Delete Threads";
+$l['restore_threads'] = "Restore Threads";
+$l['delete_threads'] = "Delete Threads Permanently";
+$l['move_threads'] = "Move / Copy Threads";
 $l['approve_threads'] = "Approve Threads";
 $l['unapprove_threads'] = "Unapprove Threads";
-$l['inline_delete_posts'] = "Delete Posts";
+$l['inline_soft_delete_posts'] = "Soft Delete Posts";
+$l['inline_restore_posts'] = "Restore Posts";
+$l['inline_delete_posts'] = "Delete Posts Permanently";
 $l['inline_merge_posts'] = "Merge Posts";
 $l['inline_split_posts'] = "Split Posts";
+$l['inline_move_posts'] = "Move Posts";
 $l['inline_approve_posts'] = "Approve Posts";
 $l['inline_unapprove_posts'] = "Unapprove Posts";
 $l['inline_post_moderation'] = "Inline Post Moderation:";
@@ -81,7 +86,7 @@ $l['icon_dot'] = "Contains posts by you. "; // The spaces for the icon labels ar
 $l['icon_no_new'] = "No new posts.";
 $l['icon_new'] = "New posts.";
 $l['icon_hot'] = " Hot thread.";
-$l['icon_lock'] = " Locked thread.";
+$l['icon_close'] = " Closed thread.";
 $l['attachment_count'] = "This thread contains 1 attachment.";
 $l['attachment_count_multiple'] = "This thread contains {1} attachments.";
 $l['goto_first_unread'] = "Go to first unread post";
@@ -92,9 +97,10 @@ $l['clear_selection'] = "Clear Selection.";
 
 $l['results'] = "results";
 $l['mod_options'] = "Moderator Options";
-$l['find_all'] = "Find all";
-$l['find_only_approved'] = "Find only approved";
-$l['find_only_unapproved'] = "Find only unapproved";
+$l['display_all'] = "Display all";
+$l['display_only_approved'] = "Display only approved";
+$l['display_only_unapproved'] = "Display only unapproved";
+$l['display_only_softdeleted'] = "Display only soft deleted";
 
 $l['redirect_searchresults'] = "Thank you, your search has been submitted and you will now be taken to the results list.";
 
@@ -105,4 +111,3 @@ $l['error_nosearchterms'] = "You did not enter any search terms. At a minimum, y
 $l['error_searchflooding_1'] = "Sorry, but you can only perform one search every {1} seconds. Please wait another 1 second before attempting to search again.";
 $l['error_searchflooding'] = "Sorry, but you can only perform one search every {1} seconds. Please wait another {2} seconds before attempting to search again.";
 $l['error_invalidsearch'] = "An invalid search was specified.  Please go back and try again.";
-?>

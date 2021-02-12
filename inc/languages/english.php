@@ -1,22 +1,20 @@
 <?php
 /**
- * MyBB 1.6 English Language Pack
- * Copyright 2010 MyBB Group, All Rights Reserved
- * 
- * $Id$
+ * MyBB 1.8 English Language Pack
+ * Copyright 2014 MyBB Group, All Rights Reserved
  */
 
 // The friendly name of the language
 $langinfo['name'] = "English (American)";
 
 // The author of the language
-$langinfo['author'] = "MyBulletinBoard";
+$langinfo['author'] = "MyBB Group";
 
 // The language authors website
-$langinfo['website'] = "http://mybb.com/";
+$langinfo['website'] = "https://mybb.com/";
 
 // Compatible version of MyBB
-$langinfo['version'] = "1608";
+$langinfo['version'] = "1823";
 
 // Sets if the translation includes the Admin CP (1 = yes, 0 = no)
 $langinfo['admin'] = 1;
@@ -29,4 +27,3 @@ $langinfo['htmllang'] = "en";
 
 // Sets the character set, blank uses the default.
 $langinfo['charset'] = "UTF-8";
-?>

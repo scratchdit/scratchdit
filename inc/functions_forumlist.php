@@ -1,42 +1,49 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
- *
- * $Id$
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  */
 
 /**
 * Build a list of forum bits.
 *
-* @param int The parent forum to fetch the child forums for (0 assumes all)
-* @param int The depth to return forums with.
+* @param int $pid The parent forum to fetch the child forums for (0 assumes all)
+* @param int $depth The depth to return forums with.
 * @return array Array of information regarding the child forums of this parent forum
 */
 function build_forumbits($pid=0, $depth=1)
 {
 	global $db, $fcache, $moderatorcache, $forumpermissions, $theme, $mybb, $templates, $bgcolor, $collapsed, $lang, $showdepth, $plugins, $parser, $forum_viewers;
 	static $private_forums;
-	
+
 	$forum_listing = '';
 
 	// If no forums exist with this parent, do nothing
-	if(!is_array($fcache[$pid]))
+	if(empty($fcache[$pid]) || !is_array($fcache[$pid]))
 	{
 		return;
 	}
+
+	$parent_counters['threads'] = 0;
+	$parent_counters['posts'] = 0;
+	$parent_counters['unapprovedposts'] = 0;
+	$parent_counters['unapprovedthreads'] = 0;
+	$parent_counters['viewers'] = 0;
+	$forum_list = $comma = '';
+	$donecount = 0;
 
 	// Foreach of the forums in this parent
 	foreach($fcache[$pid] as $parent)
 	{
 		foreach($parent as $forum)
 		{
-			$forums = $subforums = $sub_forums = '';
-			$lastpost_data = '';
-			$counters = '';
+			$subforums = $sub_forums = '';
+			$lastpost_data = array(
+				'lastpost' => 0
+			);
 			$forum_viewers_text = '';
 			$forum_viewers_text_plain = '';
 
@@ -48,36 +55,39 @@ function build_forumbits($pid=0, $depth=1)
 			{
 				continue;
 			}
-			
+
 			$forum = $plugins->run_hooks("build_forumbits_forum", $forum);
 
 			// Build the link to this forum
 			$forum_url = get_forum_link($forum['fid']);
 
 			// This forum has a password, and the user isn't authenticated with it - hide post information
-			$hideinfo = false;
+			$hideinfo = $hidecounters = false;
 			$hidelastpostinfo = false;
 			$showlockicon = 0;
-			if($permissions['canviewthreads'] != 1)
+			if(isset($permissions['canviewthreads']) && $permissions['canviewthreads'] != 1)
 			{
 			    $hideinfo = true;
 			}
-			
-			if($permissions['canonlyviewownthreads'] == 1)
+
+			if(isset($permissions['canonlyviewownthreads']) && $permissions['canonlyviewownthreads'] == 1)
 			{
-				$hideinfo = true;
+				$hidecounters = true;
 
 				// If we only see our own threads, find out if there's a new post in one of them so the lightbulb shows
 				if(!is_array($private_forums))
 				{
 					$private_forums = $fids = array();
-					foreach($fcache[$pid] as $parent_p)
+					foreach($fcache as $fcache_p)
 					{
-						foreach($parent_p as $forum_p)
+						foreach($fcache_p as $parent_p)
 						{
-							if($forumpermissions[$forum_p['fid']]['canonlyviewownthreads'])
+							foreach($parent_p as $forum_p)
 							{
-								$fids[] = $forum_p['fid'];
+								if($forumpermissions[$forum_p['fid']]['canonlyviewownthreads'])
+								{
+									$fids[] = $forum_p['fid'];
+								}
 							}
 						}
 					}
@@ -85,7 +95,7 @@ function build_forumbits($pid=0, $depth=1)
 					if(!empty($fids))
 					{
 						$fids = implode(',', $fids);
-						$query = $db->simple_select("threads", "tid, fid, lastpost", "uid = '{$mybb->user['uid']}' AND fid IN ({$fids})", array("order_by" => "lastpost", "order_dir" => "desc"));
+						$query = $db->simple_select("threads", "tid, fid, subject, lastpost, lastposter, lastposteruid", "uid = '{$mybb->user['uid']}' AND fid IN ({$fids}) AND visible != '-2'", array("order_by" => "lastpost", "order_dir" => "desc"));
 
 						while($thread = $db->fetch_array($query))
 						{
@@ -100,14 +110,28 @@ function build_forumbits($pid=0, $depth=1)
 				if($private_forums[$forum['fid']]['lastpost'])
 				{
 					$forum['lastpost'] = $private_forums[$forum['fid']]['lastpost'];
-					
+
+					if(!$private_forums[$forum['fid']]['lastposteruid'] && !$private_forums[$forum['fid']]['lastposter'])
+					{
+						$private_forums[$forum['fid']]['lastposter'] = $lang->guest; // htmlspecialchars_uni'd when formatted later
+					}
+
 					$lastpost_data = array(
-						"lastpost" => $private_forums[$forum['fid']]['lastpost']
+						"lastpost" => $private_forums[$forum['fid']]['lastpost'],
+						"lastpostsubject" => $private_forums[$forum['fid']]['subject'],
+						"lastposter" => $private_forums[$forum['fid']]['lastposter'],
+						"lastposttid" => $private_forums[$forum['fid']]['tid'],
+						"lastposteruid" => $private_forums[$forum['fid']]['lastposteruid']
 					);
 				}
 			}
 			else
 			{
+				if(!$forum['lastposteruid'] && !$forum['lastposter'])
+				{
+					$forum['lastposter'] = $lang->guest; // htmlspecialchars_uni'd when formatted later
+				}
+
 				$lastpost_data = array(
 					"lastpost" => $forum['lastpost'],
 					"lastpostsubject" => $forum['lastpostsubject'],
@@ -117,10 +141,10 @@ function build_forumbits($pid=0, $depth=1)
 				);
 			}
 
-			if($forum['password'] != '' && $mybb->cookies['forumpass'][$forum['fid']] != md5($mybb->user['uid'].$forum['password']))
+			if(!forum_password_validated($forum, true))
 			{
-			    $hideinfo = true;
-			    $showlockicon = 1;
+				$hideinfo = true;
+				$showlockicon = 1;
 			}
 
 			// Fetch subforums of this forum
@@ -133,13 +157,17 @@ function build_forumbits($pid=0, $depth=1)
 				$forum['posts'] += $forum_info['counters']['posts'];
 				$forum['unapprovedthreads'] += $forum_info['counters']['unapprovedthreads'];
 				$forum['unapprovedposts'] += $forum_info['counters']['unapprovedposts'];
-				$forum['viewers'] += $forum_info['counters']['viewing'];
+
+				if(!empty($forum_info['counters']['viewing']))
+				{
+					$forum['viewers'] += $forum_info['counters']['viewing'];
+				}
 
 				// If the child forums' lastpost is greater than the one for this forum, set it as the child forums greatest.
 				if($forum_info['lastpost']['lastpost'] > $lastpost_data['lastpost'])
 				{
 					$lastpost_data = $forum_info['lastpost'];
-					
+
 					/*
 					// If our subforum is unread, then so must be our parents. Force our parents to unread as well
 					if(strstr($forum_info['lightbulb']['folder'], "on") !== false)
@@ -159,28 +187,35 @@ function build_forumbits($pid=0, $depth=1)
 			// If we are hiding information (lastpost) because we aren't authenticated against the password for this forum, remove them
 			if($hidelastpostinfo == true)
 			{
-				unset($lastpost_data);
+				$lastpost_data = array(
+					'lastpost' => 0,
+					'lastposter' => ''
+				);
 			}
-			
-			// If the current forums lastpost is greater than other child forums of the current parent, overwrite it
-			if($lastpost_data['lastpost'] > $parent_lastpost['lastpost'])
+
+			// If the current forums lastpost is greater than other child forums of the current parent and forum info isn't hidden, overwrite it
+			if((!isset($parent_lastpost) || $lastpost_data['lastpost'] > $parent_lastpost['lastpost']) && $hideinfo != true)
 			{
 				$parent_lastpost = $lastpost_data;
 			}
 
-			if(is_array($forum_viewers) && $forum_viewers[$forum['fid']] > 0)
+			if(is_array($forum_viewers) && isset($forum_viewers[$forum['fid']]) && $forum_viewers[$forum['fid']] > 0)
 			{
 				$forum['viewers'] = $forum_viewers[$forum['fid']];
 			}
 
 			// Increment the counters for the parent forum (returned later)
-			if($hideinfo != true)
+			if($hideinfo != true && $hidecounters != true)
 			{
 				$parent_counters['threads'] += $forum['threads'];
 				$parent_counters['posts'] += $forum['posts'];
 				$parent_counters['unapprovedposts'] += $forum['unapprovedposts'];
 				$parent_counters['unapprovedthreads'] += $forum['unapprovedthreads'];
-				$parent_counters['viewers'] += $forum['viewers'];
+
+				if(!empty($forum['viewers']))
+				{
+					$parent_counters['viewers'] += $forum['viewers'];
+				}
 			}
 
 			// Done with our math, lets talk about displaying - only display forums which are under a certain depth
@@ -188,13 +223,13 @@ function build_forumbits($pid=0, $depth=1)
 			{
 				continue;
 			}
-			
+
 			// Get the lightbulb status indicator for this forum based on the lastpost
 			$lightbulb = get_forum_lightbulb($forum, $lastpost_data, $showlockicon);
 
 			// Fetch the number of unapproved threads and posts for this forum
 			$unapproved = get_forum_unapproved($forum);
-			
+
 			if($hideinfo == true)
 			{
 				unset($unapproved);
@@ -242,7 +277,6 @@ function build_forumbits($pid=0, $depth=1)
 				continue;
 			}
 
-
 			// Forum is a category, set template type
 			if($forum['type'] == 'c')
 			{
@@ -257,17 +291,17 @@ function build_forumbits($pid=0, $depth=1)
 			if($forum['linkto'] == '')
 			{
 				// No posts have been made in this forum - show never text
-				if(($lastpost_data['lastpost'] == 0 || $lastpost_data['lastposter'] == '') && $hideinfo != true)
+				if($lastpost_data['lastpost'] == 0 && $hideinfo != true)
 				{
-					$lastpost = "<div style=\"text-align: center;\">{$lang->lastpost_never}</div>";
+					eval("\$lastpost = \"".$templates->get("forumbit_depth2_forum_lastpost_never")."\";");
 				}
 				elseif($hideinfo != true)
 				{
 					// Format lastpost date and time
-					$lastpost_date = my_date($mybb->settings['dateformat'], $lastpost_data['lastpost']);
-					$lastpost_time = my_date($mybb->settings['timeformat'], $lastpost_data['lastpost']);
+					$lastpost_date = my_date('relative', $lastpost_data['lastpost']);
 
 					// Set up the last poster, last post thread id, last post subject and format appropriately
+					$lastpost_data['lastposter'] = htmlspecialchars_uni($lastpost_data['lastposter']);
 					$lastpost_profilelink = build_profile_link($lastpost_data['lastposter'], $lastpost_data['lastposteruid']);
 					$lastpost_link = get_thread_link($lastpost_data['lastposttid'], 0, "lastpost");
 					$lastpost_subject = $full_lastpost_subject = $parser->parse_badwords($lastpost_data['lastpostsubject']);
@@ -277,10 +311,10 @@ function build_forumbits($pid=0, $depth=1)
 					}
 					$lastpost_subject = htmlspecialchars_uni($lastpost_subject);
 					$full_lastpost_subject = htmlspecialchars_uni($full_lastpost_subject);
-					
+
 					// Call lastpost template
 					if($depth != 1)
-					{						
+					{
 						eval("\$lastpost = \"".$templates->get("forumbit_depth{$depth}_forum_lastpost")."\";");
 					}
 				}
@@ -296,27 +330,26 @@ function build_forumbits($pid=0, $depth=1)
 						$forum_viewers_text = $lang->sprintf($lang->viewing_multiple, $forum['viewers']);
 					}
 					$forum_viewers_text_plain = $forum_viewers_text;
-					$forum_viewers_text = "<span class=\"smalltext\">{$forum_viewers_text}</span>";
+					eval("\$forum_viewers_text = \"".$templates->get("forumbit_depth2_forum_viewers")."\";");
 				}
 			}
-			// If this forum is a link or is password protected and the user isn't authenticated, set lastpost and counters to "-"
-			if($forum['linkto'] != '' || $hideinfo == true)
+			// If this forum is a link or is password protected and the user isn't authenticated, set counters to "-"
+			if($forum['linkto'] != '' || $hideinfo == true || $hidecounters == true)
 			{
-				$lastpost = "<div style=\"text-align: center;\">-</div>";
 				$posts = "-";
 				$threads = "-";
 			}
 			// Otherwise, format thread and post counts
 			else
 			{
-				// If we're only hiding the last post information
-				if($hidelastpostinfo == true)
-				{
-					$lastpost = "<div style=\"text-align: center;\">-</div>";
-				}
-				
 				$posts = my_number_format($forum['posts']);
 				$threads = my_number_format($forum['threads']);
+			}
+
+			// If this forum is a link or is password protected and the user isn't authenticated, set lastpost to "-"
+			if($forum['linkto'] != '' || $hideinfo == true || $hidelastpostinfo == true)
+			{
+				eval("\$lastpost = \"".$templates->get("forumbit_depth2_forum_lastpost_hidden")."\";");
 			}
 
 			// Moderator column is not off
@@ -332,7 +365,7 @@ function build_forumbits($pid=0, $depth=1)
 				foreach($parentlistexploded as $mfid)
 				{
 					// This forum has moderators
-					if(is_array($moderatorcache[$mfid]))
+					if(isset($moderatorcache[$mfid]) && is_array($moderatorcache[$mfid]))
 					{
 						// Fetch each moderator from the cache and format it, appending it to the list
 						foreach($moderatorcache[$mfid] as $modtype)
@@ -345,7 +378,10 @@ function build_forumbits($pid=0, $depth=1)
 									{
 										continue;
 									}
-									$moderators .= $comma.htmlspecialchars_uni($moderator['title']);
+
+									$moderator['title'] = htmlspecialchars_uni($moderator['title']);
+
+									eval("\$moderators .= \"".$templates->get("forumbit_moderators_group", 1, 0)."\";");
 									$done_moderators['groups'][] = $moderator['id'];
 								}
 								else
@@ -354,7 +390,11 @@ function build_forumbits($pid=0, $depth=1)
 									{
 										continue;
 									}
-									$moderators .= "{$comma}<a href=\"".get_profile_link($moderator['id'])."\">".htmlspecialchars_uni($moderator['username'])."</a>";
+
+									$moderator['profilelink'] = get_profile_link($moderator['id']);
+									$moderator['username'] = htmlspecialchars_uni($moderator['username']);
+
+									eval("\$moderators .= \"".$templates->get("forumbit_moderators_user", 1, 0)."\";");
 									$done_moderators['users'][] = $moderator['id'];
 								}
 								$comma = $lang->comma;
@@ -386,13 +426,15 @@ function build_forumbits($pid=0, $depth=1)
 			$collapsed_name = "cat_{$forum['fid']}_c";
 			if(isset($collapsed[$collapsed_name]) && $collapsed[$collapsed_name] == "display: show;")
 			{
-				$expcolimage = "collapse_collapsed.gif";
+				$expcolimage = "collapse_collapsed.png";
 				$expdisplay = "display: none;";
+				$expthead = " thead_collapsed";
 				$expaltext = "[+]";
 			}
 			else
 			{
-				$expcolimage = "collapse.gif";
+				$expcolimage = "collapse.png";
+				$expthead = "";
 				$expaltext = "[-]";
 			}
 
@@ -402,6 +444,16 @@ function build_forumbits($pid=0, $depth=1)
 			// Add the forum to the list
 			eval("\$forum_list .= \"".$templates->get("forumbit_depth$depth$forumcat")."\";");
 		}
+	}
+
+	if(!isset($parent_lastpost))
+	{
+		$parent_lastpost = 0;
+	}
+
+	if(!isset($lightbulb))
+	{
+		$lightbulb = '';
 	}
 
 	// Return an array of information to the parent forum including child forums list, counters and lastpost information
@@ -416,28 +468,35 @@ function build_forumbits($pid=0, $depth=1)
 /**
  * Fetch the status indicator for a forum based on its last post and the read date
  *
- * @param array Array of information about the forum
- * @param array Array of information about the lastpost date
+ * @param array $forum Array of information about the forum
+ * @param array $lastpost Array of information about the lastpost date
+ * @param int $locked Whether or not this forum is locked or not
  * @return array Array of the folder image to be shown and the alt text
  */
 function get_forum_lightbulb($forum, $lastpost, $locked=0)
 {
 	global $mybb, $lang, $db, $unread_forums;
 
-	// This forum is closed, so override the folder icon with the "offlock" icon.
-	if($forum['open'] == 0 || $locked)
+	// This forum is a redirect, so override the folder icon with the "offlink" icon.
+	if($forum['linkto'] != '')
 	{
-		$folder = "offlock";
-		$altonoff = $lang->forum_locked;
+		$folder = "offlink";
+		$altonoff = $lang->forum_redirect;
+	}
+	// This forum is closed, so override the folder icon with the "offclose" icon.
+	elseif($forum['open'] == 0 || $locked)
+	{
+		$folder = "offclose";
+		$altonoff = $lang->forum_closed;
 	}
 	else
 	{
 		// Fetch the last read date for this forum
-		if($forum['lastread'])
+		if(!empty($forum['lastread']))
 		{
 			$forum_read = $forum['lastread'];
 		}
-		elseif($mybb->cookies['mybb']['readallforums'])
+		elseif(!empty($mybb->cookies['mybb']['readallforums']))
 		{
 			// We've hit the read all forums as a guest, so use the lastvisit of the user
 			$forum_read = $mybb->cookies['mybb']['lastvisit'];
@@ -448,7 +507,7 @@ function get_forum_lightbulb($forum, $lastpost, $locked=0)
 			$threadcut = TIME_NOW - 60*60*24*$mybb->settings['threadreadcut'];
 
 			// If the user is a guest, do they have a forumsread cookie?
-			if(!$mybb->user['uid'] && $mybb->cookies['mybb']['forumread'])
+			if(!$mybb->user['uid'] && isset($mybb->cookies['mybb']['forumread']))
 			{
 				// If they've visited us before, then they'll have this cookie - otherwise everything is unread...
 				$forum_read = my_get_array_cookie("forumread", $forum['fid']);
@@ -464,9 +523,9 @@ function get_forum_lightbulb($forum, $lastpost, $locked=0)
 		//{
 			//$forum_read = $mybb->user['lastvisit'];
 		//}
-		
- 	    // If the lastpost is greater than the last visit and is greater than the forum read date, we have a new post 
-		if($lastpost['lastpost'] > $forum_read && $lastpost['lastpost'] != 0) 
+
+ 	    // If the lastpost is greater than the last visit and is greater than the forum read date, we have a new post
+		if($lastpost['lastpost'] > $forum_read && $lastpost['lastpost'] != 0)
 		{
 			$unread_forums++;
 			$folder = "on";
@@ -489,17 +548,17 @@ function get_forum_lightbulb($forum, $lastpost, $locked=0)
 /**
  * Fetch the number of unapproved posts, formatted, from a forum
  *
- * @param array Array of information about the forum
+ * @param array $forum Array of information about the forum
  * @return array Array containing formatted string for posts and string for threads
  */
 function get_forum_unapproved($forum)
 {
-	global $lang;
+	global $lang, $templates;
 
 	$unapproved_threads = $unapproved_posts = '';
 
 	// If the user is a moderator we need to fetch the count
-	if(is_moderator($forum['fid']))
+	if(is_moderator($forum['fid'], "canviewunapprove"))
 	{
 		// Forum has one or more unaproved posts, format language string accordingly
 		if($forum['unapprovedposts'])
@@ -512,7 +571,9 @@ function get_forum_unapproved($forum)
 			{
 				$unapproved_posts_count = $lang->sprintf($lang->forum_unapproved_post_count, 1);
 			}
-			$unapproved_posts = " <span title=\"{$unapproved_posts_count}\">(".my_number_format($forum['unapprovedposts']).")</span>";
+
+			$forum['unapprovedposts'] = my_number_format($forum['unapprovedposts']);
+			eval("\$unapproved_posts = \"".$templates->get("forumbit_depth2_forum_unapproved_posts")."\";");
 		}
 		// Forum has one or more unapproved threads, format language string accordingly
 		if($forum['unapprovedthreads'])
@@ -525,7 +586,9 @@ function get_forum_unapproved($forum)
 			{
 				$unapproved_threads_count = $lang->sprintf($lang->forum_unapproved_thread_count, 1);
 			}
-			$unapproved_threads = " <span title=\"{$unapproved_threads_count}\">(".my_number_format($forum['unapprovedthreads']).")</span>";
+
+			$forum['unapprovedthreads'] = my_number_format($forum['unapprovedthreads']);
+			eval("\$unapproved_threads = \"".$templates->get("forumbit_depth2_forum_unapproved_threads")."\";");
 		}
 	}
 	return array(
@@ -533,4 +596,3 @@ function get_forum_unapproved($forum)
 		"unapproved_threads" => $unapproved_threads
 	);
 }
-?>

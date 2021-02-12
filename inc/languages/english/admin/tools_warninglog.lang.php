@@ -1,9 +1,7 @@
 <?php
 /**
- * MyBB 1.6 English Language Pack
- * Copyright 2010 MyBB Group, All Rights Reserved
- * 
- * $Id$
+ * MyBB 1.8 English Language Pack
+ * Copyright 2014 MyBB Group, All Rights Reserved
  */
 
 
@@ -50,4 +48,5 @@ $l['date_revoked'] = "Date Revoked:";
 $l['error_already_revoked'] = "This warning has already been revoked.";
 $l['error_no_revoke_reason'] = "You did not enter a reason as to why you want to revoke this warning.";
 $l['redirect_warning_revoked'] = "This warning has been revoked and the users warning points decreased successfully.";
-?>
+
+$l['warning_points'] = "({1} points)";

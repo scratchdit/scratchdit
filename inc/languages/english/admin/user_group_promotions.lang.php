@@ -1,9 +1,7 @@
 <?php
 /**
- * MyBB 1.6 English Language Pack
- * Copyright 2010 MyBB Group, All Rights Reserved
- * 
- * $Id$
+ * MyBB 1.8 English Language Pack
+ * Copyright 2014 MyBB Group, All Rights Reserved
  */
 
 $l['user_group_promotions'] = "User Group Promotions";
@@ -16,9 +14,11 @@ $l['add_new_promotion_desc'] = "Here you can create new promotions which are aut
 $l['title'] = "Title";
 $l['short_desc'] = "Short Description";
 $l['post_count'] = "Post Count";
+$l['thread_count'] = "Thread Count";
 $l['reputation'] = "Reputation";
 $l['referrals'] = "Referrals";
 $l['time_registered'] = "Time Registered";
+$l['time_online'] = "Time Online";
 $l['promo_requirements'] = "Promotion Requirements";
 $l['promo_requirements_desc'] = "Select which criteria must be met for this promotion. Holding down CTRL selects multiple criteria.";
 $l['greater_than_or_equal_to'] = "Greater than or equal to";
@@ -30,13 +30,17 @@ $l['reputation_count'] = "Reputation Count";
 $l['reputation_count_desc'] = "Enter the amount of reputation to be required. Reputation must be selected as a required value for this to be included. Select the type of comparison for reputation.";
 $l['referral_count'] = "Referral Count";
 $l['referral_count_desc'] = "Enter the number of referrals required. Referral count must be selected as a required value for this to be included. Select the type of comparison for referrals.";
+$l['warning_points'] = "Warning Points";
+$l['warning_points_desc'] = "Enter the number of warning points required. Warning Points must be selected as a required value for this to be included. Select the type of comparison for warning points.";
 $l['post_count_desc'] = "Enter the number of posts required. Post count must be selected as a required value for this to be included. Select the type of comparison for posts.";
+$l['thread_count_desc'] = "Enter the number of threads required. Thread count must be selected as a required value for this to be included. Select the type of comparison for threads.";
 $l['hours'] = "Hours";
 $l['days'] = "Days";
 $l['weeks'] = "Weeks";
 $l['months'] = "Months";
 $l['years'] = "Years";
 $l['time_registered_desc'] = "Enter the number of hours, days, weeks, months, or years that this user must have been registered for. Time registered must be selected as a required value for this to be included. Select whether the time registered should be counted in hours, days, weeks, months, or years.";
+$l['time_online_desc'] = "Enter the number of hours, days, weeks, months, or years that this user must have been online for. Time online must be selected as a required value for this to be included. Select whether the time spend online should be counted in hours, days, weeks, months, or years.";
 $l['all_user_groups'] = 'All User Groups';
 $l['orig_user_group'] = 'Original User Group';
 $l['orig_user_group_desc'] = "Select which user group or user groups that the user must be in for the promotion to run. Holding down CTRL selects multiple groups.";
@@ -84,4 +88,3 @@ $l['success_promo_added'] = 'The promotion has been created successfully.';
 $l['confirm_promo_disable'] = "Are you sure you want to disable this promotion?";
 $l['confirm_promo_deletion'] = "Are you sure you wish to delete this promotion?";
 
-?>

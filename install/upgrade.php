@@ -1,28 +1,11 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
- *
- * $Id$
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  */
-
-if(function_exists("unicode_decode"))
-{
-    // Unicode extension introduced in 6.0
-    error_reporting(E_ALL ^ E_DEPRECATED ^ E_NOTICE ^ E_STRICT);
-}
-elseif(defined("E_DEPRECATED"))
-{
-    // E_DEPRECATED introduced in 5.3
-    error_reporting(E_ALL ^ E_DEPRECATED ^ E_NOTICE);
-}
-else
-{
-    error_reporting(E_ALL & ~E_NOTICE);
-}
 
 define('MYBB_ROOT', dirname(dirname(__FILE__))."/");
 define("INSTALL_ROOT", dirname(__FILE__)."/");
@@ -34,6 +17,11 @@ if(function_exists('date_default_timezone_set') && !ini_get('date.timezone'))
 {
 	date_default_timezone_set('GMT');
 }
+
+require_once MYBB_ROOT.'inc/class_error.php';
+$error_handler = new errorHandler();
+
+require_once MYBB_ROOT."inc/functions.php";
 
 require_once MYBB_ROOT."inc/class_core.php";
 $mybb = new MyBB;
@@ -58,12 +46,11 @@ $mybb->config = &$config;
 
 // Include the files necessary for installation
 require_once MYBB_ROOT."inc/class_timers.php";
-require_once MYBB_ROOT."inc/functions.php";
 require_once MYBB_ROOT."inc/class_xml.php";
 require_once MYBB_ROOT.'inc/class_language.php';
 
 $lang = new MyLanguage();
-$lang->set_path(MYBB_ROOT.'install/resources/');
+$lang->set_path(INSTALL_ROOT.'resources/');
 $lang->load('language');
 
 // If we're upgrading from an SQLite installation, make sure we still work.
@@ -71,6 +58,9 @@ if($config['database']['type'] == 'sqlite3' || $config['database']['type'] == 's
 {
 	$config['database']['type'] = 'sqlite';
 }
+
+// Load DB interface
+require_once MYBB_ROOT."inc/db_base.php";
 
 require_once MYBB_ROOT."inc/db_{$config['database']['type']}.php";
 switch($config['database']['type'])
@@ -87,7 +77,7 @@ switch($config['database']['type'])
 	default:
 		$db = new DB_MySQL;
 }
-	
+
 // Connect to Database
 define('TABLE_PREFIX', $config['database']['table_prefix']);
 $db->connect($config['database']);
@@ -112,14 +102,16 @@ if(!file_exists(MYBB_ROOT."inc/settings.php") || !$settings)
 			"order_by" => "title",
 			"order_dir" => "ASC"
 		);
-		
+
 		$query = $db->simple_select("settings", "value, name", "", $options);
+
+		$settings = array();
 		while($setting = $db->fetch_array($query))
 		{
 			$setting['value'] = str_replace("\"", "\\\"", $setting['value']);
 			$settings[$setting['name']] = $setting['value'];
 		}
-	}	
+	}
 }
 
 $settings['wolcutoff'] = $settings['wolcutoffmins']*60;
@@ -150,9 +142,9 @@ $mybb->session = &$session;
 
 // Include the necessary contants for installation
 $grouppermignore = array("gid", "type", "title", "description", "namestyle", "usertitle", "stars", "starimage", "image");
-$groupzerogreater = array("pmquota", "maxreputationsday", "attachquota");
+$groupzerogreater = array("pmquota", "maxpmrecipients", "maxreputationsday", "attachquota", "maxemails", "maxwarningsday", "maxposts", "edittimelimit", "canusesigxposts", "maxreputationsperuser", "maxreputationsperthread", "emailfloodtime");
 $displaygroupfields = array("title", "description", "namestyle", "usertitle", "stars", "starimage", "image");
-$fpermfields = array("canview", "candlattachments", "canpostthreads", "canpostreplys", "canpostattachments", "canratethreads", "caneditposts", "candeleteposts", "candeletethreads", "caneditattachments", "canpostpolls", "canvotepolls", "cansearch");
+$fpermfields = array('canview', 'canviewthreads', 'candlattachments', 'canpostthreads', 'canpostreplys', 'canpostattachments', 'canratethreads', 'caneditposts', 'candeleteposts', 'candeletethreads', 'caneditattachments', 'canpostpolls', 'canvotepolls', 'cansearch', 'modposts', 'modthreads', 'modattachments', 'mod_edit_posts');
 
 // Include the installation resources
 require_once INSTALL_ROOT."resources/output.php";
@@ -166,16 +158,17 @@ if(file_exists("lock"))
 }
 else
 {
+	$mybb->input['action'] = $mybb->get_input('action');
 	if($mybb->input['action'] == "logout" && $mybb->user['uid'])
-	{	
+	{
 		// Check session ID if we have one
-		if($mybb->input['logoutkey'] != $mybb->user['logoutkey'])
+		if($mybb->get_input('logoutkey') !== $mybb->user['logoutkey'])
 		{
 			$output->print_error("Your user ID could not be verified to log you out.  This may have been because a malicious Javascript was attempting to log you out automatically.  If you intended to log out, please click the Log Out button at the top menu.");
 		}
-	
+
 		my_unsetcookie("mybbuser");
-		my_unsetcookie("sid");
+
 		if($mybb->user['uid'])
 		{
 			$time = TIME_NOW;
@@ -184,95 +177,85 @@ else
 				"lastvisit" => $time,
 			);
 			$db->update_query("users", $lastvisit, "uid='".$mybb->user['uid']."'");
-			$db->delete_query("sessions", "sid='".$session->sid."'");
 		}
 		header("Location: upgrade.php");
 	}
 	else if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
-	{	
+	{
 		require_once MYBB_ROOT."inc/functions_user.php";
-	
-		if(!username_exists($mybb->input['username']))
+
+		if(!username_exists($mybb->get_input('username')))
 		{
 			$output->print_error("The username you have entered appears to be invalid.");
 		}
-		$query = $db->simple_select("users", "uid,username,password,salt,loginkey", "username='".$db->escape_string($mybb->input['username'])."'", array('limit' => 1));
-		$user = $db->fetch_array($query);
+		$options = array(
+			'fields' => array('username', 'password', 'salt', 'loginkey')
+		);
+		$user = get_user_by_username($mybb->get_input('username'), $options);
+
 		if(!$user['uid'])
 		{
 			$output->print_error("The username you have entered appears to be invalid.");
 		}
 		else
 		{
-			$user = validate_password_from_uid($user['uid'], $mybb->input['password'], $user);
+			$user = validate_password_from_uid($user['uid'], $mybb->get_input('password'), $user);
 			if(!$user['uid'])
 			{
 				$output->print_error("The password you entered is incorrect. If you have forgotten your password, click <a href=\"../member.php?action=lostpw\">here</a>. Otherwise, go back and try again.");
 			}
 		}
-		
-		$db->delete_query("sessions", "ip='".$db->escape_string($session->ipaddress)."' AND sid != '".$session->sid."'");
-		
-		$newsession = array(
-			"uid" => $user['uid']
-		);
-		
-		$db->update_query("sessions", $newsession, "sid='".$session->sid."'");
-	
-		// Temporarily set the cookie remember option for the login cookies
-		$mybb->user['remember'] = $user['remember'];
-	
-		my_setcookie("mybbuser", $user['uid']."_".$user['loginkey'], null, true);
-		my_setcookie("sid", $session->sid, -1, true);
-	
+
+		my_setcookie("mybbuser", $user['uid']."_".$user['loginkey'], null, true, "lax");
+
 		header("Location: ./upgrade.php");
 	}
 
 	$output->steps = array($lang->upgrade);
-	
+
 	if($mybb->user['uid'] == 0)
 	{
-		$output->print_header("Please Login", "errormsg", 0, 1);
-		
-		$output->print_contents('<p>Please enter your username and password to begin the upgrade process. You must be a valid forum administrator to perform the upgrade.</p>
+		$output->print_header($lang->please_login, "errormsg", 0, 1);
+
+		$output->print_contents('<p>'.$lang->login_desc.'</p>
 <form action="upgrade.php" method="post">
 	<div class="border_wrapper">
 		<table class="general" cellspacing="0">
 		<thead>
 			<tr>
-				<th colspan="2" class="first last">Login</th>
+				<th colspan="2" class="first last">'.$lang->login.'</th>
 			</tr>
 		</thead>
 		<tbody>
 			<tr class="first">
-				<td class="first">Username:</td>
+				<td class="first">'.$lang->login_username.':</td>
 				<td class="last alt_col"><input type="text" class="textbox" name="username" size="25" maxlength="'.$mybb->settings['maxnamelength'].'" style="width: 200px;" /></td>
 			</tr>
 			<tr class="alt_row last">
-				<td class="first">Password:<br /><small>Please note that passwords are case sensitive.</small></td>
+				<td class="first">'.$lang->login_password.':<br /><small>'.$lang->login_password_desc.'</small></td>
 				<td class="last alt_col"><input type="password" class="textbox" name="password" size="25" style="width: 200px;" /></td>
 			</tr>
 		</tbody>
 		</table>
 	</div>
 	<div id="next_button">
-		<input type="submit" class="submit_button" name="submit" value="Login" />
+		<input type="submit" class="submit_button" name="submit" value="'.$lang->login.'" />
 		<input type="hidden" name="action" value="do_login" />
 	</div>
 </form>');
 		$output->print_footer("");
-		
+
 		exit;
 	}
 	else if($mybb->usergroup['cancp'] != 1 && $mybb->usergroup['cancp'] != 'yes')
 	{
-		$output->print_error("You do not have permissions to run this process. You need administrator permissions to be able to run the upgrade procedure.<br /><br />If you need to logout, please click <a href=\"upgrade.php?action=logout&amp;logoutkey={$mybb->user['logoutkey']}\">here</a>. From there you will be able to log in again under your administrator account.");
+		$output->print_error($lang->sprintf($lang->no_permision, $mybb->user['logoutkey']));
 	}
 
 	if(!$mybb->input['action'] || $mybb->input['action'] == "intro")
 	{
 		$output->print_header();
-		
+
 		if($db->table_exists("upgrade_data"))
 		{
 			$db->drop_table("upgrade_data");
@@ -284,6 +267,8 @@ else
 		);");
 
 		$dh = opendir(INSTALL_ROOT."resources");
+
+		$upgradescripts = array();
 		while(($file = readdir($dh)) !== false)
 		{
 			if(preg_match("#upgrade([0-9]+).php$#i", $file, $match))
@@ -295,10 +280,10 @@ else
 		closedir($dh);
 		natsort($key_order);
 		$key_order = array_reverse($key_order);
-		
+
 		// Figure out which version we last updated from (as of 1.6)
 		$version_history = $cache->read("version_history");
-		
+
 		// If array is empty then we must be upgrading to 1.6 since that's when this feature was added
 		if(empty($version_history))
 		{
@@ -306,9 +291,10 @@ else
 		}
 		else
 		{
-			$next_update_version = intval(end($version_history)+1);
+			$next_update_version = (int)(end($version_history)+1);
 		}
 
+		$vers = '';
 		foreach($key_order as $k => $key)
 		{
 			$file = $upgradescripts[$key];
@@ -329,36 +315,34 @@ else
 		}
 		unset($upgradescripts);
 		unset($upgradescript);
-		
+
 		$output->print_contents($lang->sprintf($lang->upgrade_welcome, $mybb->version)."<p><select name=\"from\">$vers</select>".$lang->upgrade_send_stats);
 		$output->print_footer("doupgrade");
 	}
 	elseif($mybb->input['action'] == "doupgrade")
 	{
-		add_upgrade_store("allow_anonymous_info", intval($mybb->input['allow_anonymous_info']));
-		require_once INSTALL_ROOT."resources/upgrade".intval($mybb->input['from']).".php";
-		if($db->table_exists("datacache") && $upgrade_detail['requires_deactivated_plugins'] == 1 && $mybb->input['donewarning'] != "true")
+		add_upgrade_store("allow_anonymous_info", $mybb->get_input('allow_anonymous_info', MyBB::INPUT_INT));
+		require_once INSTALL_ROOT."resources/upgrade".$mybb->get_input('from', MyBB::INPUT_INT).".php";
+		if($db->table_exists("datacache") && $upgrade_detail['requires_deactivated_plugins'] == 1 && $mybb->get_input('donewarning') != "true")
 		{
-			require_once MYBB_ROOT."inc/class_datacache.php";
-			$cache = new datacache;
 			$plugins = $cache->read('plugins', true);
 			if(!empty($plugins['active']))
 			{
 				$output->print_header();
-				$lang->plugin_warning = "<input type=\"hidden\" name=\"from\" value=\"".intval($mybb->input['from'])."\" />\n<input type=\"hidden\" name=\"donewarning\" value=\"true\" />\n<div class=\"error\"><strong><span style=\"color: red\">Warning:</span></strong> <p>There are still ".count($plugins['active'])." plugin(s) active. Active plugins can sometimes cause problems during an upgrade procedure or may break your forum afterward. It is <strong>strongly</strong> reccommended that you deactivate your plugins before continuing.</p></div> <br />";
+				$lang->plugin_warning = "<input type=\"hidden\" name=\"from\" value=\"".$mybb->get_input('from', MyBB::INPUT_INT)."\" />\n<input type=\"hidden\" name=\"donewarning\" value=\"true\" />\n<div class=\"error\"><strong><span style=\"color: red\">Warning:</span></strong> <p>There are still ".count($plugins['active'])." plugin(s) active. Active plugins can sometimes cause problems during an upgrade procedure or may break your forum afterward. It is <strong>strongly</strong> reccommended that you deactivate your plugins before continuing.</p></div> <br />";
 				$output->print_contents($lang->sprintf($lang->plugin_warning, $mybb->version));
 				$output->print_footer("doupgrade");
 			}
 			else
 			{
-				add_upgrade_store("startscript", $mybb->input['from']);
-				$runfunction = next_function($mybb->input['from']);
+				add_upgrade_store("startscript", $mybb->get_input('from', MyBB::INPUT_INT));
+				$runfunction = next_function($mybb->get_input('from', MyBB::INPUT_INT));
 			}
 		}
 		else
 		{
-			add_upgrade_store("startscript", $mybb->input['from']);
-			$runfunction = next_function($mybb->input['from']);
+			add_upgrade_store("startscript", $mybb->get_input('from', MyBB::INPUT_INT));
+			$runfunction = next_function($mybb->get_input('from', MyBB::INPUT_INT));
 		}
 	}
 	$currentscript = get_upgrade_store("currentscript");
@@ -390,7 +374,7 @@ else
 
 		}
 	}
-	
+
 	// Fetch current script we're in
 	if(function_exists($runfunction))
 	{
@@ -398,10 +382,13 @@ else
 	}
 }
 
+/**
+ * Do the upgrade changes
+ */
 function upgradethemes()
 {
 	global $output, $db, $system_upgrade_detail, $lang, $mybb;
-	
+
 	$output->print_header($lang->upgrade_templates_reverted);
 
 	$charset = $db->build_create_table_collation();
@@ -466,14 +453,14 @@ function upgradethemes()
 		$db->update_query("themes", array("def" => 1), "tid='{$tid}'");
 		$db->update_query("users", array('style' => $tid));
 		$db->update_query("forums", array('style' => 0));
-		
+
 		$db->drop_table("templatesets");
 		$db->write_query("CREATE TABLE ".TABLE_PREFIX."templatesets (
 		  sid smallint unsigned NOT NULL auto_increment,
 		  title varchar(120) NOT NULL default '',
 		  PRIMARY KEY  (sid)
 		) ENGINE=MyISAM{$charset};");
-		
+
 		$db->insert_query("templatesets", array('title' => 'Default Templates'));
 	}
 	else
@@ -482,17 +469,19 @@ function upgradethemes()
 		$contents = @file_get_contents(INSTALL_ROOT.'resources/mybb_theme.xml');
 		if(file_exists(MYBB_ROOT.$mybb->config['admin_dir']."/inc/functions_themes.php"))
 		{
+			require_once MYBB_ROOT.$mybb->config['admin_dir']."/inc/functions.php";
 			require_once MYBB_ROOT.$mybb->config['admin_dir']."/inc/functions_themes.php";
 		}
-		else if(file_exists(MYBB_ROOT."admin/inc/functions_themes.php"))
+		elseif(file_exists(MYBB_ROOT."admin/inc/functions_themes.php"))
 		{
+			require_once MYBB_ROOT."admin/inc/functions.php";
 			require_once MYBB_ROOT."admin/inc/functions_themes.php";
 		}
 		else
 		{
-			$output->print_error();
+			$output->print_error($lang->no_theme_functions_file);
 		}
-		
+
 		// Import master theme
 		import_theme_xml($contents, array("tid" => 1, "no_templates" => 1, "version_compat" => 1));
 	}
@@ -512,7 +501,7 @@ function upgradethemes()
 		foreach($templates as $template)
 		{
 			$templatename = $db->escape_string($template['attributes']['name']);
-			$templateversion = intval($template['attributes']['version']);
+			$templateversion = (int)$template['attributes']['version'];
 			$templatevalue = $db->escape_string($template['value']);
 			$time = TIME_NOW;
 			$query = $db->simple_select("templates", "tid", "sid='-2' AND title='".$db->escape_string($templatename)."'");
@@ -534,8 +523,8 @@ function upgradethemes()
 					'sid' => $sid,
 					'version' => $templateversion,
 					'dateline' => $time
-				);			
-				
+				);
+
 				$db->insert_query("templates", $insert_array);
 				++$newcount;
 			}
@@ -546,6 +535,9 @@ function upgradethemes()
 	$output->print_footer("rebuildsettings");
 }
 
+/**
+ * Update the settings
+ */
 function buildsettings()
 {
 	global $db, $output, $system_upgrade_detail, $lang;
@@ -564,6 +556,9 @@ function buildsettings()
 	$output->print_footer("buildcaches");
 }
 
+/**
+ * Rebuild caches
+ */
 function buildcaches()
 {
 	global $db, $output, $cache, $lang, $mybb;
@@ -571,8 +566,7 @@ function buildcaches()
 	$output->print_header($lang->upgrade_datacache_building);
 
 	$contents .= $lang->upgrade_building_datacache;
-	require_once MYBB_ROOT."inc/class_datacache.php";
-	$cache = new datacache;
+
 	$cache->update_version();
 	$cache->update_attachtypes();
 	$cache->update_smilies();
@@ -580,23 +574,26 @@ function buildcaches()
 	$cache->update_usergroups();
 	$cache->update_forumpermissions();
 	$cache->update_stats();
+	$cache->update_statistics();
 	$cache->update_moderators();
 	$cache->update_forums();
 	$cache->update_usertitles();
-	$cache->update_reportedposts();
+	$cache->update_reportedcontent();
+	$cache->update_awaitingactivation();
 	$cache->update_mycode();
+	$cache->update_profilefields();
 	$cache->update_posticons();
 	$cache->update_update_check();
 	$cache->update_tasks();
 	$cache->update_spiders();
 	$cache->update_bannedips();
-	$cache->update_banned();
 	$cache->update_birthdays();
 	$cache->update_most_replied_threads();
 	$cache->update_most_viewed_threads();
 	$cache->update_groupleaders();
 	$cache->update_threadprefixes();
 	$cache->update_forumsdisplay();
+	$cache->update_reportreasons(true);
 
 	$contents .= $lang->done."</p>";
 
@@ -604,26 +601,42 @@ function buildcaches()
 	$output->print_footer("finished");
 }
 
+/**
+ * Called as latest function. Send statistics, create lock file etc
+ */
 function upgradedone()
 {
-	global $db, $output, $mybb, $lang, $config;
-	
+	global $db, $output, $mybb, $lang, $config, $plugins;
+
 	ob_start();
-	$output->print_header("Upgrade Complete");
-	
+	$output->print_header($lang->upgrade_complete);
+
 	$allow_anonymous_info = get_upgrade_store("allow_anonymous_info");
 	if($allow_anonymous_info == 1)
 	{
 		require_once MYBB_ROOT."inc/functions_serverstats.php";
 		$build_server_stats = build_server_stats(0, '', $mybb->version_code, $mybb->config['database']['encoding']);
-		
+
 		if($build_server_stats['info_sent_success'] == false)
 		{
 			echo $build_server_stats['info_image'];
 		}
 	}
 	ob_end_flush();
-	
+
+	// Attempt to run an update check
+	require_once MYBB_ROOT.'inc/functions_task.php';
+	$query = $db->simple_select('tasks', 'tid', "file='versioncheck'");
+	$update_check = $db->fetch_array($query);
+	if($update_check)
+	{
+		// Load plugin system for update check
+		require_once MYBB_ROOT."inc/class_plugins.php";
+		$plugins = new pluginSystem;
+
+		run_task($update_check['tid']);
+	}
+
 	if(is_writable("./"))
 	{
 		$lock = @fopen("./lock", "w");
@@ -638,7 +651,7 @@ function upgradedone()
 	{
 		$lock_note = "<p><b><span style=\"color: red;\">".$lang->upgrade_removedir."</span></b></p>";
 	}
-	
+
 	// Rebuild inc/settings.php at the end of the upgrade
 	if(function_exists('rebuild_settings'))
 	{
@@ -650,7 +663,7 @@ function upgradedone()
 			"order_by" => "title",
 			"order_dir" => "ASC"
 		);
-		
+
 		$query = $db->simple_select("settings", "value, name", "", $options);
 		while($setting = $db->fetch_array($query))
 		{
@@ -658,11 +671,14 @@ function upgradedone()
 			$settings[$setting['name']] = $setting['value'];
 		}
 	}
-	
+
 	$output->print_contents($lang->sprintf($lang->upgrade_congrats, $mybb->version, $lock_note));
 	$output->print_footer();
 }
 
+/**
+ * Show the finish page
+ */
 function whatsnext()
 {
 	global $output, $db, $system_upgrade_detail, $lang;
@@ -679,6 +695,14 @@ function whatsnext()
 	}
 }
 
+/**
+ * Determine the next function we need to call
+ *
+ * @param int $from
+ * @param string $func
+ *
+ * @return string
+ */
 function next_function($from, $func="dbchanges")
 {
 	global $oldvers, $system_upgrade_detail, $currentscript, $cache;
@@ -694,7 +718,7 @@ function next_function($from, $func="dbchanges")
 		$version_history = $cache->read("version_history");
 		$version_history[$from] = $from;
 		$cache->update("version_history", $version_history);
-		
+
 		$from = $from+1;
 		if(file_exists(INSTALL_ROOT."resources/upgrade".$from.".php"))
 		{
@@ -709,10 +733,13 @@ function next_function($from, $func="dbchanges")
 	return $function;
 }
 
+/**
+ * @param string $module
+ */
 function load_module($module)
 {
 	global $system_upgrade_detail, $currentscript, $upgrade_detail;
-	
+
 	require_once INSTALL_ROOT."resources/".$module;
 	if($currentscript != $module)
 	{
@@ -728,30 +755,46 @@ function load_module($module)
 	}
 }
 
+/**
+ * Get a value from our upgrade data cache
+ *
+ * @param string $title
+ *
+ * @return mixed
+ */
 function get_upgrade_store($title)
 {
 	global $db;
-	
+
 	$query = $db->simple_select("upgrade_data", "*", "title='".$db->escape_string($title)."'");
 	$data = $db->fetch_array($query);
-	return unserialize($data['contents']);
+	return my_unserialize($data['contents']);
 }
 
+/**
+ * @param string $title
+ * @param mixed $contents
+ */
 function add_upgrade_store($title, $contents)
 {
 	global $db;
-	
+
 	$replace_array = array(
 		"title" => $db->escape_string($title),
-		"contents" => $db->escape_string(serialize($contents))
-	);		
+		"contents" => $db->escape_string(my_serialize($contents))
+	);
 	$db->replace_query("upgrade_data", $replace_array, "title");
 }
 
+/**
+ * @param int $redo 2 means that all setting tables will be dropped and recreated
+ *
+ * @return array
+ */
 function sync_settings($redo=0)
 {
 	global $db;
-	
+
 	$settingcount = $groupcount = 0;
 	$settings = $settinggroups = array();
 	if($redo == 2)
@@ -794,7 +837,7 @@ function sync_settings($redo=0)
 		}
 
 		$db->drop_table("settings");
-		
+
 		switch($db->type)
 		{
 			case "pgsql":
@@ -871,16 +914,16 @@ function sync_settings($redo=0)
 	$tree = $parser->get_tree();
 	$settinggroupnames = array();
 	$settingnames = array();
-	
+
 	foreach($tree['settings'][0]['settinggroup'] as $settinggroup)
 	{
 		$settinggroupnames[] = $settinggroup['attributes']['name'];
-		
+
 		$groupdata = array(
 			"name" => $db->escape_string($settinggroup['attributes']['name']),
 			"title" => $db->escape_string($settinggroup['attributes']['title']),
 			"description" => $db->escape_string($settinggroup['attributes']['description']),
-			"disporder" => intval($settinggroup['attributes']['disporder']),
+			"disporder" => (int)$settinggroup['attributes']['disporder'],
 			"isdefault" => $settinggroup['attributes']['isdefault']
 		);
 		if(!$settinggroups[$settinggroup['attributes']['name']] || $redo == 2)
@@ -893,22 +936,22 @@ function sync_settings($redo=0)
 			$gid = $settinggroups[$settinggroup['attributes']['name']];
 			$db->update_query("settinggroups", $groupdata, "gid='{$gid}'");
 		}
-		
+
 		if(!$gid)
 		{
 			continue;
 		}
-		
+
 		foreach($settinggroup['setting'] as $setting)
 		{
 			$settingnames[] = $setting['attributes']['name'];
-			
+
 			$settingdata = array(
 				"name" => $db->escape_string($setting['attributes']['name']),
 				"title" => $db->escape_string($setting['title'][0]['value']),
 				"description" => $db->escape_string($setting['description'][0]['value']),
 				"optionscode" => $db->escape_string($setting['optionscode'][0]['value']),
-				"disporder" => intval($setting['disporder'][0]['value']),
+				"disporder" => (int)$setting['disporder'][0]['value'],
 				"gid" => $gid,
 				"isdefault" => 1
 			);
@@ -925,7 +968,7 @@ function sync_settings($redo=0)
 			}
 		}
 	}
-	
+
 	if($redo >= 1)
 	{
 		require MYBB_ROOT."inc/settings.php";
@@ -938,20 +981,26 @@ function sync_settings($redo=0)
 	$query = $db->simple_select("settings", "*", "", array('order_by' => 'title'));
 	while($setting = $db->fetch_array($query))
 	{
-		$setting['value'] = str_replace("\"", "\\\"", $setting['value']);
+		$setting['name'] = addcslashes($setting['name'], "\\'");
+		$setting['value'] = addcslashes($setting['value'], '\\"$');
 		$settings .= "\$settings['{$setting['name']}'] = \"".$setting['value']."\";\n";
 	}
-	$settings = "<?php\n/*********************************\ \n  DO NOT EDIT THIS FILE, PLEASE USE\n  THE SETTINGS EDITOR\n\*********************************/\n\n$settings\n?>";
+	$settings = "<?php\n/*********************************\ \n  DO NOT EDIT THIS FILE, PLEASE USE\n  THE SETTINGS EDITOR\n\*********************************/\n\n$settings\n";
 	$file = fopen(MYBB_ROOT."inc/settings.php", "w");
 	fwrite($file, $settings);
 	fclose($file);
 	return array($groupcount, $settingcount);
 }
 
+/**
+ * @param int $redo 2 means that the tasks table will be dropped and recreated
+ *
+ * @return int
+ */
 function sync_tasks($redo=0)
 {
 	global $db;
-	
+
 	$taskcount = 0;
 	$tasks = array();
 	if($redo == 2)
@@ -1025,13 +1074,13 @@ function sync_tasks($redo=0)
 			$tasks[$task['file']] = $task['tid'];
 		}
 	}
-	
+
 	require_once MYBB_ROOT."inc/functions_task.php";
 	$task_file = file_get_contents(INSTALL_ROOT.'resources/tasks.xml');
 	$parser = new XMLParser($task_file);
 	$parser->collapse_dups = 0;
 	$tree = $parser->get_tree();
-	
+
 	// Resync tasks
 	foreach($tree['tasks'][0]['task'] as $task)
 	{
@@ -1051,7 +1100,7 @@ function sync_tasks($redo=0)
 			);
 
 			$new_task['nextrun'] = fetch_next_run($new_task);
-		
+
 			$db->insert_query("tasks", $new_task);
 			$taskcount++;
 		}
@@ -1062,29 +1111,32 @@ function sync_tasks($redo=0)
 				'description' => $db->escape_string($task['description'][0]['value']),
 				'file' => $db->escape_string($task['file'][0]['value']),
 			);
-		
+
 			$db->update_query("tasks", $update_task, "file='".$db->escape_string($task['file'][0]['value'])."'");
 		}
 	}
-	
+
 	return $taskcount;
 }
 
+/**
+ * Write our settings to the settings file
+ */
 function write_settings()
 {
 	global $db;
 	$query = $db->simple_select("settings", "*", "", array('order_by' => 'title'));
 	while($setting = $db->fetch_array($query))
 	{
-		$setting['value'] = $db->escape_string($setting['value']);
+		$setting['name'] = addcslashes($setting['name'], "\\'");
+		$setting['value'] = addcslashes($setting['value'], '\\"$');
 		$settings .= "\$settings['{$setting['name']}'] = \"{$setting['value']}\";\n";
 	}
 	if(!empty($settings))
 	{
-		$settings = "<?php\n/*********************************\ \n  DO NOT EDIT THIS FILE, PLEASE USE\n  THE SETTINGS EDITOR\n\*********************************/\n\n{$settings}\n?>";
+		$settings = "<?php\n/*********************************\ \n  DO NOT EDIT THIS FILE, PLEASE USE\n  THE SETTINGS EDITOR\n\*********************************/\n\n{$settings}\n";
 		$file = fopen(MYBB_ROOT."inc/settings.php", "w");
 		fwrite($file, $settings);
 		fclose($file);
 	}
 }
-?>

@@ -1,18 +1,16 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
- *
- * $Id$
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  */
 
 define("IN_MYBB", 1);
 define('THIS_SCRIPT', 'printthread.php');
 
-$templatelist = "printthread,printthread_post";
+$templatelist = "printthread,printthread_post,printthread_nav,forumdisplay_password_wrongpass,forumdisplay_password,printthread_multipage,printthread_multipage_page,printthread_multipage_page_current";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -24,13 +22,25 @@ $lang->load("printthread");
 
 $plugins->run_hooks("printthread_start");
 
-$query = $db->query("
-	SELECT t.*, p.prefix AS threadprefix, p.displaystyle
-	FROM ".TABLE_PREFIX."threads t
-	LEFT JOIN ".TABLE_PREFIX."threadprefixes p ON (p.pid=t.prefix)
-	WHERE t.tid='".intval($mybb->input['tid'])."' AND t.closed NOT LIKE 'moved|%'
-");
-$thread = $db->fetch_array($query);
+$thread = get_thread($mybb->get_input('tid', MyBB::INPUT_INT));
+
+if(!$thread || $thread['visible'] == -1)
+{
+	error($lang->error_invalidthread);
+}
+
+$plugins->run_hooks("printthread_start");
+
+$thread['threadprefix'] = $thread['displaystyle'] = '';
+if($thread['prefix'])
+{
+	$threadprefix = build_prefixes($thread['prefix']);
+	if(!empty($threadprefix))
+	{
+		$thread['threadprefix'] = $threadprefix['prefix'];
+		$thread['displaystyle'] = $threadprefix['displaystyle'];
+	}
+}
 
 $thread['subject'] = htmlspecialchars_uni($parser->parse_badwords($thread['subject']));
 
@@ -38,17 +48,10 @@ $fid = $thread['fid'];
 $tid = $thread['tid'];
 
 // Is the currently logged in user a moderator of this forum?
-if(is_moderator($fid))
-{
-	$ismod = true;
-}
-else
-{
-	$ismod = false;
-}
+$ismod = is_moderator($fid);
 
 // Make sure we are looking at a real thread here.
-if(!$tid || ($thread['visible'] == 0 && $ismod == false) || ($thread['visible'] > 1 && $ismod == true))
+if(($thread['visible'] != 1 && $ismod == false) || ($thread['visible'] > 1 && $ismod == true))
 {
 	error($lang->error_invalidthread);
 }
@@ -75,7 +78,7 @@ if($forum['type'] != "f")
 {
 	error($lang->error_invalidforum);
 }
-if($forumpermissions['canview'] == 0 || $forumpermissions['canviewthreads'] == 0)
+if($forumpermissions['canview'] == 0 || $forumpermissions['canviewthreads'] == 0 || (isset($forumpermissions['canonlyviewownthreads']) && $forumpermissions['canonlyviewownthreads'] != 0 && $thread['uid'] != $mybb->user['uid']))
 {
 	error_no_permission();
 }
@@ -83,11 +86,15 @@ if($forumpermissions['canview'] == 0 || $forumpermissions['canviewthreads'] == 0
 // Check if this forum is password protected and we have a valid password
 check_forum_password($forum['fid']);
 
-$page = intval($mybb->input['page']);
+$page = $mybb->get_input('page', MyBB::INPUT_INT);
 
 // Paginate this thread
+if(!$mybb->settings['postsperpage'] || (int)$mybb->settings['postsperpage'] < 1)
+{
+	$mybb->settings['postsperpage'] = 20;
+}
 $perpage = $mybb->settings['postsperpage'];
-$postcount = intval($thread['replies'])+1;
+$postcount = (int)$thread['replies']+1;
 $pages = ceil($postcount/$perpage);
 
 if($page > $pages)
@@ -108,36 +115,32 @@ if($postcount > $perpage)
 {
 	$multipage = printthread_multipage($postcount, $perpage, $page, "printthread.php?tid={$tid}");
 }
+else
+{
+	$multipage = '';
+}
 
 $thread['threadlink'] = get_thread_link($tid);
 
 $postrows = '';
-if(is_moderator($forum['fid']))
+if(is_moderator($forum['fid'], "canviewunapprove"))
 {
-    $visible = "AND (p.visible='0' OR p.visible='1')";
+	$visible = "AND (p.visible='0' OR p.visible='1')";
 }
 else
 {
-    $visible = "AND p.visible='1'";
+	$visible = "AND p.visible='1'";
 }
 $query = $db->query("
-    SELECT u.*, u.username AS userusername, p.*
-    FROM ".TABLE_PREFIX."posts p
-    LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
-    WHERE p.tid='$tid' {$visible}
-    ORDER BY p.dateline
+	SELECT u.*, u.username AS userusername, p.*
+	FROM ".TABLE_PREFIX."posts p
+	LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
+	WHERE p.tid='$tid' {$visible}
+	ORDER BY p.dateline
 	LIMIT {$start}, {$perpage}
-"); 
+");
 while($postrow = $db->fetch_array($query))
 {
-	if($postrow['userusername'])
-	{
-		$postrow['username'] = $postrow['userusername'];
-	}
-	$postrow['subject'] = htmlspecialchars_uni($parser->parse_badwords($postrow['subject']));
-	$postrow['date'] = my_date($mybb->settings['dateformat'], $postrow['dateline']);
-	$postrow['time'] = my_date($mybb->settings['timeformat'], $postrow['dateline']);
-	$postrow['profilelink'] = build_profile_link($postrow['username'], $postrow['uid']);
 	$parser_options = array(
 		"allow_html" => $forum['allowhtml'],
 		"allow_mycode" => $forum['allowmycode'],
@@ -153,6 +156,25 @@ while($postrow = $db->fetch_array($query))
 		$parser_options['allow_smilies'] = 0;
 	}
 
+	if($mybb->user['showimages'] != 1 && $mybb->user['uid'] != 0 || $mybb->settings['guestimages'] != 1 && $mybb->user['uid'] == 0)
+	{
+		$parser_options['allow_imgcode'] = 0;
+	}
+
+	if($mybb->user['showvideos'] != 1 && $mybb->user['uid'] != 0 || $mybb->settings['guestvideos'] != 1 && $mybb->user['uid'] == 0)
+	{
+		$parser_options['allow_videocode'] = 0;
+	}
+
+	if($postrow['userusername'])
+	{
+		$postrow['username'] = $postrow['userusername'];
+	}
+	$postrow['username'] = htmlspecialchars_uni($postrow['username']);
+	$postrow['subject'] = htmlspecialchars_uni($parser->parse_badwords($postrow['subject']));
+	$postrow['date'] = my_date($mybb->settings['dateformat'], $postrow['dateline'], null, 0);
+	$postrow['profilelink'] = build_profile_link($postrow['username'], $postrow['uid']);
+
 	$postrow['message'] = $parser->parse_message($postrow['message'], $parser_options);
 	$plugins->run_hooks("printthread_post");
 	eval("\$postrows .= \"".$templates->get("printthread_post")."\";");
@@ -163,9 +185,15 @@ $plugins->run_hooks("printthread_end");
 eval("\$printable = \"".$templates->get("printthread")."\";");
 output_page($printable);
 
-function makeprintablenav($pid="0", $depth="--")
+/**
+ * @param int $pid
+ * @param string $depth
+ *
+ * @return string
+ */
+function makeprintablenav($pid=0, $depth="--")
 {
-	global $db, $pforumcache, $fid, $forum, $lang;
+	global $mybb, $db, $pforumcache, $fid, $forum, $lang, $templates;
 	if(!is_array($pforumcache))
 	{
 		$parlist = build_parent_list($fid, "fid", "OR", $forum['parentlist']);
@@ -176,12 +204,14 @@ function makeprintablenav($pid="0", $depth="--")
 		}
 		unset($forumnav);
 	}
+	$forums = '';
 	if(is_array($pforumcache[$pid]))
 	{
 		foreach($pforumcache[$pid] as $key => $forumnav)
 		{
-			$forums .= "+".$depth." $lang->forum {$forumnav['name']} (<i>".$mybb->settings['bburl']."/".get_forum_link($forumnav['fid'])."</i>)<br />\n";
-			if($pforumcache[$forumnav['fid']])
+			$forumnav['link'] = get_forum_link($forumnav['fid']);
+			eval("\$forums .= \"".$templates->get("printthread_nav")."\";");
+			if(!empty($pforumcache[$forumnav['fid']]))
 			{
 				$newdepth = $depth."-";
 				$forums .= makeprintablenav($forumnav['fid'], $newdepth);
@@ -194,34 +224,37 @@ function makeprintablenav($pid="0", $depth="--")
 /**
  * Output multipage navigation.
  *
- * @param int The total number of items.
- * @param int The items per page.
- * @param int The current page.
- * @param string The URL base.
+ * @param int $count The total number of items.
+ * @param int $perpage The items per page.
+ * @param int $current_page The current page.
+ * @param string $url The URL base.
+ *
+ * @return string
 */
-function printthread_multipage($count, $perpage, $page, $url)
+function printthread_multipage($count, $perpage, $current_page, $url)
 {
-	global $lang;
+	global $lang, $templates;
 	$multipage = "";
 	if($count > $perpage)
 	{
 		$pages = $count / $perpage;
 		$pages = ceil($pages);
 
-		for($i = 1; $i <= $pages; ++$i)
+		$mppage = null;
+		for($page = 1; $page <= $pages; ++$page)
 		{
-			if($i == $page)
+			if($page == $current_page)
 			{
-				$mppage .= "<strong>$i</strong> ";
+				eval("\$mppage .= \"".$templates->get("printthread_multipage_page_current")."\";");
 			}
 			else
 			{
-				$mppage .= "<a href=\"$url&amp;page=$i\">$i</a> ";
+				eval("\$mppage .= \"".$templates->get("printthread_multipage_page")."\";");
 			}
 		}
-		$multipage = "<div class=\"multipage\">{$lang->pages} <strong>".$lang->archive_pages."</strong> $mppage</div>";
+
+		eval("\$multipage = \"".$templates->get("printthread_multipage")."\";");
 	}
 	return $multipage;
 }
 
-?>

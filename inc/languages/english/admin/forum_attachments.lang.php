@@ -1,9 +1,7 @@
 <?php
 /**
- * MyBB 1.6 English Language Pack
- * Copyright 2010 MyBB Group, All Rights Reserved
- *
- * $Id$
+ * MyBB 1.8 English Language Pack
+ * Copyright 2014 MyBB Group, All Rights Reserved
  */
 
 // Tabs
@@ -20,6 +18,7 @@ $l['attachment_stats_desc'] = "Below are some general statistics for the attachm
 $l['error_nothing_selected'] = "Please select one or more attachments to delete.";
 $l['error_no_attachments'] = "There aren't any attachments on your forum yet. Once an attachment is posted you'll be able to access this section.";
 $l['error_not_all_removed'] = "Only some orphaned attachments were successfully deleted, others could not be removed from the uploads directory.";
+$l['error_count'] = 'Unable to remove {1} attachment(s).';
 $l['error_invalid_username'] = "The username you entered is invalid.";
 $l['error_invalid_forums'] = "One or more forums you selected are invalid.";
 $l['error_no_results'] = "No attachments were found with the specified search criteria.";
@@ -29,7 +28,8 @@ $l['error_does_not_exist'] = "Thread or post for this attachment no longer exist
 
 // Success
 $l['success_deleted'] = "The selected attachments have been deleted successfully.";
-$l['success_orphan_deleted'] = "The selected orphaned attachments have been deleted successfully.";
+$l['success_orphan_deleted'] = "The selected orphaned attachment(s) have been deleted successfully.";
+$l['success_count'] = '{1} attachment(s) removed successfully.';
 $l['success_no_orphans'] = "There are no orphaned attachments on your forum.";
 
 // Confirm
@@ -71,15 +71,20 @@ $l['step2of2'] = "Step 2 of 2 - Database Scan";
 $l['step1of2_line1'] = "Please wait, the file system is currently being scanned for orphaned attachments.";
 $l['step2of2_line1'] = "Please wait, the database is currently being scanned for orphaned attachments.";
 $l['step_line2'] = "You'll automatically be redirected to the next step once this process is complete.";
+$l['scanning'] = 'Scanning&hellip;';
 
 // = Attachments / Index
 $l['index_find_attachments'] = "Attachments - Find Attachments";
-$l['find_where'] = "Find attachments where...";
+$l['find_where'] = "Find attachments where&hellip;";
 $l['name_contains'] = "File name contains";
-$l['name_contains_desc'] = "To search by wild card enter *.[file extension]. Example: *.zip.";
+$l['name_contains_desc'] = "Search for attachments that include the given query in the file name. For example, enter .zip to find attachments using the .zip file extension.";
 $l['type_contains'] = "File type contains";
 $l['forum_is'] = "Forum is";
 $l['username_is'] = "Posters' username is";
+$l['poster_is'] = "Poster is";
+$l['poster_is_either'] = "User or Guest";
+$l['poster_is_user'] = "Users Only";
+$l['poster_is_guest'] = "Guests Only";
 $l['more_than'] = "More than";
 $l['greater_than'] = "Greater than";
 $l['is_exactly'] = "Is exactly";
@@ -104,5 +109,3 @@ $l['in'] = "in";
 $l['button_delete_orphans'] = "Delete Checked Orphans";
 $l['button_delete_attachments'] = "Delete Checked Attachments";
 $l['button_find_attachments'] = "Find Attachments";
-
-?>

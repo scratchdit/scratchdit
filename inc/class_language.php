@@ -1,12 +1,10 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
- *
- * $Id$
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  */
 
 class MyLanguage
@@ -27,6 +25,13 @@ class MyLanguage
 	public $language;
 
 	/**
+	 * The fallback language we are using.
+	 *
+	 * @var string
+	 */
+	public $fallback = 'english';
+
+	/**
 	 * Information about the current language.
 	 *
 	 * @var array
@@ -36,7 +41,7 @@ class MyLanguage
 	/**
 	 * Set the path for the language folder.
 	 *
-	 * @param string The path to the language folder.
+	 * @param string $path The path to the language folder.
 	 */
 	function set_path($path)
 	{
@@ -46,7 +51,7 @@ class MyLanguage
 	/**
 	 * Check if a specific language exists.
 	 *
-	 * @param string The language to check for.
+	 * @param string $language The language to check for.
 	 * @return boolean True when exists, false when does not exist.
 	 */
 	function language_exists($language)
@@ -65,27 +70,27 @@ class MyLanguage
 	/**
 	 * Set the language for an area.
 	 *
-	 * @param string The language to use.
-	 * @param string The area to set the language for.
+	 * @param string $language The language to use.
+	 * @param string $area The area to set the language for.
 	 */
-	function set_language($language="english", $area="user")
+	function set_language($language="", $area="user")
 	{
 		global $mybb;
-		
+
 		$language = preg_replace("#[^a-z0-9\-_]#i", "", $language);
 
-		// Default language is English.
+		// Use the board's default language
 		if($language == "")
 		{
-			$language = "english";
+			$language = $mybb->settings['bblanguage'];
 		}
-		
+
 		// Check if the language exists.
 		if(!$this->language_exists($language))
 		{
 			die("Language $language ($this->path/$language) is not installed");
 		}
-		
+
 		$this->language = $language;
 		require $this->path."/".$language.".php";
 		$this->settings = $langinfo;
@@ -112,15 +117,16 @@ class MyLanguage
 				}
 			}
 			$this->language = $language."/{$area}";
+			$this->fallback = $this->fallback."/{$area}";
 		}
 	}
 
 	/**
 	 * Load the language variables for a section.
 	 *
-	 * @param string The section name.
-	 * @param boolean Is this a datahandler?
-	 * @param boolean supress the error if the file doesn't exist?
+	 * @param string $section The section name.
+	 * @param boolean $isdatahandler Is this a datahandler?
+	 * @param boolean $supress_error supress the error if the file doesn't exist?
 	 */
 	function load($section, $isdatahandler=false, $supress_error=false)
 	{
@@ -128,17 +134,20 @@ class MyLanguage
 		// Datahandlers are never in admin lang directory.
 		if($isdatahandler === true)
 		{
-			$this->language = str_replace('/admin', '', $this->language);
+			$lfile = $this->path."/".str_replace('/admin', '', $this->language)."/".$section.".lang.php";
 		}
-		$lfile = $this->path."/".$this->language."/".$section.".lang.php";
-		
+		else
+		{
+			$lfile = $this->path."/".$this->language."/".$section.".lang.php";
+		}
+
 		if(file_exists($lfile))
 		{
 			require_once $lfile;
 		}
-		elseif(file_exists($this->path."/english/".$section.".lang.php"))
+		elseif(file_exists($this->path."/".$this->fallback."/".$section.".lang.php"))
 		{
-			require_once $this->path."/english/".$section.".lang.php";
+			require_once $this->path."/".$this->fallback."/".$section.".lang.php";
 		}
 		else
 		{
@@ -147,11 +156,11 @@ class MyLanguage
 				die("$lfile does not exist");
 			}
 		}
-		
+
 		// We must unite and protect our language variables!
 		$lang_keys_ignore = array('language', 'path', 'settings');
-		
-		if(is_array($l))
+
+		if(isset($l) && is_array($l))
 		{
 			foreach($l as $key => $val)
 			{
@@ -162,27 +171,32 @@ class MyLanguage
 			}
 		}
 	}
-	
+
+	/**
+	 * @param string $string
+	 *
+	 * @return string
+	 */
 	function sprintf($string)
 	{
 		$arg_list = func_get_args();
 		$num_args = count($arg_list);
-		
+
 		for($i = 1; $i < $num_args; $i++)
 		{
 			$string = str_replace('{'.$i.'}', $arg_list[$i], $string);
 		}
-		
+
 		return $string;
 	}
 
 	/**
 	 * Get the language variables for a section.
 	 *
-	 * @param boolean Admin variables when true, user when false.
+	 * @param boolean $admin Admin variables when true, user when false.
 	 * @return array The language variables.
 	 */
-	function get_languages($admin=0)
+	function get_languages($admin=false)
 	{
 		$dir = @opendir($this->path);
 		while($lang = readdir($dir))
@@ -205,13 +219,23 @@ class MyLanguage
 	/**
 	 * Parse contents for language variables.
 	 *
-	 * @param string The contents to parse.
+	 * @param string $contents The contents to parse.
 	 * @return string The parsed contents.
 	 */
 	function parse($contents)
 	{
-		$contents = preg_replace("#<lang:([a-zA-Z0-9_]+)>#e", "\$this->$1", $contents);
+		$contents = preg_replace_callback("#<lang:([a-zA-Z0-9_]+)>#", array($this, 'parse_replace'), $contents);
 		return $contents;
 	}
+
+	/**
+	 * Replace content with language variable.
+	 *
+	 * @param array $matches Matches.
+	 * @return string Language variable.
+	 */
+	function parse_replace($matches)
+	{
+		return $this->{$matches[1]};
+	}
 }
-?>

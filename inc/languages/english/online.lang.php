@@ -1,9 +1,7 @@
 <?php
 /**
- * MyBB 1.6 English Language Pack
- * Copyright 2010 MyBB Group, All Rights Reserved
- * 
- * $Id$
+ * MyBB 1.8 English Language Pack
+ * Copyright 2014 MyBB Group, All Rights Reserved
  */
 
 $l['nav_online'] = "Who's Online";
@@ -18,6 +16,7 @@ $l['viewing_event'] = "Viewing Event";
 $l['viewing_event2'] = "Viewing Event <a href=\"{1}\">{2}</a>";
 $l['adding_event'] = "<a href=\"calendar.php?action=addevent\">Adding Event</a>";
 $l['editing_event'] = "Editing Event";
+$l['viewing_contact_us'] = "Viewing <a href=\"contact.php\">Contact Us</a>";
 $l['editing_post'] = "Editing Post";
 $l['viewing_forum'] = "Viewing Forum";
 $l['viewing_forum2'] = "Viewing Forum <a href=\"{1}\">{2}</a>";
@@ -37,7 +36,7 @@ $l['viewing_whoposted'] = "Viewing Who Posted";
 $l['viewing_whoposted2'] = "Viewing Who Posted in Thread <a href=\"{1}\">{2}</a>";
 $l['marking_read'] = "<a href=\"misc.php?action=markread&amp;my_post_key={1}\">Marking Forums as Read</a>";
 $l['viewing_helpdocs'] = "Viewing <a href=\"misc.php?action=help\">Help Documents</a>";
-$l['viewing_buddylist'] = "Viewing <a href=\"misc.php?action=buddypopup\">Buddy List</a>";
+$l['viewing_buddylist'] = 'Viewing <a href="#" onclick="MyBB.popupWindow(\'/misc.php?action=buddypopup&amp;modal=1\'); return false;">Buddy List</a>';
 $l['viewing_smilies'] = "Viewing <a href=\"misc.php?action=smilies\">Smilie List</a>";
 $l['viewing_syndication'] = "Viewing <a href=\"misc.php?action=syndication\">RSS Syndication</a> Page";
 $l['replying_thread'] = "Replying to Thread";
@@ -66,8 +65,7 @@ $l['updating_options'] = "<a href=\"usercp.php?action=options\">Updating Options
 $l['editing_signature'] = "<a href=\"usercp.php?action=editsig\">Editing Signature</a>";
 $l['changing_avatar'] = "<a href=\"usercp.php?action=avatar\">Changing Avatar</a>";
 $l['viewing_subscriptions'] = "Viewing <a href=\"usercp.php?action=subscriptions\">Thread Subscriptions</a>";
-$l['viewing_favorites'] = "Viewing <a href=\"usercp.php?action=favorites\">Favorite Threads</a>";
-$l['editing_pad'] = "Editing <a href=\"usercp.php?action=notepad\">Personal Pad</a>";
+$l['editing_pad'] = 'Editing <a href="usercp.php">Personal Pad</a>';
 $l['editing_password'] = "Editing <a href=\"usercp.php?action=password\">Password</a>";
 $l['user_cp'] = "Viewing <a href=\"usercp.php\">User Control Panel</a>";
 $l['viewing_portal'] = "Viewing <a href=\"portal.php\">Portal</a> Page";
@@ -79,7 +77,6 @@ $l['viewing_reputation_report2'] = "Viewing Reputation";
 $l['member_resendactivation'] = "Resending Account Activation Email";
 $l['member_lostpw'] = "Retrieving <a href=\"member.php?action=lostpw\">Lost Password</a>";
 $l['sending_thread'] = "Sending a thread to a friend";
-$l['guest'] = "Guest";
 $l['page'] = "Page";
 $l['users_online'] = "Who's Online";
 $l['on_username'] = "Username";
@@ -99,16 +96,15 @@ $l['online_count'] = "{1} {2} active in the past {3} minutes ({4} {5}, {6} of wh
 $l['ip'] = "IP:";
 $l['resolves_to'] = "Host Name:";
 $l['if_resolvable'] = "(if resolvable)";
-$l['admin_options'] = "Admin Options:";
+$l['admin_options'] = "Admin Options";
 $l['search_regip_users'] = "Search for users who have registered with this IP";
 $l['search_postip_users'] = "Search for users who have posted with this IP";
-$l['lookup'] = "[lookup]";
+$l['lookup'] = "[Lookup]";
 $l['member_online_today'] = "<strong>1</strong> Member Was Online Today";
 $l['members_were_online_today'] = "<strong>{1}</strong> Members Were Online Today";
 $l['member_online_hidden'] = " ({1} member was invisible)";
 $l['members_online_hidden'] = " ({1} members were invisible)";
 $l['rating_thread'] = "Rating thread";
-$l['viewing_imcenter'] = "Viewing IM Center";
 $l['managing_favorites'] = "Managing Favorite Threads";
 $l['managing_subscriptions'] = "Managing Subscribed Threads";
 $l['managing_group'] = "Managing a User Group";
@@ -133,4 +129,3 @@ $l['changing_dst'] = "Changing DST Switch";
 $l['printing_thread'] = "Printing a Thread";
 $l['printing_thread2'] = "Printing Thread <a href=\"{1}\">{2}</a>";
 $l['managing_buddyignorelist'] = "Managing Buddy/Ignore List";
-?>

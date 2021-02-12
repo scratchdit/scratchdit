@@ -1,33 +1,34 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
- *
- * $Id$
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  */
 
 define("IN_MYBB", 1);
 define('THIS_SCRIPT', 'managegroup.php');
 
-$templatelist = "managegroup_leaders_bit, managegroup_leaders, postbit_pm, postbit_email, managegroup_user_checkbox, managegroup_user, managegroup_adduser, managegroup_removeusers, managegroup,managegroup_joinrequests_request, managegroup_joinrequests";
+$templatelist = "managegroup_leaders_bit,managegroup_leaders,postbit_pm,postbit_email,managegroup_user_checkbox,managegroup_user,managegroup_adduser,managegroup_removeusers,managegroup,managegroup_joinrequests_request,managegroup_joinrequests";
+$templatelist .= ",managegroup_requestnote,managegroup_no_users,multipage,multipage_end,multipage_jump_page,multipage_nextpage,multipage_page,multipage_page_current,multipage_page_link_current,multipage_prevpage,multipage_start";
 
 require_once "./global.php";
 
 // Load language files
 $lang->load("managegroup");
 
-$gid = $mybb->input['gid'] = intval($mybb->input['gid']);
-$usergroup = $groupscache[$mybb->input['gid']];
-if(!$usergroup['gid'])
+$gid = $mybb->get_input('gid', MyBB::INPUT_INT);
+if(!isset($groupscache[$gid]))
 {
 	error($lang->invalid_group);
 }
-$lang->nav_group_management = $lang->sprintf($lang->nav_group_management, $usergroup['title']);
+$usergroup = $groupscache[$gid];
+$lang->nav_group_management = $lang->sprintf($lang->nav_group_management, htmlspecialchars_uni($usergroup['title']));
 add_breadcrumb($lang->nav_group_memberships, "usercp.php?action=usergroups");
 add_breadcrumb($lang->nav_group_management, "managegroup.php?gid=$gid");
+
+$mybb->input['action'] = $mybb->get_input('action');
 
 if($mybb->input['action'] == "joinrequests")
 {
@@ -37,7 +38,8 @@ if($mybb->input['action'] == "joinrequests")
 // Check that this user is actually a leader of this group
 $query = $db->simple_select("groupleaders", "*", "uid='{$mybb->user['uid']}' AND gid='{$gid}'");
 $groupleader = $db->fetch_array($query);
-if(!$groupleader['uid'] && $mybb->user['cancp'] != 1)
+
+if(!$groupleader['uid'] && $mybb->usergroup['cancp'] != 1)
 {
 	error($lang->not_leader_of_this_group);
 }
@@ -45,23 +47,105 @@ if(!$groupleader['uid'] && $mybb->user['cancp'] != 1)
 if($mybb->input['action'] == "do_add" && $mybb->request_method == "post")
 {
 	// Verify incoming POST request
-	verify_post_check($mybb->input['my_post_key']);
+	verify_post_check($mybb->get_input('my_post_key'));
 
 	if($groupleader['canmanagemembers'] == 0)
 	{
 		error_no_permission();
 	}
-	$query = $db->simple_select("users", "uid, additionalgroups, usergroup", "username = '".$db->escape_string($mybb->input['username'])."'", array("limit" => 1));
-	$user = $db->fetch_array($query);
+
+	$plugins->run_hooks("managegroup_do_add_start");
+
+	$options = array(
+		'fields' => array('additionalgroups', 'usergroup')
+	);
+
+	$user = get_user_by_username($mybb->get_input('username'), $options);
+
 	if($user['uid'])
 	{
 		$additionalgroups = explode(',', $user['additionalgroups']);
-		if ($user['usergroup'] != $gid && !in_array($gid, $additionalgroups))
+		if($user['usergroup'] != $gid && !in_array($gid, $additionalgroups))
 		{
 			join_usergroup($user['uid'], $gid);
+			$db->delete_query("joinrequests", "uid='{$user['uid']}' AND gid='{$gid}'");
+			$plugins->run_hooks("managegroup_do_add_end");
 			redirect("managegroup.php?gid=".$gid, $lang->user_added);
 		}
-		else 
+		else
+		{
+			error($lang->error_alreadyingroup);
+		}
+	}
+	else
+	{
+		error($lang->error_invalidusername);
+	}
+}
+elseif($mybb->input['action'] == "do_invite" && $mybb->request_method == "post")
+{
+	// Verify incoming POST request
+	verify_post_check($mybb->get_input('my_post_key'));
+
+	if($groupleader['caninvitemembers'] == 0)
+	{
+		error_no_permission();
+	}
+
+	$plugins->run_hooks("managegroup_do_invite_start");
+
+	$options = array(
+		'fields' => array('additionalgroups', 'usergroup', 'language')
+	);
+
+	$user = get_user_by_username($mybb->get_input('inviteusername'), $options);
+
+	if($user['uid'])
+	{
+		$additionalgroups = explode(',', $user['additionalgroups']);
+		if($user['usergroup'] != $gid && !in_array($gid, $additionalgroups))
+		{
+			$query = $db->simple_select("joinrequests", "rid", "uid = '".(int)$user['uid']."' AND gid = '".(int)$gid."'", array("limit" => 1));
+			$pendinginvite = $db->fetch_array($query);
+			if($pendinginvite['rid'])
+			{
+				error($lang->error_alreadyinvited);
+			}
+			else
+			{
+				$usergroups_cache = $cache->read('usergroups');
+				$usergroup = $usergroups_cache[$gid];
+
+				$joinrequest = array(
+					"uid" => $user['uid'],
+					"gid" => $usergroup['gid'],
+					"dateline" => TIME_NOW,
+					"invite" => 1
+				);
+				$db->insert_query("joinrequests", $joinrequest);
+
+				$lang_var = 'invite_pm_message';
+				if($mybb->settings['deleteinvites'] != 0)
+				{
+					$lang_var .= '_expires';
+				}
+
+				$pm = array(
+					'subject' => array('invite_pm_subject', $usergroup['title']),
+					'message' => array($lang_var, $usergroup['title'], $mybb->settings['bburl'], $mybb->settings['deleteinvites']),
+					'touid' => $user['uid'],
+					'language' => $user['language'],
+					'language_file' => 'managegroup'
+				);
+
+				send_pm($pm, $mybb->user['uid'], true);
+
+				$plugins->run_hooks("managegroup_do_invite_end");
+
+				redirect("managegroup.php?gid=".$gid, $lang->user_invited);
+			}
+		}
+		else
 		{
 			error($lang->error_alreadyingroup);
 		}
@@ -74,7 +158,7 @@ if($mybb->input['action'] == "do_add" && $mybb->request_method == "post")
 elseif($mybb->input['action'] == "do_joinrequests" && $mybb->request_method == "post")
 {
 	// Verify incoming POST request
-	verify_post_check($mybb->input['my_post_key']);
+	verify_post_check($mybb->get_input('my_post_key'));
 
 	if($groupleader['canmanagerequests'] == 0)
 	{
@@ -83,22 +167,24 @@ elseif($mybb->input['action'] == "do_joinrequests" && $mybb->request_method == "
 
 	$plugins->run_hooks("managegroup_do_joinrequests_start");
 
-	if(is_array($mybb->input['request']))
+	$uidin = null;
+	if(is_array($mybb->get_input('request', MyBB::INPUT_ARRAY)))
 	{
-		foreach($mybb->input['request'] as $uid => $what)
+		$uidin = array();
+		foreach($mybb->get_input('request', MyBB::INPUT_ARRAY) as $uid => $what)
 		{
 			if($what == "accept")
 			{
 				join_usergroup($uid, $gid);
-				$uidin[] = intval($uid);
+				$uidin[] = (int)$uid;
 			}
 			elseif($what == "decline")
 			{
-				$uidin[] = intval($uid);
+				$uidin[] = (int)$uid;
 			}
 		}
 	}
-	if(is_array($uidin))
+	if(is_array($uidin) && !empty($uidin))
 	{
 		$uids = implode(",", $uidin);
 		$db->delete_query("joinrequests", "uid IN ({$uids}) AND gid='{$gid}'");
@@ -117,7 +203,7 @@ elseif($mybb->input['action'] == "joinrequests")
 		SELECT j.*, u.uid, u.username, u.postnum, u.regdate
 		FROM ".TABLE_PREFIX."joinrequests j
 		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=j.uid)
-		WHERE j.gid='".$mybb->input['gid']."' AND j.uid != 0
+		WHERE j.gid='{$gid}' AND j.uid != 0
 		ORDER BY u.username ASC
 	");
 	while($user = $db->fetch_array($query))
@@ -125,6 +211,7 @@ elseif($mybb->input['action'] == "joinrequests")
 		$user['reason'] = htmlspecialchars_uni($user['reason']);
 		$altbg = alt_trow();
 		$regdate = my_date($mybb->settings['dateformat'], $user['regdate']);
+		$user['username'] = htmlspecialchars_uni($user['username']);
 		$user['profilelink'] = build_profile_link($user['username'], $user['uid']);
 		eval("\$users .= \"".$templates->get("managegroup_joinrequests_request")."\";");
 	}
@@ -132,7 +219,7 @@ elseif($mybb->input['action'] == "joinrequests")
 	{
 		error($lang->no_requests);
 	}
-	$lang->join_requests = $lang->sprintf($lang->join_requests_title,htmlspecialchars_uni($usergroup['title']));
+	$lang->join_requests = $lang->sprintf($lang->join_requests_title, htmlspecialchars_uni($usergroup['title']));
 
 	$plugins->run_hooks("managegroup_joinrequests_end");
 
@@ -142,20 +229,22 @@ elseif($mybb->input['action'] == "joinrequests")
 elseif($mybb->input['action'] == "do_manageusers" && $mybb->request_method == "post")
 {
 	// Verify incoming POST request
-	verify_post_check($mybb->input['my_post_key']);
+	verify_post_check($mybb->get_input('my_post_key'));
 
 	if($groupleader['canmanagemembers'] == 0)
 	{
 		error_no_permission();
 	}
 
+	$users = $mybb->get_input('removeuser', MyBB::INPUT_ARRAY);
+
 	$plugins->run_hooks("managegroup_do_manageusers_start");
 
-	if(is_array($mybb->input['removeuser']))
+	if(!empty($users))
 	{
-		foreach($mybb->input['removeuser'] as $uid)
+		foreach($users as $uid)
 		{
-			leave_usergroup($uid, $mybb->input['gid']);
+			leave_usergroup($uid, $gid);
 		}
 	}
 	else
@@ -171,11 +260,17 @@ else
 {
 	$plugins->run_hooks("managegroup_start");
 
-	$lang->members_of = $lang->sprintf($lang->members_of, $usergroup['title']);
-	$lang->add_member = $lang->sprintf($lang->add_member, $usergroup['title']);
-	if($usergroup['type'] == 4)
+	$lang->members_of = $lang->sprintf($lang->members_of, htmlspecialchars_uni($usergroup['title']));
+	$lang->add_member = $lang->sprintf($lang->add_member, htmlspecialchars_uni($usergroup['title']));
+	$lang->invite_member = $lang->sprintf($lang->invite_member, htmlspecialchars_uni($usergroup['title']));
+	$joinrequests = '';
+	if($usergroup['type'] == 5)
 	{
-		$query = $db->simple_select("joinrequests", "COUNT(*) AS req", "gid='".$mybb->input['gid']."'");
+		$usergrouptype = $lang->group_public_invite;
+	}
+	elseif($usergroup['type'] == 4)
+	{
+		$query = $db->simple_select("joinrequests", "COUNT(*) AS req", "gid='{$gid}'");
 		$numrequests = $db->fetch_array($query);
 		if($numrequests['req'])
 		{
@@ -197,21 +292,30 @@ else
 		$usergrouptype = $lang->group_default;
 	}
 
+	$group_leaders = '';
+
 	// Display group leaders (if there is any)
 	$query = $db->query("
 		SELECT g.*, u.username, u.usergroup, u.displaygroup
 		FROM ".TABLE_PREFIX."groupleaders g
 		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=g.uid)
-		WHERE g.gid = '".$mybb->input['gid']."'
+		WHERE g.gid = '{$gid}'
 	");
+
+	$leaders_array = array();
+
 	if($db->num_rows($query))
 	{
 		$loop = 1;
+		$leaders = '';
 		$leader_count = $db->num_rows($query);
 		while($leader = $db->fetch_array($query))
 		{
-			$leader_name = format_name(htmlspecialchars_uni($leader['username']), $leader['usergroup'], $leader['displaygroup']);
+			$leader['username'] = htmlspecialchars_uni($leader['username']);
+			$leader_name = format_name($leader['username'], $leader['usergroup'], $leader['displaygroup']);
 			$leader_profile_link = build_profile_link($leader_name, $leader['uid']);
+
+			$leaders_array[] = $leader['uid'];
 
 			// Get commas...
 			if($loop != $leader_count)
@@ -234,40 +338,61 @@ else
 	{
 		case "pgsql":
 		case "sqlite":
-			$query = $db->simple_select("users", "*", "','||additionalgroups||',' LIKE '%,".$mybb->input['gid'].",%' OR usergroup='".$mybb->input['gid']."'", array('order_by' => 'username'));
+			$query = $db->simple_select("users", "*", "','||additionalgroups||',' LIKE '%,{$gid},%' OR usergroup='{$gid}'", array('order_by' => 'username'));
 			break;
 		default:
-			$query = $db->simple_select("users", "*", "CONCAT(',',additionalgroups,',') LIKE '%,".$mybb->input['gid'].",%' OR usergroup='".$mybb->input['gid']."'", array('order_by' => 'username'));
+			$query = $db->simple_select("users", "*", "CONCAT(',',additionalgroups,',') LIKE '%,{$gid},%' OR usergroup='{$gid}'", array('order_by' => 'username'));
 	}
 
 	$numusers = $db->num_rows($query);
-	/*if(!$numusers && !$numrequests)
+
+	$perpage = (int)$mybb->settings['membersperpage'];
+	if($perpage < 1)
 	{
-		error($lang->group_no_members);
-	}*/
-	$perpage = $mybb->settings['membersperpage'];
+		$perpage = 20;
+	}
+
+	$page = $mybb->get_input('page', MyBB::INPUT_INT);
 	if($page && $page > 0)
 	{
-		$start = ($page-1) *$perpage;
+		$start = ($page-1) * $perpage;
+		$pages = ceil($numusers / $perpage);
+		if($page > $pages)
+		{
+			$start = 0;
+			$page = 1;
+		}
 	}
 	else
 	{
 		$start = 0;
 		$page = 1;
 	}
-	$multipage = multipage($numusers, $perpage, $page, "managegroup.php?gid=".$mybb->input['gid']);
+	$multipage = multipage($numusers, $perpage, $page, "managegroup.php?gid=".$gid);
+
+	switch($db->type)
+	{
+		case "pgsql":
+		case "sqlite":
+			$query = $db->simple_select("users", "*", "','||additionalgroups||',' LIKE '%,{$gid},%' OR usergroup='{$gid}'", array('order_by' => 'username', 'limit' => $perpage, 'limit_start' => $start));
+			break;
+		default:
+			$query = $db->simple_select("users", "*", "CONCAT(',',additionalgroups,',') LIKE '%,{$gid},%' OR usergroup='{$gid}'", array('order_by' => 'username', 'limit' => $perpage, 'limit_start' => $start));
+	}
+
+	$removeable_count = 0;
 	$users = "";
 	while($user = $db->fetch_array($query))
 	{
 		$altbg = alt_trow();
-		$regdate = my_date($mybb->settings['dateformat'].", ".$mybb->settings['timeformat'], $user['regdate']);
+		$regdate = my_date('relative', $user['regdate']);
 		$post = $user;
 		$sendpm = $email = '';
 		if($mybb->settings['enablepms'] == 1 && $post['receivepms'] != 0 && $mybb->usergroup['cansendpms'] == 1 && my_strpos(",".$post['ignorelist'].",", ",".$mybb->user['uid'].",") === false)
 		{
 			eval("\$sendpm = \"".$templates->get("postbit_pm")."\";");
 		}
-		
+
 		if($user['hideemail'] != 1)
 		{
 			eval("\$email = \"".$templates->get("postbit_email")."\";");
@@ -276,11 +401,11 @@ else
 		{
 			$email = '';
 		}
-		$query1 = $db->simple_select("groupleaders", "uid", "uid='{$user['uid']}' AND gid='{$gid}'");
-		$isleader = $db->fetch_array($query1);
+
+		$user['username'] = htmlspecialchars_uni($user['username']);
 		$user['username'] = format_name($user['username'], $user['usergroup'], $user['displaygroup']);
 		$user['profilelink'] = build_profile_link($user['username'], $user['uid']);
-		if($isleader['uid'])
+		if(in_array($user['uid'], $leaders_array))
 		{
 			$leader = $lang->leader;
 		}
@@ -290,7 +415,16 @@ else
 		}
 
 		// Checkbox for user management - only if current user is allowed
-		$checkbox = '';
+		$checkbox = $disabled = '';
+		if($user['usergroup'] == $gid)
+		{
+			$disabled = 'disabled="disabled"';
+		}
+		else
+		{
+			++$removeable_count;
+		}
+
 		if($groupleader['canmanagemembers'] == 1)
 		{
 			eval("\$checkbox = \"".$templates->get("managegroup_user_checkbox")."\";");
@@ -309,7 +443,15 @@ else
 	if($groupleader['canmanagemembers'] == 1)
 	{
 		eval("\$add_user = \"".$templates->get("managegroup_adduser")."\";");
-		eval("\$remove_users = \"".$templates->get("managegroup_removeusers")."\";");
+		if($removeable_count)
+		{
+			eval("\$remove_users = \"".$templates->get("managegroup_removeusers")."\";");
+		}
+	}
+
+	if($usergroup['type'] == 5 && $groupleader['caninvitemembers'] == 1)
+	{
+		eval("\$invite_user = \"".$templates->get("managegroup_inviteuser")."\";");
 	}
 
 	$plugins->run_hooks("managegroup_end");
@@ -317,4 +459,3 @@ else
 	eval("\$manageusers = \"".$templates->get("managegroup")."\";");
 	output_page($manageusers);
 }
-?>
