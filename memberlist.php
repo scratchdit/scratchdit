@@ -5,6 +5,7 @@
  *
  * Website: http://www.mybb.com
  * License: http://www.mybb.com/about/license
+ *
  */
 
 define("IN_MYBB", 1);
@@ -56,6 +57,7 @@ if($mybb->get_input('action') == "search")
 		}
 	}
 
+	$referrals_option = '';
 	if($mybb->settings['usereferrals'] == 1)
 	{
 		eval("\$referrals_option = \"".$templates->get("memberlist_referrals_option")."\";");
@@ -309,7 +311,7 @@ else
 			}
 		}
 	}
-
+  
 	$sorturl = htmlspecialchars_uni("memberlist.php?perpage={$mybb->input['perpage']}{$search_url}");
 	$search_url = htmlspecialchars_uni("memberlist.php?sort={$mybb->input['sort']}&order={$mybb->input['order']}&perpage={$mybb->input['perpage']}{$search_url}");
 
@@ -407,7 +409,6 @@ else
 			}
 
 			eval("\$referral_bit = \"".$templates->get("memberlist_referrals_bit")."\";");
-			eval("\$referrals_option = \"".$templates->get("memberlist_referrals_option")."\";");
 		}
 
 		$usergroup['groupimage'] = '';
@@ -453,7 +454,7 @@ else
 				}
 			}
 		}
-
+		
 		$user['usertitle'] = htmlspecialchars_uni($user['usertitle']);
 
 		if(!empty($usergroup['stars']))
@@ -515,6 +516,12 @@ else
 	if(!$users)
 	{
 		eval("\$users = \"".$templates->get("memberlist_error")."\";");
+	}
+
+	$referrals_option = '';
+	if($mybb->settings['usereferrals'] == 1)
+	{
+		eval("\$referrals_option = \"".$templates->get("memberlist_referrals_option")."\";");
 	}
 
 	$plugins->run_hooks("memberlist_end");

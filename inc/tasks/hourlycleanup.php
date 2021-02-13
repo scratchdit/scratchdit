@@ -5,6 +5,7 @@
  *
  * Website: http://www.mybb.com
  * License: http://www.mybb.com/about/license
+ *
  */
 
 function task_hourlycleanup($task)
@@ -26,7 +27,7 @@ function task_hourlycleanup($task)
 		);
 		$plugins->run_hooks('task_hourlycleanup', $args);
 	}
-
+	
 	require_once  MYBB_ROOT."inc/class_moderation.php";
 	$moderation = new Moderation;
 

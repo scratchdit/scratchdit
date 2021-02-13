@@ -2,6 +2,7 @@
 /**
  * MyBB 1.8 English Language Pack
  * Copyright 2014 MyBB Group, All Rights Reserved
+ *
  */
 
 $l['eventdata_missing_name'] = 'The name for the event is missing. Please enter an event name.';

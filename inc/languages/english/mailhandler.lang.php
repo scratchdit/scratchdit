@@ -2,6 +2,7 @@
 /**
  * MyBB 1.8 English Language Pack
  * Copyright 2014 MyBB Group, All Rights Reserved
+ *
  */
 
 $l['error_no_connection'] = 'There was an error establishing a connection through the server: ';

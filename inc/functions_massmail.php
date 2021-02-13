@@ -5,6 +5,7 @@
  *
  * Website: http://www.mybb.com
  * License: http://www.mybb.com/about/license
+ *
  */
 
 /**
@@ -101,7 +102,7 @@ function build_mass_mail_query($conditions)
 	}
 
 	// Usergroup based searching
-	if($conditions['usergroup'])
+	if(!empty($conditions['usergroup']))
 	{
 		if(!is_array($conditions['usergroup']))
 		{

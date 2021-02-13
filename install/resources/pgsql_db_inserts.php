@@ -5,6 +5,7 @@
  *
  * Website: http://www.mybb.com
  * License: http://www.mybb.com/about/license
+ *
  */
 
 $inserts[] = "INSERT INTO mybb_attachtypes (atid, name, mimetype, extension, maxsize, icon, enabled, groups, forums, avatarfile) VALUES (1, 'ZIP File', 'application/zip', 'zip', 1024, 'images/attachtypes/zip.png', 1, '-1', '-1', 0);";

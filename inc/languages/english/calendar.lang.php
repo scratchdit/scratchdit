@@ -2,6 +2,7 @@
 /**
  * MyBB 1.8 English Language Pack
  * Copyright 2014 MyBB Group, All Rights Reserved
+ *
  */
 
 $l['nav_calendar'] = "Calendar";
@@ -32,7 +33,7 @@ $l['add_public_event'] = "Add Public Event";
 
 $l['calendar'] = "Calendar";
 
-$l['jump_month'] ="Jump to month:";
+$l['jump_month'] = "Jump to month:";
 
 $l['birthdays_on_day'] = "Birthdays on {1}";
 $l['birthdayhidden'] = "Hidden";

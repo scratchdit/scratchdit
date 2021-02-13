@@ -5,6 +5,7 @@
  *
  * Website: http://www.mybb.com
  * License: http://www.mybb.com/about/license
+ *
  */
 
 /**
@@ -306,8 +307,7 @@ else if($mybb->input['action'] == "edit_subject" && $mybb->request_method == "po
 
 		// Fetch some of the information from the first post of this thread.
 		$query_options = array(
-			"order_by" => "dateline",
-			"order_dir" => "asc",
+			"order_by" => "dateline, pid",
 		);
 		$query = $db->simple_select("posts", "pid,uid,dateline", "tid='".$thread['tid']."'", $query_options);
 		$post = $db->fetch_array($query);
@@ -734,7 +734,7 @@ else if($mybb->input['action'] == "get_multiquoted")
 		LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
 		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
 		WHERE {$from_tid}p.pid IN ({$quoted_posts}) {$unviewable_forums} {$inactiveforums}
-		ORDER BY p.dateline
+		ORDER BY p.dateline, p.pid
 	");
 	while($quoted_post = $db->fetch_array($query))
 	{
@@ -849,10 +849,10 @@ else if($mybb->input['action'] == "refresh_question" && $mybb->settings['securit
 	");
 
 	$plugins->run_hooks("xmlhttp_refresh_question");
-
+	
 	require_once MYBB_ROOT."inc/class_parser.php";
 	$parser = new postParser;
-
+	
 	$parser_options = array(
 		"allow_html" => 0,
 		"allow_mycode" => 1,
@@ -863,7 +863,7 @@ else if($mybb->input['action'] == "refresh_question" && $mybb->settings['securit
 		"me_username" => 0,
 		"shorten_urls" => 0,
 		"highlight" => 0,
-	);
+	);	
 
 	if($db->num_rows($query) > 0)
 	{

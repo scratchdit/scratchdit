@@ -5,6 +5,7 @@
  *
  * Website: http://www.mybb.com
  * License: http://www.mybb.com/about/license
+ *
  */
 
 /**
@@ -137,7 +138,7 @@ class StopForumSpamChecker
 					$checknum++;
 					$confidence += $result_json->ip->confidence;
 				}
-
+				
 				if($checknum > 0 && $confidence)
 				{
 					$confidence = $confidence / $checknum;

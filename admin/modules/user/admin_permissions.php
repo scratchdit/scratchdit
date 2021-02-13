@@ -5,6 +5,7 @@
  *
  * Website: http://www.mybb.com
  * License: http://www.mybb.com/about/license
+ *
  */
 
 // Disallow direct access to this file for security reasons
@@ -48,7 +49,7 @@ if($mybb->input['action'] == "delete")
 		admin_redirect("index.php?module=user-admin_permissions");
 	}
 
-	if($mybb->input['no'])
+	if($mybb->get_input('no'))
 	{
 		admin_redirect("index.php?module=user-admin_permissions");
 	}
@@ -483,7 +484,7 @@ if(!$mybb->input['action'])
 			{
 				foreach($additional_groups as $gid)
 				{
-					if($usergroups[$gid]['cancp'] == 1)
+					if(!empty($usergroups[$gid]) && $usergroups[$gid]['cancp'] == 1)
 					{
 						$usergroup_list[] = htmlspecialchars_uni($usergroups[$gid]['title']);
 					}
@@ -492,7 +493,7 @@ if(!$mybb->input['action'])
 			$usergroup_list = implode($lang->comma, $usergroup_list);
 
 			$username = htmlspecialchars_uni($admin['username']);
-			$table->construct_cell("<div class=\"float_right\"><img src=\"styles/{$page->style}/images/icons/{$perm_type}.png\" title=\"{$lang->perms_type_user}\" alt=\"{$perm_type}\" /></div><div><strong><a href=\"index.php?module=user-admin_permissions&amp;action=edit&amp;uid={$admin['uid']}\" title=\"{$lang->edit_user}\">{$username}</a></strong><br /><small>{$usergroup_list}</small></div>");
+			$table->construct_cell("<div class=\"float_right\"><img src=\"styles/{$page->style}/images/icons/{$perm_type}.png\" title=\"{$lang->permissions_type_user}\" alt=\"{$perm_type}\" /></div><div><strong><a href=\"index.php?module=user-admin_permissions&amp;action=edit&amp;uid={$admin['uid']}\" title=\"{$lang->edit_user}\">{$username}</a></strong><br /><small>{$usergroup_list}</small></div>");
 
 			$table->construct_cell(my_date('relative', $admin['lastactive']), array("class" => "align_center"));
 

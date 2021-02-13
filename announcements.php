@@ -5,6 +5,7 @@
  *
  * Website: http://www.mybb.com
  * License: http://www.mybb.com/about/license
+ *
  */
 
 define("IN_MYBB", 1);
@@ -22,7 +23,7 @@ $lang->load("announcements");
 $aid = $mybb->get_input('aid', MyBB::INPUT_INT);
 
 // Get announcement fid
-$query        = $db->simple_select("announcements", "fid", "aid='$aid'");
+$query = $db->simple_select("announcements", "fid", "aid='$aid'");
 $announcement = $db->fetch_array($query);
 
 $plugins->run_hooks("announcements_start");

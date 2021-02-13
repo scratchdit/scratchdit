@@ -5,6 +5,7 @@
  *
  * Website: http://www.mybb.com
  * License: http://www.mybb.com/about/license
+ *
  */
 
 // Disallow direct access to this file for security reasons
@@ -15,6 +16,7 @@ if(!defined("IN_MYBB"))
 
 /**
  * Event handling class, provides common structure to handle event data.
+ *
  */
 class EventDataHandler extends DataHandler
 {

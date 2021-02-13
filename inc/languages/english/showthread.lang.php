@@ -2,6 +2,7 @@
 /**
  * MyBB 1.8 English Language Pack
  * Copyright 2014 MyBB Group, All Rights Reserved
+ *
  */
 
 $l['delete_poll'] = "Delete Poll";
@@ -90,7 +91,7 @@ $l['error_nonextnewest'] = "There are no threads that are newer than the one you
 $l['error_nonextoldest'] = "There are no threads that are older than the one you were previously viewing.";
 $l['quickreply_multiquote_selected'] = "You have selected one or more posts to quote.";
 $l['quickreply_multiquote_now'] = "Quote these posts now";
-$l['or'] ="or";
+$l['or'] = "or";
 $l['quickreply_multiquote_deselect'] = "deselect them";
 $l['search_thread'] = "Search Thread";
 $l['enter_keywords'] = "Enter Keywords";

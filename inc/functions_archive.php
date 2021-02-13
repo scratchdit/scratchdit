@@ -5,6 +5,7 @@
  *
  * Website: http://www.mybb.com
  * License: http://www.mybb.com/about/license
+ *
  */
 
 /**
@@ -152,6 +153,7 @@ function archive_multipage($count, $perpage, $page, $url)
 
 /**
  * Output the archive footer.
+ *
  */
 function archive_footer()
 {

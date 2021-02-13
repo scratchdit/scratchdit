@@ -5,6 +5,7 @@
  *
  * Website: http://www.mybb.com
  * License: http://www.mybb.com/about/license
+ *
  */
 
 /**
@@ -33,7 +34,7 @@ function generate_thumbnail($file, $path, $filename, $maxheight, $maxwidth)
 	$imgtype = $imgdesc[2];
 	$imgattr = $imgdesc[3];
 	$imgbits = $imgdesc['bits'];
-	$imgchan = $imgdesc['channels'];
+	$imgchan = isset($imgdesc['channels']) ? $imgdesc['channels'] : null;
 
 	if($imgwidth == 0 || $imgheight == 0)
 	{

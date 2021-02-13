@@ -5,6 +5,7 @@
  *
  * Website: http://www.mybb.com
  * License: http://www.mybb.com/about/license
+ *
  */
 
 /**
@@ -211,7 +212,7 @@ function make_parent_list($fid, $navsep=",")
 	{
 		if($fid == $forum['fid'])
 		{
-			if($pforumcache[$forum['pid']])
+			if(!empty($pforumcache[$forum['pid']]))
 			{
 				$navigation = make_parent_list($forum['pid'], $navsep).$navigation;
 			}
@@ -503,10 +504,12 @@ function get_admin_permissions($get_uid=0, $get_gid=0)
 		{
 			return $final_group_perms;
 		}
-		else
+		elseif(isset($perms_def))
 		{
 			return $perms_def;
 		}
+
+		return array();
 	}
 }
 
@@ -606,6 +609,11 @@ function login_attempt_check_acp($uid=0, $return_num=false)
 	{
 		$query = $db->simple_select("adminoptions", "loginattempts, loginlockoutexpiry", "uid='".(int)$uid."'", 1);
 		$attempts = $db->fetch_array($query);
+
+		if(!$attempts)
+		{
+			return false;
+		}
 	}
 
 	if($attempts['loginattempts'] <= 0)
@@ -656,7 +664,7 @@ function is_mobile($useragent)
 function check_template($template)
 {
 	// Check to see if our database password is in the template
-	if(preg_match('#\$config\[(([\'|"]database[\'|"])|([^\'"].*?))\]\[(([\'|"](database|hostname|password|table_prefix|username)[\'|"])|([^\'"].*?))\]#i', $template))
+	if(preg_match('#\$config\[(([\'|"]database[\'|"])|([^\'"].*?))\]\[(([\'|"](database|hostname|password|table_prefix|username)[\'|"])|([^\'"].*?))\]#i', $template)) 
 	{
 		return true;
 	}
@@ -845,17 +853,17 @@ function output_auto_redirect($form, $prompt)
 	<p>{$prompt}</p>
 	<br />
 	<script type="text/javascript">
-		$(function() {
-			var button = $("#proceed_button");
+		$(function() { 
+			var button = $("#proceed_button"); 
 			if (button.length > 0) {
 				// create a temporary div element to render the text within, un-escaping HTML entities
 				var textElement = $('<div/>').html('{$lang->automatically_redirecting}');
-
+			
 				button.val(textElement.text());
 				button.attr("disabled", true);
 				button.css("color", "#aaa");
 				button.css("borderColor", "#aaa");
-
+				
 				var parent_form = button.closest('form');
 
 				if (parent_form.length > 0) {

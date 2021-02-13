@@ -5,6 +5,7 @@
  *
  * Website: http://www.mybb.com
  * License: http://www.mybb.com/about/license
+ *
  */
 
 class DB_MySQLi implements DB_Base
@@ -484,7 +485,11 @@ class DB_MySQLi implements DB_Base
 			$this->data_seek($query, $row);
 		}
 		$array = $this->fetch_array($query);
-		return $array[$field];
+		if($array !== null)
+		{
+			return $array[$field];
+		}
+		return null;
 	}
 
 	/**
@@ -812,7 +817,7 @@ class DB_MySQLi implements DB_Base
 				{
 					$value = $this->escape_binary($value);
 				}
-
+				
 				$array[$field] = $value;
 			}
 			else
@@ -861,7 +866,7 @@ class DB_MySQLi implements DB_Base
 					{
 						$value = $this->escape_binary($value);
 					}
-
+				
 					$values[$field] = $value;
 				}
 				else
@@ -916,7 +921,7 @@ class DB_MySQLi implements DB_Base
 				{
 					$value = $this->escape_binary($value);
 				}
-
+				
 				$query .= $comma."`".$field."`={$value}";
 			}
 			else
@@ -1305,7 +1310,7 @@ class DB_MySQLi implements DB_Base
 				{
 					$value = $this->escape_binary($value);
 				}
-
+				
 				$values .= $comma."`".$column."`=".$value;
 			}
 			else

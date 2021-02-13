@@ -5,6 +5,7 @@
  *
  * Website: http://www.mybb.com
  * License: http://www.mybb.com/about/license
+ *
  */
 
 // Disallow direct access to this file for security reasons
@@ -26,7 +27,7 @@ if(!$mybb->input['action'])
 	if($mybb->request_method == "post")
 	{
 		// User clicked no
-		if($mybb->input['no'])
+		if($mybb->get_input('no'))
 		{
 			admin_redirect("index.php?module=tools-system_health");
 		}

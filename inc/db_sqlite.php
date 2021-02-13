@@ -5,6 +5,7 @@
  *
  * Website: http://www.mybb.com
  * License: http://www.mybb.com/about/license
+ *
  */
 
 class DB_SQLite implements DB_Base
@@ -33,7 +34,7 @@ class DB_SQLite implements DB_Base
 	/**
 	 * PDOStatement objects of performed queries.
 	 *
-	 * @var array
+	 * @var array 
 	 */
 	public $query_objects = array();
 
@@ -324,7 +325,11 @@ class DB_SQLite implements DB_Base
 			$this->data_seek($query, $row);
 		}
 		$array = $this->fetch_array($query);
-		return $array[$field];
+		if($array !== null && $array !== false)
+		{
+			return $array[$field];
+		}
+		return null;
 	}
 
 	/**
@@ -683,7 +688,7 @@ class DB_SQLite implements DB_Base
 				{
 					$value = $this->escape_binary($value);
 				}
-
+				
 				$array[$field] = $value;
 			}
 			else
@@ -733,7 +738,7 @@ class DB_SQLite implements DB_Base
 					{
 						$value = $this->escape_binary($value);
 					}
-
+				
 					$values[$field] = $value;
 				}
 				else
@@ -789,7 +794,7 @@ class DB_SQLite implements DB_Base
 				{
 					$value = $this->escape_binary($value);
 				}
-
+				
 				$query .= $comma.$field."=".$value;
 			}
 			else
@@ -1131,7 +1136,7 @@ class DB_SQLite implements DB_Base
 				{
 					$value = $this->escape_binary($value);
 				}
-
+				
 				$values .= $comma.$value;
 			}
 			else
@@ -1368,7 +1373,7 @@ class DB_SQLite implements DB_Base
 				$this->query($createtesttableSQL);
 
 				$droptempsql = 'DROP TABLE '.$tmpname;
-				$query = $this->query($droptempsql, 0);
+				$query = $this->query($droptempsql, 0);	
 				if($query === false)
 				{
 					return false;

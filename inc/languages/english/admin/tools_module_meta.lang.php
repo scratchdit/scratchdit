@@ -2,6 +2,7 @@
 /**
  * MyBB 1.8 English Language Pack
  * Copyright 2014 MyBB Group, All Rights Reserved
+ *
  */
 
 $l['tools_and_maintenance'] = "Tools &amp; Maintenance";

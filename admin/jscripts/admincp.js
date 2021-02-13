@@ -5,16 +5,14 @@ var AdminCP = {
 
 	deleteConfirmation: function(element, message)
 	{
-		if(!element) { return false;
-		}
-
+		if(!element) return false;
 		confirmReturn = confirm(message);
-		if(confirmReturn == true) {
+		if(confirmReturn == true)
+		{
 			form = $("<form />", { method: "post", action: element.href, style: "display: none;" });
 			$("body").append(form);
 			form.trigger('submit');
 		}
-
 		return false;
 	}
 };

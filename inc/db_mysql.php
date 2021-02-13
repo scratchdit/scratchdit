@@ -5,6 +5,7 @@
  *
  * Website: http://www.mybb.com
  * License: http://www.mybb.com/about/license
+ *
  */
 
 class DB_MySQL implements DB_Base
@@ -484,7 +485,11 @@ class DB_MySQL implements DB_Base
 		if($row === false)
 		{
 			$array = $this->fetch_array($query);
-			return $array[$field];
+			if($array !== null)
+			{
+				return $array[$field];
+			}
+			return null;
 		}
 		else
 		{
@@ -813,7 +818,7 @@ class DB_MySQL implements DB_Base
 				{
 					$value = $this->escape_binary($value);
 				}
-
+				
 				$array[$field] = $value;
 			}
 			else
@@ -863,7 +868,7 @@ class DB_MySQL implements DB_Base
 					{
 						$value = $this->escape_binary($value);
 					}
-
+				
 					$values[$field] = $value;
 				}
 				else
@@ -918,7 +923,7 @@ class DB_MySQL implements DB_Base
 				{
 					$value = $this->escape_binary($value);
 				}
-
+				
 				$query .= $comma."`".$field."`={$value}";
 			}
 			else
@@ -1231,7 +1236,10 @@ class DB_MySQL implements DB_Base
 	 */
 	function create_fulltext_index($table, $column, $name="")
 	{
-		$this->write_query("ALTER TABLE {$this->table_prefix}$table ADD FULLTEXT $name ($column)");
+		$this->write_query("
+			ALTER TABLE {$this->table_prefix}$table
+			ADD FULLTEXT $name ($column)
+		");
 	}
 
 	/**
@@ -1321,7 +1329,7 @@ class DB_MySQL implements DB_Base
 				{
 					$value = $this->escape_binary($value);
 				}
-
+				
 				$values .= $comma."`".$column."`=".$value;
 			}
 			else

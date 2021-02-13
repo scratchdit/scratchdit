@@ -5,6 +5,7 @@
  *
  * Website: http://www.mybb.com
  * License: http://www.mybb.com/about/license
+ *
  */
 
 // Disallow direct access to this file for security reasons
@@ -15,6 +16,7 @@ if(!defined("IN_MYBB"))
 
 /**
  * Login handling class, provides common structure to handle login events.
+ *
  */
 class WarningsHandler extends DataHandler
 {
@@ -185,7 +187,7 @@ class WarningsHandler extends DataHandler
 
 			$warning['points'] = round($warning['custom_points']);
 
-			// Build expiry date
+			// Build expiry date				
 			if($warning['expires_period'] == "hours")
 			{
 				$warning['expires'] = $warning['expires']*3600 + TIME_NOW;
@@ -228,7 +230,7 @@ class WarningsHandler extends DataHandler
 			$warning['points'] = $this->warning_type['points'];
 			$warning['title'] = '';
 			$warning['expires'] = 0;
-
+			
 			if($this->warning_type['expirationtime'])
 			{
 				$warning['expires'] = TIME_NOW+$this->warning_type['expirationtime'];
@@ -395,7 +397,7 @@ class WarningsHandler extends DataHandler
 			$query = $db->simple_select("warninglevels", "*", "percentage<={$this->new_warning_level}", array("order_by" => "percentage", "order_dir" => "desc"));
 			$new_level = $db->fetch_array($query);
 
-			if($new_level['lid'])
+			if(!empty($new_level) && $new_level['lid'])
 			{
 				$expiration = 0;
 				$action = my_unserialize($new_level['action']);

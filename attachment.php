@@ -5,6 +5,7 @@
  *
  * Website: http://www.mybb.com
  * License: http://www.mybb.com/about/license
+ *
  */
 
 define("IN_MYBB", 1);
@@ -180,7 +181,14 @@ else
 		case "image/png":
 		case "text/plain":
 			header("Content-type: {$attachment['filetype']}");
-			$disposition = "inline";
+			if($attachtypes[$ext]['forcedownload'])
+			{
+				$disposition = "attachment";
+			}
+			else
+			{
+				$disposition = "inline";
+			}
 			break;
 
 		default:

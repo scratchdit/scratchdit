@@ -5,6 +5,7 @@
  *
  * Website: http://www.mybb.com
  * License: http://www.mybb.com/about/license
+ *
  */
 
 class templates
@@ -121,7 +122,7 @@ class templates
 		}
 		return $template;
 	}
-
+	
 	/**
 	 * Prepare a template for rendering to a variable.
 	 *

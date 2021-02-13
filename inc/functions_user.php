@@ -5,6 +5,7 @@
  *
  * Website: http://www.mybb.com
  * License: http://www.mybb.com/about/license
+ *
  */
 
 /**
@@ -332,7 +333,7 @@ function add_subscribed_thread($tid, $notification=1, $uid=0)
 
 	$query = $db->simple_select("threadsubscriptions", "*", "tid='".(int)$tid."' AND uid='".(int)$uid."'");
 	$subscription = $db->fetch_array($query);
-	if(!$subscription['tid'])
+	if(empty($subscription) || !$subscription['tid'])
 	{
 		$insert_array = array(
 			'uid' => (int)$uid,
@@ -406,7 +407,7 @@ function add_subscribed_forum($fid, $uid=0)
 
 	$query = $db->simple_select("forumsubscriptions", "*", "fid='".$fid."' AND uid='{$uid}'", array('limit' => 1));
 	$fsubscription = $db->fetch_array($query);
-	if(!$fsubscription['fid'])
+	if(empty($fsubscription) || !$fsubscription['fid'])
 	{
 		$insert_array = array(
 			'fid' => $fid,
@@ -446,6 +447,7 @@ function remove_subscribed_forum($fid, $uid=0)
 
 /**
  * Constructs the usercp navigation menu.
+ *
  */
 function usercp_menu()
 {
@@ -481,6 +483,7 @@ function usercp_menu()
 
 /**
  * Constructs the usercp messenger menu.
+ *
  */
 function usercp_menu_messenger()
 {
@@ -543,6 +546,7 @@ function usercp_menu_messenger()
 
 /**
  * Constructs the usercp profile menu.
+ *
  */
 function usercp_menu_profile()
 {
@@ -579,6 +583,7 @@ function usercp_menu_profile()
 
 /**
  * Constructs the usercp misc menu.
+ *
  */
 function usercp_menu_misc()
 {
@@ -759,6 +764,7 @@ function generate_question($old_qid=0)
 		$order_by = 'RAND()';
 	}
 
+	$excl_old = '';
 	if($old_qid)
 	{
 		$excl_old = ' AND qid != '.(int)$old_qid;

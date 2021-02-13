@@ -5,6 +5,7 @@
  *
  * Website: http://www.mybb.com
  * License: http://www.mybb.com/about/license
+ *
  */
 
 /**
@@ -109,7 +110,7 @@ class apcuCacheHandler implements CacheHandlerInterface
 			$iterator = new APCUIterator("/^{$this->unique_id}_.*/");
 			return $iterator->getTotalSize();
 		}
-
+		
 		global $lang;
 
 		$info = apcu_cache_info();

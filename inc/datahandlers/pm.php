@@ -5,6 +5,7 @@
  *
  * Website: http://www.mybb.com
  * License: http://www.mybb.com/about/license
+ *
  */
 
 // Disallow direct access to this file for security reasons
@@ -15,6 +16,7 @@ if(!defined("IN_MYBB"))
 
 /**
  * PM handling class, provides common structure to handle private messaging data.
+ *
  */
 class PMDataHandler extends DataHandler
 {
@@ -583,7 +585,7 @@ class PMDataHandler extends DataHandler
 		$draftcheck = $db->fetch_array($query);
 
 		// This PM was previously a draft
-		if($draftcheck['pmid'])
+		if(!empty($draftcheck['pmid']))
 		{
 			if($draftcheck['deletetime'])
 			{
@@ -627,7 +629,7 @@ class PMDataHandler extends DataHandler
 			// Send email notification of new PM if it is enabled for the recipient
 			$query = $db->simple_select("privatemessages", "dateline", "uid='".$recipient['uid']."' AND folder='1'", array('order_by' => 'dateline', 'order_dir' => 'desc', 'limit' => 1));
 			$lastpm = $db->fetch_array($query);
-			if($recipient['pmnotify'] == 1 && $recipient['lastactive'] > $lastpm['dateline'])
+			if($recipient['pmnotify'] == 1 && (empty($lastpm['dateline']) || $recipient['lastactive'] > $lastpm['dateline']))
 			{
 				if($recipient['language'] != "" && $lang->language_exists($recipient['language']))
 				{

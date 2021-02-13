@@ -5,6 +5,7 @@
  *
  * Website: http://www.mybb.com
  * License: http://www.mybb.com/about/license
+ *
  */
 
 // Disallow direct access to this file for security reasons
@@ -468,7 +469,7 @@ if($mybb->input['action'] == 'delete_prefix')
 	}
 
 	// User clicked no
-	if($mybb->input['no'])
+	if($mybb->get_input('no'))
 	{
 		admin_redirect('index.php?module=config-thread_prefixes');
 	}
@@ -563,7 +564,7 @@ if(!$mybb->input['action'])
 						$forum_names[] = '<a href="index.php?module=config-thread_prefixes&amp;fid='.(int)$fid.'">'.$forum['name'].'</a>';
 					}
 				}
-
+				
 				$forum_names = implode($lang->comma, $forum_names);
 			}
 

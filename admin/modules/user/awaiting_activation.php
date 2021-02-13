@@ -5,6 +5,7 @@
  *
  * Website: http://www.mybb.com
  * License: http://www.mybb.com/about/license
+ *
  */
 
 // Disallow direct access to this file for security reasons
@@ -43,7 +44,7 @@ if($mybb->input['action'] == "activate" && $mybb->request_method == "post")
 
 	$num_activated = $num_deleted = 0;
 	$users_to_delete = array();
-	if($mybb->input['delete']) // Delete selected user(s)
+	if(!empty($mybb->input['delete'])) // Delete selected user(s)
 	{
 		require_once MYBB_ROOT.'inc/datahandlers/user.php';
 		$userhandler = new UserDataHandler('delete');
@@ -110,8 +111,8 @@ if($mybb->input['action'] == "activate" && $mybb->request_method == "post")
 		admin_redirect("index.php?module=user-awaiting_activation");
 	}
 }
-
-if(!$mybb->input['action'])
+	
+if(!$mybb->input['action']) 
 {
 	$plugins->run_hooks("admin_user_awaiting_activation_start");
 
@@ -120,9 +121,11 @@ if(!$mybb->input['action'])
 
 	$per_page = 20;
 
-	if($mybb->input['page'] && $mybb->input['page'] > 1)
+	$mybb->input['page'] = $mybb->get_input('page', MyBB::INPUT_INT);
+
+	if($mybb->input['page'] > 1)
 	{
-		$mybb->input['page'] = $mybb->get_input('page', MyBB::INPUT_INT);
+		$mybb->input['page'] = $mybb->input['page'];
 		$start = ($mybb->input['page']*$per_page)-$per_page;
 		$pages = ceil($total_rows / $per_page);
 		if($mybb->input['page'] > $pages)

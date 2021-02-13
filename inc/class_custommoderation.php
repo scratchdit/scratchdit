@@ -5,6 +5,7 @@
  *
  * Website: http://www.mybb.com
  * License: http://www.mybb.com/about/license
+ *
  */
 
 // Disallow direct access to this file for security reasons
@@ -15,6 +16,7 @@ if(!defined("IN_MYBB"))
 
 /**
  * Used to execute a custom moderation tool
+ *
  */
 
 class CustomModeration extends Moderation
@@ -80,7 +82,7 @@ class CustomModeration extends Moderation
 		$deleted_thread = 0;
 		if($tool['type'] == 'p')
 		{
-			$deleted_thread = $this->execute_post_moderation($post_options, $pids, $tids);
+			$deleted_thread = $this->execute_post_moderation($tids, $post_options, $pids);
 		}
 		// Always execute thead moderation
 		$this->execute_thread_moderation($thread_options, $tids);
@@ -96,12 +98,13 @@ class CustomModeration extends Moderation
 	/**
 	 * Execute Inline Post Moderation
 	 *
+	 * @param array|int $tid Thread IDs (in order of dateline ascending). Only the first one will be used
 	 * @param array $post_options Moderation information
 	 * @param array $pids Post IDs
-	 * @param array|int $tid Thread IDs (in order of dateline ascending). Only the first one will be used
+	 *
 	 * @return boolean true
 	 */
-	function execute_post_moderation($post_options=array(), $pids=array(), $tid)
+	function execute_post_moderation($tid, $post_options=array(), $pids=array())
 	{
 		global $db, $mybb, $lang;
 
@@ -469,12 +472,12 @@ class CustomModeration extends Moderation
 				}
 			}
 		}
-
+		
 		// Do we have a PM subject and PM message?
 		if(isset($thread_options['pm_subject']) && $thread_options['pm_subject'] != '' && isset($thread_options['pm_message']) && $thread_options['pm_message'] != '')
 		{
 			$tid_list = implode(',', $tids);
-
+			
 			// For each thread, we send a PM to the author
 			$query = $db->simple_select("threads", 'uid', "tid IN ($tid_list)");
 			while($uid = $db->fetch_field($query, 'uid'))
@@ -488,7 +491,7 @@ class CustomModeration extends Moderation
 				send_pm($pm, $mybb->user['uid'], 1);
 			}
 		}
-
+		
 		return true;
 	}
 }

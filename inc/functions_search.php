@@ -5,6 +5,7 @@
  *
  * Website: http://www.mybb.com
  * License: http://www.mybb.com/about/license
+ *
  */
 
 /**
@@ -155,9 +156,9 @@ function get_unsearchable_forums($pid=0, $first=1)
  *  - visible = 1 - for normal users
  *  - visible >= -1 - for admins & super mods
  *  - (visible = 1 OR (visible = ? AND fid IN ...)) - for forum moderators
- *
+ * 
  * @param string $table_alias The alias of the table eg t to use t.visible instead of visible
- * @return string the query condition
+ * @return string the query condition 
  */
 function get_visible_where($table_alias = null)
 {
@@ -180,7 +181,7 @@ function get_visible_where($table_alias = null)
 		$unapprove_forums = array();
 		$deleted_forums = array();
 		$unapproved_where = "({$aliasdot}visible = 1";
-
+		
 		$moderated_fids = get_moderated_fids($mybb->user['uid']);
 
 		if($moderated_fids !== false)
@@ -192,21 +193,21 @@ function get_visible_where($table_alias = null)
 					// Shouldn't occur.
 					continue;
 				}
-
+	
 				// Use moderates this forum
 				$modperms = get_moderator_permissions($fid, $mybb->user['uid']);
-
+	
 				if($modperms['canviewunapprove'] == 1)
 				{
 					$unapprove_forums[] = $fid;
 				}
-
+	
 				if($modperms['canviewdeleted'] == 1)
 				{
 					$deleted_forums[] = $fid;
 				}
 			}
-
+	
 			if(!empty($unapprove_forums))
 			{
 				$unapproved_where .= " OR ({$aliasdot}visible = 0 AND {$aliasdot}fid IN(".implode(',', $unapprove_forums)."))";
@@ -216,7 +217,7 @@ function get_visible_where($table_alias = null)
 				$unapproved_where .= " OR ({$aliasdot}visible = -1 AND {$aliasdot}fid IN(".implode(',', $deleted_forums)."))";
 			}
 			$unapproved_where .= ')';
-
+	
 			return $unapproved_where;
 		}
 	}
@@ -278,7 +279,7 @@ function get_password_protected_forums($fids=array())
  */
 function clean_keywords($keywords)
 {
-	global $db;
+	global $db, $lang;
 
 	$keywords = my_strtolower($keywords);
 	$keywords = $db->escape_string_like($keywords);
@@ -292,11 +293,18 @@ function clean_keywords($keywords)
 	if(my_strpos($keywords, "or") === 0)
 	{
 		$keywords = substr_replace($keywords, "", 0, 2);
+		$keywords = " ".$keywords;
 	}
 
 	if(my_strpos($keywords, "and") === 0)
 	{
 		$keywords = substr_replace($keywords, "", 0, 3);
+		$keywords = " ".$keywords;
+	}
+
+	if(!$keywords)
+	{
+		error($lang->error_nosearchterms);
 	}
 
 	return $keywords;
@@ -1469,6 +1477,7 @@ function perform_search_mysql_ft($search)
 		$mybb->settings['minsearchword'] = 4;
 	}
 
+	$message_lookin = $subject_lookin = '';
 	if($keywords)
 	{
 		$keywords_exp = explode("\"", $keywords);
@@ -1555,7 +1564,7 @@ function perform_search_mysql_ft($search)
 			$thread_usersql = " AND t.uid IN (".$userids.")";
 		}
 	}
-	$datecut = '';
+	$datecut = $thread_datecut = $post_datecut = '';
 	if($search['postdate'])
 	{
 		if($search['pddir'] == 0)
@@ -1704,6 +1713,7 @@ function perform_search_mysql_ft($search)
 	$unapproved_where_p = get_visible_where('p');
 
 	// Searching a specific thread?
+	$tidsql = '';
 	if($search['tid'])
 	{
 		$tidsql = " AND t.tid='".(int)$search['tid']."'";

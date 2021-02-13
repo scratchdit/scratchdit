@@ -5,6 +5,7 @@
  *
  * Website: http://www.mybb.com
  * License: http://www.mybb.com/about/license
+ *
  */
 
 // Disallow direct access to this file for security reasons
@@ -16,6 +17,8 @@ if(!defined("IN_MYBB"))
 $page->add_breadcrumb_item($lang->banning, "index.php?module=config-banning");
 
 $plugins->run_hooks("admin_config_banning_begin");
+
+$mybb->input['filter'] = $mybb->get_input('filter');
 
 if($mybb->input['action'] == "add" && $mybb->request_method == "post")
 {
@@ -117,7 +120,7 @@ if($mybb->input['action'] == "delete")
 	}
 
 	// User clicked no
-	if($mybb->input['no'])
+	if($mybb->get_input('no'))
 	{
 		admin_redirect("index.php?module=config-banning&type={$type}");
 	}
@@ -155,7 +158,7 @@ if(!$mybb->input['action'])
 {
 	$plugins->run_hooks("admin_config_banning_start");
 
-	switch($mybb->input['type'])
+	switch($mybb->get_input('type'))
 	{
 		case "emails":
 			$type = "3";

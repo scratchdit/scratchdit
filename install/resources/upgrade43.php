@@ -5,6 +5,7 @@
  *
  * Website: http://www.mybb.com
  * License: http://www.mybb.com/about/license
+ *
  */
 
 /**
@@ -26,13 +27,13 @@ function upgrade43_dbchanges()
 	$output->print_header("Updating Database");
 	echo "<p>Performing necessary upgrade queries...</p>";
 	flush();
-
+	
 	if($mybb->settings['captchaimage'] == 2)
 	{
 		$db->update_query('settings', array('value' => 1), "name='captchaimage'"); // Reset CAPTCHA to MyBB Default
 		$db->update_query('settings', array('value' => ''), 'name IN (\'captchapublickey\', \'captchaprivatekey\')'); // Clean out stored credential keys
 	}
-
+	
 	if($db->field_exists('aim', 'users'))
 	{
 		$db->drop_column('users', 'aim');

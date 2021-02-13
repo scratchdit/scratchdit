@@ -5,6 +5,7 @@
  *
  * Website: http://www.mybb.com
  * License: http://www.mybb.com/about/license
+ *
  */
 
 /**
@@ -100,7 +101,7 @@ class MyBBXMLParser {
 	 * @param int $i Internal counter
 	 * @return array Array of child nodes
 	 */
-	function get_children($vals=array(), &$i)
+	function get_children($vals, &$i)
 	{
 		$children = array();
 

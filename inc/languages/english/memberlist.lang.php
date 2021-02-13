@@ -2,6 +2,7 @@
 /**
  * MyBB 1.8 English Language Pack
  * Copyright 2014 MyBB Group, All Rights Reserved
+ *
  */
 
 $l['nav_memberlist'] = "Member List";
@@ -9,7 +10,7 @@ $l['nav_memberlist'] = "Member List";
 $l['memberlist_disabled'] = "The member list functionality has been disabled by the Administrator.";
 
 $l['member_list'] = "Member List";
-$l['avatar']  ="Avatar";
+$l['avatar']  = "Avatar";
 $l['username'] = "Username";
 $l['joined'] = "Joined";
 $l['lastvisit'] = "Last Visit";

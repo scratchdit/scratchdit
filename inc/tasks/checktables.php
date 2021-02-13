@@ -5,6 +5,7 @@
  *
  * Website: http://www.mybb.com
  * License: http://www.mybb.com/about/license
+ *
  */
 
 function task_checktables($task)
@@ -27,7 +28,7 @@ function task_checktables($task)
 
 	$comma = "";
 	$tables_list = "";
-	$repaired = "";
+	$repaired = array();
 	$setting_done = false;
 
 	$tables = $db->list_tables($mybb->config['database']['database'], $mybb->config['database']['table_prefix']);

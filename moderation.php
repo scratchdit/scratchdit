@@ -5,6 +5,7 @@
  *
  * Website: http://www.mybb.com
  * License: http://www.mybb.com/about/license
+ *
  */
 
 define("IN_MYBB", 1);
@@ -167,7 +168,7 @@ switch($mybb->input['action'])
 	case "delayedmoderation":
 		// Verify incoming POST request
 		verify_post_check($mybb->get_input('my_post_key'));
-
+		
 		$localized_time_offset = $mybb->user['timezone']*3600 + $mybb->user['dst']*3600;
 
 		if(!$mybb->get_input('date_day', MyBB::INPUT_INT))
@@ -648,7 +649,7 @@ switch($mybb->input['action'])
 				$datemonth[$month] = ' selected="selected"';
 			}
 		}
-
+		
 
 		eval('$datemonth = "'.$templates->get('moderation_delayedmoderation_date_month').'";');
 
@@ -683,7 +684,7 @@ switch($mybb->input['action'])
 		if(is_moderator($fid, "canapproveunapprovethreads"))
 		{
 			eval('$approveunapprovethread = "'.$templates->get('moderation_delayedmoderation_approve').'";');
-		}
+		} 
 
 		$plugins->run_hooks("moderation_delayedmoderation");
 
@@ -1042,7 +1043,7 @@ switch($mybb->input['action'])
 		{
 			error($lang->error_thread_deleted, $lang->error);
 		}
-
+		
 		$newperms = forum_permissions($moveto);
 		if($newperms['canview'] == 0 && !is_moderator($fid, "canmovetononmodforum"))
 		{
@@ -1540,7 +1541,7 @@ switch($mybb->input['action'])
 			FROM ".TABLE_PREFIX."posts p
 			LEFT JOIN ".TABLE_PREFIX."users u ON (p.uid=u.uid)
 			WHERE tid='$tid'
-			ORDER BY dateline ASC
+			ORDER BY dateline ASC, pid ASC
 		");
 
 		$numposts = $db->num_rows($query);
@@ -2329,8 +2330,8 @@ switch($mybb->input['action'])
 			SELECT p.*, u.*
 			FROM ".TABLE_PREFIX."posts p
 			LEFT JOIN ".TABLE_PREFIX."users u ON (p.uid=u.uid)
-			WHERE pid IN (".implode($posts, ",").")
-			ORDER BY dateline ASC
+			WHERE pid IN (".implode(",", $posts).")
+			ORDER BY dateline ASC, pid ASC
 		");
 		$altbg = "trow1";
 		while($post = $db->fetch_array($query))
@@ -3034,7 +3035,7 @@ switch($mybb->input['action'])
 				// First delete everything
 				$userhandler->delete_content($uid);
 				$userhandler->delete_posts($uid);
-
+				
 				// Next ban him (or update the banned reason, shouldn't happen)
 				$query = $db->simple_select("banned", "uid", "uid = '{$uid}'");
 				if($db->num_rows($query) > 0)
@@ -3062,18 +3063,21 @@ switch($mybb->input['action'])
 				}
 
 				// Add the IP's to the banfilters
-				foreach(array($user['regip'], $user['lastip']) as $ip)
+				if($mybb->settings['purgespammerbanip'] == 1)
 				{
-					$ip = my_inet_ntop($db->unescape_binary($ip));
-					$query = $db->simple_select("banfilters", "type", "type = 1 AND filter = '".$db->escape_string($ip)."'");
-					if($db->num_rows($query) == 0)
+					foreach(array($user['regip'], $user['lastip']) as $ip)
 					{
-						$insert = array(
-							"filter" => $db->escape_string($ip),
-							"type" => 1,
-							"dateline" => TIME_NOW
-						);
-						$db->insert_query("banfilters", $insert);
+						$ip = my_inet_ntop($db->unescape_binary($ip));
+						$query = $db->simple_select("banfilters", "type", "type = 1 AND filter = '".$db->escape_string($ip)."'");
+						if($db->num_rows($query) == 0)
+						{
+							$insert = array(
+								"filter" => $db->escape_string($ip),
+								"type" => 1,
+								"dateline" => TIME_NOW
+							);
+							$db->insert_query("banfilters", $insert);
+						}
 					}
 				}
 
@@ -3120,7 +3124,7 @@ switch($mybb->input['action'])
 			}
 			else
 			{
-				$lang->purgespammer_purge_desc = $lang->sprintf($lang->purgespammer_purge_desc, $lang->purgespammer_delete);
+				$lang->purgespammer_purge_desc = $lang->sprintf($lang->purgespammer_purge_desc, $lang->purgespammer_delete);				
 			}
 			eval("\$purgespammer = \"".$templates->get('moderation_purgespammer')."\";");
 			output_page($purgespammer);
@@ -3141,7 +3145,7 @@ switch($mybb->input['action'])
 			{
 				error_no_permission();
 			}
-
+			
 			if($thread['visible'] == -1)
 			{
 				error($lang->error_thread_deleted, $lang->error);
@@ -3262,8 +3266,7 @@ switch($mybb->input['action'])
 				// Get threads which are associated with the posts
 				$tids = array();
 				$options = array(
-					'order_by' => 'dateline',
-					'order_dir' => 'asc'
+					'order_by' => 'dateline, pid',
 				);
 				$query = $db->simple_select("posts", "DISTINCT tid, dateline", "pid IN (".implode(',',$pids).")", $options);
 				while($row = $db->fetch_array($query))

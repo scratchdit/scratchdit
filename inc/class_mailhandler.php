@@ -5,6 +5,7 @@
  *
  * Website: http://www.mybb.com
  * License: http://www.mybb.com/about/license
+ *
  */
 
 /**
@@ -113,13 +114,13 @@ class MailHandler
 
 	/**
 	 * Selects between AdminEmail and ReturnEmail, dependant on if ReturnEmail is filled.
-	 *
+	 * 
 	 * @return string
 	 */
 	function get_from_email()
 	{
 		global $mybb;
-
+		
 		if(trim($mybb->settings['returnemail']))
 		{
 			$email = $mybb->settings['returnemail'];
@@ -128,7 +129,7 @@ class MailHandler
 		{
 			$email = $mybb->settings['adminemail'];
 		}
-
+		
 		return $email;
 	}
 
@@ -152,7 +153,7 @@ class MailHandler
 
 		$this->message = '';
 		$this->headers = $headers;
-
+		
 		if($from)
 		{
 			$this->from = $from;

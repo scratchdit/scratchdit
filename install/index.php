@@ -5,6 +5,7 @@
  *
  * Website: http://www.mybb.com
  * License: http://www.mybb.com/about/license
+ *
  */
 
 @set_time_limit(0);
@@ -51,7 +52,6 @@ if(file_exists(MYBB_ROOT."/inc/config.php"))
 	}
 }
 
-require_once MYBB_ROOT.'inc/class_xmlparser.php';
 require_once MYBB_ROOT.'inc/functions_user.php';
 require_once MYBB_ROOT.'inc/class_language.php';
 $lang = new MyLanguage();
@@ -1431,6 +1431,11 @@ function create_tables()
 	}
  	$db->error_reporting = 0;
 
+	if(!isset($config['encoding']))
+	{
+		$config['encoding'] = null;
+	}
+
 	$connect_array = array(
 		"hostname" => $config['dbhost'],
 		"username" => $config['dbuser'],
@@ -1463,7 +1468,7 @@ function create_tables()
 		$errors[] = $lang->db_step_error_tableprefix_too_long;
 	}
 
-	if(($db->engine == 'mysql' || $db->engine == 'mysqli') && $config['encoding'] == 'utf8mb4' && version_compare($db->get_version(), '5.5.3', '<'))
+	if($connection !== false && ($db->engine == 'mysql' || $db->engine == 'mysqli') && $config['encoding'] == 'utf8mb4' && version_compare($db->get_version(), '5.5.3', '<'))
 	{
 		$errors[] = $lang->db_step_error_utf8mb4_error;
 	}
@@ -1779,8 +1784,7 @@ function insert_templates()
 	// 1.8: Stylesheet Colors
 	$contents = @file_get_contents(INSTALL_ROOT.'resources/mybb_theme_colors.xml');
 
-	require_once MYBB_ROOT."inc/class_xmlparser.php";
-	$parser = new XMLParser($contents);
+	$parser = create_xml_parser($contents);
 	$tree = $parser->get_tree();
 
 	if(is_array($tree) && is_array($tree['colors']))
@@ -1958,6 +1962,10 @@ EOF;
 		{
 			$contactemail = $_SERVER['SERVER_ADMIN'];
 		}
+		else
+		{
+			$contactemail = null;
+		}
 	}
 
 	echo $lang->sprintf($lang->config_step_table, $bbname, $bburl, $websitename, $websiteurl, $cookiedomain, $cookiepath, $contactemail);
@@ -2026,7 +2034,7 @@ EOF;
 		$adminuser = $adminemail = '';
 
 		$settings = file_get_contents(INSTALL_ROOT.'resources/settings.xml');
-		$parser = new XMLParser($settings);
+		$parser = create_xml_parser($settings);
 		$parser->collapse_dups = 0;
 		$tree = $parser->get_tree();
 		$groupcount = $settingcount = 0;
@@ -2097,7 +2105,7 @@ EOF;
 
 		include_once MYBB_ROOT."inc/functions_task.php";
 		$tasks = file_get_contents(INSTALL_ROOT.'resources/tasks.xml');
-		$parser = new XMLParser($tasks);
+		$parser = create_xml_parser($tasks);
 		$parser->collapse_dups = 0;
 		$tree = $parser->get_tree();
 		$taskcount = 0;
@@ -2135,7 +2143,7 @@ EOF;
 		echo $lang->sprintf($lang->admin_step_insertedtasks, $taskcount);
 
 		$views = file_get_contents(INSTALL_ROOT.'resources/adminviews.xml');
-		$parser = new XMLParser($views);
+		$parser = create_xml_parser($views);
 		$parser->collapse_dups = 0;
 		$tree = $parser->get_tree();
 		$view_count = 0;
@@ -2239,7 +2247,7 @@ function install_done()
 
 	// Insert all of our user groups from the XML file
 	$usergroup_settings = file_get_contents(INSTALL_ROOT.'resources/usergroups.xml');
-	$parser = new XMLParser($usergroup_settings);
+	$parser = create_xml_parser($usergroup_settings);
 	$parser->collapse_dups = 0;
 	$tree = $parser->get_tree();
 
@@ -2335,7 +2343,7 @@ function install_done()
 
 	echo $lang->done_step_adminoptions;
 	$adminoptions = file_get_contents(INSTALL_ROOT.'resources/adminoptions.xml');
-	$parser = new XMLParser($adminoptions);
+	$parser = create_xml_parser($adminoptions);
 	$parser->collapse_dups = 0;
 	$tree = $parser->get_tree();
 	$insertmodule = array();

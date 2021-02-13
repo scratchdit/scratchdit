@@ -5,6 +5,7 @@
  *
  * Website: http://www.mybb.com
  * License: http://www.mybb.com/about/license
+ *
  */
 
 $uid_list = $aid_list = $pid_list = $tid_list = $fid_list = $ann_list = $eid_list = array();
@@ -1139,7 +1140,7 @@ function build_wol_row($user)
 		if($user['invisible'] != 1 || $mybb->usergroup['canviewwolinvis'] == 1 || $user['uid'] == $mybb->user['uid'])
 		{
 			// Append an invisible mark if the user is invisible
-			if($user['invisible'] == 1)
+			if($user['invisible'] == 1 && $mybb->usergroup['canbeinvisible'] == 1)
 			{
 				$invisible_mark = "*";
 			}

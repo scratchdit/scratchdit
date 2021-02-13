@@ -5,6 +5,7 @@
  *
  * Website: http://www.mybb.com
  * License: http://www.mybb.com/about/license
+ *
  */
 
 // Disallow direct access to this file for security reasons
@@ -15,6 +16,7 @@ if(!defined("IN_MYBB"))
 
 /**
  * Login handling class, provides common structure to handle login events.
+ *
  */
 class LoginDataHandler extends DataHandler
 {
@@ -126,7 +128,7 @@ class LoginDataHandler extends DataHandler
 	{
 		$this->get_login_data();
 
-		if(!$this->login_data['uid'])
+		if(empty($this->login_data) || !$this->login_data['uid'])
 		{
 			$this->invalid_combination();
 			return false;
