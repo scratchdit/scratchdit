@@ -1,288 +1,176 @@
 <?php
 /**
- * MyBB 1.8
- * Copyright 2014 MyBB Group, All Rights Reserved
+ * MyBB 1.6
+ * Copyright 2010 MyBB Group, All Rights Reserved
  *
- * Website: //www.mybb.com
- * License: //www.mybb.com/about/license
+ * Website: http://mybb.com
+ * License: http://mybb.com/about/license
  *
+ * $Id$
  */
 
 define("IN_MYBB", 1);
 define('THIS_SCRIPT', 'report.php');
 
-$templatelist = "report,report_thanks,report_error,report_reasons,report_error_nomodal,forumdisplay_password_wrongpass,forumdisplay_password";
+$templatelist = "report,email_reportpost,emailsubject_reportpost,report_thanks";
 require_once "./global.php";
-require_once MYBB_ROOT.'inc/functions_modcp.php';
 
+// Load global language phrases
 $lang->load("report");
 
-if(!$mybb->user['uid'])
+if($mybb->usergroup['canview'] == 0 || !$mybb->user['uid'])
 {
 	error_no_permission();
 }
 
-$plugins->run_hooks("report_start");
-
-$report = array();
-$verified = false;
-$report_type = 'post';
-$error = $report_type_db = '';
-
-if(!empty($mybb->input['type']))
+if($mybb->input['action'] != "do_report")
 {
-	$report_type = htmlspecialchars_uni($mybb->get_input('type'));
+	$mybb->input['action'] = "report";
 }
 
-$report_title = $lang->report_content;
-$report_string = "report_reason_{$report_type}";
+$post = get_post($mybb->input['pid']);
 
-if(isset($lang->$report_string))
+if(!$post['pid'])
 {
-	$report_title = $lang->$report_string;
-}
-
-$id = 0;
-if($report_type == 'post')
-{
-	if($mybb->usergroup['canview'] == 0)
-	{
-		error_no_permission();
-	}
-
-	// Do we have a valid post?
-	$post = get_post($mybb->get_input('pid', MyBB::INPUT_INT));
-
-	if(!$post)
-	{
-		$error = $lang->sprintf($lang->error_invalid_report, $report_type);
-	}
-	else
-	{
-		$id = $post['pid'];
-		$id2 = $post['tid'];
-		$report_type_db = "(type = 'post' OR type = '')";
-		$checkid = $post['uid'];
-
-		// Check for a valid forum
-		$forum = get_forum($post['fid']);
-
-		if(!isset($forum['fid']))
-		{
-			$error = $lang->sprintf($lang->error_invalid_report, $report_type);
-		}
-		else
-		{
-			$verified = true;
-			$button = '#post_'.$id.' .postbit_report';
-		}
-
-		$id3 = $forum['fid'];
-
-		// Password protected forums ......... yhummmmy!
-		check_forum_password($forum['fid']);
-	}
-}
-else if($report_type == 'profile')
-{
-	$user = get_user($mybb->get_input('pid', MyBB::INPUT_INT));
-
-	if(!isset($user['uid']))
-	{
-		$error = $lang->sprintf($lang->error_invalid_report, $report_type);
-	}
-	else
-	{
-		$verified = true;
-		$report_type_db = "type = 'profile'";
-		$id2 = $id3 = 0; // We don't use these on the profile
-		$id = $checkid = $user['uid']; // id is the profile user
-		$button = '.report_user_button';
-	}
-}
-else if($report_type == 'reputation')
-{
-	// Any member can report a reputation comment but let's make sure it exists first
-	$query = $db->simple_select("reputation", "*", "rid = '".$mybb->get_input('pid', MyBB::INPUT_INT)."'");
-
-	if(!$db->num_rows($query))
-	{
-		$error = $lang->sprintf($lang->error_invalid_report, $report_type);
-	}
-	else
-	{
-		$verified = true;
-		$reputation = $db->fetch_array($query);
-		$id = $reputation['rid']; // id is the reputation id
-		$id2 = $checkid = $reputation['adduid']; // id2 is the user who gave the comment
-		$id3 = $reputation['uid']; // id3 is the user who received the comment
-		$report_type_db = "type = 'reputation'";
-		$button = '#rid'.$id.' .postbit_report';
-	}
-}
-
-$plugins->run_hooks("report_type");
-
-$permissions = user_permissions($checkid);
-if(empty($permissions['canbereported']))
-{
-	$error = $lang->sprintf($lang->error_invalid_report, $report_type);
-}
-
-// Check for an existing report
-if(!empty($report_type_db))
-{
-	$query = $db->simple_select("reportedcontent", "*", "reportstatus != '1' AND id = '{$id}' AND {$report_type_db}");
-
-	if($db->num_rows($query))
-	{
-		// Existing report
-		$report = $db->fetch_array($query);
-		$report['reporters'] = my_unserialize($report['reporters']);
-
-		if($mybb->user['uid'] == $report['uid'] || is_array($report['reporters']) && in_array($mybb->user['uid'], $report['reporters']))
-		{
-			$error = $lang->success_report_voted;
-		}
-	}
-}
-
-$mybb->input['action'] = $mybb->get_input('action');
-
-if(empty($error) && $verified == true && $mybb->input['action'] == "do_report" && $mybb->request_method == "post")
-{
-	verify_post_check($mybb->get_input('my_post_key'));
-
-	$plugins->run_hooks("report_do_report_start");
-
-	// Is this an existing report or a new offender?
-	if(!empty($report))
-	{
-		// Existing report, add vote
-		$report['reporters'][] = $mybb->user['uid'];
-		update_report($report);
-
-		$plugins->run_hooks("report_do_report_end");
-
-		eval("\$report_thanks = \"".$templates->get("report_thanks")."\";");
-		echo $report_thanks;
-		echo sprintf("<script type='text/javascript'>$('%s').remove();</script>", $button);
-		exit;
-	}
-	else
-	{
-		// Bad user!
-		$new_report = array(
-			'id' => $id,
-			'id2' => $id2,
-			'id3' => $id3,
-			'uid' => $mybb->user['uid']
-		);
-
-		// Figure out the reason
-		$rid = $mybb->get_input('reason', MyBB::INPUT_INT);
-		$query = $db->simple_select("reportreasons", "*", "rid = '{$rid}'");
-
-		if(!$db->num_rows($query))
-		{
-			$error = $lang->sprintf($lang->error_invalid_report, $report_type);
-			$verified = false;
-		}
-		else
-		{
-			$reason = $db->fetch_array($query);
-
-			$new_report['reasonid'] = $reason['rid'];
-
-			if($reason['extra'])
-			{
-				$comment = trim($mybb->get_input('comment'));
-				if(empty($comment) || $comment == '')
-				{
-					$error = $lang->error_comment_required;
-					$verified = false;
-				}
-				else
-				{
-					if(my_strlen($comment) < 3)
-					{
-						$error = $lang->error_report_length;
-						$verified = false;
-					}
-					else
-					{
-						$new_report['reason'] = $comment;
-					}
-				}
-			}
-		}
-
-		if(empty($error))
-		{
-			add_report($new_report, $report_type);
-
-			$plugins->run_hooks("report_do_report_end");
-
-			eval("\$report_thanks = \"".$templates->get("report_thanks")."\";");
-			echo $report_thanks;
-			echo sprintf("<script type='text/javascript'>$('%s').remove();</script>", $button);
-			exit;
-		}
-	}
-}
-
-if(!empty($error) || $verified == false)
-{
-	$mybb->input['action'] = '';
-
-	if($verified == false && empty($error))
-	{
-		$error = $lang->sprintf($lang->error_invalid_report, $report_type);
-	}
-}
-
-if(!$mybb->input['action'])
-{
-	if(!empty($error))
-	{
-		if($mybb->input['no_modal'])
-		{
-			eval("\$report_reasons = \"".$templates->get("report_error_nomodal")."\";");
-		}
-		else
-		{
-			eval("\$report_reasons = \"".$templates->get("report_error")."\";");
-		}
-	}
-	else
-	{
-		if(!empty($report))
-		{
-			eval("\$report_reasons = \"".$templates->get("report_duplicate")."\";");
-		}
-		else
-		{
-			$reportreasons = $cache->read('reportreasons');
-			$reasons = $reportreasons[$report_type];
-			$reasonslist = '';
-			foreach($reasons as $reason)
-			{
-				$reason['title'] = htmlspecialchars_uni($lang->parse($reason['title']));
-				eval("\$reasonslist .= \"".$templates->get("report_reason")."\";");
-			}
-			eval("\$report_reasons = \"".$templates->get("report_reasons")."\";");
-		}
-	}
-
-	if($mybb->input['no_modal'])
-	{
-		echo $report_reasons;
-		exit;
-	}
-
-	$plugins->run_hooks("report_end");
-
-	eval("\$report = \"".$templates->get("report", 1, 0)."\";");
-	echo $report;
+	$error = $lang->error_invalidpost;
+	eval("\$report_error = \"".$templates->get("report_error")."\";");
+	output_page($report_error);
 	exit;
 }
+
+
+$forum = get_forum($post['fid']);
+if(!$forum)
+{
+	$error = $lang->error_invalidforum;
+	eval("\$report_error = \"".$templates->get("report_error")."\";");
+	output_page($report_error);
+	exit;
+}
+
+// Password protected forums ......... yhummmmy!
+check_forum_password($forum['parentlist']);
+
+$thread = get_thread($post['tid']);
+
+if($mybb->input['action'] == "report")
+{
+	$plugins->run_hooks("report_start");
+	$pid = $mybb->input['pid'];
+	
+	$plugins->run_hooks("report_end");
+	
+	eval("\$report = \"".$templates->get("report")."\";");
+	output_page($report);
+}
+elseif($mybb->input['action'] == "do_report" && $mybb->request_method == "post")
+{
+	// Verify incoming POST request
+	verify_post_check($mybb->input['my_post_key']);
+
+	$plugins->run_hooks("report_do_report_start");
+	if(!trim($mybb->input['reason']))
+	{
+		eval("\$report = \"".$templates->get("report_noreason")."\";");
+		output_page($report);
+		exit;
+	}
+
+	if($mybb->settings['reportmethod'] == "email" || $mybb->settings['reportmethod'] == "pms")
+	{
+		$query = $db->query("
+			SELECT DISTINCT u.username, u.email, u.receivepms, u.uid
+			FROM ".TABLE_PREFIX."moderators m
+			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=m.id)
+			WHERE m.fid IN (".$forum['parentlist'].") AND m.isgroup = '0'
+		");
+		$nummods = $db->num_rows($query);
+		if(!$nummods)
+		{
+			unset($query);
+			switch($db->type)
+			{
+				case "pgsql":
+				case "sqlite":
+					$query = $db->query("
+						SELECT u.username, u.email, u.receivepms, u.uid
+						FROM ".TABLE_PREFIX."users u
+						LEFT JOIN ".TABLE_PREFIX."usergroups g ON (((','|| u.additionalgroups|| ',' LIKE '%,'|| g.gid|| ',%') OR u.usergroup = g.gid))
+						WHERE (g.cancp=1 OR g.issupermod=1)
+					");
+					break;
+				default:
+					$query = $db->query("
+						SELECT u.username, u.email, u.receivepms, u.uid
+						FROM ".TABLE_PREFIX."users u
+						LEFT JOIN ".TABLE_PREFIX."usergroups g ON (((CONCAT(',', u.additionalgroups, ',') LIKE CONCAT('%,', g.gid, ',%')) OR u.usergroup = g.gid))
+						WHERE (g.cancp=1 OR g.issupermod=1)
+					");
+			}
+		}
+		
+		while($mod = $db->fetch_array($query))
+		{
+			$emailsubject = $lang->sprintf($lang->emailsubject_reportpost, $mybb->settings['bbname']);
+			$emailmessage = $lang->sprintf($lang->email_reportpost, $mybb->user['username'], $mybb->settings['bbname'], $post['subject'], $mybb->settings['bburl'], str_replace('&amp;', '&', get_post_link($post['pid'], $thread['tid'])."#pid".$post['pid']), $thread['subject'], $mybb->input['reason']);
+			
+			if($mybb->settings['reportmethod'] == "pms" && $mod['receivepms'] != 0 && $mybb->settings['enablepms'] != 0)
+			{
+				$pm_recipients[] = $mod['uid'];
+			}
+			else
+			{
+				my_mail($mod['email'], $emailsubject, $emailmessage);
+			}
+		}
+
+		if(count($pm_recipients) > 0)
+		{
+			$emailsubject = $lang->sprintf($lang->emailsubject_reportpost, $mybb->settings['bbname']);
+			$emailmessage = $lang->sprintf($lang->email_reportpost, $mybb->user['username'], $mybb->settings['bbname'], $post['subject'], $mybb->settings['bburl'], str_replace('&amp;', '&', get_post_link($post['pid'], $thread['tid'])."#pid".$post['pid']), $thread['subject'], $mybb->input['reason']);
+
+			require_once MYBB_ROOT."inc/datahandlers/pm.php";
+			$pmhandler = new PMDataHandler();
+
+			$pm = array(
+				"subject" => $emailsubject,
+				"message" => $emailmessage,
+				"icon" => 0,
+				"fromid" => $mybb->user['uid'],
+				"toid" => $pm_recipients
+			);
+
+			$pmhandler->admin_override = true;
+			$pmhandler->set_data($pm);
+
+			// Now let the pm handler do all the hard work.
+			if(!$pmhandler->validate_pm())
+			{
+				// Force it to valid to just get it out of here
+				$pmhandler->is_validated = true;
+				$pmhandler->errors = array();
+			}
+			$pminfo = $pmhandler->insert_pm();
+		}
+	}
+	else
+	{
+		$reportedpost = array(
+			"pid" => intval($mybb->input['pid']),
+			"tid" => $thread['tid'],
+			"fid" => $thread['fid'],
+			"uid" => $mybb->user['uid'],
+			"dateline" => TIME_NOW,
+			"reportstatus" => 0,
+			"reason" => $db->escape_string(htmlspecialchars_uni($mybb->input['reason']))
+		);
+		$db->insert_query("reportedposts", $reportedpost);
+		$cache->update_reportedposts();
+	}
+	
+	$plugins->run_hooks("report_do_report_end");
+	
+	eval("\$report = \"".$templates->get("report_thanks")."\";");
+	output_page($report);
+}
+?>

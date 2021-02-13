@@ -1,8 +1,9 @@
 <?php
 /**
- * MyBB 1.8 English Language Pack
- * Copyright 2014 MyBB Group, All Rights Reserved
- *
+ * MyBB 1.6 English Language Pack
+ * Copyright 2010 MyBB Group, All Rights Reserved
+ * 
+ * $Id$
  */
 
 $l['help_documents'] = "Help Documents";
@@ -46,7 +47,9 @@ $l['error_document_missing_enabled'] = "You must specify yes or no for \"Enabled
 $l['error_document_missing_translation'] = "You must specify yes or no for \"Use Translation?\".";
 $l['error_invalid_sid'] = "Invalid document id specified.";
 $l['error_missing_section_id'] = "The specified section does not exist.";
+$l['error_cannot_delete_section'] = "Deleting a default help section is not allowed.";
 $l['error_missing_hid'] = "The specified document does not exist.";
+$l['error_cannot_delete_document'] = "Deleting a default help document is not allowed.";
 
 $l['success_help_section_added'] = "The help section has been added successfully.";
 $l['success_help_document_added'] = "The help document has been added successfully.";
@@ -58,3 +61,4 @@ $l['success_document_deleted'] = "The selected help document has been deleted su
 $l['confirm_section_deletion'] = "Are you sure you wish to delete this section?";
 $l['confirm_document_deletion'] = "Are you sure you wish to delete this document?";
 
+?>

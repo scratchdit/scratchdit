@@ -1,8 +1,9 @@
 <?php
 /**
- * MyBB 1.8 English Language Pack
- * Copyright 2014 MyBB Group, All Rights Reserved
- *
+ * MyBB 1.6 English Language Pack
+ * Copyright 2010 MyBB Group, All Rights Reserved
+ * 
+ * $Id$
  */
 
 $l['post_icons'] = "Post Icons";
@@ -17,7 +18,7 @@ $l['manage_post_icons_desc'] = "This section allows you to edit, delete, and man
 
 $l['name_desc'] = "This is the name for the post icon.";
 $l['image_path'] = "Image Path";
-$l['image_path_desc'] = "This is the path to the post icon image. If you want to use different post icon images for different themes, please use <strong>{theme}</strong> to represent the image directory of each theme.";
+$l['image_path_desc'] = "This is the path to the post icon image.";
 $l['save_post_icon'] = "Save Post Icon";
 $l['reset'] = "Reset";
 
@@ -44,3 +45,4 @@ $l['success_post_icon_updated'] = "The post icon has been updated successfully."
 $l['success_post_icon_deleted'] = "The selected post icon has been deleted successfully.";
 
 $l['confirm_post_icon_deletion'] = "Are you sure you wish to delete this post icon?";
+?>

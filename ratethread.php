@@ -1,58 +1,48 @@
 <?php
 /**
- * MyBB 1.8
- * Copyright 2014 MyBB Group, All Rights Reserved
+ * MyBB 1.6
+ * Copyright 2010 MyBB Group, All Rights Reserved
  *
- * Website: //www.mybb.com
- * License: //www.mybb.com/about/license
+ * Website: http://mybb.com
+ * License: http://mybb.com/about/license
  *
+ * $Id$
  */
 
 define("IN_MYBB", 1);
 define('THIS_SCRIPT', 'ratethread.php');
 
-$templatelist = 'forumdisplay_password_wrongpass,forumdisplay_password';
+$templatelist = '';
 require_once "./global.php";
 
 // Verify incoming POST request
-verify_post_check($mybb->get_input('my_post_key'));
+verify_post_check($mybb->input['my_post_key']);
 
 $lang->load("ratethread");
 
-$tid = $mybb->get_input('tid');
-$thread = get_thread($tid);
-if(!$thread)
+$tid = intval($mybb->input['tid']);
+$query = $db->simple_select("threads", "*", "tid='{$tid}'");
+$thread = $db->fetch_array($query);
+if(!$thread['tid'])
 {
 	error($lang->error_invalidthread);
-}
-
-// Is the currently logged in user a moderator of this forum?
-$ismod = is_moderator($thread['fid']);
-
-// Make sure we are looking at a real thread here.
-if(($thread['visible'] != 1 && $ismod == false) || ($thread['visible'] > 1 && $ismod == true))
-{
-	error($lang->error_invalidthread);
-}
-
-if($thread['visible'] == -1)
-{
-	error($lang->thread_doesnt_exist);
-}
-
-if($thread['uid'] == $mybb->user['uid'])
-{
-	error($lang->error_cannotrateownthread);
 }
 
 $forumpermissions = forum_permissions($thread['fid']);
-if($forumpermissions['canview'] == 0 || $forumpermissions['canratethreads'] == 0 || $mybb->usergroup['canratethreads'] == 0 || $mybb->settings['allowthreadratings'] == 0 || (isset($forumpermissions['canonlyviewownthreads']) && $forumpermissions['canonlyviewownthreads'] != 0))
+if($forumpermissions['canview'] == 0 || $forumpermissions['canratethreads'] == 0 || $mybb->usergroup['canratethreads'] == 0 || $mybb->settings['allowthreadratings'] == 0)
 {
 	error_no_permission();
 }
 
 // Get forum info
 $fid = $thread['fid'];
+$forum = get_forum($fid);
+if(!$forum)
+{
+	error($lang->error_invalidforum);
+}
+
+// Get forum info
 $forum = get_forum($fid);
 if(!$forum)
 {
@@ -75,7 +65,7 @@ if($forum['allowtratings'] == 0)
 {
 	error_no_permission();
 }
-$mybb->input['rating'] = $mybb->get_input('rating', MyBB::INPUT_INT);
+$mybb->input['rating'] = intval($mybb->input['rating']);
 if($mybb->input['rating'] < 1 || $mybb->input['rating'] > 5)
 {
 	error($lang->error_invalidrating);
@@ -88,12 +78,12 @@ if($mybb->user['uid'] != 0)
 }
 else
 {
-	$whereclause = "ipaddress=".$db->escape_binary($session->packedip);
+	$whereclause = "ipaddress='".$db->escape_string($session->ipaddress)."'";
 }
 $query = $db->simple_select("threadratings", "*", "{$whereclause} AND tid='{$tid}'");
 $ratecheck = $db->fetch_array($query);
 
-if($ratecheck['rid'] || isset($mybb->cookies['mybbratethread'][$tid]))
+if($ratecheck['rid'] || $mybb->cookies['mybbratethread'][$tid])
 {
 	error($lang->error_alreadyratedthread);
 }
@@ -112,7 +102,7 @@ else
 			'tid' => $tid,
 			'uid' => $mybb->user['uid'],
 			'rating' => $mybb->input['rating'],
-			'ipaddress' => $db->escape_binary($session->packedip)
+			'ipaddress' => $db->escape_string($session->ipaddress)
 		);
 		$db->insert_query("threadratings", $insertarray);
 	}
@@ -121,7 +111,7 @@ else
 		$insertarray = array(
 			'tid' => $tid,
 			'rating' => $mybb->input['rating'],
-			'ipaddress' => $db->escape_binary($session->packedip)
+			'ipaddress' => $db->escape_string($session->ipaddress)
 		);
 		$db->insert_query("threadratings", $insertarray);
 		$time = TIME_NOW;
@@ -130,25 +120,23 @@ else
 }
 $plugins->run_hooks("ratethread_end");
 
-if(!empty($mybb->input['ajax']))
+if($mybb->input['ajax'])
 {
-	$json = array("success" => $lang->rating_added);
+	echo "<success>{$lang->rating_added}</success>\n";
 	$query = $db->simple_select("threads", "totalratings, numratings", "tid='$tid'", array('limit' => 1));
 	$fetch = $db->fetch_array($query);
 	$width = 0;
 	if($fetch['numratings'] >= 0)
 	{
-		$averagerating = (float)round($fetch['totalratings']/$fetch['numratings'], 2);
-		$width = (int)round($averagerating)*20;
-		$fetch['numratings'] = (int)$fetch['numratings'];
+		$averagerating = floatval(round($fetch['totalratings']/$fetch['numratings'], 2));
+		$width = intval(round($averagerating))*20;
+		$fetch['numratings'] = intval($fetch['numratings']);
 		$ratingvotesav = $lang->sprintf($lang->rating_votes_average, $fetch['numratings'], $averagerating);
-		$json = $json + array("average" => $ratingvotesav);
+		echo "<average>{$ratingvotesav}</average>\n";
 	}
-	$json = $json + array("width" => $width);
-
-	@header("Content-type: application/json; charset={$lang->settings['charset']}");
-	echo json_encode($json);
+	echo "<width>{$width}</width>";
 	exit;
 }
 
 redirect(get_thread_link($thread['tid']), $lang->redirect_threadrated);
+?>

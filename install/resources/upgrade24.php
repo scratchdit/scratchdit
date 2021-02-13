@@ -1,11 +1,12 @@
 <?php
 /**
- * MyBB 1.8
- * Copyright 2014 MyBB Group, All Rights Reserved
+ * MyBB 1.6
+ * Copyright 2010 MyBB Group, All Rights Reserved
  *
- * Website: //www.mybb.com
- * License: //www.mybb.com/about/license
+ * Website: http://www.mybboard.com
+ * License: http://mybb.com/about/license
  *
+ * $Id$
  */
 
 /**
@@ -21,3 +22,4 @@ $upgrade_detail = array(
 @set_time_limit(0);
 
 /* Nothing to do for 1.6.7 */
+?>

@@ -1,54 +1,40 @@
 <?php
 /**
- * Copyright 2007-2017 Horde LLC (//www.horde.org/)
+ * $Horde: framework/Text_Diff/Diff/Mapped.php,v 1.3.2.3 2008/01/04 10:37:27 jan Exp $
+ *
+ * Copyright 2007-2008 The Horde Project (http://www.horde.org/)
  *
  * See the enclosed file COPYING for license information (LGPL). If you did
- * not receive this file, see //www.horde.org/licenses/lgpl21.
+ * not receive this file, see http://opensource.org/licenses/lgpl-license.php.
  *
- * @author   Geoffrey T. Dairiki <dairiki@dairiki.org>
- * @category Horde
- * @license  //www.horde.org/licenses/lgpl21 LGPL-2.1
- * @package  Text_Diff
+ * @package Text_Diff
+ * @author  Geoffrey T. Dairiki <dairiki@dairiki.org>
  */
+class Text_Diff_Mapped extends Text_Diff {
 
-/**
- * This can be used to compute things like case-insensitve diffs, or diffs
- * which ignore changes in white-space.
- *
- * @author    Geoffrey T. Dairiki <dairiki@dairiki.org>
- * @category  Horde
- * @copyright 2007-2017 Horde LLC
- * @license   //www.horde.org/licenses/lgpl21 LGPL-2.1
- * @package   Text_Diff
- */
-
-// Disallow direct access to this file for security reasons
-if(!defined("IN_MYBB"))
-{
-	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
-}
-
-class Horde_Text_Diff_Mapped extends Horde_Text_Diff
-{
     /**
      * Computes a diff between sequences of strings.
      *
-     * @param string $engine  Name of the diffing engine to use.  'auto' will
-     *                        automatically select the best.
-     * @param array $params   Parameters to pass to the diffing engine:
-     *                        - Two arrays, each containing the lines from a
-     *                          file.
-     *                        - Two arrays with the same size as the first
-     *                          parameters. The elements are what is actually
-     *                          compared when computing the diff.
+     * This can be used to compute things like case-insensitve diffs, or diffs
+     * which ignore changes in white-space.
+     *
+     * @param array $from_lines         An array of strings.
+     * @param array $to_lines           An array of strings.
+     * @param array $mapped_from_lines  This array should have the same size
+     *                                  number of elements as $from_lines.  The
+     *                                  elements in $mapped_from_lines and
+     *                                  $mapped_to_lines are what is actually
+     *                                  compared when computing the diff.
+     * @param array $mapped_to_lines    This array should have the same number
+     *                                  of elements as $to_lines.
      */
-    public function __construct($engine, $params)
+    function Text_Diff_Mapped($from_lines, $to_lines,
+                              $mapped_from_lines, $mapped_to_lines)
     {
-        list($from_lines, $to_lines, $mapped_from_lines, $mapped_to_lines) = $params;
         assert(count($from_lines) == count($mapped_from_lines));
         assert(count($to_lines) == count($mapped_to_lines));
 
-        parent::__construct($engine, array($mapped_from_lines, $mapped_to_lines));
+        parent::Text_Diff($mapped_from_lines, $mapped_to_lines);
 
         $xi = $yi = 0;
         for ($i = 0; $i < count($this->_edits); $i++) {
@@ -65,4 +51,5 @@ class Horde_Text_Diff_Mapped extends Horde_Text_Diff
             }
         }
     }
+
 }

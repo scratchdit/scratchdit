@@ -1,16 +1,17 @@
 <?php
 /**
- * MyBB 1.8
- * Copyright 2014 MyBB Group, All Rights Reserved
+ * MyBB 1.6
+ * Copyright 2010 MyBB Group, All Rights Reserved
  *
- * Website: //www.mybb.com
- * License: //www.mybb.com/about/license
+ * Website: http://mybb.com
+ * License: http://mybb.com/about/license
  *
+ * $Id$
  */
-
-// Set to 1 if receiving a blank page (template failure).
+ 
+// Set to 1 if recieving a blank page (template failure).
 define("MANUAL_WARNINGS", 0);
-
+ 
 // Define Custom MyBB error handler constants with a value not used by php's error handler.
 define("MYBB_SQL", 20);
 define("MYBB_TEMPLATE", 30);
@@ -21,6 +22,12 @@ define("MYBB_INSTALL_DIR_EXISTS", 43);
 define("MYBB_SQL_LOAD_ERROR", 44);
 define("MYBB_CACHE_NO_WRITE", 45);
 define("MYBB_CACHEHANDLER_LOAD_ERROR", 46);
+
+if(!defined("E_STRICT"))
+{
+	// This constant has been defined since PHP 5.
+	define("E_STRICT", 2048);
+}
 
 if(!defined("E_RECOVERABLE_ERROR"))
 {
@@ -34,12 +41,6 @@ if(!defined("E_DEPRECATED"))
 	define("E_DEPRECATED", 8192);
 }
 
-if(!defined("E_USER_DEPRECATED"))
-{
-	// This constant has been defined since PHP 5.3.
-	define("E_USER_DEPRECATED", 16384);
-}
-
 class errorHandler {
 
 	/**
@@ -47,33 +48,32 @@ class errorHandler {
 	 *
 	 * @var array
 	 */
-	public $error_types = array(
-		E_ERROR							=> 'Error',
-		E_WARNING						=> 'Warning',
-		E_PARSE							=> 'Parsing Error',
-		E_NOTICE						=> 'Notice',
-		E_CORE_ERROR					=> 'Core Error',
-		E_CORE_WARNING					=> 'Core Warning',
-		E_COMPILE_ERROR					=> 'Compile Error',
-		E_COMPILE_WARNING				=> 'Compile Warning',
-		E_DEPRECATED					=> 'Deprecated Warning',
-		E_USER_ERROR					=> 'User Error',
-		E_USER_WARNING					=> 'User Warning',
-		E_USER_NOTICE					=> 'User Notice',
-		E_USER_DEPRECATED	 			=> 'User Deprecated Warning',
-		E_STRICT						=> 'Runtime Notice',
-		E_RECOVERABLE_ERROR				=> 'Catchable Fatal Error',
-		MYBB_SQL 						=> 'MyBB SQL Error',
-		MYBB_TEMPLATE					=> 'MyBB Template Error',
-		MYBB_GENERAL					=> 'MyBB Error',
-		MYBB_NOT_INSTALLED				=> 'MyBB Error',
-		MYBB_NOT_UPGRADED				=> 'MyBB Error',
-		MYBB_INSTALL_DIR_EXISTS			=> 'MyBB Error',
-		MYBB_SQL_LOAD_ERROR				=> 'MyBB Error',
-		MYBB_CACHE_NO_WRITE				=> 'MyBB Error',
-		MYBB_CACHEHANDLER_LOAD_ERROR	=> 'MyBB Error',
+	public $error_types = array( 
+		E_ERROR              => 'Error',
+		E_WARNING            => 'Warning',
+		E_PARSE              => 'Parsing Error',
+		E_NOTICE             => 'Notice',
+		E_CORE_ERROR         => 'Core Error',
+		E_CORE_WARNING       => 'Core Warning',
+		E_COMPILE_ERROR      => 'Compile Error',
+		E_COMPILE_WARNING    => 'Compile Warning',
+		E_DEPRECATED		 => 'Deprecated Warning',
+		E_USER_ERROR         => 'User Error',
+		E_USER_WARNING       => 'User Warning',
+		E_USER_NOTICE        => 'User Notice',
+		E_STRICT             => 'Runtime Notice',
+		E_RECOVERABLE_ERROR  => 'Catchable Fatal Error',
+		MYBB_SQL 			 => 'MyBB SQL Error', 
+		MYBB_TEMPLATE		 => 'MyBB Template Error',
+		MYBB_GENERAL		 => 'MyBB Error',
+		MYBB_NOT_INSTALLED	 => 'MyBB Error',
+		MYBB_NOT_UPGRADED 	 => 'MyBB Error',
+		MYBB_INSTALL_DIR_EXISTS => 'MyBB Error',
+		MYBB_SQL_LOAD_ERROR  => 'MyBB Error',
+		MYBB_CACHE_NO_WRITE  => 'MyBB Error',
+		MYBB_CACHEHANDLER_LOAD_ERROR => 'MyBB Error',
 	);
-
+	
 	/**
 	 * Array of MyBB error types
 	 *
@@ -90,7 +90,7 @@ class errorHandler {
 		MYBB_CACHE_NO_WRITE,
 		MYBB_CACHEHANDLER_LOAD_ERROR,
 	);
-
+	
 	/**
 	 * Array of all of the error types to ignore
 	 *
@@ -102,7 +102,7 @@ class errorHandler {
 		E_USER_NOTICE,
 		E_STRICT
 	);
-
+	
 	/**
 	 * String of all the warnings collected
 	 *
@@ -116,14 +116,7 @@ class errorHandler {
 	 * @var boolean
 	 */
 	public $has_errors = false;
-
-	/**
-	 * Display errors regardless of related settings (useful during initialization stage)
-	 *
-	 * @var boolean
-	 */
-	public $force_display_errors = false;
-
+	
 	/**
 	 * Initializes the error handler
 	 *
@@ -136,19 +129,18 @@ class errorHandler {
 		{
 			$error_types = $error_types & ~$bit;
 		}
-		error_reporting($error_types);
 		set_error_handler(array(&$this, "error"), $error_types);
 	}
-
+ 	
 	/**
 	 * Parses a error for processing.
 	 *
-	 * @param string $type The error type (i.e. E_ERROR, E_FATAL)
-	 * @param string $message The error message
-	 * @param string $file The error file
-	 * @param integer $line The error line
+	 * @param string The error type (i.e. E_ERROR, E_FATAL)
+	 * @param string The error message
+	 * @param string The error file
+	 * @param integer The error line
 	 * @return boolean True if parsing was a success, otherwise assume a error
-	 */
+	 */			
 	function error($type, $message, $file=null, $line=0)
 	{
 		global $mybb;
@@ -167,29 +159,28 @@ class errorHandler {
 		$file = str_replace(MYBB_ROOT, "", $file);
 
 		$this->has_errors = true;
-
+		
 		// For some reason in the installer this setting is set to "<"
 		$accepted_error_types = array('both', 'error', 'warning', 'none');
 		if(!in_array($mybb->settings['errortypemedium'], $accepted_error_types))
 		{
-			$mybb->settings['errortypemedium'] = "none";
+			$mybb->settings['errortypemedium'] = "both";
 		}
-
+		
 		if(defined("IN_TASK"))
 		{
 			global $task;
-
+			
 			require_once MYBB_ROOT."inc/functions_task.php";
-
-			$filestr = '';
+			
 			if($file)
 			{
 				$filestr = " - Line: $line - File: $file";
 			}
-
+			
 			add_task_log($task, "{$this->error_types[$type]} - [$type] ".var_export($message, true)."{$filestr}");
 		}
-
+		
 		// Saving error to log file.
 		if($mybb->settings['errorlogmedium'] == "log" || $mybb->settings['errorlogmedium'] == "both")
 		{
@@ -201,7 +192,7 @@ class errorHandler {
 		{
 			$this->email_error($type, $message, $file, $line);
 		}
-
+		
 		// SQL Error
 		if($type == MYBB_SQL)
 		{
@@ -219,12 +210,12 @@ class errorHandler {
 			{
 				if($mybb->settings['errortypemedium'] == "none" || $mybb->settings['errortypemedium'] == "error")
 				{
-					echo "<div class=\"php_warning\">MyBB Internal: One or more warnings occurred. Please contact your administrator for assistance.</div>";
+					echo "<div class=\"php_warning\">MyBB Internal: One or more warnings occured. Please contact your administrator for assistance.</div>"; 
 				}
 				else
 				{
 					global $templates;
-
+					
 					$warning = "<strong>{$this->error_types[$type]}</strong> [$type] $message - Line: $line - File: $file PHP ".PHP_VERSION." (".PHP_OS.")<br />\n";
 					if(is_object($templates) && method_exists($templates, "get") && !defined("IN_ADMINCP"))
 					{
@@ -238,25 +229,25 @@ class errorHandler {
 				}
 			}
 		}
-
+		
 		return true;
 	}
-
+	
 	/**
 	 * Returns all the warnings
 	 *
-	 * @return string|bool The warnings or false if no warnings exist
+	 * @return string The warnings
 	 */
 	function show_warnings()
 	{
 		global $lang, $templates;
-
+		
 		if(empty($this->warnings))
 		{
 			return false;
 		}
-
-		// Incase a template fails and we're receiving a blank page.
+		
+		// Incase a template fails and we're recieving a blank page.
 		if(MANUAL_WARNINGS)
 		{
 			echo $this->warnings."<br />";
@@ -264,40 +255,46 @@ class errorHandler {
 
 		if(!$lang->warnings)
 		{
-			$lang->warnings = "The following warnings occurred:";
+			$lang->warnings = "The following warnings occured:";
 		}
-
-		$template_exists = false;
-
-		if(!is_object($templates) || !method_exists($templates, 'get'))
+	
+		if(defined("IN_ADMINCP"))
 		{
-			if(@file_exists(MYBB_ROOT."inc/class_templates.php"))
-			{
-				@require_once MYBB_ROOT."inc/class_templates.php";
-				$templates = new templates;
-				$template_exists = true;
-			}
+			$warning = makeacpphpwarning($this->warnings);
 		}
 		else
 		{
-			$template_exists = true;
+			$template_exists = false;
+			
+			if(!is_object($templates) || !method_exists($templates, 'get'))
+			{
+				if(@file_exists(MYBB_ROOT."inc/class_templates.php"))
+				{
+					@require_once MYBB_ROOT."inc/class_templates.php";
+					$templates = new templates;
+					$template_exists = true;
+				}
+			}
+			else
+			{
+				$template_exists = true;
+			}
+			
+			if($template_exists == true)
+			{
+				eval("\$warning = \"".$templates->get("php_warnings")."\";");
+			}
 		}
-
-		$warning = '';
-		if($template_exists == true)
-		{
-			eval("\$warning = \"".$templates->get("php_warnings")."\";");
-		}
-
+	
 		return $warning;
 	}
-
+	
 	/**
-	 * Triggers a user created error
+	 * Triggers a user created error 
 	 * Example: $error_handler->trigger("Some Warning", E_USER_ERROR);
 	 *
-	 * @param string $message Message
-	 * @param string|int $type Type
+	 * @param string Message
+	 * @param string Type
 	 */
 	function trigger($message="", $type=E_USER_ERROR)
 	{
@@ -314,17 +311,17 @@ class errorHandler {
 		}
 		else
 		{
-			trigger_error($message, $type);
+			trigger_error($message, $type);		
 		}
 	}
 
 	/**
 	 * Logs the error in the specified error log file.
 	 *
-	 * @param string $type Warning type
-	 * @param string $message Warning message
-	 * @param string $file Warning file
-	 * @param integer $line Warning line
+	 * @param string Warning type
+	 * @param string Warning message
+	 * @param string Warning file
+	 * @param integer Warning line
 	 */
 	function log_error($type, $message, $file, $line)
 	{
@@ -334,17 +331,6 @@ class errorHandler {
 		{
 			$message = "SQL Error: {$message['error_no']} - {$message['error']}\nQuery: {$message['query']}";
 		}
-
-		// Do not log something that might be executable
-		$message = str_replace('<?', '< ?', $message);
-
-		$back_trace = $this->generate_backtrace(false, 2);
-
-		if($back_trace)
-		{
-			$back_trace = "\t<back_trace>{$back_trace}</back_trace>\n";
-		}
-
 		$error_data = "<error>\n";
 		$error_data .= "\t<dateline>".TIME_NOW."</dateline>\n";
 		$error_data .= "\t<script>".$file."</script>\n";
@@ -352,7 +338,6 @@ class errorHandler {
 		$error_data .= "\t<type>".$type."</type>\n";
 		$error_data .= "\t<friendly_type>".$this->error_types[$type]."</friendly_type>\n";
 		$error_data .= "\t<message>".$message."</message>\n";
-		$error_data .= $back_trace;
 		$error_data .= "</error>\n\n";
 
 		if(trim($mybb->settings['errorloglocation']) != "")
@@ -368,56 +353,33 @@ class errorHandler {
 	/**
 	 * Emails the error in the specified error log file.
 	 *
-	 * @param string $type Warning type
-	 * @param string $message Warning message
-	 * @param string $file Warning file
-	 * @param integer $line Warning line
-	 * @return bool returns false if no admin email is set
+	 * @param string Warning type
+	 * @param string Warning message
+	 * @param string Warning file
+	 * @param integer Warning line
 	 */
 	function email_error($type, $message, $file, $line)
 	{
 		global $mybb;
-
+		
 		if(!$mybb->settings['adminemail'])
 		{
 			return false;
 		}
 
-		if($type == MYBB_SQL)
+		if($type == MYBB_SQL) 
 		{
 			$message = "SQL Error: {$message['error_no']} - {$message['error']}\nQuery: {$message['query']}";
 		}
-
-		if(function_exists('debug_backtrace'))
-		{
-			ob_start();
-			debug_print_backtrace();
-			$trace = ob_get_contents();
-			ob_end_clean();
-
-			$back_trace = "\nBack Trace: {$trace}";
-		}
-		else
-		{
-			$back_trace = '';
-		}
-
-		$message = "Your copy of MyBB running on {$mybb->settings['bbname']} ({$mybb->settings['bburl']}) has experienced an error. Details of the error include:\n---\nType: $type\nFile: $file (Line no. $line)\nMessage\n$message{$back_trace}";
+		
+		$message = "Your copy of MyBB running on {$mybb->settings['bbname']} ({$mybb->settings['bburl']}) has experienced an error. Details of the error include:\n---\nType: $type\nFile: $file (Line no. $line)\nMessage\n$message";
 
 		@my_mail($mybb->settings['adminemail'], "MyBB error on {$mybb->settings['bbname']}", $message, $mybb->settings['adminemail']);
-
-		return true;
 	}
 
-	/**
-	 * @param string $type
-	 * @param string $message
-	 * @param string $file
-	 * @param int $line
-	 */
 	function output_error($type, $message, $file, $line)
 	{
-		global $mybb, $parser, $lang;
+		global $mybb, $parser;
 
 		if(!$mybb->settings['bbname'])
 		{
@@ -425,13 +387,11 @@ class errorHandler {
 		}
 
 		if($type == MYBB_SQL)
-		{
+		{		
 			$title = "MyBB SQL Error";
 			$error_message = "<p>MyBB has experienced an internal SQL error and cannot continue.</p>";
-			if($this->force_display_errors || $mybb->settings['errortypemedium'] == "both" || $mybb->settings['errortypemedium'] == "error" || defined("IN_INSTALL") || defined("IN_UPGRADE"))
+			if($mybb->settings['errortypemedium'] == "both" || $mybb->settings['errortypemedium'] == "error" || defined("IN_INSTALL") || defined("IN_UPGRADE"))
 			{
-				$message['query'] = htmlspecialchars_uni($message['query']);
-				$message['error'] = htmlspecialchars_uni($message['error']);
 				$error_message .= "<dl>\n";
 				$error_message .= "<dt>SQL Error:</dt>\n<dd>{$message['error_no']} - {$message['error']}</dd>\n";
 				if($message['query'] != "")
@@ -445,7 +405,7 @@ class errorHandler {
 		{
 			$title = "MyBB Internal Error";
 			$error_message = "<p>MyBB has experienced an internal error and cannot continue.</p>";
-			if($this->force_display_errors || $mybb->settings['errortypemedium'] == "both" || $mybb->settings['errortypemedium'] == "error" || defined("IN_INSTALL") || defined("IN_UPGRADE"))
+			if($mybb->settings['errortypemedium'] == "both" || $mybb->settings['errortypemedium'] == "error" || defined("IN_INSTALL") || defined("IN_UPGRADE"))
 			{
 				$error_message .= "<dl>\n";
 				$error_message .= "<dt>Error Type:</dt>\n<dd>{$this->error_types[$type]} ($type)</dd>\n";
@@ -456,45 +416,45 @@ class errorHandler {
 					if(!@preg_match('#config\.php|settings\.php#', $file) && @file_exists($file))
 					{
 						$code_pre = @file($file);
-
+	
 						$code = "";
-
+	
 						if(isset($code_pre[$line-4]))
 						{
 							$code .= $line-3 . ". ".$code_pre[$line-4];
 						}
-
+	
 						if(isset($code_pre[$line-3]))
 						{
 							$code .= $line-2 . ". ".$code_pre[$line-3];
 						}
-
+	
 						if(isset($code_pre[$line-2]))
 						{
 							$code .= $line-1 . ". ".$code_pre[$line-2];
 						}
-
+	
 						$code .= $line . ". ".$code_pre[$line-1]; // The actual line.
-
+	
 						if(isset($code_pre[$line]))
 						{
 							$code .= $line+1 . ". ".$code_pre[$line];
 						}
-
+	
 						if(isset($code_pre[$line+1]))
 						{
 							$code .= $line+2 . ". ".$code_pre[$line+1];
 						}
-
+	
 						if(isset($code_pre[$line+2]))
 						{
 							$code .= $line+3 . ". ".$code_pre[$line+2];
 						}
-
+	
 						unset($code_pre);
-
+	
 						$parser_exists = false;
-
+	
 						if(!is_object($parser) || !method_exists($parser, 'mycode_parse_php'))
 						{
 							if(@file_exists(MYBB_ROOT."inc/class_parser.php"))
@@ -508,7 +468,7 @@ class errorHandler {
 						{
 							$parser_exists = true;
 						}
-
+	
 						if($parser_exists)
 						{
 							$code = $parser->mycode_parse_php($code, true);
@@ -517,7 +477,7 @@ class errorHandler {
 						{
 							$code = @nl2br($code);
 						}
-
+	
 						$error_message .= "<dt>Code:</dt><dd>{$code}</dd>\n";
 					}
 				}
@@ -539,89 +499,39 @@ class errorHandler {
 			$charset = 'UTF-8';
 		}
 
-		$contact_site_owner = '';
-		$is_in_contact = defined('THIS_SCRIPT') && THIS_SCRIPT === 'contact.php';
-		if(!$is_in_contact && ($mybb->settings['contactlink'] == "contact.php" && $mybb->settings['contact'] == 1 && ($mybb->settings['contact_guests'] != 1 && $mybb->user['uid'] == 0 || $mybb->user['uid'] > 0)) || $mybb->settings['contactlink'] != "contact.php")
-		{
-			if(!my_validate_url($mybb->settings['contactlink'], true, true) && my_substr($mybb->settings['contactlink'], 0, 7) != 'mailto:')
-			{
-				$mybb->settings['contactlink'] = $mybb->settings['bburl'].'/'.$mybb->settings['contactlink'];
-			}
-
-			$contact_site_owner = <<<HTML
- If this problem persists, please <a href="{$mybb->settings['contactlink']}">contact the site owner</a>.
-HTML;
-		}
-
-		$additional_name = '';
-		$docs_link = '//docs.mybb.com';
-		$common_issues_link = '//docs.mybb.com/1.8/faq/';
-		$support_link = '//community.mybb.com/';
-
-		if(isset($lang->settings['docs_link']))
-		{
-			$docs_link = $lang->settings['docs_link'];
-		}
-
-		if(isset($lang->settings['common_issues_link']))
-		{
-			$common_issues_link = $lang->settings['common_issues_link'];
-		}
-
-		if(isset($lang->settings['support_link']))
-		{
-			$support_link = $lang->settings['support_link'];
-		}
-
-
-		if(isset($lang->settings['additional_name']))
-		{
-			$additional_name = $lang->settings['additional_name'];
-		}
-
-		$contact = <<<HTML
-<p>
-	<strong>If you're a visitor of this website</strong>, please wait a few minutes and try again.{$contact_site_owner}
-</p>
-
-<p>
-	<strong>If you are the site owner</strong>, please check the <a href="{$docs_link}">MyBB{$additional_name} Documentation</a> for help resolving <a href="{$common_issues_link}">common issues</a>, or get technical help on the <a href="{$support_link}">MyBB{$additional_name} Community Forums</a>.
-</p>
-HTML;
-
 		if(!headers_sent() && !defined("IN_INSTALL") && !defined("IN_UPGRADE"))
 		{
 			@header('HTTP/1.1 503 Service Temporarily Unavailable');
 			@header('Status: 503 Service Temporarily Unavailable');
-			@header('Retry-After: 1800');
+			@header('Retry-After: 1800'); 
 			@header("Content-type: text/html; charset={$charset}");
-			$file_name = htmlspecialchars_uni(basename($_SERVER['SCRIPT_FILENAME']));
-
+			$_SERVER['PHP_SELF'] = htmlspecialchars_uni($_SERVER['PHP_SELF']);
+			
 			echo <<<EOF
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "//www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="//www.w3.org/1999/xhtml" xml:lang="en">
-<head profile="//gmpg.org/xfn/11">
+	<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" >
+<head profile="http://gmpg.org/xfn/11">
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<title>{$mybb->settings['bbname']} - Internal Error</title>
 	<style type="text/css">
-		body { background: #efefef; color: #000; font-family: Tahoma,Verdana,Arial,Sans-Serif; font-size: 12px; text-align: center; line-height: 1.4; }
+		body { background: #efefef; color: #000; font-family: Verdana; font-size: 12px; text-align: center; line-height: 1.4; }
 		a:link { color: #026CB1; text-decoration: none;	}
 		a:visited {	color: #026CB1;	text-decoration: none; }
 		a:hover, a:active {	color: #000; text-decoration: underline; }
-		#container { width: 600px; padding: 20px; background: #fff;	border: 1px solid #e4e4e4; margin: 100px auto; text-align: left; -moz-border-radius: 6px; -webkit-border-radius: 6px; border-radius: 6px; }
-		h1 { margin: 0; background: url({$file_name}?action=mybb_logo) no-repeat;	height: 82px; width: 248px; }
-		#content { border: 1px solid #026CB1; background: #fff; -moz-border-radius: 3px; -webkit-border-radius: 3px; border-radius: 3px; }
-		h2 { font-size: 12px; padding: 4px; background: #026CB1; color: #fff; margin: 0; }
+		#container { width: 600px; padding: 20px; background: #fff;	border: 1px solid #e4e4e4; margin: 100px auto; text-align: left; }
+		h1 { margin: 0; background: url({$_SERVER['PHP_SELF']}?action=mybb_logo) no-repeat;	height: 82px; width: 248px; }
+		#content { border: 1px solid #B60101; background: #fff; }
+		h2 { font-size: 12px; padding: 4px; background: #B60101; color: #fff; margin: 0; }
 		.invisible { display: none; }
 		#error { padding: 6px; }
-		#footer { font-size: 12px; border-top: 1px dotted #DDDDDD; padding-top: 10px; }
+		#footer { font-size: 11px; border-top: 1px solid #ccc; padding-top: 10px; }
 		dt { font-weight: bold; }
 	</style>
 </head>
 <body>
 	<div id="container">
 		<div id="logo">
-			<h1><a href="//mybb.com/" title="MyBB"><span class="invisible">MyBB</span></a></h1>
+			<h1><a href="http://mybb.com/" title="MyBulletinBoard"><span class="invisible">MyBB</span></a></h1>
 		</div>
 
 		<div id="content">
@@ -629,7 +539,7 @@ HTML;
 
 			<div id="error">
 				{$error_message}
-				<p id="footer">{$contact}</p>
+				<p id="footer">Please contact the <a href="http://mybb.com">MyBB Group</a> for support.</p>
 			</div>
 		</div>
 	</div>
@@ -641,25 +551,21 @@ EOF;
 		{
 			echo <<<EOF
 	<style type="text/css">
-		#mybb_error_content { border: 1px solid #026CB1; background: #fff; -moz-border-radius: 3px; -webkit-border-radius: 3px; border-radius: 3px; }
-		#mybb_error_content a:link { color: #026CB1; text-decoration: none;	}
-		#mybb_error_content a:visited {	color: #026CB1;	text-decoration: none; }
-		#mybb_error_content a:hover, a:active {	color: #000; text-decoration: underline; }
-		#mybb_error_content h2 { font-size: 12px; padding: 4px; background: #026CB1; color: #fff; margin: 0; border-bottom: none; }
+		#mybb_error_content { border: 1px solid #B60101; background: #fff; }
+		#mybb_error_content h2 { font-size: 12px; padding: 4px; background: #B60101; color: #fff; margin: 0; }
 		#mybb_error_error { padding: 6px; }
-		#mybb_error_footer { font-size: 12px; border-top: 1px dotted #DDDDDD; padding-top: 10px; }
+		#mybb_error_footer { font-size: 11px; border-top: 1px solid #ccc; padding-top: 10px; }
 		#mybb_error_content dt { font-weight: bold; }
 	</style>
 	<div id="mybb_error_content">
 		<h2>{$title}</h2>
 		<div id="mybb_error_error">
 		{$error_message}
-			<p id="mybb_error_footer">{$contact}</p>
+			<p id="mybb_error_footer">Please contact the <a href="http://mybb.com">MyBB Group</a> for support.</p>
 		</div>
 	</div>
 EOF;
 		}
-
 		exit(1);
 	}
 
@@ -668,56 +574,36 @@ EOF;
 	 *
 	 * @return string The generated backtrace
 	 */
-	function generate_backtrace($html=true, $strip=1)
+	function generate_backtrace()
 	{
-		$backtrace = '';
 		if(function_exists("debug_backtrace"))
 		{
-			$trace = debug_backtrace(1<<1 /* DEBUG_BACKTRACE_IGNORE_ARGS */);
+			$trace = debug_backtrace();
+			$backtrace = "<table style=\"width: 100%; margin: 10px 0; border: 1px solid #aaa; border-collapse: collapse; border-bottom: 0;\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\">\n";
+			$backtrace .= "<thead><tr>\n";
+			$backtrace .= "<th style=\"border-bottom: 1px solid #aaa; background: #ccc; padding: 4px; text-align: left; font-size: 11px;\">File</th>\n";
+			$backtrace .= "<th style=\"border-bottom: 1px solid #aaa; background: #ccc; padding: 4px; text-align: left; font-size: 11px;\">Line</th>\n";
+			$backtrace .= "<th style=\"border-bottom: 1px solid #aaa; background: #ccc; padding: 4px; text-align: left; font-size: 11px;\">Function</th>\n";
+			$backtrace .= "</tr></thead>\n<tbody>\n";
 
-			if($html)
-			{
-				$backtrace = "<table style=\"width: 100%; margin: 10px 0; border: 1px solid #aaa; border-collapse: collapse; border-bottom: 0;\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\">\n";
-				$backtrace .= "<thead><tr>\n";
-				$backtrace .= "<th style=\"border-bottom: 1px solid #aaa; background: #ccc; padding: 4px; text-align: left; font-size: 11px;\">File</th>\n";
-				$backtrace .= "<th style=\"border-bottom: 1px solid #aaa; background: #ccc; padding: 4px; text-align: left; font-size: 11px;\">Line</th>\n";
-				$backtrace .= "<th style=\"border-bottom: 1px solid #aaa; background: #ccc; padding: 4px; text-align: left; font-size: 11px;\">Function</th>\n";
-				$backtrace .= "</tr></thead>\n<tbody>\n";
-			}
-
-			// Strip off calls from trace
-			$trace = array_slice($trace, $strip);
-
-			$i = 0;
+			// Strip off this function from trace
+			array_shift($trace);
 
 			foreach($trace as $call)
 			{
-				if(empty($call['file'])) $call['file'] = "[PHP]";
-				if(empty($call['line'])) $call['line'] = " ";
-				if(!empty($call['class'])) $call['function'] = $call['class'].$call['type'].$call['function'];
+				if(!$call['file']) $call['file'] = "[PHP]";
+				if(!$call['line']) $call['line'] = "&nbsp;";
+				if($call['class']) $call['function'] = $call['class'].$call['type'].$call['function'];
 				$call['file'] = str_replace(MYBB_ROOT, "/", $call['file']);
-
-				if($html)
-				{
-					$backtrace .= "<tr>\n";
-					$backtrace .= "<td style=\"font-size: 11px; padding: 4px; border-bottom: 1px solid #ccc;\">{$call['file']}</td>\n";
-					$backtrace .= "<td style=\"font-size: 11px; padding: 4px; border-bottom: 1px solid #ccc;\">{$call['line']}</td>\n";
-					$backtrace .= "<td style=\"font-size: 11px; padding: 4px; border-bottom: 1px solid #ccc;\">{$call['function']}</td>\n";
-					$backtrace .= "</tr>\n";
-				}
-				else
-				{
-					$backtrace .= "#{$i}  {$call['function']}() called at [{$call['file']}:{$call['line']}]\n";
-				}
-
-				$i++;
+				$backtrace .= "<tr>\n";
+				$backtrace .= "<td style=\"font-size: 11px; padding: 4px; border-bottom: 1px solid #ccc;\">{$call['file']}</td>\n";
+				$backtrace .= "<td style=\"font-size: 11px; padding: 4px; border-bottom: 1px solid #ccc;\">{$call['line']}</td>\n";
+				$backtrace .= "<td style=\"font-size: 11px; padding: 4px; border-bottom: 1px solid #ccc;\">{$call['function']}</td>\n";
+				$backtrace .= "</tr>\n";
 			}
-
-			if($html)
-			{
-				$backtrace .= "</tbody></table>\n";
-			}
+			$backtrace .= "</tbody></table>\n";
 		}
 		return $backtrace;
 	}
 }
+?>

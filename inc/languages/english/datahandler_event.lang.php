@@ -1,8 +1,9 @@
 <?php
 /**
- * MyBB 1.8 English Language Pack
- * Copyright 2014 MyBB Group, All Rights Reserved
+ * MyBB 1.6 English Language Pack
+ * Copyright 2010 MyBB Group, All Rights Reserved
  *
+ * $Id$
  */
 
 $l['eventdata_missing_name'] = 'The name for the event is missing. Please enter an event name.';
@@ -32,3 +33,4 @@ $l['eventdata_invalid_repeat_year_interval'] = "You have entered an invalid year
 $l['eventdata_event_wont_occur'] = "Using the start and end times along with the event repetition settings, this event won't occur.";
 
 $l['eventdata_no_permission_private_event'] = "You do not have permission to post private events.";
+?>

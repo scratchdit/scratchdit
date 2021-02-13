@@ -1,11 +1,12 @@
 <?php
 /**
- * MyBB 1.8
- * Copyright 2014 MyBB Group, All Rights Reserved
+ * MyBB 1.6
+ * Copyright 2010 MyBB Group, All Rights Reserved
  *
- * Website: //www.mybb.com
- * License: //www.mybb.com/about/license
+ * Website: http://mybb.com
+ * License: http://mybb.com/about/license
  *
+ * $Id$
  */
 
 define("IN_MYBB", 1);
@@ -26,7 +27,7 @@ switch($action)
 		if($announcement['fid'] != -1)
 		{
 			$forum = get_forum($announcement['fid']);
-			if(!$forum['fid'] || $forum['password'] !== '')
+			if(!$forum['fid'] || $forum['password'] != '')
 			{
 				archive_error($lang->error_invalidforum);
 			}
@@ -37,32 +38,32 @@ switch($action)
 			{
 				archive_error_no_permission();
 			}
-
+			
 			check_forum_password_archive($forum['fid']);
 		}
 
 		$announcement['subject'] = htmlspecialchars_uni($parser->parse_badwords($announcement['subject']));
 
 		$parser_options = array(
-			"allow_html" => $mybb->settings['announcementshtml'] && $announcement['allowhtml'],
+			"allow_html" => $announcement['allowhtml'],
 			"allow_mycode" => $announcement['allowmycode'],
 			"allow_smilies" => $announcement['allowsmilies'],
-			"allow_imgcode" => 1,
-			"allow_videocode" => 1,
+			"allow_imgcode" => $announcement['allowimgcode'],
+			"allow_videocode" => $announcement['allowvideocode'],
 			"me_username" => $announcement['username'],
 			"filter_badwords" => 1
 		);
 
 		$announcement['message'] = $parser->parse_message($announcement['message'], $parser_options);
 
-		$profile_link = build_profile_link(htmlspecialchars_uni($announcement['username']), $announcement['uid']);
+		$profile_link = build_profile_link($announcement['username'], $announcement['uid']);
 
 		// Build the navigation
 		add_breadcrumb($announcement['subject']);
 		archive_header($announcement['subject'], $announcement['subject'], $mybb->settings['bburl']."/announcements.php?aid={$id}");
 
 		// Format announcement contents.
-		$announcement['startdate'] = my_date('relative', $announcement['startdate']);
+		$announcement['startdate'] = my_date($mybb->settings['dateformat'].", ".$mybb->settings['timeformat'], $announcement['startdate']);
 
 		$plugins->run_hooks("archive_announcement_start");
 
@@ -80,7 +81,7 @@ switch($action)
 
 		// Fetch the forum this thread is in
 		$forum = get_forum($thread['fid']);
-		if(!$forum['fid'] || $forum['password'] !== '')
+		if(!$forum['fid'] || $forum['password'] != '')
 		{
 			archive_error($lang->error_invalidforum);
 		}
@@ -91,10 +92,10 @@ switch($action)
 		{
 			archive_error_no_permission();
 		}
-
+		
 		if($thread['visible'] != 1)
 		{
-			if(is_moderator($forum['fid'], "canviewunapprove"))
+			if(is_moderator($forum['fid']))
 			{
 				archive_error($lang->sprintf($lang->error_unapproved_thread, $mybb->settings['bburl']."/".get_thread_link($thread['tid'], $page)));
 			}
@@ -103,14 +104,14 @@ switch($action)
 				archive_error($lang->error_invalidthread);
 			}
 		}
-
-		if(isset($forumpermissions['canonlyviewownthreads']) && $forumpermissions['canonlyviewownthreads'] == 1 && $thread['uid'] != $mybb->user['uid'])
+		
+		if($forumpermissions['canonlyviewownthreads'] == 1 && $thread['uid'] != $mybb->user['uid'])
 		{
 			archive_error_no_permission();
 		}
-
+		
 		check_forum_password_archive($forum['fid']);
-
+		
 		// Build the navigation
 		build_forum_breadcrumb($forum['fid'], 1);
 		add_breadcrumb($thread['subject']);
@@ -120,12 +121,8 @@ switch($action)
 		$plugins->run_hooks("archive_thread_start");
 
 		// Paginate this thread
-		if(!$mybb->settings['postsperpage'] || (int)$mybb->settings['postsperpage'] < 1)
-		{
-			$mybb->settings['postsperpage'] = 20;
-		}
 		$perpage = $mybb->settings['postsperpage'];
-		$postcount = (int)$thread['replies']+1;
+		$postcount = intval($thread['replies'])+1;
 		$pages = ceil($postcount/$perpage);
 
 		if($page > $pages)
@@ -144,22 +141,22 @@ switch($action)
 
 		$pids = array();
 		// Fetch list of post IDs to be shown
-		$query = $db->simple_select("posts", "pid", "tid='{$id}' AND visible='1'", array('order_by' => 'dateline, pid', 'limit_start' => $start, 'limit' => $perpage));
+		$query = $db->simple_select("posts", "pid", "tid='{$id}' AND visible='1'", array('order_by' => 'dateline', 'limit_start' => $start, 'limit' => $perpage));
 		while($post = $db->fetch_array($query))
 		{
 			$pids[$post['pid']] = $post['pid'];
 		}
-
+		
 		if(empty($pids))
 		{
 			archive_error($lang->error_invalidthread);
 		}
-
+		
 		archive_multipage($postcount, $perpage, $page, "{$base_url}thread-$id");
 
 		$pids = implode(",", $pids);
 
-		if($pids && $mybb->settings['enableattachments'] == 1)
+		if($pids)
 		{
 			// Build attachments cache
 			$query = $db->simple_select("attachments", "*", "pid IN ({$pids})");
@@ -175,11 +172,11 @@ switch($action)
 			FROM ".TABLE_PREFIX."posts p
 			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
 			WHERE p.pid IN ({$pids})
-			ORDER BY p.dateline, p.pid
+			ORDER BY p.dateline
 		");
 		while($post = $db->fetch_array($query))
 		{
-			$post['date'] = my_date('relative', $post['dateline']);
+			$post['date'] = my_date($mybb->settings['dateformat'].", ".$mybb->settings['timeformat'], $post['dateline'], "", 0);
 			if($post['userusername'])
 			{
 				$post['username'] = $post['userusername'];
@@ -203,7 +200,7 @@ switch($action)
 			$post['message'] = $parser->parse_message($post['message'], $parser_options);
 
 			// Is there an attachment in this post?
-			if($mybb->settings['enableattachments'] == 1 && isset($acache[$post['pid']]) && is_array($acache[$post['pid']]))
+			if(is_array($acache[$post['pid']]))
 			{
 				foreach($acache[$post['pid']] as $aid => $attachment)
 				{
@@ -216,7 +213,7 @@ switch($action)
 			{
 				$post['username'] = $post['userusername'];
 			}
-			$post['username'] = build_profile_link(htmlspecialchars_uni($post['username']), $post['uid']);
+			$post['username'] = build_profile_link($post['username'], $post['uid']);
 
 			$plugins->run_hooks("archive_thread_post");
 
@@ -239,11 +236,11 @@ switch($action)
 		{
 			archive_error_no_permission();
 		}
-
+		
 		check_forum_password_archive($forum['fid']);
-
+		
 		$useronly = "";
-		if(isset($forumpermissions['canonlyviewownthreads']) && $forumpermissions['canonlyviewownthreads'] == 1)
+		if($forumpermissions['canonlyviewownthreads'] == 1)
 		{
 			$useronly = "AND uid={$mybb->user['uid']}";
 		}
@@ -256,19 +253,10 @@ switch($action)
 		build_forum_breadcrumb($forum['fid'], 1);
 
 		// No threads and not a category? Error!
-		if($forum['type'] != 'c')
+		if($threadcount < 1 && $forum['type'] != 'c')
 		{
-			if($forumpermissions['canviewthreads'] != 1)
-			{
-				archive_header(strip_tags($forum['name']), $forum['name'], $mybb->settings['bburl']."/".get_forum_link($id, $page)."");
-				archive_error($lang->error_nopermission);
-			}
-
-			if($threadcount < 1 && $forumpermissions['canviewthreads'] == 1)
-			{
-				archive_header(strip_tags($forum['name']), $forum['name'], $mybb->settings['bburl']."/".get_forum_link($id, $page)."");
-				archive_error($lang->error_nothreads);
-			}
+			archive_header(strip_tags($forum['name']), $forum['name'], $mybb->settings['bburl']."/".get_forum_link($id, $page)."");
+			archive_error($lang->error_nothreads);
 		}
 
 		// Build the archive header.
@@ -276,7 +264,7 @@ switch($action)
 
 		$plugins->run_hooks("archive_forum_start");
 
-		if(!$mybb->settings['threadsperpage'] || (int)$mybb->settings['threadsperpage'] < 1)
+		if(!$mybb->settings['threadsperpage'])
 		{
 			$mybb->settings['threadsperpage'] = 20;
 		}
@@ -287,7 +275,7 @@ switch($action)
 		{
 			$page = 1;
 		}
-
+		
 		if($page > 0)
 		{
 			$start = ($page-1) * $perpage;
@@ -309,7 +297,7 @@ switch($action)
 		}
 
 		// Show subforums.
-		$query = $db->simple_select("forums", "COUNT(fid) AS subforums", "pid='{$id}'");
+		$query = $db->simple_select("forums", "COUNT(fid) AS subforums", "pid='{$id}' AND status='1'");
 		$subforumcount = $db->fetch_field($query, "subforums");
 		if($subforumcount > 0)
 		{
@@ -320,9 +308,9 @@ switch($action)
 			echo $forums;
 			echo "</ol>\n</div>\n";
 		}
-
+		
 		archive_multipage($threadcount, $perpage, $page, "{$base_url}forum-$id");
-
+	
 		// Get the announcements if the forum is not a category.
 		if($forum['type'] == 'f')
 		{
@@ -373,8 +361,6 @@ switch($action)
 
 					$plugins->run_hooks("archive_forum_thread");
 
-					$sticky['replies'] = my_number_format($sticky['replies']);
-
 					echo "<li><a href=\"{$base_url}thread-{$sticky['tid']}.html\">{$sticky['subject']}</a>";
 					echo "<span class=\"replycount\"> ({$sticky['replies']} {$lang_reply_text})</span></li>";
 				}
@@ -410,8 +396,6 @@ switch($action)
 					}
 
 					$plugins->run_hooks("archive_forum_thread");
-
-					$thread['replies'] = my_number_format($thread['replies']);
 
 					echo "<li><a href=\"{$base_url}thread-{$thread['tid']}.html\">{$thread['subject']}</a>";
 					echo "<span class=\"replycount\"> ({$thread['replies']} {$lang_reply_text})</span></li>";
@@ -465,12 +449,12 @@ $plugins->run_hooks("archive_end");
 /**
 * Gets a list of forums and possibly subforums.
 *
-* @param int $pid The parent forum to get the childforums for.
+* @param int The parent forum to get the childforums for.
 * @return array Array of information regarding the child forums of this parent forum
 */
 function build_archive_forumbits($pid=0)
 {
-	global $db, $forumpermissions, $mybb, $base_url;
+	global $db, $forumpermissions, $mybb, $lang, $archiveurl, $base_url;
 
 	// Sort out the forum cache first.
 	static $fcache;
@@ -484,8 +468,6 @@ function build_archive_forumbits($pid=0)
 		}
 		$forumpermissions = forum_permissions();
 	}
-
-	$forums = '';
 
 	// Start the process.
 	if(is_array($fcache[$pid]))
@@ -509,7 +491,7 @@ function build_archive_forumbits($pid=0)
 					{
 						$forums .= "<li><a href=\"{$base_url}forum-{$forum['fid']}.html\">{$forum['name']}</a>";
 					}
-					if(!empty($fcache[$forum['fid']]))
+					if($fcache[$forum['fid']])
 					{
 						$forums .= "\n<ol>\n";
 						$forums .= build_archive_forumbits($forum['fid']);
@@ -522,3 +504,4 @@ function build_archive_forumbits($pid=0)
 	}
 	return $forums;
 }
+?>

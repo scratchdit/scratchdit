@@ -5,29 +5,24 @@
  * This class renders the diff in classic diff format. It is intended that
  * this class be customized via inheritance, to obtain fancier outputs.
  *
- * Copyright 2004-2017 Horde LLC (//www.horde.org/)
+ * $Horde: framework/Text_Diff/Diff/Renderer.php,v 1.5.10.10 2008/01/04 10:37:27 jan Exp $
+ *
+ * Copyright 2004-2008 The Horde Project (http://www.horde.org/)
  *
  * See the enclosed file COPYING for license information (LGPL). If you did
- * not receive this file, see //www.horde.org/licenses/lgpl21.
+ * not receive this file, see http://opensource.org/licenses/lgpl-license.php.
  *
  * @package Text_Diff
  */
+class Text_Diff_Renderer {
 
-// Disallow direct access to this file for security reasons
-if(!defined("IN_MYBB"))
-{
-	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
-}
-
-class Horde_Text_Diff_Renderer
-{
     /**
      * Number of leading context "lines" to preserve.
      *
      * This should be left at zero for this class, but subclasses may want to
      * set this to other values.
      */
-    protected $_leading_context_lines = 0;
+    var $_leading_context_lines = 0;
 
     /**
      * Number of trailing context "lines" to preserve.
@@ -35,12 +30,12 @@ class Horde_Text_Diff_Renderer
      * This should be left at zero for this class, but subclasses may want to
      * set this to other values.
      */
-    protected $_trailing_context_lines = 0;
+    var $_trailing_context_lines = 0;
 
     /**
      * Constructor.
      */
-    public function __construct($params = array())
+    function Text_Diff_Renderer($params = array())
     {
         foreach ($params as $param => $value) {
             $v = '_' . $param;
@@ -55,7 +50,7 @@ class Horde_Text_Diff_Renderer
      *
      * @return array  All parameters of this renderer object.
      */
-    public function getParams()
+    function getParams()
     {
         $params = array();
         foreach (get_object_vars($this) as $k => $v) {
@@ -70,11 +65,11 @@ class Horde_Text_Diff_Renderer
     /**
      * Renders a diff.
      *
-     * @param Horde_Text_Diff $diff  A Horde_Text_Diff object.
+     * @param Text_Diff $diff  A Text_Diff object.
      *
      * @return string  The formatted output.
      */
-    public function render($diff)
+    function render($diff)
     {
         $xi = $yi = 1;
         $block = false;
@@ -90,7 +85,7 @@ class Horde_Text_Diff_Renderer
             /* If these are unchanged (copied) lines, and we want to keep
              * leading or trailing context lines, extract them from the copy
              * block. */
-            if ($edit instanceof Horde_Text_Diff_Op_Copy) {
+            if (is_a($edit, 'Text_Diff_Op_copy')) {
                 /* Do we have any diff blocks yet? */
                 if (is_array($block)) {
                     /* How many lines to keep as context from the copy
@@ -105,7 +100,7 @@ class Horde_Text_Diff_Renderer
                             /* Create a new block with as many lines as we need
                              * for the trailing context. */
                             $context = array_slice($edit->orig, 0, $ntrail);
-                            $block[] = new Horde_Text_Diff_Op_Copy($context);
+                            $block[] = &new Text_Diff_Op_copy($context);
                         }
                         /* @todo */
                         $output .= $this->_block($x0, $ntrail + $xi - $x0,
@@ -125,7 +120,7 @@ class Horde_Text_Diff_Renderer
                     $y0 = $yi - count($context);
                     $block = array();
                     if ($context) {
-                        $block[] = new Horde_Text_Diff_Op_Copy($context);
+                        $block[] = &new Text_Diff_Op_copy($context);
                     }
                 }
                 $block[] = $edit;
@@ -148,25 +143,25 @@ class Horde_Text_Diff_Renderer
         return $output . $this->_endDiff();
     }
 
-    protected function _block($xbeg, $xlen, $ybeg, $ylen, &$edits)
+    function _block($xbeg, $xlen, $ybeg, $ylen, &$edits)
     {
         $output = $this->_startBlock($this->_blockHeader($xbeg, $xlen, $ybeg, $ylen));
 
         foreach ($edits as $edit) {
-            switch (get_class($edit)) {
-            case 'Horde_Text_Diff_Op_Copy':
+            switch (strtolower(get_class($edit))) {
+            case 'text_diff_op_copy':
                 $output .= $this->_context($edit->orig);
                 break;
 
-            case 'Horde_Text_Diff_Op_Add':
+            case 'text_diff_op_add':
                 $output .= $this->_added($edit->final);
                 break;
 
-            case 'Horde_Text_Diff_Op_Delete':
+            case 'text_diff_op_delete':
                 $output .= $this->_deleted($edit->orig);
                 break;
 
-            case 'Horde_Text_Diff_Op_Change':
+            case 'text_diff_op_change':
                 $output .= $this->_changed($edit->orig, $edit->final);
                 break;
             }
@@ -175,17 +170,17 @@ class Horde_Text_Diff_Renderer
         return $output . $this->_endBlock();
     }
 
-    protected function _startDiff()
+    function _startDiff()
     {
         return '';
     }
 
-    protected function _endDiff()
+    function _endDiff()
     {
         return '';
     }
 
-    protected function _blockHeader($xbeg, $xlen, $ybeg, $ylen)
+    function _blockHeader($xbeg, $xlen, $ybeg, $ylen)
     {
         if ($xlen > 1) {
             $xbeg .= ',' . ($xbeg + $xlen - 1);
@@ -204,38 +199,39 @@ class Horde_Text_Diff_Renderer
         return $xbeg . ($xlen ? ($ylen ? 'c' : 'd') : 'a') . $ybeg;
     }
 
-    protected function _startBlock($header)
+    function _startBlock($header)
     {
         return $header . "\n";
     }
 
-    protected function _endBlock()
+    function _endBlock()
     {
         return '';
     }
 
-    protected function _lines($lines, $prefix = ' ')
+    function _lines($lines, $prefix = ' ')
     {
         return $prefix . implode("\n$prefix", $lines) . "\n";
     }
 
-    protected function _context($lines)
+    function _context($lines)
     {
         return $this->_lines($lines, '  ');
     }
 
-    protected function _added($lines)
+    function _added($lines)
     {
         return $this->_lines($lines, '> ');
     }
 
-    protected function _deleted($lines)
+    function _deleted($lines)
     {
         return $this->_lines($lines, '< ');
     }
 
-    protected function _changed($orig, $final)
+    function _changed($orig, $final)
     {
         return $this->_deleted($orig) . "---\n" . $this->_added($final);
     }
+
 }

@@ -2,36 +2,27 @@
 /**
  * Class used internally by Diff to actually compute the diffs.
  *
- * This class uses the xdiff PECL package (//pecl.php.net/package/xdiff)
+ * This class uses the xdiff PECL package (http://pecl.php.net/package/xdiff)
  * to compute the differences between the two input arrays.
  *
- * Copyright 2004-2017 Horde LLC (//www.horde.org/)
+ * $Horde: framework/Text_Diff/Diff/Engine/xdiff.php,v 1.4.2.3 2008/01/04 10:37:27 jan Exp $
+ *
+ * Copyright 2004-2008 The Horde Project (http://www.horde.org/)
  *
  * See the enclosed file COPYING for license information (LGPL). If you did
- * not receive this file, see //www.horde.org/licenses/lgpl21.
+ * not receive this file, see http://opensource.org/licenses/lgpl-license.php.
  *
  * @author  Jon Parise <jon@horde.org>
  * @package Text_Diff
  */
+class Text_Diff_Engine_xdiff {
 
-// Disallow direct access to this file for security reasons
-if(!defined("IN_MYBB"))
-{
-	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
-}
-
-class Horde_Text_Diff_Engine_Xdiff
-{
     /**
      */
-    public function diff($from_lines, $to_lines)
+    function diff($from_lines, $to_lines)
     {
-        if (!extension_loaded('xdiff')) {
-            throw new Horde_Text_Diff_Exception('The xdiff extension is required for this diff engine');
-        }
-
-        array_walk($from_lines, array('Horde_Text_Diff', 'trimNewlines'));
-        array_walk($to_lines, array('Horde_Text_Diff', 'trimNewlines'));
+        array_walk($from_lines, array('Text_Diff', 'trimNewlines'));
+        array_walk($to_lines, array('Text_Diff', 'trimNewlines'));
 
         /* Convert the two input arrays into strings for xdiff processing. */
         $from_string = implode("\n", $from_lines);
@@ -46,29 +37,27 @@ class Horde_Text_Diff_Engine_Xdiff
          * xdiff output (which is in the "unified diff" format).
          *
          * Note that we don't have enough information to detect "changed"
-         * lines using this approach, so we can't add Horde_Text_Diff_Op_Changed
+         * lines using this approach, so we can't add Text_Diff_Op_changed
          * instances to the $edits array.  The result is still perfectly
          * valid, albeit a little less descriptive and efficient. */
         $edits = array();
         foreach ($diff as $line) {
-            if (!strlen($line)) {
-                continue;
-            }
             switch ($line[0]) {
             case ' ':
-                $edits[] = new Horde_Text_Diff_Op_Copy(array(substr($line, 1)));
+                $edits[] = &new Text_Diff_Op_copy(array(substr($line, 1)));
                 break;
 
             case '+':
-                $edits[] = new Horde_Text_Diff_Op_Add(array(substr($line, 1)));
+                $edits[] = &new Text_Diff_Op_add(array(substr($line, 1)));
                 break;
 
             case '-':
-                $edits[] = new Horde_Text_Diff_Op_Delete(array(substr($line, 1)));
+                $edits[] = &new Text_Diff_Op_delete(array(substr($line, 1)));
                 break;
             }
         }
 
         return $edits;
     }
+
 }

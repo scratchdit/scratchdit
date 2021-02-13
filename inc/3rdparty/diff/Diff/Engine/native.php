@@ -1,14 +1,14 @@
 <?php
 /**
- * Class used internally by Horde_Text_Diff to actually compute the diffs.
+ * Class used internally by Text_Diff to actually compute the diffs.
  *
  * This class is implemented using native PHP code.
  *
  * The algorithm used here is mostly lifted from the perl module
  * Algorithm::Diff (version 1.06) by Ned Konz, which is available at:
- * //www.perl.com/CPAN/authors/id/N/NE/NEDKONZ/Algorithm-Diff-1.06.zip
+ * http://www.perl.com/CPAN/authors/id/N/NE/NEDKONZ/Algorithm-Diff-1.06.zip
  *
- * More ideas are taken from: //www.ics.uci.edu/~eppstein/161/960229.html
+ * More ideas are taken from: http://www.ics.uci.edu/~eppstein/161/960229.html
  *
  * Some ideas (and a bit of code) are taken from analyze.c, of GNU
  * diffutils-2.7, which can be found at:
@@ -18,27 +18,22 @@
  * Geoffrey T. Dairiki <dairiki@dairiki.org>. The original PHP version of this
  * code was written by him, and is used/adapted with his permission.
  *
- * Copyright 2004-2017 Horde LLC (//www.horde.org/)
+ * $Horde: framework/Text_Diff/Diff/Engine/native.php,v 1.7.2.4 2008/01/04 10:38:10 jan Exp $
+ *
+ * Copyright 2004-2008 The Horde Project (http://www.horde.org/)
  *
  * See the enclosed file COPYING for license information (LGPL). If you did
- * not receive this file, see //www.horde.org/licenses/lgpl21.
+ * not receive this file, see http://opensource.org/licenses/lgpl-license.php.
  *
  * @author  Geoffrey T. Dairiki <dairiki@dairiki.org>
  * @package Text_Diff
  */
+class Text_Diff_Engine_native {
 
-// Disallow direct access to this file for security reasons
-if(!defined("IN_MYBB"))
-{
-	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
-}
-
-class Horde_Text_Diff_Engine_Native
-{
-    public function diff($from_lines, $to_lines)
+    function diff($from_lines, $to_lines)
     {
-        array_walk($from_lines, array('Horde_Text_Diff', 'trimNewlines'));
-        array_walk($to_lines, array('Horde_Text_Diff', 'trimNewlines'));
+        array_walk($from_lines, array('Text_Diff', 'trimNewlines'));
+        array_walk($to_lines, array('Text_Diff', 'trimNewlines'));
 
         $n_from = count($from_lines);
         $n_to = count($to_lines);
@@ -111,7 +106,7 @@ class Horde_Text_Diff_Engine_Native
                 ++$yi;
             }
             if ($copy) {
-                $edits[] = new Horde_Text_Diff_Op_Copy($copy);
+                $edits[] = &new Text_Diff_Op_copy($copy);
             }
 
             // Find deletes & adds.
@@ -126,11 +121,11 @@ class Horde_Text_Diff_Engine_Native
             }
 
             if ($delete && $add) {
-                $edits[] = new Horde_Text_Diff_Op_Change($delete, $add);
+                $edits[] = &new Text_Diff_Op_change($delete, $add);
             } elseif ($delete) {
-                $edits[] = new Horde_Text_Diff_Op_Delete($delete);
+                $edits[] = &new Text_Diff_Op_delete($delete);
             } elseif ($add) {
-                $edits[] = new Horde_Text_Diff_Op_Add($add);
+                $edits[] = &new Text_Diff_Op_add($add);
             }
         }
 
@@ -148,12 +143,12 @@ class Horde_Text_Diff_Engine_Native
      * the second in (X1, X2), (Y1, Y2) and so on.  Note that (X0, Y0) ==
      * (XOFF, YOFF) and (X[NCHUNKS], Y[NCHUNKS]) == (XLIM, YLIM).
      *
-     * This public function assumes that the first lines of the specified portions of
+     * This function assumes that the first lines of the specified portions of
      * the two files do not match, and likewise that the last lines do not
      * match.  The caller must trim matching lines from the beginning and end
      * of the portions it is going to specify.
      */
-    protected function _diag ($xoff, $xlim, $yoff, $ylim, $nchunks)
+    function _diag ($xoff, $xlim, $yoff, $ylim, $nchunks)
     {
         $flip = false;
 
@@ -196,17 +191,27 @@ class Horde_Text_Diff_Engine_Native
                     continue;
                 }
                 $matches = $ymatches[$line];
-                foreach ($matches as $y) {
+                reset($matches);
+                while (list(, $y) = each($matches)) {
                     if (empty($this->in_seq[$y])) {
                         $k = $this->_lcsPos($y);
                         assert($k > 0);
                         $ymids[$k] = $ymids[$k - 1];
                         break;
-                    } elseif ($y > $this->seq[$k - 1]) {
+                    }
+                }
+                while (list(, $y) = each($matches)) {
+                    if ($y > $this->seq[$k - 1]) {
                         assert($y <= $this->seq[$k]);
+                        /* Optimization: this is a common case: next match is
+                         * just replacing previous match. */
                         $this->in_seq[$this->seq[$k]] = false;
                         $this->seq[$k] = $y;
                         $this->in_seq[$y] = 1;
+                    } elseif (empty($this->in_seq[$y])) {
+                        $k = $this->_lcsPos($y);
+                        assert($k > 0);
+                        $ymids[$k] = $ymids[$k - 1];
                     }
                 }
             }
@@ -224,7 +229,7 @@ class Horde_Text_Diff_Engine_Native
         return array($this->lcs, $seps);
     }
 
-    protected function _lcsPos($ypos)
+    function _lcsPos($ypos)
     {
         $end = $this->lcs;
         if ($end == 0 || $ypos > $this->seq[$end]) {
@@ -263,7 +268,7 @@ class Horde_Text_Diff_Engine_Native
      * Note that XLIM, YLIM are exclusive bounds.  All line numbers are
      * origin-0 and discarded lines are not counted.
      */
-    protected function _compareseq ($xoff, $xlim, $yoff, $ylim)
+    function _compareseq ($xoff, $xlim, $yoff, $ylim)
     {
         /* Slide down the bottom initial diagonal. */
         while ($xoff < $xlim && $yoff < $ylim
@@ -322,12 +327,12 @@ class Horde_Text_Diff_Engine_Native
      *
      * This is extracted verbatim from analyze.c (GNU diffutils-2.7).
      */
-    protected function _shiftBoundaries($lines, &$changed, $other_changed)
+    function _shiftBoundaries($lines, &$changed, $other_changed)
     {
         $i = 0;
         $j = 0;
 
-        assert(count($lines) == count($changed));
+        assert('count($lines) == count($changed)');
         $len = count($lines);
         $other_len = count($other_changed);
 
@@ -348,7 +353,7 @@ class Horde_Text_Diff_Engine_Native
             }
 
             while ($i < $len && ! $changed[$i]) {
-                assert($j < $other_len && ! $other_changed[$j]);
+                assert('$j < $other_len && ! $other_changed[$j]');
                 $i++; $j++;
                 while ($j < $other_len && $other_changed[$j]) {
                     $j++;
@@ -380,11 +385,11 @@ class Horde_Text_Diff_Engine_Native
                     while ($start > 0 && $changed[$start - 1]) {
                         $start--;
                     }
-                    assert($j > 0);
+                    assert('$j > 0');
                     while ($other_changed[--$j]) {
                         continue;
                     }
-                    assert($j >= 0 && !$other_changed[$j]);
+                    assert('$j >= 0 && !$other_changed[$j]');
                 }
 
                 /* Set CORRESPONDING to the end of the changed run, at the
@@ -405,7 +410,7 @@ class Horde_Text_Diff_Engine_Native
                         $i++;
                     }
 
-                    assert($j < $other_len && ! $other_changed[$j]);
+                    assert('$j < $other_len && ! $other_changed[$j]');
                     $j++;
                     if ($j < $other_len && $other_changed[$j]) {
                         $corresponding = $i;
@@ -421,12 +426,13 @@ class Horde_Text_Diff_Engine_Native
             while ($corresponding < $i) {
                 $changed[--$start] = 1;
                 $changed[--$i] = 0;
-                assert($j > 0);
+                assert('$j > 0');
                 while ($other_changed[--$j]) {
                     continue;
                 }
-                assert($j >= 0 && !$other_changed[$j]);
+                assert('$j >= 0 && !$other_changed[$j]');
             }
         }
     }
+
 }

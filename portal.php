@@ -1,11 +1,12 @@
 <?php
 /**
- * MyBB 1.8
- * Copyright 2014 MyBB Group, All Rights Reserved
+ * MyBB 1.6
+ * Copyright 2010 MyBB Group, All Rights Reserved
  *
- * Website: //www.mybb.com
- * License: //www.mybb.com/about/license
+ * Website: http://mybb.com
+ * License: http://mybb.com/about/license
  *
+ * $Id$
  */
 
 define("IN_MYBB", 1);
@@ -31,10 +32,7 @@ if(!@chdir($forumdir) && !empty($forumdir))
 	}
 }
 
-$templatelist = "portal,portal_welcome_membertext,portal_stats,portal_search,portal_whosonline_memberbit,portal_whosonline,portal_latestthreads_thread,portal_latestthreads,portal_announcement_numcomments_no";
-$templatelist .= ",postbit_attachments_thumbnails_thumbnail,postbit_attachments_images_image,postbit_attachments_attachment,postbit_attachments_thumbnails,postbit_attachments_images,postbit_attachments";
-$templatelist .= ",multipage,multipage_end,multipage_jump_page,multipage_nextpage,multipage_page,multipage_page_current,multipage_page_link_current,multipage_prevpage,multipage_start,portal_announcement_send_item";
-$templatelist .= ",portal_stats_nobody,portal_announcement_avatar,portal_announcement_numcomments,portal_announcement_icon,portal_pms,portal_welcome,portal_announcement,portal_welcome_guesttext";
+$templatelist = "portal_welcome,portal_welcome_membertext,portal_stats,portal_search,portal_whosonline_memberbit,portal_whosonline,portal_latestthreads_thread_lastpost,portal_latestthreads_thread,portal_latestthreads,portal_announcement_numcomments_no,portal_announcement,portal_announcement_numcomments,portal_pms,portal";
 
 require_once $change_dir."/global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -45,76 +43,55 @@ $parser = new postParser;
 // Load global language phrases
 $lang->load("portal");
 
-if($mybb->settings['portal'] == 0)
-{
-	error($lang->portal_disabled);
-}
-
 // Fetch the current URL
 $portal_url = get_current_location();
-$file_name = strtok(my_strtolower(basename($portal_url)), '?');
 
-add_breadcrumb($lang->nav_portal, $file_name);
+add_breadcrumb($lang->nav_portal, "portal.php");
 
 $plugins->run_hooks("portal_start");
 
-$tunviewwhere = $unviewwhere = '';
+
 // get forums user cannot view
 $unviewable = get_unviewable_forums(true);
 if($unviewable)
 {
 	$unviewwhere = " AND fid NOT IN ($unviewable)";
-	$tunviewwhere = " AND t.fid NOT IN ($unviewable)";
 }
-
-// get inactive forums
-$inactive = get_inactive_forums();
-if($inactive)
-{
-	$unviewwhere .= " AND fid NOT IN ($inactive)";
-	$tunviewwhere .= " AND t.fid NOT IN ($inactive)";
-}
-
-$mybb->user['username'] = htmlspecialchars_uni($mybb->user['username']);
-
-$welcome = '';
 // If user is known, welcome them
 if($mybb->settings['portal_showwelcome'] != 0)
 {
 	if($mybb->user['uid'] != 0)
 	{
 		// Get number of new posts, threads, announcements
-		$query = $db->simple_select("posts", "COUNT(pid) AS newposts", "visible=1 AND dateline>'".$mybb->user['lastvisit']."'{$unviewwhere}");
+		$query = $db->simple_select("posts", "COUNT(pid) AS newposts", "visible=1 AND dateline>'".$mybb->user['lastvisit']."' $unviewwhere");
 		$newposts = $db->fetch_field($query, "newposts");
 		if($newposts)
-		{
+		{ 
 			// If there aren't any new posts, there is no point in wasting two more queries
-			$query = $db->simple_select("threads", "COUNT(tid) AS newthreads", "visible=1 AND dateline>'".$mybb->user['lastvisit']."'{$unviewwhere}");
+			$query = $db->simple_select("threads", "COUNT(tid) AS newthreads", "visible=1 AND dateline>'".$mybb->user['lastvisit']."' $unviewwhere");
 			$newthreads = $db->fetch_field($query, "newthreads");
 
-			$newann = 0;
-			if(!empty($mybb->settings['portal_announcementsfid']))
+			$announcementsfids = explode(',', $mybb->settings['portal_announcementsfid']);
+			if(is_array($announcementsfids))
 			{
-				$annfidswhere = '';
-				if($mybb->settings['portal_announcementsfid'] != -1)
+				foreach($announcementsfids as $fid)
 				{
-					$announcementsfids = explode(',', (string)$mybb->settings['portal_announcementsfid']);
-					if(is_array($announcementsfids))
-					{
-						foreach($announcementsfids as &$fid)
-						{
-							$fid = (int)$fid;
-						}
-						unset($fid);
-
-						$announcementsfids = implode(',', $announcementsfids);
-
-						$annfidswhere = " AND fid IN (".$announcementsfids.")";
-					}
+					$fid_array[] = intval($fid);	
 				}
-
-				$query = $db->simple_select("threads", "COUNT(tid) AS newann", "visible=1 AND dateline>'".$mybb->user['lastvisit']."'{$annfidswhere}{$unviewwhere}");
+				
+				$announcementsfids = implode(',', $fid_array);
+				$query = $db->simple_select("threads", "COUNT(tid) AS newann", "visible=1 AND dateline>'".$mybb->user['lastvisit']."' AND fid IN (".$announcementsfids.") $unviewwhere");
 				$newann = $db->fetch_field($query, "newann");
+			}
+
+			if(!$newthreads)
+			{
+				$newthreads = 0;
+			}
+
+			if(!$newann)
+			{
+				$newann = 0;
 			}
 		}
 		else
@@ -154,7 +131,7 @@ if($mybb->settings['portal_showwelcome'] != 0)
 	}
 	else
 	{
-		$lang->guest_welcome_registration = $lang->sprintf($lang->guest_welcome_registration, $mybb->settings['bburl'].'/member.php?action=register');
+		$lang->guest_welcome_registration = $lang->sprintf($lang->guest_welcome_registration, $mybb->settings['bburl'] . '/member.php?action=register');
 		$mybb->user['username'] = $lang->guest;
 		switch($mybb->settings['username_method'])
 		{
@@ -175,23 +152,40 @@ if($mybb->settings['portal_showwelcome'] != 0)
 	}
 	$lang->welcome = $lang->sprintf($lang->welcome, $mybb->user['username']);
 	eval("\$welcome = \"".$templates->get("portal_welcome")."\";");
+	if($mybb->user['uid'] == 0)
+	{
+		$mybb->user['username'] = "";
+	}
 }
-
-$pms = '';
 // Private messages box
 if($mybb->settings['portal_showpms'] != 0)
 {
 	if($mybb->user['uid'] != 0 && $mybb->user['receivepms'] != 0 && $mybb->usergroup['canusepms'] != 0 && $mybb->settings['enablepms'] != 0)
 	{
-		$messages['pms_total'] = $mybb->user['pms_total'];
-		$messages['pms_unread'] = $mybb->user['pms_unread'];
-
+		switch($db->type)
+		{
+			case "sqlite":
+			case "pgsql":
+				$query = $db->simple_select("privatemessages", "COUNT(*) AS pms_total", "uid='".$mybb->user['uid']."'");
+				$messages['pms_total'] = $db->fetch_field($query, "pms_total");
+				
+				$query = $db->simple_select("privatemessages", "COUNT(*) AS pms_unread", "uid='".$mybb->user['uid']."' AND CASE WHEN status = '0' AND folder = '0' THEN TRUE ELSE FALSE END");
+				$messages['pms_unread'] = $db->fetch_field($query, "pms_unread");
+				break;
+			default:
+				$query = $db->simple_select("privatemessages", "COUNT(*) AS pms_total, SUM(IF(status='0' AND folder='1','1','0')) AS pms_unread", "uid='".$mybb->user['uid']."'");
+				$messages = $db->fetch_array($query);
+		}
+		
+		// the SUM() thing returns "" instead of 0
+		if($messages['pms_unread'] == "")
+		{
+			$messages['pms_unread'] = 0;
+		}
 		$lang->pms_received_new = $lang->sprintf($lang->pms_received_new, $mybb->user['username'], $messages['pms_unread']);
 		eval("\$pms = \"".$templates->get("portal_pms")."\";");
 	}
 }
-
-$stats = '';
 // Get Forum Statistics
 if($mybb->settings['portal_showstats'] != 0)
 {
@@ -201,7 +195,7 @@ if($mybb->settings['portal_showstats'] != 0)
 	$stats['numusers'] = my_number_format($stats['numusers']);
 	if(!$stats['lastusername'])
 	{
-		eval("\$newestmember = \"".$templates->get("portal_stats_nobody")."\";");
+		$newestmember = "<strong>" . $lang->no_one . "</strong>";
 	}
 	else
 	{
@@ -210,68 +204,58 @@ if($mybb->settings['portal_showstats'] != 0)
 	eval("\$stats = \"".$templates->get("portal_stats")."\";");
 }
 
-$search = '';
 // Search box
 if($mybb->settings['portal_showsearch'] != 0)
 {
 	eval("\$search = \"".$templates->get("portal_search")."\";");
 }
 
-$whosonline = '';
 // Get the online users
 if($mybb->settings['portal_showwol'] != 0 && $mybb->usergroup['canviewonline'] != 0)
 {
-	if($mybb->settings['wolorder'] == 'username')
-	{
-		$order_by = 'u.username ASC';
-		$order_by2 = 's.time DESC';
-	}
-	else
-	{
-		$order_by = 's.time DESC';
-		$order_by2 = 'u.username ASC';
-	}
-
 	$timesearch = TIME_NOW - $mybb->settings['wolcutoff'];
-	$guestcount = $membercount = $botcount = $anoncount = 0;
-	$doneusers = $onlinemembers = $onlinebots = array();
-
-	$query = $db->simple_select("sessions", "COUNT(DISTINCT ip) AS guestcount", "uid = 0 AND time > $timesearch");
-	$guestcount = $db->fetch_field($query, "guestcount");
-
+	$comma = '';
+	$guestcount = 0;
+	$membercount = 0;
+	$onlinemembers = '';
 	$query = $db->query("
-		SELECT
-			s.sid, s.ip, s.uid, s.time, s.location, u.username, u.invisible, u.usergroup, u.displaygroup
-		FROM
-			".TABLE_PREFIX."sessions s
-			LEFT JOIN ".TABLE_PREFIX."users u ON (s.uid=u.uid)
-		WHERE (s.uid != 0 OR SUBSTR(s.sid,4,1) = '=') AND s.time > $timesearch
-		ORDER BY {$order_by}, {$order_by2}
+		SELECT s.sid, s.ip, s.uid, s.time, s.location, u.username, u.invisible, u.usergroup, u.displaygroup
+		FROM ".TABLE_PREFIX."sessions s
+		LEFT JOIN ".TABLE_PREFIX."users u ON (s.uid=u.uid)
+		WHERE s.time>'$timesearch'
+		ORDER BY u.username ASC, s.time DESC
 	");
-
-	// Fetch spiders
-	$spiders = $cache->read('spiders');
-
 	while($user = $db->fetch_array($query))
 	{
-
+	
 		// Create a key to test if this user is a search bot.
 		$botkey = my_strtolower(str_replace("bot=", '', $user['sid']));
-
-		if($user['uid'] > 0)
+		
+		if($user['uid'] == "0")
 		{
-			if(empty($doneusers[$user['uid']]) || $doneusers[$user['uid']] < $user['time'])
+			++$guestcount;
+		}
+		elseif(my_strpos($user['sid'], "bot=") !== false && $session->bots[$botkey])
+		{
+			// The user is a search bot.
+			$onlinemembers .= $comma.format_name($session->bots[$botkey], $session->botgroup);
+			$comma = $lang->comma;
+			++$botcount;
+		}
+		else
+		{
+			if($doneusers[$user['uid']] < $user['time'] || !$doneusers[$user['uid']])
 			{
 				++$membercount;
-
+				
 				$doneusers[$user['uid']] = $user['time'];
-
+				
 				// If the user is logged in anonymously, update the count for that.
 				if($user['invisible'] == 1)
 				{
 					++$anoncount;
 				}
-
+				
 				if($user['invisible'] == 1)
 				{
 					$invisiblemark = "*";
@@ -280,63 +264,28 @@ if($mybb->settings['portal_showwol'] != 0 && $mybb->usergroup['canviewonline'] !
 				{
 					$invisiblemark = '';
 				}
-
+				
 				if(($user['invisible'] == 1 && ($mybb->usergroup['canviewwolinvis'] == 1 || $user['uid'] == $mybb->user['uid'])) || $user['invisible'] != 1)
 				{
-					$user['username'] = format_name(htmlspecialchars_uni($user['username']), $user['usergroup'], $user['displaygroup']);
+					$user['username'] = format_name($user['username'], $user['usergroup'], $user['displaygroup']);
 					$user['profilelink'] = get_profile_link($user['uid']);
-					eval("\$onlinemembers[] = \"".$templates->get("portal_whosonline_memberbit", 1, 0)."\";");
+					eval("\$onlinemembers .= \"".$templates->get("portal_whosonline_memberbit", 1, 0)."\";");
+					$comma = $lang->comma;
 				}
 			}
 		}
-		elseif(my_strpos($user['sid'], 'bot=') !== false && $spiders[$botkey])
-		{
-			// The user is a search bot.
-			if($mybb->settings['wolorder'] == 'username')
-			{
-				$key = $spiders[$botkey]['name'];
-			}
-			else
-			{
-				$key = $user['time'];
-			}
-
-			$onlinebots[$key] = format_name($spiders[$botkey]['name'], $spiders[$botkey]['usergroup']);
-			++$botcount;
-		}
 	}
-
-	if($mybb->settings['wolorder'] == 'activity')
-	{
-		// activity ordering is DESC, username is ASC
-		krsort($onlinebots);
-	}
-	else
-	{
-		ksort($onlinebots);
-	}
-
-	$onlinemembers = array_merge($onlinebots, $onlinemembers);
-	if(!empty($onlinemembers))
-	{
-		$comma = $lang->comma." ";
-		$onlinemembers = implode($comma, $onlinemembers);
-	}
-	else
-	{
-		$onlinemembers = "";
-	}
-
+	
 	$onlinecount = $membercount + $guestcount + $botcount;
-
+	
 	// If we can see invisible users add them to the count
 	if($mybb->usergroup['canviewwolinvis'] == 1)
 	{
 		$onlinecount += $anoncount;
 	}
-
+	
 	// If we can't see invisible users but the user is an invisible user incriment the count by one
-	if($mybb->usergroup['canviewwolinvis'] != 1 && isset($mybb->user['invisible']) && $mybb->user['invisible'] == 1)
+	if($mybb->usergroup['canviewwolinvis'] != 1 && $mybb->user['invisible'] == 1)
 	{
 		++$onlinecount;
 	}
@@ -351,7 +300,8 @@ if($mybb->settings['portal_showwol'] != 0 && $mybb->usergroup['canviewonline'] !
 		$cache->update("mostonline", $mostonline);
 	}
 	$recordcount = $mostonline['numusers'];
-	$recorddate = my_date('relative', $mostonline['time']);
+	$recorddate = my_date($mybb->settings['dateformat'], $mostonline['time']);
+	$recordtime = my_date($mybb->settings['timeformat'], $mostonline['time']);
 
 	if($onlinecount == 1)
 	{
@@ -365,25 +315,17 @@ if($mybb->settings['portal_showwol'] != 0 && $mybb->usergroup['canviewonline'] !
 	eval("\$whosonline = \"".$templates->get("portal_whosonline")."\";");
 }
 
-$latestthreads = '';
 // Latest forum discussions
-if($mybb->settings['portal_showdiscussions'] != 0 && $mybb->settings['portal_showdiscussionsnum'] && $mybb->settings['portal_excludediscussion'] != -1)
+if($mybb->settings['portal_showdiscussions'] != 0 && $mybb->settings['portal_showdiscussionsnum'])
 {
 	$altbg = alt_trow();
 	$threadlist = '';
-
-	$excludeforums = '';
-	if(!empty($mybb->settings['portal_excludediscussion']))
-	{
-		$excludeforums = "AND t.fid NOT IN ({$mybb->settings['portal_excludediscussion']})";
-	}
-
 	$query = $db->query("
-		SELECT t.tid, t.fid, t.uid, t.lastpost, t.lastposteruid, t.lastposter, t.subject, t.replies, t.views, u.username
+		SELECT t.*, u.username
 		FROM ".TABLE_PREFIX."threads t
 		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=t.uid)
-		WHERE 1=1 {$excludeforums}{$tunviewwhere} AND t.visible='1' AND t.closed NOT LIKE 'moved|%'
-		ORDER BY t.lastpost DESC
+		WHERE 1=1 $unviewwhere AND t.visible='1' AND t.closed NOT LIKE 'moved|%'
+		ORDER BY t.lastpost DESC 
 		LIMIT 0, ".$mybb->settings['portal_showdiscussionsnum']
 	);
 	while($thread = $db->fetch_array($query))
@@ -391,372 +333,279 @@ if($mybb->settings['portal_showdiscussions'] != 0 && $mybb->settings['portal_sho
 		$forumpermissions[$thread['fid']] = forum_permissions($thread['fid']);
 
 		// Make sure we can view this thread
-		if(isset($forumpermissions[$thread['fid']]['canonlyviewownthreads']) && $forumpermissions[$thread['fid']]['canonlyviewownthreads'] == 1 && $thread['uid'] != $mybb->user['uid'])
+		if($forumpermissions[$thread['fid']]['canview'] == 0 || $forumpermissions[$thread['fid']]['canviewthreads'] == 0 || $forumpermissions[$thread['fid']]['canonlyviewownthreads'] == 1 && $thread['uid'] != $mybb->user['uid'])
 		{
 			continue;
 		}
 
-		$lastpostdate = my_date('relative', $thread['lastpost']);
-		if(!$thread['lastposteruid'] && !$thread['lastposter'])
-		{
-			$lastposter = htmlspecialchars_uni($lang->guest);
-		}
-		else
-		{
-			$lastposter = htmlspecialchars_uni($thread['lastposter']);
-		}
-		$thread['replies'] = my_number_format($thread['replies']);
-		$thread['views'] = my_number_format($thread['views']);
-
+		$lastpostdate = my_date($mybb->settings['dateformat'], $thread['lastpost']);
+		$lastposttime = my_date($mybb->settings['timeformat'], $thread['lastpost']);
 		// Don't link to guest's profiles (they have no profile).
 		if($thread['lastposteruid'] == 0)
 		{
-			$lastposterlink = $lastposter;
+			$lastposterlink = $thread['lastposter'];
 		}
 		else
 		{
-			$lastposterlink = build_profile_link($lastposter, $thread['lastposteruid']);
+			$lastposterlink = build_profile_link($thread['lastposter'], $thread['lastposteruid']);
 		}
-
-		$thread['subject'] = $thread['fullsubject'] = $parser->parse_badwords($thread['subject']);
 		if(my_strlen($thread['subject']) > 25)
 		{
 			$thread['subject'] = my_substr($thread['subject'], 0, 25) . "...";
 		}
-		$thread['subject'] = htmlspecialchars_uni($thread['subject']);
-		$thread['fullsubject'] = htmlspecialchars_uni($thread['fullsubject']);
-
+		$thread['subject'] = htmlspecialchars_uni($parser->parse_badwords($thread['subject']));
 		$thread['threadlink'] = get_thread_link($thread['tid']);
 		$thread['lastpostlink'] = get_thread_link($thread['tid'], 0, "lastpost");
-		$thread['forumlink'] = get_forum_link($thread['fid']);
-		$thread['forumname'] = $forum_cache[$thread['fid']]['name'];
 		eval("\$threadlist .= \"".$templates->get("portal_latestthreads_thread")."\";");
 		$altbg = alt_trow();
 	}
 	if($threadlist)
-	{
+	{ 
 		// Show the table only if there are threads
 		eval("\$latestthreads = \"".$templates->get("portal_latestthreads")."\";");
 	}
 }
 
-$announcements = '';
-if(!empty($mybb->settings['portal_announcementsfid']))
+// Get latest news announcements
+// First validate announcement fids:
+$announcementsfids = explode(',', $mybb->settings['portal_announcementsfid']);
+if(is_array($announcementsfids))
 {
-	// Get latest news announcements
-	// Build where clause
-	$annfidswhere = '';
-	$announcementcount = 0;
-	if($mybb->settings['portal_announcementsfid'] != -1)
+	foreach($announcementsfids as $fid)
 	{
-		// First validate announcement fids:
-		$announcementsfids = explode(',', (string)$mybb->settings['portal_announcementsfid']);
-		if(is_array($announcementsfids))
-		{
-			foreach($announcementsfids as $fid)
-			{
-				$fid_array[] = (int)$fid;
-			}
-			unset($fid);
+		$fid_array[] = intval($fid);
+	}
+	$announcementsfids = implode(',', $fid_array);
+}
+// And get them!
+foreach($forum_cache as $fid => $f)
+{
+	if(is_array($fid_array) && in_array($fid, $fid_array))
+	{
+		$forum[$fid] = $f;
+	}
+}
 
-			$announcementsfids = implode(',', $fid_array);
+$numannouncements = intval($mybb->settings['portal_numannouncements']);
+if(!$numannouncements)
+{
+	$numannouncements = 10; // Default back to 10
+}
 
-			$annfidswhere = " AND t.fid IN ($announcementsfids)";
-		}
+$pids = '';
+$tids = '';
+$comma = '';
+$query = $db->query("
+	SELECT p.pid, p.message, p.tid, p.smilieoff
+	FROM ".TABLE_PREFIX."posts p
+	LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
+	WHERE t.fid IN (".$announcementsfids.") AND t.visible='1' AND t.closed NOT LIKE 'moved|%' AND t.firstpost=p.pid
+	ORDER BY t.dateline DESC 
+	LIMIT 0, {$numannouncements}"
+);
+while($getid = $db->fetch_array($query))
+{
+	$pids .= ",'{$getid['pid']}'";
+	$tids .= ",'{$getid['tid']}'";
+	$posts[$getid['tid']] = $getid;
+}
+$pids = "pid IN(0{$pids})";
+// Now lets fetch all of the attachments for these posts
+$query = $db->simple_select("attachments", "*", $pids);
+while($attachment = $db->fetch_array($query))
+{
+	$attachcache[$attachment['pid']][$attachment['aid']] = $attachment;
+}
+
+if(is_array($forum))
+{
+	foreach($forum as $fid => $forumrow)
+	{
+		$forumpermissions[$fid] = forum_permissions($fid);
+	}
+}
+
+$icon_cache = $cache->read("posticons");
+
+$announcements = '';
+$query = $db->query("
+	SELECT t.*, t.username AS threadusername, u.username, u.avatar, u.avatardimensions
+	FROM ".TABLE_PREFIX."threads t
+	LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid = t.uid)
+	WHERE t.fid IN (".$announcementsfids.") AND t.tid IN (0{$tids}) AND t.visible='1' AND t.closed NOT LIKE 'moved|%'
+	ORDER BY t.dateline DESC
+	LIMIT 0, {$numannouncements}"
+);
+while($announcement = $db->fetch_array($query))
+{
+	// Make sure we can view this announcement
+	if($forumpermissions[$announcement['fid']]['canview'] == 0 || $forumpermissions[$announcement['fid']]['canviewthreads'] == 0 || $forumpermissions[$announcement['fid']]['canonlyviewownthreads'] == 1 && $announcement['uid'] != $mybb->user['uid'])
+	{
+		continue;
 	}
 
-	// And get them!
-	foreach($forum_cache as $fid => $f)
+	$announcement['message'] = $posts[$announcement['tid']]['message'];
+	$announcement['pid'] = $posts[$announcement['tid']]['pid'];
+	$announcement['smilieoff'] = $posts[$announcement['tid']]['smilieoff'];
+	$announcement['threadlink'] = get_thread_link($announcement['tid']);
+	
+	if($announcement['uid'] == 0)
 	{
-		if(empty($fid_array) || (is_array($fid_array) && in_array($fid, $fid_array)))
-		{
-			$forum[$fid] = $f;
-		}
-	}
-
-	$query = $db->simple_select("threads t", "COUNT(t.tid) AS threads", "t.visible='1'{$annfidswhere}{$tunviewwhere} AND t.closed NOT LIKE 'moved|%'", array('limit' => 1));
-	$announcementcount = $db->fetch_field($query, "threads");
-
-	$numannouncements = (int)$mybb->settings['portal_numannouncements'];
-	if(!$numannouncements)
-	{
-		$numannouncements = 10; // Default back to 10
-	}
-
-	$page = $mybb->get_input('page', MyBB::INPUT_INT);
-	$pages = $announcementcount / $numannouncements;
-	$pages = ceil($pages);
-
-	if($page > $pages || $page <= 0)
-	{
-		$page = 1;
-	}
-
-	if($page)
-	{
-		$start = ($page-1) * $numannouncements;
+		$profilelink = htmlspecialchars_uni($announcement['threadusername']);
 	}
 	else
 	{
-		$start = 0;
-		$page = 1;
+		$profilelink = build_profile_link($announcement['username'], $announcement['uid']);
 	}
+	
+	if(!$announcement['username'])
+	{
+		$announcement['username'] = $announcement['threadusername'];
+	}
+	$announcement['subject'] = htmlspecialchars_uni($parser->parse_badwords($announcement['subject']));
+	if($announcement['icon'] > 0 && $icon_cache[$announcement['icon']])
+	{
+		$icon = $icon_cache[$announcement['icon']];
+		$icon = "<img src=\"{$icon['path']}\" alt=\"{$icon['name']}\" />";
+	}
+	else
+	{
+		$icon = "&nbsp;";
+	}
+	if($announcement['avatar'] != '')
+	{
+		$avatar_dimensions = explode("|", $announcement['avatardimensions']);
+		if($avatar_dimensions[0] && $avatar_dimensions[1])
+		{
+			$avatar_width_height = "width=\"{$avatar_dimensions[0]}\" height=\"{$avatar_dimensions[1]}\"";
+		}
+		if (!stristr($announcement['avatar'], 'http://'))
+		{
+			$announcement['avatar'] = $mybb->settings['bburl'] . '/' . $announcement['avatar'];
+		}		
+		$avatar = "<td class=\"trow1\" width=\"1\" align=\"center\" valign=\"top\"><img src=\"{$announcement['avatar']}\" alt=\"\" {$avatar_width_height} /></td>";
+	}
+	else
+	{
+		$avatar = '';
+	}
+	$anndate = my_date($mybb->settings['dateformat'], $announcement['dateline']);
+	$anntime = my_date($mybb->settings['timeformat'], $announcement['dateline']);
 
-	$multipage = multipage($announcementcount, $numannouncements, $page, $file_name);
+	if($announcement['replies'])
+	{
+		eval("\$numcomments = \"".$templates->get("portal_announcement_numcomments")."\";");
+	}
+	else
+	{
+		eval("\$numcomments = \"".$templates->get("portal_announcement_numcomments_no")."\";");
+		$lastcomment = '';
+	}
+	
+	$plugins->run_hooks("portal_announcement");
 
-	$pids = '';
-	$tids = '';
-	$comma = '';
-	$posts = array();
-	$attachmentcount = array();
-	$query = $db->query("
-		SELECT p.pid, p.message, p.tid, p.smilieoff, t.attachmentcount
-		FROM ".TABLE_PREFIX."posts p
-		LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
-		WHERE t.visible='1'{$annfidswhere}{$tunviewwhere} AND t.closed NOT LIKE 'moved|%' AND t.firstpost=p.pid
-		ORDER BY t.dateline DESC
-		LIMIT {$start}, {$numannouncements}"
+	$parser_options = array(
+		"allow_html" => $forum[$announcement['fid']]['allowhtml'],
+		"allow_mycode" => $forum[$announcement['fid']]['allowmycode'],
+		"allow_smilies" => $forum[$announcement['fid']]['allowsmilies'],
+		"allow_imgcode" => $forum[$announcement['fid']]['allowimgcode'],
+		"allow_videocode" => $forum[$announcement['fid']]['allowvideocode'],
+		"filter_badwords" => 1
 	);
-	while($getid = $db->fetch_array($query))
+	if($announcement['smilieoff'] == 1)
 	{
-		$attachmentcount[$getid['tid']] = $getid['attachmentcount'];
-		foreach($attachmentcount as $tid => $attach_count)
-		{
-			if($attach_count > 0)
-			{
-				$pids .= ",'{$getid['pid']}'";
-			}
-
-			$posts[$getid['tid']] = $getid;
-		}
-
-		$tids .= ",'{$getid['tid']}'";
+		$parser_options['allow_smilies'] = 0;
 	}
-	if(!empty($posts))
-	{
-		if($pids != '' && $mybb->settings['enableattachments'] == 1)
+
+	$message = $parser->parse_message($announcement['message'], $parser_options);
+	
+	if(is_array($attachcache[$announcement['pid']]))
+	{ // This post has 1 or more attachments
+		$validationcount = 0;
+		$id = $announcement['pid'];
+		foreach($attachcache[$id] as $aid => $attachment)
 		{
-			$pids = "pid IN(0{$pids})";
-			// Now lets fetch all of the attachments for these posts
-			$query = $db->simple_select("attachments", "*", $pids);
-			while($attachment = $db->fetch_array($query))
-			{
-				$attachcache[$attachment['pid']][$attachment['aid']] = $attachment;
-			}
-		}
-
-		if(is_array($forum))
-		{
-			foreach($forum as $fid => $forumrow)
-			{
-				$forumpermissions[$fid] = forum_permissions($fid);
-			}
-		}
-
-		$icon_cache = $cache->read("posticons");
-
-		$query = $db->query("
-			SELECT t.*, t.username AS threadusername, u.username, u.avatar, u.avatardimensions
-			FROM ".TABLE_PREFIX."threads t
-			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid = t.uid)
-			WHERE t.tid IN (0{$tids}){$annfidswhere}{$tunviewwhere} AND t.visible='1' AND t.closed NOT LIKE 'moved|%'
-			ORDER BY t.dateline DESC
-			LIMIT 0, {$numannouncements}"
-		);
-		while($announcement = $db->fetch_array($query))
-		{
-			// Make sure we can view this announcement
-			if(isset($forumpermissions[$announcement['fid']]['canonlyviewownthreads']) && $forumpermissions[$announcement['fid']]['canonlyviewownthreads'] == 1 && $announcement['uid'] != $mybb->user['uid'])
-			{
-				continue;
-			}
-
-			$announcement['message'] = $posts[$announcement['tid']]['message'];
-			$announcement['pid'] = $posts[$announcement['tid']]['pid'];
-			$announcement['smilieoff'] = $posts[$announcement['tid']]['smilieoff'];
-			$announcement['threadlink'] = get_thread_link($announcement['tid']);
-			$announcement['forumlink'] = get_forum_link($announcement['fid']);
-			$announcement['forumname'] = $forum_cache[$announcement['fid']]['name'];
-			$announcement['username'] = htmlspecialchars_uni($announcement['username']);
-			if(!$announcement['uid'] && !$announcement['threadusername'])
-			{
-				$announcement['threadusername'] = htmlspecialchars_uni($lang->guest);
-			}
-			else
-			{
-				$announcement['threadusername'] = htmlspecialchars_uni($announcement['threadusername']);
-			}
-
-			if($announcement['uid'] == 0)
-			{
-				$profilelink = $announcement['threadusername'];
-			}
-			else
-			{
-				$profilelink = build_profile_link($announcement['username'], $announcement['uid']);
-			}
-
-			if(!$announcement['username'])
-			{
-				$announcement['username'] = $announcement['threadusername'];
-			}
-			$announcement['subject'] = htmlspecialchars_uni($parser->parse_badwords($announcement['subject']));
-			if($announcement['icon'] > 0 && $icon_cache[$announcement['icon']])
-			{
-				$icon = $icon_cache[$announcement['icon']];
-				$icon['path'] = str_replace("{theme}", $theme['imgdir'], $icon['path']);
-				$icon['path'] = htmlspecialchars_uni($icon['path']);
-				$icon['name'] = htmlspecialchars_uni($icon['name']);
-				eval("\$icon = \"".$templates->get("portal_announcement_icon")."\";");
-			}
-			else
-			{
-				$icon = "&nbsp;";
-			}
-
-			$useravatar = format_avatar($announcement['avatar'], $announcement['avatardimensions']);
-			eval("\$avatar = \"".$templates->get("portal_announcement_avatar")."\";");
-
-			$anndate = my_date('relative', $announcement['dateline']);
-
-			if($announcement['replies'])
-			{
-				eval("\$numcomments = \"".$templates->get("portal_announcement_numcomments")."\";");
-			}
-			else
-			{
-				eval("\$numcomments = \"".$templates->get("portal_announcement_numcomments_no")."\";");
-				$lastcomment = '';
-			}
-
-			$senditem = '';
-			if($mybb->user['uid'] > 0 && $mybb->usergroup['cansendemail'] == 1)
-			{
-				eval("\$senditem = \"".$templates->get("portal_announcement_send_item")."\";");
-			}
-
-			$plugins->run_hooks("portal_announcement");
-
-			$parser_options = array(
-				"allow_html" => $mybb->settings['announcementshtml'] && $forum[$announcement['fid']]['allowhtml'],
-				"allow_mycode" => $forum[$announcement['fid']]['allowmycode'],
-				"allow_smilies" => $forum[$announcement['fid']]['allowsmilies'],
-				"allow_imgcode" => $forum[$announcement['fid']]['allowimgcode'],
-				"allow_videocode" => $forum[$announcement['fid']]['allowvideocode'],
-				"filter_badwords" => 1
-			);
-			if($announcement['smilieoff'] == 1)
-			{
-				$parser_options['allow_smilies'] = 0;
-			}
-
-			if($mybb->user['showimages'] != 1 && $mybb->user['uid'] != 0 || $mybb->settings['guestimages'] != 1 && $mybb->user['uid'] == 0)
-			{
-				$parser_options['allow_imgcode'] = 0;
-			}
-
-			if($mybb->user['showvideos'] != 1 && $mybb->user['uid'] != 0 || $mybb->settings['guestvideos'] != 1 && $mybb->user['uid'] == 0)
-			{
-				$parser_options['allow_videocode'] = 0;
-			}
-
-			$message = $parser->parse_message($announcement['message'], $parser_options);
-
-			$post['attachments'] = '';
-			if($mybb->settings['enableattachments'] == 1 && isset($attachcache[$announcement['pid']]) && is_array($attachcache[$announcement['pid']]))
-			{ // This post has 1 or more attachments
-				$validationcount = 0;
-				$id = $announcement['pid'];
-				$post['attachmentlist'] = $post['thumblist'] = $post['imagelist'] = $post['attachedthumbs'] = $post['attachedimages'] = '';
-				foreach($attachcache[$id] as $aid => $attachment)
+			if($attachment['visible'])
+			{ // There is an attachment thats visible!
+				$attachment['filename'] = htmlspecialchars_uni($attachment['filename']);
+				$attachment['filesize'] = get_friendly_size($attachment['filesize']);
+				$ext = get_extension($attachment['filename']);
+				if($ext == "jpeg" || $ext == "gif" || $ext == "bmp" || $ext == "png" || $ext == "jpg")
 				{
-					if($attachment['visible'])
-					{ // There is an attachment thats visible!
-						$attachment['filename'] = htmlspecialchars_uni($attachment['filename']);
-						$attachment['filesize'] = get_friendly_size($attachment['filesize']);
-						$ext = get_extension($attachment['filename']);
-						if($ext == "jpeg" || $ext == "gif" || $ext == "bmp" || $ext == "png" || $ext == "jpg")
-						{
-							$isimage = true;
-						}
-						else
-						{
-							$isimage = false;
-						}
-						$attachment['icon'] = get_attachment_icon($ext);
-						if(!$attachment['dateuploaded'])
-						{
-							$attachment['dateuploaded'] = $announcement['dateline'];
-						}
-						$attachdate = my_date('normal', $attachment['dateuploaded']);
-						// Support for [attachment=id] code
-						if(stripos($message, "[attachment=".$attachment['aid']."]") !== false)
-						{
-							if($attachment['thumbnail'] != "SMALL" && $attachment['thumbnail'] != '')
-							{ // We have a thumbnail to show (and its not the "SMALL" enough image
-								eval("\$attbit = \"".$templates->get("postbit_attachments_thumbnails_thumbnail")."\";");
-							}
-							elseif($attachment['thumbnail'] == "SMALL" && $forumpermissions[$announcement['fid']]['candlattachments'] == 1)
-							{
-								// Image is small enough to show - no thumbnail
-								eval("\$attbit = \"".$templates->get("postbit_attachments_images_image")."\";");
-							}
-							else
-							{
-								// Show standard link to attachment
-								eval("\$attbit = \"".$templates->get("postbit_attachments_attachment")."\";");
-							}
-							$message = preg_replace("#\[attachment=".$attachment['aid']."]#si", $attbit, $message);
-						}
-						else
-						{
-							if($attachment['thumbnail'] != "SMALL" && $attachment['thumbnail'] != '')
-							{ // We have a thumbnail to show
-								eval("\$post['thumblist'] .= \"".$templates->get("postbit_attachments_thumbnails_thumbnail")."\";");
-								if($tcount == 5)
-								{
-									$thumblist .= "<br />";
-									$tcount = 0;
-								}
-								++$tcount;
-							}
-							elseif($attachment['thumbnail'] == "SMALL" && $forumpermissions[$announcement['fid']]['candlattachments'] == 1)
-							{
-								// Image is small enough to show - no thumbnail
-								eval("\$post['imagelist'] .= \"".$templates->get("postbit_attachments_images_image")."\";");
-							}
-							else
-							{
-								eval("\$post['attachmentlist'] .= \"".$templates->get("postbit_attachments_attachment")."\";");
-							}
-						}
+					$isimage = true;
+				}
+				else
+				{
+					$isimage = false;
+				}
+				$attachment['icon'] = get_attachment_icon($ext);
+				// Support for [attachment=id] code
+				if(stripos($message, "[attachment=".$attachment['aid']."]") !== false)
+				{
+					if($attachment['thumbnail'] != "SMALL" && $attachment['thumbnail'] != '')
+					{ // We have a thumbnail to show (and its not the "SMALL" enough image
+						eval("\$attbit = \"".$templates->get("postbit_attachments_thumbnails_thumbnail")."\";");
+					}
+					elseif($attachment['thumbnail'] == "SMALL" && $forumpermissions[$announcement['fid']]['candlattachments'] == 1)
+					{
+						// Image is small enough to show - no thumbnail
+						eval("\$attbit = \"".$templates->get("postbit_attachments_images_image")."\";");
 					}
 					else
 					{
-						$validationcount++;
+						// Show standard link to attachment
+						eval("\$attbit = \"".$templates->get("postbit_attachments_attachment")."\";");
+					}
+					$message = preg_replace("#\[attachment=".$attachment['aid']."]#si", $attbit, $message);
+				}
+				else
+				{
+					if($attachment['thumbnail'] != "SMALL" && $attachment['thumbnail'] != '')
+					{ // We have a thumbnail to show
+						eval("\$post['thumblist'] .= \"".$templates->get("postbit_attachments_thumbnails_thumbnail")."\";");
+						if($tcount == 5)
+						{
+							$thumblist .= "<br />";
+							$tcount = 0;
+						}
+						++$tcount;
+					}
+					elseif($attachment['thumbnail'] == "SMALL" && $forumpermissions[$announcement['fid']]['candlattachments'] == 1)
+					{
+						// Image is small enough to show - no thumbnail
+						eval("\$post['imagelist'] .= \"".$templates->get("postbit_attachments_images_image")."\";");
+					}
+					else
+					{
+						eval("\$post['attachmentlist'] .= \"".$templates->get("postbit_attachments_attachment")."\";");
 					}
 				}
-				if($post['thumblist'])
-				{
-					eval("\$post['attachedthumbs'] = \"".$templates->get("postbit_attachments_thumbnails")."\";");
-				}
-				if($post['imagelist'])
-				{
-					eval("\$post['attachedimages'] = \"".$templates->get("postbit_attachments_images")."\";");
-				}
-				if($post['attachmentlist'] || $post['thumblist'] || $post['imagelist'])
-				{
-					eval("\$post['attachments'] = \"".$templates->get("postbit_attachments")."\";");
-				}
 			}
-
-			eval("\$announcements .= \"".$templates->get("portal_announcement")."\";");
-			unset($post);
+			else
+			{
+				$validationcount++;
+			}
+		}
+		if($post['thumblist'])
+		{
+			eval("\$post['attachedthumbs'] = \"".$templates->get("postbit_attachments_thumbnails")."\";");
+		}
+		if($post['imagelist'])
+		{
+			eval("\$post['attachedimages'] = \"".$templates->get("postbit_attachments_images")."\";");
+		}
+		if($post['attachmentlist'] || $post['thumblist'] || $post['imagelist'])
+		{
+			eval("\$post['attachments'] = \"".$templates->get("postbit_attachments")."\";");
 		}
 	}
+
+	eval("\$announcements .= \"".$templates->get("portal_announcement")."\";");
+	unset($post);
 }
 
 $plugins->run_hooks("portal_end");
 
 eval("\$portal = \"".$templates->get("portal")."\";");
 output_page($portal);
+?>

@@ -1,11 +1,12 @@
 <?php
 /**
- * MyBB 1.8
- * Copyright 2014 MyBB Group, All Rights Reserved
+ * MyBB 1.6
+ * Copyright 2010 MyBB Group, All Rights Reserved
  *
- * Website: //www.mybb.com
- * License: //www.mybb.com/about/license
+ * Website: http://mybb.com
+ * License: http://mybb.com/about/license
  *
+ * $Id$
  */
 
 // Disallow direct access to this file for security reasons
@@ -13,7 +14,7 @@ if(!defined("IN_MYBB"))
 {
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
-
+ 
 /**
  * Used to execute a custom moderation tool
  *
@@ -24,15 +25,17 @@ class CustomModeration extends Moderation
 	/**
 	 * Get info on a tool
 	 *
-	 * @param int $tool_id Tool ID
-	 * @return array|bool Returns tool data (tid, type, name, description) in an array, otherwise boolean false.
+	 * @param int Tool ID
+	 * @param mixed Thread IDs
+	 * @param mixed Post IDs
+	 * @return mixed Returns tool data (tid, type, name, description) in an array, otherwise boolean false.
 	 */
 	function tool_info($tool_id)
 	{
 		global $db;
 
 		// Get tool info
-		$query = $db->simple_select("modtools", "*", 'tid='.(int)$tool_id);
+		$query = $db->simple_select("modtools", "*", 'tid="'.intval($tool_id).'"');
 		$tool = $db->fetch_array($query);
 		if(!$tool['tid'])
 		{
@@ -47,9 +50,9 @@ class CustomModeration extends Moderation
 	/**
 	 * Execute Custom Moderation Tool
 	 *
-	 * @param int $tool_id Tool ID
-	 * @param int|array Thread ID(s)
-	 * @param int|array Post ID(s)
+	 * @param int Tool ID
+	 * @param mixed Thread ID(s)
+	 * @param mixed Post IDs
 	 * @return string 'forum' or 'default' indicating where to redirect
 	 */
 	function execute($tool_id, $tids=0, $pids=0)
@@ -57,7 +60,7 @@ class CustomModeration extends Moderation
 		global $db;
 
 		// Get tool info
-		$query = $db->simple_select("modtools", '*', 'tid='.(int)$tool_id);
+		$query = $db->simple_select("modtools", '*', 'tid="'.intval($tool_id).'"');
 		$tool = $db->fetch_array($query);
 		if(!$tool['tid'])
 		{
@@ -75,14 +78,13 @@ class CustomModeration extends Moderation
 		}
 
 		// Unserialize custom moderation
-		$post_options = my_unserialize($tool['postoptions']);
-		$thread_options = my_unserialize($tool['threadoptions']);
+		$post_options = unserialize($tool['postoptions']);
+		$thread_options = unserialize($tool['threadoptions']);
 
 		// If the tool type is a post tool, then execute the post moderation
-		$deleted_thread = 0;
 		if($tool['type'] == 'p')
 		{
-			$deleted_thread = $this->execute_post_moderation($tids, $post_options, $pids);
+			$deleted_thread = $this->execute_post_moderation($post_options, $pids, $tids);
 		}
 		// Always execute thead moderation
 		$this->execute_thread_moderation($thread_options, $tids);
@@ -98,19 +100,18 @@ class CustomModeration extends Moderation
 	/**
 	 * Execute Inline Post Moderation
 	 *
-	 * @param array|int $tid Thread IDs (in order of dateline ascending). Only the first one will be used
-	 * @param array $post_options Moderation information
-	 * @param array $pids Post IDs
-	 *
+	 * @param array Moderation information
+	 * @param mixed Post IDs
+	 * @param array Thread IDs (in order of dateline ascending)
 	 * @return boolean true
 	 */
-	function execute_post_moderation($tid, $post_options=array(), $pids=array())
+	function execute_post_moderation($post_options, $pids, $tid)
 	{
 		global $db, $mybb, $lang;
 
 		if(is_array($tid))
 		{
-			$tid = (int)$tid[0]; // There's only 1 thread when doing inline post moderation
+			$tid = intval($tid[0]); // There's only 1 thread when doing inline post moderation
 			// The thread chosen is the first thread in the array of tids.
 			// It is recommended that this be the tid of the oldest post
 		}
@@ -125,7 +126,7 @@ class CustomModeration extends Moderation
 			{
 				$this->delete_post($pid);
 			}
-
+			
 			$delete_tids = array();
 			$imploded_pids = implode(",", array_map("intval", $pids));
 			$query = $db->simple_select("threads", "tid", "firstpost IN ({$imploded_pids})");
@@ -138,9 +139,10 @@ class CustomModeration extends Moderation
 				foreach($delete_tids as $delete_tid)
 				{
 					$this->delete_thread($delete_tid);
+					mark_reports($delete_tid, "thread");
 				}
-				// return true here so the code in execute() above knows to redirect to the forum
-				return true;
+				// return 1 here so the code in execute() above knows to redirect to the forum
+				return 1;
 			}
 		}
 		else
@@ -163,24 +165,11 @@ class CustomModeration extends Moderation
 				$this->toggle_post_visibility($pids);
 			}
 
-			if($post_options['softdeleteposts'] == 'softdelete') // Soft delete posts
-			{
-				$this->soft_delete_posts($pids);
-			}
-			elseif($post_options['softdeleteposts'] == 'restore') // Restore posts
-			{
-				$this->restore_posts($pids);
-			}
-			elseif($post_options['softdeleteposts'] == 'toggle') // Toggle post visibility
-			{
-				$this->toggle_post_softdelete($pids);
-			}
-
 			if($post_options['splitposts'] > 0 || $post_options['splitposts'] == -2) // Split posts
 			{
 				$query = $db->simple_select("posts", "COUNT(*) AS totalposts", "tid='{$tid}'");
 				$count = $db->fetch_array($query);
-
+				
 				if($count['totalposts'] == 1)
 				{
 					error($lang->error_cantsplitonepost);
@@ -190,7 +179,7 @@ class CustomModeration extends Moderation
 				{
 					error($lang->error_cantsplitall);
 				}
-
+				
 				if($post_options['splitposts'] == -2)
 				{
 					$post_options['splitposts'] = $thread['fid'];
@@ -214,10 +203,6 @@ class CustomModeration extends Moderation
 				{
 					$this->unapprove_threads($new_tid, $thread['fid']);
 				}
-				if($post_options['splitthreadprefix'] != '0')
-				{
-					$this->apply_thread_prefix($new_tid, $post_options['splitthreadprefix']); // Add thread prefix to new thread
-				}
 				if(!empty($post_options['splitpostsaddreply'])) // Add reply to new thread
 				{
 					require_once MYBB_ROOT."inc/datahandlers/post.php";
@@ -226,13 +211,13 @@ class CustomModeration extends Moderation
 					if(empty($post_options['splitpostsreplysubject']))
 					{
 						$post_options['splitpostsreplysubject'] = 'RE: '.$new_subject;
-					}
+					}	
 					else
 					{
 						$post_options['splitpostsreplysubject'] = str_ireplace('{username}', $mybb->user['username'], $post_options['splitpostsreplysubject']);
 						$post_options['splitpostsreplysubject'] = str_ireplace('{subject}', $new_subject, $post_options['splitpostsreplysubject']);
 					}
-
+					
 					// Set the post data that came from the input to the $post array.
 					$post = array(
 						"tid" => $new_tid,
@@ -241,7 +226,7 @@ class CustomModeration extends Moderation
 						"uid" => $mybb->user['uid'],
 						"username" => $mybb->user['username'],
 						"message" => $post_options['splitpostsaddreply'],
-						"ipaddress" => my_inet_pton(get_ip()),
+						"ipaddress" => $db->escape_string(get_ip()),
 					);
 					// Set up the post options from the input.
 					$post['options'] = array(
@@ -255,7 +240,7 @@ class CustomModeration extends Moderation
 					if($posthandler->validate_post($post))
 					{
 						$posthandler->insert_post($post);
-					}
+					}					
 				}
 			}
 		}
@@ -265,15 +250,15 @@ class CustomModeration extends Moderation
 	/**
 	 * Execute Normal and Inline Thread Moderation
 	 *
-	 * @param array $thread_options Moderation information
-	 * @param array Thread IDs. Only the first one will be used, but it needs to be an array
+	 * @param array Moderation information
+	 * @param mixed Thread IDs
 	 * @return boolean true
 	 */
-	function execute_thread_moderation($thread_options=array(), $tids=array())
+	function execute_thread_moderation($thread_options, $tids)
 	{
 		global $db, $mybb;
 
-		$tid = (int)$tids[0]; // Take the first thread to get thread data from
+		$tid = intval($tids[0]); // Take the first thread to get thread data from
 		$query = $db->simple_select("threads", 'fid', "tid='$tid'");
 		$thread = $db->fetch_array($query);
 
@@ -297,7 +282,7 @@ class CustomModeration extends Moderation
 				{
 					if($last_tid != 0)
 					{
-						$this->merge_threads($last_tid, $tid['tid'], $tid['subject']); // And keep merging them until we get down to one thread.
+						$this->merge_threads($last_tid, $tid['tid'], $tid['subject']); // And keep merging them until we get down to one thread. 
 					}
 					$last_tid = $tid['tid'];
 				}
@@ -317,11 +302,6 @@ class CustomModeration extends Moderation
 				}
 			}
 
-			if($thread_options['removesubscriptions'] == 1) // Remove thread subscriptions
-			{
-				$this->remove_thread_subscriptions($tids, true);
-			}
-
 			if($thread_options['approvethread'] == 'approve') // Approve thread
 			{
 				$this->approve_threads($tids, $thread['fid']);
@@ -333,19 +313,6 @@ class CustomModeration extends Moderation
 			elseif($thread_options['approvethread'] == 'toggle') // Toggle thread visibility
 			{
 				$this->toggle_thread_visibility($tids, $thread['fid']);
-			}
-
-			if($thread_options['softdeletethread'] == 'softdelete') // Soft delete thread
-			{
-				$this->soft_delete_threads($tids);
-			}
-			elseif($thread_options['softdeletethread'] == 'restore') // Restore thread
-			{
-				$this->restore_threads($tids);
-			}
-			elseif($thread_options['softdeletethread'] == 'toggle') // Toggle thread visibility
-			{
-				$this->toggle_thread_softdelete($tids);
 			}
 
 			if($thread_options['openthread'] == 'open') // Open thread
@@ -360,20 +327,7 @@ class CustomModeration extends Moderation
 			{
 				$this->toggle_thread_status($tids);
 			}
-
-			if($thread_options['stickthread'] == 'stick') // Stick thread
-			{
-				$this->stick_threads($tids);
-			}
-			elseif($thread_options['stickthread'] == 'unstick') // Unstick thread
-			{
-				$this->unstick_threads($tids);
-			}
-			elseif($thread_options['stickthread'] == 'toggle') // Toggle thread importance
-			{
-				$this->toggle_thread_importance($tids);
-			}
-
+			
 			if($thread_options['threadprefix'] != '-1')
 			{
 				$this->apply_thread_prefix($tids, $thread_options['threadprefix']); // Update thread prefix
@@ -386,34 +340,34 @@ class CustomModeration extends Moderation
 			if(!empty($thread_options['addreply'])) // Add reply to thread
 			{
 				$tid_list = implode(',', $tids);
-				$query = $db->simple_select("threads", 'uid, fid, subject, tid, firstpost, closed', "tid IN ($tid_list) AND closed NOT LIKE 'moved|%'");
+				$query = $db->simple_select("threads", 'fid, subject, tid, firstpost, closed', "tid IN ($tid_list) AND closed NOT LIKE 'moved|%'");
 				require_once MYBB_ROOT."inc/datahandlers/post.php";
-
+				
 				// Loop threads adding a reply to each one
 				while($thread = $db->fetch_array($query))
 				{
 					$posthandler = new PostDataHandler("insert");
-
+			
 					if(empty($thread_options['replysubject']))
-					{
-						$new_subject = 'RE: '.$thread['subject'];
-					}
-					else
-					{
-						$new_subject = str_ireplace('{username}', $mybb->user['username'], $thread_options['replysubject']);
-						$new_subject = str_ireplace('{subject}', $thread['subject'], $new_subject);
-					}
-
-					// Set the post data that came from the input to the $post array.
-					$post = array(
-						"tid" => $thread['tid'],
-						"replyto" => $thread['firstpost'],
-						"fid" => $thread['fid'],
-						"subject" => $new_subject,
+                    {
+                        $new_subject = 'RE: '.$thread['subject'];
+                    }
+                    else
+                    {
+                        $new_subject = str_ireplace('{username}', $mybb->user['username'], $thread_options['replysubject']);
+                        $new_subject = str_ireplace('{subject}', $thread['subject'], $new_subject);
+                    }
+    
+                    // Set the post data that came from the input to the $post array.
+                    $post = array(
+                        "tid" => $thread['tid'],
+                        "replyto" => $thread['firstpost'],
+                        "fid" => $thread['fid'],
+                        "subject" => $new_subject,
 						"uid" => $mybb->user['uid'],
 						"username" => $mybb->user['username'],
 						"message" => $thread_options['addreply'],
-						"ipaddress" => my_inet_pton(get_ip()),
+						"ipaddress" => $db->escape_string(get_ip()),
 					);
 
 					// Set up the post options from the input.
@@ -462,36 +416,8 @@ class CustomModeration extends Moderation
 					$new_tid = $this->move_thread($tid, $thread_options['copythread'], 'copy');
 				}
 			}
-			if(!empty($thread_options['recountrebuild']))
-			{
-				require_once MYBB_ROOT.'/inc/functions_rebuild.php';
-
-				foreach($tids as $tid)
-				{
-					rebuild_thread_counters($tid);
-				}
-			}
 		}
-
-		// Do we have a PM subject and PM message?
-		if(isset($thread_options['pm_subject']) && $thread_options['pm_subject'] != '' && isset($thread_options['pm_message']) && $thread_options['pm_message'] != '')
-		{
-			$tid_list = implode(',', $tids);
-
-			// For each thread, we send a PM to the author
-			$query = $db->simple_select("threads", 'uid', "tid IN ($tid_list)");
-			while($uid = $db->fetch_field($query, 'uid'))
-			{
-				// Let's send our PM
-				$pm = array(
-					'subject' => $thread_options['pm_subject'],
-					'message' => $thread_options['pm_message'],
-					'touid' => $uid
-				);
-				send_pm($pm, $mybb->user['uid'], 1);
-			}
-		}
-
 		return true;
 	}
 }
+?>

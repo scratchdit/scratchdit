@@ -1,8 +1,9 @@
 <?php
 /**
- * MyBB 1.8 English Language Pack
- * Copyright 2014 MyBB Group, All Rights Reserved
- *
+ * MyBB 1.6 English Language Pack
+ * Copyright 2010 MyBB Group, All Rights Reserved
+ * 
+ * $Id$
  */
 
 $l['optimize_database'] = "Optimize Database";
@@ -18,3 +19,4 @@ $l['error_no_tables_selected'] = "You did not select any database tables to opti
 
 $l['success_tables_optimized'] = "The selected tables have been optimized and analyzed successfully.";
 
+?>

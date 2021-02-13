@@ -1,32 +1,31 @@
 <?php
 /**
- * MyBB 1.8
- * Copyright 2014 MyBB Group, All Rights Reserved
+ * MyBB 1.6
+ * Copyright 2010 MyBB Group, All Rights Reserved
  *
- * Website: //www.mybb.com
- * License: //www.mybb.com/about/license
+ * Website: http://mybb.com
+ * License: http://mybb.com/about/license
  *
+ * $Id$
  */
 
 define("IN_MYBB", 1);
 define('THIS_SCRIPT', 'announcements.php');
 
-$templatelist = "announcement,postbit_groupimage,postbit_reputation,postbit_avatar,postbit_online,postbit_offline,postbit_away,postbit_find,postbit_pm,postbit_email,postbit_author_user";
-$templatelist .= ",forumdisplay_password_wrongpass,forumdisplay_password,postbit_author_guest,postbit_userstar,announcement_quickdelete,postbit,postbit_classic,postbit_www,announcement_edit";
-
+$templatelist = "announcement,postbit_groupimage,postbit_reputation,postbit_avatar,postbit_online,postbit_offline,postbit_find,postbit_pm,postbit_email,postbit_www,postbit_author_user,announcement_edit,announcement_quickdelete,postbit,postbit_rep_button ";
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
 
 // Load global language phrases
 $lang->load("announcements");
 
-$aid = $mybb->get_input('aid', MyBB::INPUT_INT);
+$aid = intval($mybb->input['aid']);
+
+$plugins->run_hooks("announcements_start");
 
 // Get announcement fid
 $query = $db->simple_select("announcements", "fid", "aid='$aid'");
 $announcement = $db->fetch_array($query);
-
-$plugins->run_hooks("announcements_start");
 
 if(!$announcement)
 {
@@ -54,7 +53,7 @@ if($fid > 0)
 	{
 		error_no_permission();
 	}
-
+	
 	// Check if this forum is password protected and we have a valid password
 	check_forum_password($forum['fid']);
 }
@@ -106,10 +105,10 @@ $lang->forum_announcement = $lang->sprintf($lang->forum_announcement, htmlspecia
 if($announcementarray['startdate'] > $mybb->user['lastvisit'])
 {
 	$setcookie = true;
-	if(isset($mybb->cookies['mybb']['announcements']) && is_scalar($mybb->cookies['mybb']['announcements']))
+	if($mybb->cookies['mybb']['announcements'])
 	{
 		$cookie = my_unserialize(stripslashes($mybb->cookies['mybb']['announcements']));
-
+	
 		if(isset($cookie[$announcementarray['aid']]))
 		{
 			$setcookie = false;
@@ -126,3 +125,4 @@ $plugins->run_hooks("announcements_end");
 
 eval("\$forumannouncement = \"".$templates->get("announcement")."\";");
 output_page($forumannouncement);
+?>

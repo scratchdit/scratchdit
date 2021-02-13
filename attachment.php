@@ -1,11 +1,12 @@
 <?php
 /**
- * MyBB 1.8
- * Copyright 2014 MyBB Group, All Rights Reserved
+ * MyBB 1.6
+ * Copyright 2010 MyBB Group, All Rights Reserved
  *
- * Website: //www.mybb.com
- * License: //www.mybb.com/about/license
+ * Website: http://mybb.com
+ * License: http://mybb.com/about/license
  *
+ * $Id$
  */
 
 define("IN_MYBB", 1);
@@ -13,22 +14,19 @@ define('THIS_SCRIPT', 'attachment.php');
 
 require_once "./global.php";
 
-if($mybb->settings['enableattachments'] != 1)
-{
-	error($lang->attachments_disabled);
-}
-
 // Find the AID we're looking for
-if(isset($mybb->input['thumbnail']))
+if($mybb->input['thumbnail'])
 {
-	$aid = $mybb->get_input('thumbnail', MyBB::INPUT_INT);
+	$aid = intval($mybb->input['thumbnail']);
 }
 else
 {
-	$aid = $mybb->get_input('aid', MyBB::INPUT_INT);
+	$aid = intval($mybb->input['aid']);
 }
 
-$pid = $mybb->get_input('pid', MyBB::INPUT_INT);
+$plugins->run_hooks("attachment_start");
+
+$pid = intval($mybb->input['pid']);
 
 // Select attachment data from database
 if($aid)
@@ -40,77 +38,36 @@ else
 	$query = $db->simple_select("attachments", "*", "pid='{$pid}'");
 }
 $attachment = $db->fetch_array($query);
-
-$plugins->run_hooks("attachment_start");
-
-if(!$attachment)
-{
-	error($lang->error_invalidattachment);
-}
-
-if($attachment['thumbnail'] == '' && isset($mybb->input['thumbnail']))
-{
-	error($lang->error_invalidattachment);
-}
-
-$attachtypes = (array)$cache->read('attachtypes');
-$ext = get_extension($attachment['filename']);
-
-if(empty($attachtypes[$ext]))
-{
-	error($lang->error_invalidattachment);
-}
-
-$attachtype = $attachtypes[$ext];
-
 $pid = $attachment['pid'];
 
-// Don't check the permissions on preview
-if($pid || $attachment['uid'] != $mybb->user['uid'])
+$post = get_post($pid);
+$thread = get_thread($post['tid']);
+
+if(!$thread['tid'] && !$mybb->input['thumbnail'])
 {
-	$post = get_post($pid);
-	// Check permissions if the post is not a draft
-	if($post['visible'] != -2)
-	{
-		$thread = get_thread($post['tid']);
+	error($lang->error_invalidthread);
+}
+$fid = $thread['fid'];
 
-		if(!$thread && !isset($mybb->input['thumbnail']))
-		{
-			error($lang->error_invalidthread);
-		}
-		$fid = $thread['fid'];
+// Get forum info
+$forum = get_forum($fid);
 
-		// Get forum info
-		$forum = get_forum($fid);
+// Permissions
+$forumpermissions = forum_permissions($fid);
 
-		// Permissions
-		$forumpermissions = forum_permissions($fid);
-
-		if($forumpermissions['canview'] == 0 || $forumpermissions['canviewthreads'] == 0 || (isset($forumpermissions['canonlyviewownthreads']) && $forumpermissions['canonlyviewownthreads'] != 0 && $thread['uid'] != $mybb->user['uid']) || ($forumpermissions['candlattachments'] == 0 && !$mybb->input['thumbnail']))
-		{
-			error_no_permission();
-		}
-
-		// Error if attachment is invalid or not visible
-		if(!$attachment['attachname'] || (!is_moderator($fid, "canviewunapprove") && ($attachment['visible'] != 1 || $thread['visible'] != 1 || $post['visible'] != 1)))
-		{
-			error($lang->error_invalidattachment);
-		}
-
-		if($attachtype['forums'] != -1 && strpos(','.$attachtype['forums'].',', ','.$fid.',') === false)
-		{
-			error_no_permission();
-		}
-	}
+if($forumpermissions['canview'] == 0 || $forumpermissions['canviewthreads'] == 0 || ($forumpermissions['candlattachments'] == 0 && !$mybb->input['thumbnail']))
+{
+	error_no_permission();
 }
 
-if(!isset($mybb->input['thumbnail'])) // Only increment the download count if this is not a thumbnail
+// Error if attachment is invalid or not visible
+if(!$attachment['aid'] || !$attachment['attachname'] || (!is_moderator($fid) && $attachment['visible'] != 1))
 {
-	if(!is_member($attachtype['groups']))
-	{
-		error_no_permission();
-	}
+	error($lang->error_invalidattachment);
+}
 
+if(!$mybb->input['thumbnail']) // Only increment the download count if this is not a thumbnail
+{
 	$attachupdate = array(
 		"downloads" => $attachment['downloads']+1,
 	);
@@ -122,13 +79,8 @@ $attachment['filename'] = ltrim(basename(' '.$attachment['filename']));
 
 $plugins->run_hooks("attachment_end");
 
-if(isset($mybb->input['thumbnail']))
+if($mybb->input['thumbnail'])
 {
-	if(!file_exists($mybb->settings['uploadspath']."/".$attachment['thumbnail']))
-	{
-		error($lang->error_invalidattachment);
-	}
-
 	$ext = get_extension($attachment['thumbnail']);
 	switch($ext)
 	{
@@ -150,27 +102,17 @@ if(isset($mybb->input['thumbnail']))
 			$type = "image/unknown";
 			break;
 	}
-
+	
 	header("Content-disposition: filename=\"{$attachment['filename']}\"");
 	header("Content-type: ".$type);
 	$thumb = $mybb->settings['uploadspath']."/".$attachment['thumbnail'];
 	header("Content-length: ".@filesize($thumb));
-	$handle = fopen($thumb, 'rb');
-	while(!feof($handle))
-	{
-		echo fread($handle, 8192);
-	}
-	fclose($handle);
+	echo file_get_contents($thumb);
 }
 else
 {
-	if(!file_exists($mybb->settings['uploadspath']."/".$attachment['attachname']))
-	{
-		error($lang->error_invalidattachment);
-	}
-
 	$ext = get_extension($attachment['filename']);
-
+	
 	switch($attachment['filetype'])
 	{
 		case "application/pdf":
@@ -181,14 +123,7 @@ else
 		case "image/png":
 		case "text/plain":
 			header("Content-type: {$attachment['filetype']}");
-			if($attachtypes[$ext]['forcedownload'])
-			{
-				$disposition = "attachment";
-			}
-			else
-			{
-				$disposition = "inline";
-			}
+			$disposition = "inline";
 			break;
 
 		default:
@@ -211,18 +146,14 @@ else
 	{
 		header("Content-disposition: {$disposition}; filename=\"{$attachment['filename']}\"");
 	}
-
+	
 	if(strpos(strtolower($_SERVER['HTTP_USER_AGENT']), "msie 6.0") !== false)
 	{
 		header("Expires: -1");
 	}
-
+	
 	header("Content-length: {$attachment['filesize']}");
-	header("Content-range: bytes=0-".($attachment['filesize']-1)."/".$attachment['filesize']);
-	$handle = fopen($mybb->settings['uploadspath']."/".$attachment['attachname'], 'rb');
-	while(!feof($handle))
-	{
-		echo fread($handle, 8192);
-	}
-	fclose($handle);
+	header("Content-range: bytes=0-".($attachment['filesize']-1)."/".$attachment['filesize']); 
+	echo file_get_contents($mybb->settings['uploadspath']."/".$attachment['attachname']);
 }
+?>

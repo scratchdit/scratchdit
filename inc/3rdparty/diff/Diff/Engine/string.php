@@ -5,29 +5,25 @@
  * Example:
  * <code>
  * $patch = file_get_contents('example.patch');
- * $diff = new Horde_Text_Diff('string', array($patch));
- * $renderer = new Horde_Text_Diff_Renderer_inline();
+ * $diff = new Text_Diff('string', array($patch));
+ * $renderer = new Text_Diff_Renderer_inline();
  * echo $renderer->render($diff);
  * </code>
  *
- * Copyright 2005 Ã–rjan Persson <o@42mm.org>
- * Copyright 2005-2017 Horde LLC (//www.horde.org/)
+ * $Horde: framework/Text_Diff/Diff/Engine/string.php,v 1.5.2.5 2008/09/10 08:31:58 jan Exp $
+ *
+ * Copyright 2005 Örjan Persson <o@42mm.org>
+ * Copyright 2005-2008 The Horde Project (http://www.horde.org/)
  *
  * See the enclosed file COPYING for license information (LGPL). If you did
- * not receive this file, see //www.horde.org/licenses/lgpl21.
+ * not receive this file, see http://opensource.org/licenses/lgpl-license.php.
  *
- * @author  Ã–rjan Persson <o@42mm.org>
+ * @author  Örjan Persson <o@42mm.org>
  * @package Text_Diff
+ * @since   0.2.0
  */
+class Text_Diff_Engine_string {
 
-// Disallow direct access to this file for security reasons
-if(!defined("IN_MYBB"))
-{
-	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
-}
-
-class Horde_Text_Diff_Engine_String
-{
     /**
      * Parses a unified or context diff.
      *
@@ -40,32 +36,18 @@ class Horde_Text_Diff_Engine_String
      *                      'context', 'unified', or 'autodetect'.
      *
      * @return array  List of all diff operations.
-     * @throws Horde_Text_Diff_Exception
      */
-    public function diff($diff, $mode = 'autodetect')
+    function diff($diff, $mode = 'autodetect')
     {
-        // Detect line breaks.
-        $lnbr = "\n";
-        if (strpos($diff, "\r\n") !== false) {
-            $lnbr = "\r\n";
-        } elseif (strpos($diff, "\r") !== false) {
-            $lnbr = "\r";
-        }
-
-        // Make sure we have a line break at the EOF.
-        if (substr($diff, -strlen($lnbr)) != $lnbr) {
-            $diff .= $lnbr;
-        }
-
         if ($mode != 'autodetect' && $mode != 'context' && $mode != 'unified') {
-            throw new Horde_Text_Diff_Exception('Type of diff is unsupported');
+            return PEAR::raiseError('Type of diff is unsupported');
         }
 
         if ($mode == 'autodetect') {
             $context = strpos($diff, '***');
             $unified = strpos($diff, '---');
             if ($context === $unified) {
-                throw new Horde_Text_Diff_Exception('Type of diff could not be detected');
+                return PEAR::raiseError('Type of diff could not be detected');
             } elseif ($context === false || $unified === false) {
                 $mode = $context !== false ? 'context' : 'unified';
             } else {
@@ -74,7 +56,7 @@ class Horde_Text_Diff_Engine_String
         }
 
         // Split by new line and remove the diff header, if there is one.
-        $diff = explode($lnbr, $diff);
+        $diff = explode("\n", $diff);
         if (($mode == 'context' && strpos($diff[0], '***') === 0) ||
             ($mode == 'unified' && strpos($diff[0], '---') === 0)) {
             array_shift($diff);
@@ -95,7 +77,7 @@ class Horde_Text_Diff_Engine_String
      *
      * @return array  List of all diff operations.
      */
-    public function parseUnifiedDiff($diff)
+    function parseUnifiedDiff($diff)
     {
         $edits = array();
         $end = count($diff) - 1;
@@ -106,7 +88,7 @@ class Horde_Text_Diff_Engine_String
                 do {
                     $diff1[] = substr($diff[$i], 1);
                 } while (++$i < $end && substr($diff[$i], 0, 1) == ' ');
-                $edits[] = new Horde_Text_Diff_Op_Copy($diff1);
+                $edits[] = new Text_Diff_Op_copy($diff1);
                 break;
 
             case '+':
@@ -114,7 +96,7 @@ class Horde_Text_Diff_Engine_String
                 do {
                     $diff1[] = substr($diff[$i], 1);
                 } while (++$i < $end && substr($diff[$i], 0, 1) == '+');
-                $edits[] = new Horde_Text_Diff_Op_Add($diff1);
+                $edits[] = new Text_Diff_Op_add($diff1);
                 break;
 
             case '-':
@@ -128,9 +110,9 @@ class Horde_Text_Diff_Engine_String
                     $diff2[] = substr($diff[$i++], 1);
                 }
                 if (count($diff2) == 0) {
-                    $edits[] = new Horde_Text_Diff_Op_Delete($diff1);
+                    $edits[] = new Text_Diff_Op_delete($diff1);
                 } else {
-                    $edits[] = new Horde_Text_Diff_Op_Change($diff1, $diff2);
+                    $edits[] = new Text_Diff_Op_change($diff1, $diff2);
                 }
                 break;
 
@@ -150,7 +132,7 @@ class Horde_Text_Diff_Engine_String
      *
      * @return array  List of all diff operations.
      */
-    public function parseContextDiff(&$diff)
+    function parseContextDiff(&$diff)
     {
         $edits = array();
         $i = $max_i = $j = $max_j = 0;
@@ -196,7 +178,7 @@ class Horde_Text_Diff_Engine_String
                 $array[] = substr($diff[$j++], 2);
             }
             if (count($array) > 0) {
-                $edits[] = new Horde_Text_Diff_Op_Copy($array);
+                $edits[] = new Text_Diff_Op_copy($array);
             }
 
             if ($i < $max_i) {
@@ -210,21 +192,21 @@ class Horde_Text_Diff_Engine_String
                             $diff2[] = substr($diff[$j++], 2);
                         }
                     } while (++$i < $max_i && substr($diff[$i], 0, 1) == '!');
-                    $edits[] = new Horde_Text_Diff_Op_Change($diff1, $diff2);
+                    $edits[] = new Text_Diff_Op_change($diff1, $diff2);
                     break;
 
                 case '+':
                     do {
                         $diff1[] = substr($diff[$i], 2);
                     } while (++$i < $max_i && substr($diff[$i], 0, 1) == '+');
-                    $edits[] = new Horde_Text_Diff_Op_Add($diff1);
+                    $edits[] = new Text_Diff_Op_add($diff1);
                     break;
 
                 case '-':
                     do {
                         $diff1[] = substr($diff[$i], 2);
                     } while (++$i < $max_i && substr($diff[$i], 0, 1) == '-');
-                    $edits[] = new Horde_Text_Diff_Op_Delete($diff1);
+                    $edits[] = new Text_Diff_Op_delete($diff1);
                     break;
                 }
             }
@@ -236,14 +218,14 @@ class Horde_Text_Diff_Engine_String
                     do {
                         $diff2[] = substr($diff[$j++], 2);
                     } while ($j < $max_j && substr($diff[$j], 0, 1) == '+');
-                    $edits[] = new Horde_Text_Diff_Op_Add($diff2);
+                    $edits[] = new Text_Diff_Op_add($diff2);
                     break;
 
                 case '-':
                     do {
                         $diff2[] = substr($diff[$j++], 2);
                     } while ($j < $max_j && substr($diff[$j], 0, 1) == '-');
-                    $edits[] = new Horde_Text_Diff_Op_Delete($diff2);
+                    $edits[] = new Text_Diff_Op_delete($diff2);
                     break;
                 }
             }
@@ -251,4 +233,5 @@ class Horde_Text_Diff_Engine_String
 
         return $edits;
     }
+
 }

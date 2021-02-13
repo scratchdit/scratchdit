@@ -1,11 +1,12 @@
 <?php
 /**
- * MyBB 1.8
- * Copyright 2014 MyBB Group, All Rights Reserved
+ * MyBB 1.6
+ * Copyright 2010 MyBB Group, All Rights Reserved
  *
- * Website: //www.mybb.com
- * License: //www.mybb.com/about/license
+ * Website: http://mybb.com
+ * License: http://mybb.com/eula.html
  *
+ * $Id$
  */
 
 class FeedParser
@@ -34,11 +35,14 @@ class FeedParser
 	/**
 	 * Parses a feed with the specified filename (or URL)
 	 *
-	 * @param string $feed The path or URL of the feed
+	 * @param string The path or URL of the feed
 	 * @return boolean True if parsing was a success, false if failure
 	 */
 	function parse_feed($feed)
 	{
+		// Include the XML parser
+		require_once MYBB_ROOT."inc/class_xml.php";
+
 		// Load the feed we want to parse
 		$contents = fetch_remote_file($feed);
 
@@ -62,7 +66,7 @@ class FeedParser
 		}
 
 		// Parse the feed and get the tree
-		$parser = create_xml_parser($contents);
+		$parser = new XMLParser($contents);
 		$tree = $parser->get_tree();
 
 		// If the feed is invalid, throw back an error
@@ -87,26 +91,16 @@ class FeedParser
 			$this->error = "unknown_feed_type";
 			return false;
 		}
-
-		return true;
 	}
 
 	/**
 	 * Parses an XML structure in the format of an RSS feed
 	 *
-	 * @param array $feed_contents PHP XML parser structure
+	 * @param array PHP XML parser structure
 	 * @return boolean true
 	 */
 	function parse_rss($feed_contents)
 	{
-		foreach(array('title', 'link', 'description', 'pubdate') as $value)
-		{
-			if(!isset($feed_contents['channel'][$value]['value']))
-			{
-				$feed_contents['channel'][$value]['value'] = '';
-			}
-		}
-
 		// Fetch channel information from the parsed feed
 		$this->channel = array(
 			"title" => $feed_contents['channel']['title']['value'],
@@ -195,7 +189,7 @@ class FeedParser
 	/**
 	 * Convert all array keys within an array to lowercase
 	 *
-	 * @param array $array The array to be converted
+	 * @param array The array to be converted
 	 * @return array The converted array
 	 */
 	function keys_to_lowercase($array)
@@ -219,7 +213,7 @@ class FeedParser
 	/**
 	 * Converts an RSS date stamp in to a unix timestamp
 	 *
-	 * @param string $date The RSS date
+	 * @param string The RSS date
 	 * @return integer The unix timestamp (if successful), 0 if unsuccessful
 	 */
 	function get_rss_timestamp($date)
@@ -227,13 +221,14 @@ class FeedParser
 		$stamp = strtotime($date);
 		if($stamp <= 0)
 		{
-			if(preg_match("#\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\+\d{2}:\d{2}#", $date, $result))
+			if(preg_match("#\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\+\d{2}:\d{2}#", $time, $result))
 			{
-				$date = str_replace(array("T", "+"), array(" ", " +"), $date);
-				$date[23] = "";
+				$time = str_replace(array("T", "+"), array(" ", " +"), $time);
+				$time[23] = "";
 			}
-			$stamp = strtotime($date);
+			$stamp = strtotime($time);
 		}
 		return $stamp;
 	}
 }
+?>

@@ -1,11 +1,12 @@
 <?php
 /**
- * MyBB 1.8
- * Copyright 2014 MyBB Group, All Rights Reserved
+ * MyBB 1.6
+ * Copyright 2010 MyBB Group, All Rights Reserved
  *
- * Website: //www.mybb.com
- * License: //www.mybb.com/about/license
+ * Website: http://mybb.com
+ * License: http://mybb.com/about/license
  *
+ * $Id$
  */
 
 // Disallow direct access to this file for security reasons
@@ -17,7 +18,7 @@ if(!defined("IN_MYBB"))
 if($mybb->input['action'] == 'phpinfo')
 {
 	$plugins->run_hooks("admin_tools_php_info_phpinfo");
-
+	
 	// Log admin action
 	log_admin_action();
 
@@ -32,11 +33,12 @@ $plugins->run_hooks("admin_tools_php_info_begin");
 if(!$mybb->input['action'])
 {
 	$plugins->run_hooks("admin_tools_php_info_start");
-
+	
 	$page->output_header($lang->php_info);
-
+	
 	echo "<iframe src=\"index.php?module=tools-php_info&amp;action=phpinfo\" width=\"100%\" height=\"500\" frameborder=\"0\">{$lang->browser_no_iframe_support}</iframe>";
-
+	
 	$page->output_footer();
 }
 
+?>

@@ -1,10 +1,11 @@
 <?php
 /**
- * MyBB 1.8 English Language Pack
- * Copyright 2014 MyBB Group, All Rights Reserved
- *
+ * MyBB 1.6 English Language Pack
+ * Copyright 2010 MyBB Group, All Rights Reserved
+ * 
+ * $Id$
  */
-
+ 
 $l['spiders_bots'] = "Spiders / Bots";
 $l['spiders_bots_desc'] = "This section allows you to manage the search engine spiders &amp; bots automatically detected by your forum. You're also able to see when a particular bot last visited.";
 $l['add_new_bot'] = "Add New Bot";
@@ -40,3 +41,4 @@ $l['success_bot_deleted'] = "The selected bot has been deleted successfully.";
 
 $l['confirm_bot_deletion'] = "Are you sure you wish to delete this bot?";
 
+?>

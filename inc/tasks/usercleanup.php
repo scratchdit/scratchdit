@@ -1,22 +1,20 @@
 <?php
 /**
- * MyBB 1.8
- * Copyright 2014 MyBB Group, All Rights Reserved
+ * MyBB 1.6
+ * Copyright 2010 MyBB Group, All Rights Reserved
  *
- * Website: //www.mybb.com
- * License: //www.mybb.com/about/license
+ * Website: http://mybb.com
+ * License: http://mybb.com/about/license
  *
+ * $Id$
  */
 
 function task_usercleanup($task)
 {
-	global $db, $lang, $cache, $plugins;
+	global $db, $lang, $cache;
 
 	// Expire any old warnings
-	require_once MYBB_ROOT.'inc/datahandlers/warnings.php';
-	$warningshandler = new WarningsHandler('update');
-
-	$warningshandler->expire_warnings();
+	expire_warnings();
 
 	// Expire any post moderation or suspension limits
 	$query = $db->simple_select("users", "uid, moderationtime, suspensiontime", "(moderationtime!=0 AND moderationtime<".TIME_NOW.") OR (suspensiontime!=0 AND suspensiontime<".TIME_NOW.")");
@@ -62,13 +60,9 @@ function task_usercleanup($task)
 		$db->update_query("users", $updated_user, "uid='{$ban['uid']}'");
 		$db->delete_query("banned", "uid='{$ban['uid']}'");
 	}
-
+	
 	$cache->update_moderators();
-
-	if(is_object($plugins))
-	{
-		$plugins->run_hooks('task_usercleanup', $task);
-	}
-
+	
 	add_task_log($task, $lang->task_usercleanup_ran);
 }
+?>

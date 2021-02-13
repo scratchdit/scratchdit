@@ -1,8 +1,9 @@
 <?php
 /**
- * MyBB 1.8 English Language Pack
- * Copyright 2014 MyBB Group, All Rights Reserved
- *
+ * MyBB 1.6 English Language Pack
+ * Copyright 2010 MyBB Group, All Rights Reserved
+ * 
+ * $Id$
  */
 
 
@@ -14,7 +15,6 @@ $l['prune_mod_logs_desc'] = "Here you can prune the moderator logs matching a sp
 $l['no_modlogs'] = "There are no log entries with the selected criteria.";
 
 $l['username'] = "Username";
-$l['na_deleted'] = "N/A - Been Deleted";
 $l['date'] = "Date";
 $l['action'] = "Action";
 $l['information'] = "Information";
@@ -24,7 +24,6 @@ $l['forum'] = "Forum:";
 $l['thread'] = "Thread:";
 $l['post'] = "Post:";
 $l['user_info'] = "User:";
-$l['announcement'] = "Announcement:";
 
 $l['filter_moderator_logs'] = "Filter Moderator Logs";
 $l['forum_moderator'] = "Forum Moderator:";
@@ -45,7 +44,8 @@ $l['days'] = "days";
 
 $l['prune_moderator_logs'] = "Prune Moderator Logs";
 $l['date_range'] = "Date range:";
+$l['all_forums'] = "All Forums";
 
 $l['success_pruned_mod_logs'] = "The moderator logs have been pruned successfully.";
-$l['note_logs_locked'] = "For security reasons, logs less than 24 hours old cannot be pruned.";
 
+?>

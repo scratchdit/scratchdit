@@ -1,18 +1,21 @@
 <?php
 /**
- * MyBB 1.8 English Language Pack
- * Copyright 2014 MyBB Group, All Rights Reserved
- *
+ * MyBB 1.6 English Language Pack
+ * Copyright 2010 MyBB Group, All Rights Reserved
+ * 
+ * $Id$
  */
 
 $l['boardstats'] = "Board Statistics";
 $l['new_posts'] = "Forum Contains New Posts";
 $l['no_new_posts'] = "Forum Contains No New Posts";
-$l['forum_closed'] = "Forum is Closed";
+$l['forum_locked'] = "Forum is Locked";
 $l['forum_unapproved_posts_count'] = "There are currently {1} unapproved posts in this forum.";
 $l['forum_unapproved_post_count'] = "There is currently 1 unapproved post in this forum.";
 $l['forum_unapproved_threads_count'] = "There is currently {1} unapproved threads in this forum.";
 $l['forum_unapproved_thread_count'] = "There is currently 1 unapproved thread in this forum.";
+$l['markread'] = "Mark All Forums Read";
+$l['forumteam'] = "Forum Team";
 $l['forumstats'] = "Forum Statistics";
 $l['todays_birthdays'] = "Today's Birthdays";
 $l['birthdayhidden'] = "Hidden";
@@ -36,5 +39,5 @@ $l['online_anon_singular'] = "is";
 $l['online_guest_plural'] = "guests";
 $l['online_guest_singular'] = "guest";
 $l['online_note'] = "{1} {2} active in the past {3} minutes ({4} {5}, {6} of whom {7} invisible, and {8} {9}).";
-$l['subforums'] = "Sub Forums:";
-$l['board_stats_link_separator'] = ' | ';
+$l['subforums'] = "<strong>Sub Forums:</strong>";
+?>

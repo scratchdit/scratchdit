@@ -1,16 +1,19 @@
 <?php
 /**
- * MyBB 1.8
- * Copyright 2014 MyBB Group, All Rights Reserved
+ * MyBB 1.6
+ * Copyright 2010 MyBB Group, All Rights Reserved
  *
- * Website: //www.mybb.com
- * License: //www.mybb.com/about/license
+ * Website: http://mybb.com
+ * License: http://mybb.com/about/license
  *
+ * $Id$
  */
 
 function task_threadviews($task)
 {
-	global $mybb, $db, $lang, $plugins;
+	global $mybb, $db, $lang;
+	
+	$threadviews = array();
 
 	if($mybb->settings['delayedthreadviews'] != 1)
 	{
@@ -18,18 +21,18 @@ function task_threadviews($task)
 	}
 
 	// Update thread views
-	$query = $db->simple_select("threadviews", "tid, COUNT(tid) AS views", "", array('group_by' => 'tid'));
+	$query = $db->query("
+		SELECT tid, COUNT(tid) AS views
+		FROM ".TABLE_PREFIX."threadviews
+		GROUP BY tid
+	");
 	while($threadview = $db->fetch_array($query))
 	{
 		$db->update_query("threads", array('views' => "views+{$threadview['views']}"), "tid='{$threadview['tid']}'", 1, true);
 	}
-
+	
 	$db->write_query("TRUNCATE TABLE ".TABLE_PREFIX."threadviews");
-
-	if(is_object($plugins))
-	{
-		$plugins->run_hooks('task_threadviews', $task);
-	}
-
+	
 	add_task_log($task, $lang->task_threadviews_ran);
 }
+?>

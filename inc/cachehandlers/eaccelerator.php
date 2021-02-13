@@ -1,29 +1,28 @@
 <?php
 /**
- * MyBB 1.8
- * Copyright 2014 MyBB Group, All Rights Reserved
+ * MyBB 1.6
+ * Copyright 2010 MyBB Group, All Rights Reserved
  *
- * Website: //www.mybb.com
- * License: //www.mybb.com/about/license
+ * Website: http://mybb.com
+ * License: http://mybb.com/about/license
  *
+ * $Id$
  */
 
 /**
  * eAccelerator Cache Handler
  */
-class eacceleratorCacheHandler implements CacheHandlerInterface
+class eacceleratorCacheHandler
 {
 	/**
 	 * Unique identifier representing this copy of MyBB
-	 *
-	 * @var string
 	 */
 	public $unique_id;
-
-	function __construct()
+	
+	function eacceleratorCacheHandler($silent=false)
 	{
 		global $mybb;
-
+		
 		if(!function_exists("eaccelerator_get"))
 		{
 			// Check if our DB engine is loaded
@@ -34,6 +33,7 @@ class eacceleratorCacheHandler implements CacheHandlerInterface
 				die;
 			}
 		}
+		return false;
 	}
 
 	/**
@@ -43,19 +43,23 @@ class eacceleratorCacheHandler implements CacheHandlerInterface
 	 */
 	function connect()
 	{
+		global $mybb;
+
 		// Set a unique identifier for all queries in case other forums on this server also use this cache handler
 		$this->unique_id = md5(MYBB_ROOT);
 
 		return true;
 	}
-
+	
 	/**
 	 * Retrieve an item from the cache.
 	 *
-	 * @param string $name The name of the cache
+	 * @param string The name of the cache
+	 * @param boolean True if we should do a hard refresh
 	 * @return mixed Cache data if successful, false if failure
 	 */
-	function fetch($name)
+	
+	function fetch($name, $hard_refresh=false)
 	{
 		$data = eaccelerator_get($this->unique_id."_".$name);
 		if($data === false)
@@ -63,14 +67,14 @@ class eacceleratorCacheHandler implements CacheHandlerInterface
 			return false;
 		}
 
-		return unserialize($data);
+		return @unserialize($data);
 	}
-
+	
 	/**
 	 * Write an item to the cache.
 	 *
-	 * @param string $name The name of the cache
-	 * @param mixed $contents The data to write to the cache item
+	 * @param string The name of the cache
+	 * @param mixed The data to write to the cache item
 	 * @return boolean True on success, false on failure
 	 */
 	function put($name, $contents)
@@ -80,37 +84,31 @@ class eacceleratorCacheHandler implements CacheHandlerInterface
 		eaccelerator_unlock($this->unique_id."_".$name);
 		return $status;
 	}
-
+	
 	/**
 	 * Delete a cache
 	 *
-	 * @param string $name The name of the cache
+	 * @param string The name of the cache
 	 * @return boolean True on success, false on failure
 	 */
 	function delete($name)
 	{
 		return eaccelerator_rm($this->unique_id."_".$name);
 	}
-
+	
 	/**
 	 * Disconnect from the cache
-	 *
-	 * @return bool
 	 */
 	function disconnect()
 	{
 		return true;
 	}
-
-	/**
-	 * @param string $name
-	 *
-	 * @return string
-	 */
-	function size_of($name='')
+	
+	function size_of($name)
 	{
 		global $lang;
-
+		
 		return $lang->na;
 	}
 }
+?>

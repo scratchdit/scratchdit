@@ -1,11 +1,12 @@
 <?php
 /**
- * MyBB 1.8
- * Copyright 2014 MyBB Group, All Rights Reserved
+ * MyBB 1.6
+ * Copyright 2010 MyBB Group, All Rights Reserved
  *
- * Website: //www.mybb.com
- * License: //www.mybb.com/about/license
+ * Website: http://mybb.com
+ * License: http://mybb.com/about/license
  *
+ * $Id$
  */
 
 /**
@@ -26,7 +27,7 @@ function upgrade2_dbchanges()
 	$output->print_header("Database Changes since Release Candidate 3");
 
 	$contents .= "<p>Making necessary database modifications...";
-
+	
 	$db->drop_table("badwords");
 	$db->write_query("CREATE TABLE ".TABLE_PREFIX."badwords (
 	  bid smallint(6) NOT NULL auto_increment,
@@ -35,12 +36,12 @@ function upgrade2_dbchanges()
 	  PRIMARY KEY(bid)
 	);");
 
-	if($db->field_exists("icon", "attachtypes"))
+	if($db->field_exists("icon", TABLE_PREFIX."attachtypes"))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."attachtypes DROP icon;");
 	}
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."attachtypes ADD icon varchar(100) NOT NULL;");
-
+	
 	$db->delete_query("attachtypes");
 
 	$db->write_query("INSERT INTO ".TABLE_PREFIX."attachtypes (atid, name, mimetype, extension, maxsize, icon) VALUES (1, 'Zip File', 'application/zip', 'zip', 1024, 'images/attachtypes/zip.gif');");
@@ -59,35 +60,35 @@ function upgrade2_dbchanges()
 	$db->write_query("INSERT INTO ".TABLE_PREFIX."attachtypes (atid, name, mimetype, extension, maxsize, icon) VALUES (15, '', 'application/pdf', 'pdf', 2048, 'images/attachtypes/pdf.gif');");
 	$db->write_query("INSERT INTO ".TABLE_PREFIX."attachtypes (atid, name, mimetype, extension, maxsize, icon) VALUES (16, '', 'image/bmp', 'bmp', 500, 'images/attachtypes/image.gif');");
 
-	if($db->field_exists("outerwidth", "themes"))
+	if($db->field_exists("outerwidth", TABLE_PREFIX."themes"))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."themes DROP outerwidth;");
 	}
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."themes ADD outerwidth varchar(15) NOT NULL;");
-
-	if($db->field_exists("icon", "themes"))
+	
+	if($db->field_exists("icon", TABLE_PREFIX."themes"))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."themes DROP icon;");
 	}
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."themes ADD outercolor varchar(15) NOT NULL;");
-
+	
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."themes CHANGE body bodybgcolor varchar(15) NOT NULL;");
-
-	if($db->field_exists("bodybgimage", "themes"))
+	
+	if($db->field_exists("bodybgimage", TABLE_PREFIX."themes"))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."themes DROP bodybgimage;");
 	}
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."themes ADD bodybgimage varchar(100) NOT NULL default '' AFTER bodybgcolor;");
-
-	if($db->field_exists("bodybgimageattributes", "themes"))
+	
+	if($db->field_exists("bodybgimageattributes", TABLE_PREFIX."themes"))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."themes DROP bodydbimageattributes;");
 	}
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."themes ADD bodybgimageattributes varchar(100) NOT NULL default '' AFTER bodybgimage;");
-
-
+	
+	
 	$db->write_query("UPDATE ".TABLE_PREFIX."themes SET outerwidth='0', bodybgcolor='#e3e3e3', bodybgimage='images/Light/logo_bg.png', bodybgimageattributes='repeat-x'");
-
+	
 	$db->drop_table("regimages");
 	$db->write_query("CREATE TABLE ".TABLE_PREFIX."regimages (
 	  imagehash varchar(32) NOT NULL,
@@ -97,38 +98,38 @@ function upgrade2_dbchanges()
 
 	$db->write_query("UPDATE ".TABLE_PREFIX."adminoptions SET cpstyle=''");
 
-	if($db->field_exists("language", "users"))
+	if($db->field_exists("language", TABLE_PREFIX."users"))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."users DROP language;");
 	}
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD language varchar(50) NOT NULL;");
-
-	if($db->field_exists("timeonline", "users"))
+	
+	if($db->field_exists("timeonline", TABLE_PREFIX."users"))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."users DROP timeonline;");
 	}
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD timeonline bigint(30) NOT NULL default '0';");
-
-	if($db->field_exists("showcodebuttons", "users"))
+	
+	if($db->field_exists("showcodebuttons", TABLE_PREFIX."users"))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."user DROP showcodebuttons;");
 	}
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD showcodebuttons int(1) NOT NULL default '1';");
-
+	
 	$db->write_query("UPDATE ".TABLE_PREFIX."users SET language='english', showcodebuttons=1");
 
-	if($db->field_exists("oldgroup", "awaitingactivation"))
+	if($db->field_exists("oldgroup", TABLE_PREFIX."awaitingactivation"))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."awaitingactivation DROP oldgroup;");
 	}
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."awaitingactivation ADD oldgroup bigint(30) NOT NULL;");
-
-	if($db->field_exists("misc", "awaitingactivation"))
+	
+	if($db->field_exists("misc", TABLE_PREFIX."awaitingactivation"))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."awaitingactivation DROP misc;");
 	}
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."awaitingactivation ADD misc varchar(255) NOT NULL;");
-
+	
 	$db->write_query("DELETE FROM ".TABLE_PREFIX."awaitingactivation WHERE type='e'");
 
 	$db->drop_table("settings");
@@ -180,9 +181,9 @@ function upgrade2_dbchanges2()
 	$db->write_query("INSERT INTO ".TABLE_PREFIX."settings (sid, name, title, description, optionscode, value, disporder, gid) VALUES (NULL, 'boardclosed', 'Board Closed', 'If you need to close your forums to make some changes or perform an upgrade, this is the global switch. Viewers will not be able to view your forums, however, they will see a message with the reason you specify below.<br />\r\n<br />\r\n<b>Administrators will still be able to view the forums.</b>', 'yesno', 'no', 1, 26);");
 	$db->write_query("INSERT INTO ".TABLE_PREFIX."settings (sid, name, title, description, optionscode, value, disporder, gid) VALUES (NULL, 'boardclosed_reason', 'Board Closed Reason', 'If your forum is closed, you can set a message here that your visitors will be able to see when they visit your forums.', 'textarea', 'These forums are currently closed for maintenance. Please check back later.', 2, 26);");
 	$db->write_query("INSERT INTO ".TABLE_PREFIX."settings (sid, name, title, description, optionscode, value, disporder, gid) VALUES (NULL, 'bbname', 'Board Name', 'The name of your message boards. We recommend that it is not over 75 characters.', 'text', 'MyBB Forums', 1, 1);");
-	$db->write_query("INSERT INTO ".TABLE_PREFIX."settings (sid, name, title, description, optionscode, value, disporder, gid) VALUES (NULL, 'bburl', 'Board URL', 'The url to your forums.<br />Include the //. Do NOT include a trailing slash.', 'text', '', 2, 1);");
+	$db->write_query("INSERT INTO ".TABLE_PREFIX."settings (sid, name, title, description, optionscode, value, disporder, gid) VALUES (NULL, 'bburl', 'Board URL', 'The url to your forums.<br />Include the http://. Do NOT include a trailing slash.', 'text', '', 2, 1);");
 	$db->write_query("INSERT INTO ".TABLE_PREFIX."settings (sid, name, title, description, optionscode, value, disporder, gid) VALUES (NULL, 'homename', 'Homepage Name', 'The name of your homepage. This will appear in the footer with a link to it.', 'text', 'MyBB', 3, 1);");
-	$db->write_query("INSERT INTO ".TABLE_PREFIX."settings (sid, name, title, description, optionscode, value, disporder, gid) VALUES (NULL, 'homeurl', 'Homepage URL', 'The full URL of your homepage. This will be linked to in the footer along with its name.', 'text', '//mybb.com', 4, 1);");
+	$db->write_query("INSERT INTO ".TABLE_PREFIX."settings (sid, name, title, description, optionscode, value, disporder, gid) VALUES (NULL, 'homeurl', 'Homepage URL', 'The full URL of your homepage. This will be linked to in the footer along with its name.', 'text', 'http://mybb.com', 4, 1);");
 	$db->write_query("INSERT INTO ".TABLE_PREFIX."settings (sid, name, title, description, optionscode, value, disporder, gid) VALUES (NULL, 'dateformat', 'Date Format', 'The format of the dates used on the forum. This format uses the PHP date() function. We recommend not changing this unless you know what you\'re doing.', 'text', 'm-d-Y', 1, 3);");
 	$db->write_query("INSERT INTO ".TABLE_PREFIX."settings (sid, name, title, description, optionscode, value, disporder, gid) VALUES (NULL, 'adminemail', 'Admin Email', 'The administrator\'s email address. This will be used for outgoing emails sent via the forums.', 'text', '', 5, 1);");
 	$db->write_query("INSERT INTO ".TABLE_PREFIX."settings (sid, name, title, description, optionscode, value, disporder, gid) VALUES (NULL, 'timeformat', 'Time Format', 'The format of the times used on the forum. This format uses PHP\'s date() function. We recommend not changing this unless you know what you\'re doing.', 'text', 'h:i A', 2, 3);");
@@ -287,3 +288,4 @@ function upgrade2_dbchanges2()
 	$output->print_contents("$contents<p>Please click next to continue with the upgrade process.</p>");
 	$output->print_footer("2_done");
 }
+?>

@@ -1,11 +1,12 @@
 <?php
 /**
- * MyBB 1.8
- * Copyright 2014 MyBB Group, All Rights Reserved
+ * MyBB 1.6
+ * Copyright 2010 MyBB Group, All Rights Reserved
  *
- * Website: //www.mybb.com
- * License: //www.mybb.com/about/license
+ * Website: http://mybb.com
+ * License: http://mybb.com/about/license
  *
+ * $Id$
  */
 
 // Disallow direct access to this file for security reasons
@@ -29,8 +30,8 @@ class PhpMail extends MailHandler
 	/**
 	 * Sends the email.
 	 *
-	 * @return bool whether or not the email got sent or not.
-	 */
+	 * @return true/false whether or not the email got sent or not.
+	 */	
 	function send()
 	{
 		global $lang, $mybb;
@@ -43,7 +44,7 @@ class PhpMail extends MailHandler
 			$this->message = str_replace("\r\n", "\n", $this->message);
 			$this->delimiter = "\n";
 		}
-
+		
 		// Some mail providers ignore email's with incorrect return-to path's so try and fix that here
 		$this->sendmail_from = @ini_get('sendmail_from');
 		if($this->sendmail_from != $mybb->settings['adminemail'])
@@ -51,16 +52,8 @@ class PhpMail extends MailHandler
 			@ini_set("sendmail_from", $mybb->settings['adminemail']);
 		}
 
-		$dir = "/{$mybb->config['admin_dir']}/";
-		$pos = strrpos($_SERVER['PHP_SELF'], $dir);
-		if(defined('IN_ADMINCP') && $pos !== false)
-		{
-			$temp_script_path = $_SERVER['PHP_SELF'];
-			$_SERVER['PHP_SELF'] = substr($_SERVER['PHP_SELF'], $pos + strlen($dir) - 1);
-		}
-
 		// If safe mode is on, don't send the additional parameters as we're not allowed to
-		if($mybb->safemode)
+		if(ini_get('safe_mode') == 1 || strtolower(ini_get('safe_mode')) == 'on')
 		{
 			$sent = @mail($this->to, $this->subject, $this->message, trim($this->headers));
 		}
@@ -69,11 +62,6 @@ class PhpMail extends MailHandler
 			$sent = @mail($this->to, $this->subject, $this->message, trim($this->headers), $this->additional_parameters);
 		}
 		$function_used = 'mail()';
-
-		if(defined('IN_ADMINCP') && $pos !== false)
-		{
-			$_SERVER['PHP_SELF'] = $temp_script_path;
-		}
 
 		if(!$sent)
 		{
@@ -84,3 +72,4 @@ class PhpMail extends MailHandler
 		return true;
 	}
 }
+?>

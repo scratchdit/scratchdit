@@ -1,11 +1,12 @@
 <?php
 /**
- * MyBB 1.8
- * Copyright 2014 MyBB Group, All Rights Reserved
+ * MyBB 1.6
+ * Copyright 2010 MyBB Group, All Rights Reserved
  *
- * Website: //www.mybb.com
- * License: //www.mybb.com/about/license
+ * Website: http://mybb.com
+ * License: http://mybb.com/about/license
  *
+ * $Id$
  */
 
 /**
@@ -29,7 +30,7 @@ function upgrade6_dbchanges()
 	$output->print_header("Performing Queries");
 
 	echo "<p>Performing necessary upgrade queries..</p>";
-
+	
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."mycode CHANGE regex regex text NOT NULL");
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."mycode CHANGE replacement replacement text NOT NULL");
 
@@ -39,3 +40,4 @@ function upgrade6_dbchanges()
 	$output->print_footer("6_done");
 }
 
+?>

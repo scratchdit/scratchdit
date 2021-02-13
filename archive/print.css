@@ -39,6 +39,7 @@ h1 a {
 	font-size: 1.1em;
 }
 
+
 .post {
 	border: 1px solid #ccc;
 	padding: 1px;
@@ -141,9 +142,4 @@ h3 {
 
 .quote_body, .code_body {
 	margin-left: 18px;
-}
-
-img {
-	max-width: 100%;
-	height: auto;
 }

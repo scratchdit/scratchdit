@@ -1,11 +1,12 @@
 <?php
 /**
- * MyBB 1.8
- * Copyright 2014 MyBB Group, All Rights Reserved
+ * MyBB 1.6
+ * Copyright 2010 MyBB Group, All Rights Reserved
  *
- * Website: //www.mybb.com
- * License: //www.mybb.com/about/license
+ * Website: http://mybb.com
+ * License: http://mybb.com/about/license
  *
+ * $Id$
  */
 
 /**
@@ -31,8 +32,8 @@ class DefaultTable
 	/**
 	 * Construct an individual cell for this table.
 	 *
-	 * @param string $data The HTML content for this cell.
-	 * @param array $extra Array of extra information about this cell (class, id, colspan, rowspan, width)
+	 * @param string The HTML content for this cell.
+	 * @param array Array of extra information about this cell (class, id, colspan, rowspan, width)
 	 */
 	function construct_cell($data, $extra=array())
 	{
@@ -42,28 +43,20 @@ class DefaultTable
 	/**
 	 * Construct a row from the earlier defined constructed cells for the table.
 	 *
-	 * @param array $extra Array of extra information about this row (class, id)
+	 * @param array Array of extra information about this row (class, id)
 	 */
 	function construct_row($extra = array())
 	{
 		$i = 1;
-		$cells = '';
-
 		// We construct individual cells here
 		foreach($this->_cells as $key => $cell)
 		{
 			$cells .= "\t\t\t<td";
-
-			if(!isset($cell['extra']['class']))
-			{
-				$cell['extra']['class'] = '';
-			}
-
 			if($key == 0)
 			{
 				$cell['extra']['class'] .= " first";
 			}
-			elseif(!isset($this->_cells[$key+1]))
+			elseif(!$this->_cells[$key+1])
 			{
 				$cell['extra']['class'] .= " last";
 			}
@@ -77,13 +70,13 @@ class DefaultTable
 			{
 				$cells .= " class=\"".trim($cell['extra']['class'])."\"";
 			}
-			if(isset($cell['extra']['style']))
+			if($cell['extra']['style'])
 			{
 				$cells .= " style=\"".$cell['extra']['style']."\"";
 			}
-			if(isset($cell['extra']['id']))
+			if($cell['extra']['id'])
 			{
-				$cells .= " id=\"".$cell['extra']['id']."\"";
+				$cells .= $cell['extra']['id'];
 			}
 			if(isset($cell['extra']['colspan']) && $cell['extra']['colspan'] > 1)
 			{
@@ -93,7 +86,7 @@ class DefaultTable
 			{
 				$cells .= " rowspan=\"".$cell['extra']['rowspan']."\"";
 			}
-			if(isset($cell['extra']['width']))
+			if($cell['extra']['width'])
 			{
 				$cells .= " width=\"".$cell['extra']['width']."\"";
 			}
@@ -104,21 +97,21 @@ class DefaultTable
 		$data['cells'] = $cells;
 		$data['extra'] = $extra;
 		$this->_rows[] = $data;
-
+		
 		$this->_cells = array();
 	}
-
+	
 	/**
 	 * return the cells of a row for the table based row.
 	 *
-	 * @param string $row_id The id of the row you want to give it.
-	 * @param boolean $return Whether or not to return or echo the resultant contents.
+	 * @param string The id of the row you want to give it.
+	 * @param boolean Whether or not to return or echo the resultant contents.
 	 * @return string The output of the row cells (optional).
 	 */
 	function output_row_cells($row_id, $return=false)
 	{
 		$row = $this->_rows[$row_id]['cells'];
-
+		
 		if(!$return)
 		{
 			echo $row;
@@ -142,8 +135,8 @@ class DefaultTable
 	/**
 	 * Construct a header cell for this table.
 	 *
-	 * @param string $data The HTML content for this header cell.
-	 * @param array $extra Array of extra information for this header cell (class, style, colspan, width)
+	 * @param string The HTML content for this header cell.
+	 * @param array Array of extra information for this header cell (class, style, colspan, width)
 	 */
 	function construct_header($data, $extra=array())
 	{
@@ -153,10 +146,10 @@ class DefaultTable
 	/**
 	 * Output this table to the browser.
 	 *
-	 * @param string $heading The heading for this table.
-	 * @param int $border The border width for this table.
-	 * @param string $class The class for this table.
-	 * @param boolean $return Whether or not to return or echo the resultant contents.
+	 * @param string The heading for this table.
+	 * @param int The border width for this table.
+	 * @param string The class for this table.
+	 * @param boolean Whether or not to return or echo the resultant contents.
 	 * @return string The output of the row cells (optional).
 	 */
 	function output($heading="", $border=1, $class="general", $return=false)
@@ -174,15 +167,14 @@ class DefaultTable
 	/**
 	 * Fetch the built HTML for this table.
 	 *
-	 * @param string $heading The heading for this table.
-	 * @param int $border The border width for this table.
-	 * @param string $class The class for this table.
-	 * @param string $table_id The id for this table.
+	 * @param string The heading for this table.
+	 * @param int The border width for this table.
+	 * @param string The class for this table.
+	 * @param string The id for this table.
 	 * @return string The built HTML.
 	 */
 	function construct_html($heading="", $border=1, $class=null, $table_id="")
 	{
-		$table = '';
 		if($border == 1)
 		{
 			$table .= "<div class=\"border_wrapper\">\n";
@@ -212,27 +204,23 @@ class DefaultTable
 			foreach($this->_headers as $key => $data)
 			{
 				$table .= "\t\t\t<th";
-				if(!isset($data['extra']['class']))
-				{
-					$data['extra']['class'] = '';
-				}
 				if($key == 0)
 				{
 					$data['extra']['class'] .= " first";
 				}
-				elseif(!isset($this->_headers[$key+1]))
+				elseif(!$this->_headers[$key+1])
 				{
 					$data['extra']['class'] .= " last";
 				}
-				if(!empty($data['extra']['class']))
+				if($data['extra']['class'])
 				{
 					$table .= " class=\"".$data['extra']['class']."\"";
 				}
-				if(isset($data['extra']['style']))
+				if($data['extra']['style'])
 				{
 					$table .= " style=\"".$data['extra']['style']."\"";
 				}
-				if(isset($data['extra']['width']))
+				if($data['extra']['width'])
 				{
 					$table .= " width=\"".$data['extra']['width']."\"";
 				}
@@ -250,21 +238,15 @@ class DefaultTable
 		foreach($this->_rows as $key => $table_row)
 		{
 			$table .= "\t\t<tr";
-			if(isset($table_row['extra']['id']))
+			if($table_row['extra']['id'])
 			{
 				$table .= " id=\"{$table_row['extra']['id']}\"";
 			}
-
-			if(!isset($table_row['extra']['class']))
-			{
-				$table_row['extra']['class'] = '';
-			}
-
 			if($key == 0)
 			{
 				$table_row['extra']['class'] .= " first";
 			}
-			else if(!isset($this->_rows[$key+1]))
+			else if(!$this->_rows[$key+1])
 			{
 				$table_row['extra']['class'] .= " last";
 			}
@@ -293,3 +275,4 @@ class DefaultTable
 		return $table;
 	}
 }
+?>

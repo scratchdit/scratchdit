@@ -1,10 +1,11 @@
 <?php
 /**
- * MyBB 1.8 English Language Pack
- * Copyright 2014 MyBB Group, All Rights Reserved
- *
+ * MyBB 1.6 English Language Pack
+ * Copyright 2010 MyBB Group, All Rights Reserved
+ * 
+ * $Id$
  */
-
+ 
 $l['mod_tools'] = "Moderator Tools";
 
 $l['thread_tools'] = "Thread Tools";
@@ -41,8 +42,8 @@ $l['error_invalid_thread_tool'] = "The specified thread tool does not exist.";
 $l['general_options'] = "General Options";
 $l['short_description'] = "Short Description";
 $l['available_in_forums'] = "Available in forums";
-$l['available_to_groups'] = "Available to groups";
-$l['show_confirmation'] = "Show Confirmation Page";
+$l['all_forums'] = "All forums";
+$l['select_forums'] = "Select forums";
 $l['save_thread_tool'] = "Save Thread Tool";
 
 $l['title'] = "Title";
@@ -57,13 +58,9 @@ $l['stick'] = "Stick";
 $l['unstick'] = "Unstick";
 $l['open'] = "Open";
 $l['close'] = "Close";
-$l['stick'] = "Stick";
-$l['unstick'] = "Unstick";
 $l['toggle'] = "Toggle";
 $l['days'] = "Days";
 $l['no_prefix'] = "No Prefix";
-$l['restore'] = "Restore";
-$l['softdelete'] = "Soft delete";
 
 $l['forum_to_move_to'] = "Forum to move to:";
 $l['leave_redirect'] = "Leave redirect?";
@@ -71,19 +68,15 @@ $l['delete_redirect_after'] = "Delete redirect after";
 $l['do_not_move_thread'] = "Do not move thread";
 $l['do_not_copy_thread'] = "Do not copy thread";
 $l['move_thread'] = "Move thread?";
-$l['move_thread_desc'] = "If moving the thread(s), the \"delete redirect after&hellip; days\" is only to be filled in if a redirect will be left.";
+$l['move_thread_desc'] = "If moving the thread(s), the \"delete redirect after... days\" is only to be filled in if a redirect will be left.";
 $l['forum_to_copy_to'] = "Forum to copy to:";
 $l['copy_thread'] = "Copy thread?";
 $l['open_close_thread'] = "Open/close thread?";
-$l['stick_unstick_thread'] = "Stick/unstick thread?";
-$l['softdelete_restore_thread'] = "Soft delete/restore thread?";
-$l['delete_thread'] = "Delete thread permanently?";
+$l['delete_thread'] = "Delete thread?";
 $l['merge_thread'] = "Merge thread?";
 $l['merge_thread_desc'] = "Only if used in inline moderation.";
 $l['delete_poll'] = "Delete poll?";
 $l['delete_redirects'] = "Delete redirects?";
-$l['remove_subscriptions'] = "Remove thread subscriptions?";
-$l['recount_rebuild'] = "Recount & Rebuild?";
 $l['apply_thread_prefix'] = "Apply thread prefix?";
 $l['new_subject'] = "New subject?";
 $l['new_subject_desc'] = "{subject} represents the original subject. {username} represents the moderator's username.";
@@ -97,11 +90,10 @@ $l['success_mod_tool_created'] = "The moderation tool has been created successfu
 $l['success_mod_tool_updated'] = "The moderation tool has been updated successfully.";
 
 $l['inline_post_moderation'] = "Inline Post Moderation";
-$l['delete_posts'] = "Delete posts permanently?";
+$l['delete_posts'] = "Delete posts?";
 $l['merge_posts'] = "Merge posts?";
 $l['merge_posts_desc'] = "Only if used from inline moderation.";
 $l['approve_unapprove_posts'] = "Approve/unapprove posts?";
-$l['softdelete_restore_posts'] = "Soft delete/restore posts?";
 
 $l['split_posts'] = "Split Posts";
 $l['split_posts2'] = "Split posts?";
@@ -110,7 +102,6 @@ $l['split_to_same_forum'] = "Split to same forum";
 $l['close_split_thread'] = "Close split thread?";
 $l['stick_split_thread'] = "Stick split thread?";
 $l['unapprove_split_thread'] = "Unapprove split thread?";
-$l['split_thread_prefix'] = "Split thread prefix";
 $l['split_thread_subject'] = "Split thread subject";
 $l['split_thread_subject_desc'] = "{subject} represents the original subject. Only required if splitting posts.";
 $l['add_new_split_reply'] = "Add reply to split thread";
@@ -119,14 +110,8 @@ $l['split_reply_subject'] = "Reply subject";
 $l['split_reply_subject_desc'] = "Only used if a reply is made";
 $l['save_post_tool'] = "Save Post Tool";
 
-$l['send_private_message'] = 'Send Private Message';
-$l['private_message_message'] = 'Message';
-$l['private_message_message_desc'] = 'Message to send to the author of the thread. Leave empty to disable this feature.';
-$l['private_message_subject'] = 'Subject';
-$l['private_message_subject_desc'] = 'Enter the subject of the Private Message.';
-
 $l['error_missing_title'] = "Please enter a name for this tool.";
 $l['error_missing_description'] = "Please enter a short description for this tool.";
 $l['error_no_forums_selected'] = "Please select the forums in which this tool will be available.";
-$l['error_no_groups_selected'] = "Please select the groups to which this tool will be available.";
 $l['error_forum_is_category'] = "You can't pick a category-type forum as a destination forum.";
+?>

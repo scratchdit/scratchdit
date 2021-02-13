@@ -1,10 +1,6 @@
 var Post = {
 	init: function()
 	{
-		$(function()
-		{
-			Post.initAttachments();
-		});
 	},
 
 	loadMultiQuoted: function()
@@ -12,17 +8,8 @@ var Post = {
 		if(use_xmlhttprequest == 1)
 		{
 			tid = document.input.tid.value;
-			
-			$.ajax(
-			{
-				url: 'xmlhttp.php?action=get_multiquoted&tid='+tid,
-				type: 'get',
-				complete: function (request, status)
-				{
-					Post.multiQuotedLoaded(request, status);
-				}
-			});
-			
+			this.spinner = new ActivityIndicator("body", {image: imagepath + "/spinner_big.gif"});
+			new Ajax.Request('xmlhttp.php?action=get_multiquoted&tid='+tid, {method: 'get', onComplete: function(request) { Post.multiQuotedLoaded(request); }});
 			return false;
 		}
 		else
@@ -35,16 +22,8 @@ var Post = {
 	{
 		if(use_xmlhttprequest == 1)
 		{
-			$.ajax(
-			{
-				url: 'xmlhttp.php?action=get_multiquoted&load_all=1',
-				type: 'get',
-				complete: function (request, status)
-				{
-					Post.multiQuotedLoaded(request, status);
-				}
-			});
-			
+			this.spinner = new ActivityIndicator("body", {image: imagepath + "/spinner_big.gif"});
+			new Ajax.Request('xmlhttp.php?action=get_multiquoted&load_all=1', {method: 'get', onComplete: function(request) { Post.multiQuotedLoaded(request); }});
 			return false;
 		}
 		else
@@ -55,158 +34,68 @@ var Post = {
 
 	multiQuotedLoaded: function(request)
 	{
-		var json = JSON.parse(request.responseText);
-		if(typeof response == 'object')
+		if(request.responseText.match(/<error>(.*)<\/error>/))
 		{
-			if(json.hasOwnProperty("errors"))
-			{
-				$.each(json.errors, function(i, message)
-				{
-					$.jGrowl(lang.post_fetch_error + ' ' + message, {theme:'jgrowl_error'});
-				});
-				return false;
-			}
-		}
+			message = request.responseText.match(/<error>(.*)<\/error>/);
 
-		var id = 'message';
-		if(typeof MyBBEditor !== 'undefined' && MyBBEditor !== null)
+			if(!message[1])
+			{
+				message[1] = "An unknown error occurred.";
+			}
+			if(this.spinner)
+			{
+				this.spinner.destroy();
+				this.spinner = '';
+			}
+			alert('There was an error fetching the posts.\n\n'+message[1]);
+		}
+		else if(request.responseText)
 		{
-			MyBBEditor.insert(json.message);
+			var id = 'message';
+			if(typeof clickableEditor != 'undefined')
+			{
+				id = clickableEditor.textarea;
+			}
+			if($(id).value)
+			{
+				$(id).value += "\n";
+			}
+			$(id).value += request.responseText;
+		}
+		$('multiquote_unloaded').hide();
+		document.input.quoted_ids.value = 'all';
+		if(this.spinner)
+		{
+			this.spinner.destroy();
+			this.spinner = '';
+		}
+	},
+
+	clearMultiQuoted: function()
+	{
+		$('multiquote_unloaded').hide();
+		Cookie.unset('multiquote');
+	},
+
+	removeAttachment: function(aid)
+	{
+		if(confirm(removeattach_confirm) == true)
+		{
+			document.input.attachmentaid.value = aid;
+			document.input.attachmentact.value = "remove";
 		}
 		else
 		{
-			if($('#' + id).value)
-			{
-				$('#' + id).value += "\n";
-			}
-			$('#' + id).val($('#' + id).val() + json.message);
+			document.input.attachmentaid.value = 0;
+			document.input.attachmentact.value = "";
+			return false;
 		}
-		
-		$('#multiquote_unloaded').hide();
-		document.input.quoted_ids.value = 'all';
-	},
-	
-	clearMultiQuoted: function()
-	{
-		$('#multiquote_unloaded').hide();
-		Cookie.unset('multiquote');
-	},
-	
-	removeAttachment: function(aid)
-	{
-		MyBB.prompt(removeattach_confirm, {
-			buttons:[
-					{title: yes_confirm, value: true},
-					{title: no_confirm, value: false}
-			],
-			submit: function(e,v,m,f){
-				if(v == true)
-				{
-					document.input.attachmentaid.value = aid;
-					document.input.attachmentact.value = "remove";
-					
-					var form = $('input[name^=\'rem\']').parents('form');
-
-					if(use_xmlhttprequest != 1)
-					{
-						form.append('<input type="submit" id="rem_submit" class="hidden" />');
-						$('#rem_submit').trigger('click');
-						return  false;
-					}
-
-					$.ajax({
-						type: 'POST',
-						url: form.attr('action') + '&ajax=1',
-						data: form.serialize(),
-						success: function(data) {
-							if(data.hasOwnProperty("errors"))
-							{
-								$.each(data.errors, function(i, message)
-								{
-									$.jGrowl(lang.post_fetch_error + ' ' + message, {theme:'jgrowl_error'});
-								});
-								return false;
-							}
-							else if (data.success)
-							{
-								if($('[id^=attachment_]').length == 1){ 
-									$('input[name="updateattachment"]').hide(); 
-								}
-
-								$('#attachment_'+aid).hide(500, function()
-								{
-									var instance = MyBBEditor;
-									if(typeof MyBBEditor === 'undefined') {
-										instance = $('#message').sceditor('instance');
-									}
-
-									if(instance.sourceMode())
-									{
-										instance.setSourceEditorValue(instance.getSourceEditorValue(false).split('[attachment=' + aid + ']').join(''));
-									} else {
-										instance.setWysiwygEditorValue(instance.getWysiwygEditorValue(false).split('[attachment=' + aid + ']').join(''));
-									}
-
-									$(this).remove();
-								});
-							}
-							document.input.attachmentaid.value = '';
-							document.input.attachmentact.value = '';
-						}
-					});
-				}
-			}
-		});
-		
-		return false;
 	},
 
 	attachmentAction: function(aid,action)
 	{
 		document.input.attachmentaid.value = aid;
 		document.input.attachmentact.value = action;
-	},
-
-	initAttachments: function()
-	{
-		$('form').on('submit', Post.checkAttachments);
-	},
-
-	checkAttachments: function()
-	{
-		var files = $("input[type='file']");
-		var file = files.get(0);
-		if (!file)
-		{
-			return true;
-		}
-
-		if (file.files.length > php_max_file_uploads && php_max_file_uploads != 0)
-		{
-			alert(lang.attachment_too_many_files.replace('{1}', php_max_file_uploads));
-			file.value="";
-			return false;
-		}
-
-		var totalSize = 0;
-		files.each(function()
-		{
-			for (var i = 0; i < this.files.length; i++)
-			{
-				totalSize += this.files[i].size;
-			}
-		});
-
-		if (totalSize > php_max_upload_size && php_max_upload_size > 0)
-		{
-			var php_max_upload_size_pretty = Math.round(php_max_upload_size / 1e4) / 1e2;
-			alert(lang.attachment_too_big_upload.replace('{1}', php_max_upload_size_pretty));
-			file.value="";
-			return false;
-		}
-
-		return true;
 	}
 };
-
-Post.init();
+Event.observe(document, 'dom:loaded', Post.init);

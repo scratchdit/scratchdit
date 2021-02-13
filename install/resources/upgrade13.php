@@ -1,11 +1,12 @@
 <?php
 /**
- * MyBB 1.8
- * Copyright 2014 MyBB Group, All Rights Reserved
+ * MyBB 1.6
+ * Copyright 2010 MyBB Group, All Rights Reserved
  *
- * Website: //www.mybb.com
- * License: //www.mybb.com/about/license
+ * Website: http://www.mybboard.com
+ * License: http://mybb.com/about/license
  *
+ * $Id$
  */
 
 /**
@@ -35,20 +36,20 @@ function upgrade13_dbchanges()
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."adminsessions ADD INDEX ( `uid` )");
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."adminsessions ADD INDEX ( `dateline` )");
 	}
-
+	
 	if($db->type != "sqlite")
 	{
 		if($db->index_exists("users", "username"))
 		{
 			$db->write_query("ALTER TABLE ".TABLE_PREFIX."users DROP KEY username");
 		}
-
-		$query = $db->simple_select("users", "username, uid", "1=1 GROUP BY uid, username HAVING count(*) > 1");
+		
+		$query = $db->simple_select("users", "username, uid", "1=1 GROUP BY username HAVING count(*) > 1");
 		while($user = $db->fetch_array($query))
 		{
 			$db->update_query("users", array('username' => $user['username']."_dup".$user['uid']), "uid='{$user['uid']}'", 1);
 		}
-
+		
 		if($db->type == "pgsql")
 		{
 			$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD UNIQUE(username)");
@@ -58,19 +59,19 @@ function upgrade13_dbchanges()
 			$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD UNIQUE KEY username (username)");
 		}
 	}
-
+	
 	if($db->type == "pgsql")
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."users CHANGE longregip longregip int NOT NULL default '0'");
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."users CHANGE longlastip longlastip int NOT NULL default '0'");
-
+	
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."posts CHANGE longipaddress longipaddress int NOT NULL default '0'");
 	}
 	else
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."users CHANGE longregip longregip int(11) NOT NULL default '0'");
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."users CHANGE longlastip longlastip int(11) NOT NULL default '0'");
-
+	
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."posts CHANGE longipaddress longipaddress int(11) NOT NULL default '0'");
 	}
 
@@ -82,7 +83,7 @@ function upgrade13_dbchanges()
 function upgrade13_dbchanges1()
 {
 	global $db, $output;
-
+	
 	$output->print_header("Post IP Repair Conversion");
 
 	if(!$_POST['ipspage'])
@@ -91,12 +92,12 @@ function upgrade13_dbchanges1()
 	}
 	else
 	{
-		$ipp = (int)$_POST['ipspage'];
+		$ipp = $_POST['ipspage'];
 	}
 
 	if($_POST['ipstart'])
 	{
-		$startat = (int)$_POST['ipstart'];
+		$startat = $_POST['ipstart'];
 		$upper = $startat+$ipp;
 		$lower = $startat;
 	}
@@ -109,7 +110,7 @@ function upgrade13_dbchanges1()
 
 	$query = $db->simple_select("posts", "COUNT(pid) AS ipcount");
 	$cnt = $db->fetch_array($query);
-
+	
 	if($upper > $cnt['ipcount'])
 	{
 		$upper = $cnt['ipcount'];
@@ -117,9 +118,9 @@ function upgrade13_dbchanges1()
 
 	echo "<p>Repairing ip {$lower} to {$upper} ({$cnt['ipcount']} Total)</p>";
 	flush();
-
+	
 	$ipaddress = false;
-
+	
 	$query = $db->simple_select("posts", "ipaddress, longipaddress, pid", "", array('limit_start' => $lower, 'limit' => $ipp));
 	while($post = $db->fetch_array($query))
 	{
@@ -130,7 +131,7 @@ function upgrade13_dbchanges1()
 		}
 		$ipaddress = true;
 	}
-
+	
 	$remaining = $upper-$cnt['ipcount'];
 	if($remaining && $ipaddress)
 	{
@@ -146,7 +147,7 @@ function upgrade13_dbchanges1()
 	$output->print_contents($contents);
 
 	global $footer_extra;
-	$footer_extra = "<script type=\"text/javascript\">$(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
+	$footer_extra = "<script type=\"text/javascript\">window.onload = function() { var button = $$('.submit_button'); if(button[0]) { button[0].value = 'Automatically Redirecting...'; button[0].disabled = true; button[0].style.color = '#aaa'; button[0].style.borderColor = '#aaa'; document.forms[0].submit(); }}</script>";
 
 	$output->print_footer($nextact);
 }
@@ -154,7 +155,7 @@ function upgrade13_dbchanges1()
 function upgrade13_dbchanges2()
 {
 	global $db, $output;
-
+	
 	$output->print_header("User IP Repair Conversion");
 
 	if(!$_POST['ipspage'])
@@ -163,12 +164,12 @@ function upgrade13_dbchanges2()
 	}
 	else
 	{
-		$ipp = (int)$_POST['ipspage'];
+		$ipp = $_POST['ipspage'];
 	}
 
 	if($_POST['ipstart'])
 	{
-		$startat = (int)$_POST['ipstart'];
+		$startat = $_POST['ipstart'];
 		$upper = $startat+$ipp;
 		$lower = $startat;
 	}
@@ -181,36 +182,36 @@ function upgrade13_dbchanges2()
 
 	$query = $db->simple_select("users", "COUNT(uid) AS ipcount");
 	$cnt = $db->fetch_array($query);
-
+	
 	if($upper > $cnt['ipcount'])
 	{
 		$upper = $cnt['ipcount'];
 	}
 
 	$contents .= "<p>Repairing ip {$lower} to {$upper} ({$cnt['ipcount']} Total)</p>";
-
+	
 	$ipaddress = false;
 	$update_array = array();
-
+	
 	$query = $db->simple_select("users", "regip, lastip, longlastip, longregip, uid", "", array('limit_start' => $lower, 'limit' => $ipp));
 	while($user = $db->fetch_array($query))
 	{
 		// Have we already converted this ip?
 		if(my_ip2long($user['regip']) < 0)
 		{
-			$update_array['longregip'] = (int)my_ip2long($user['regip']);
+			$update_array['longregip'] = intval(my_ip2long($user['regip']));
 		}
-
+		
 		if(my_ip2long($user['lastip']) < 0)
 		{
-			$update_array['longlastip'] = (int)my_ip2long($user['lastip']);
+			$update_array['longlastip'] = intval(my_ip2long($user['lastip']));
 		}
-
+		
 		if(!empty($update_array))
 		{
 			$db->update_query("users", $update_array, "uid = '{$user['uid']}'");
 		}
-
+		
 		$update_array = array();
 		$ipaddress = true;
 	}
@@ -230,8 +231,9 @@ function upgrade13_dbchanges2()
 	$output->print_contents($contents);
 
 	global $footer_extra;
-	$footer_extra = "<script type=\"text/javascript\">$(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
+	$footer_extra = "<script type=\"text/javascript\">window.onload = function() { var button = $$('.submit_button'); if(button[0]) { button[0].value = 'Automatically Redirecting...'; button[0].disabled = true; button[0].style.color = '#aaa'; button[0].style.borderColor = '#aaa'; document.forms[0].submit(); }}</script>";
 
-	$output->print_footer($nextact);
+	$output->print_footer($nextact);	
 }
 
+?>

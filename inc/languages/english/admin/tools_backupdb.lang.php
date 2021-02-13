@@ -1,8 +1,9 @@
 <?php
 /**
- * MyBB 1.8 English Language Pack
- * Copyright 2014 MyBB Group, All Rights Reserved
- *
+ * MyBB 1.6 English Language Pack
+ * Copyright 2010 MyBB Group, All Rights Reserved
+ * 
+ * $Id$
  */
 
 
@@ -56,3 +57,4 @@ $l['confirm_backup_deletion'] = "Are you sure you wish to delete this backup?";
 $l['success_backup_deleted'] = "The backup has been deleted successfully.";
 $l['success_backup_created'] = "The backup has been created successfully.";
 
+?>

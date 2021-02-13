@@ -1,8 +1,9 @@
 <?php
 /**
- * MyBB 1.8 English Language Pack
- * Copyright 2014 MyBB Group, All Rights Reserved
- *
+ * MyBB 1.6 English Language Pack
+ * Copyright 2010 MyBB Group, All Rights Reserved
+ * 
+ * $Id$
  */
 
 $l['nav_announcements'] = "Forum Announcement";
@@ -14,3 +15,4 @@ $l['announcement_edit'] = "Edit this announcement";
 $l['announcement_qdelete'] = "Delete this announcement";
 $l['announcement_quickdelete_confirm'] = "Are you sure you want to delete this announcement?";
 
+?>

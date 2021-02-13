@@ -1,8 +1,9 @@
 <?php
 /**
- * MyBB 1.8 English Language Pack
- * Copyright 2014 MyBB Group, All Rights Reserved
- *
+ * MyBB 1.6 English Language Pack
+ * Copyright 2010 MyBB Group, All Rights Reserved
+ * 
+ * $Id$
  */
 
 $l['custom_mycode'] = "Custom MyCode";
@@ -30,6 +31,7 @@ $l['no_mycode'] = "No custom MyCodes exist at this time.";
 $l['save_mycode'] = "Save MyCode";
 $l['add_mycode'] = "Add MyCode";
 $l['changes_not_saved'] = "Your changes have not yet been saved.";
+$l['deactivated'] = "Deactivated";
 
 $l['sandbox'] = "Sandbox";
 $l['sandbox_desc'] = "You can use this area to test the regular expression and replacement above before saving your changes.";
@@ -43,7 +45,6 @@ $l['test'] = "Test MyCode";
 
 $l['error_missing_title'] = "You did not enter a title.";
 $l['error_missing_regex'] = "You did not enter a regular expression.";
-$l['error_regex_already_available'] = "You entered a regular expression which is already defined in another MyCode. Please provide a different regular expression for this MyCode.";
 $l['error_missing_replacement'] = "You did not enter a replacement.";
 $l['error_invalid_mycode'] = "The specified MyCode does not exist.";
 
@@ -55,5 +56,5 @@ $l['success_activated_mycode'] = "The selected MyCode has been activated success
 
 $l['confirm_mycode_deletion'] = "Are you sure you wish to delete this MyCode?";
 
-$l['mycode_sandbox_test_error'] = 'There was an error fetching the test results.';
 
+?>

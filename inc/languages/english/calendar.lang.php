@@ -1,8 +1,9 @@
 <?php
 /**
- * MyBB 1.8 English Language Pack
- * Copyright 2014 MyBB Group, All Rights Reserved
+ * MyBB 1.6 English Language Pack
+ * Copyright 2010 MyBB Group, All Rights Reserved
  *
+ * $Id$
  */
 
 $l['nav_calendar'] = "Calendar";
@@ -33,7 +34,7 @@ $l['add_public_event'] = "Add Public Event";
 
 $l['calendar'] = "Calendar";
 
-$l['jump_month'] = "Jump to month:";
+$l['jump_month'] ="Jump to month:";
 
 $l['birthdays_on_day'] = "Birthdays on {1}";
 $l['birthdayhidden'] = "Hidden";
@@ -90,7 +91,6 @@ $l['delete_q'] = "Delete?";
 $l['delete_1'] = "To delete this event, check the checkbox to the left and then click the button to the right.";
 $l['delete_2'] = "<b>Note:</b> This process cannot be undone.";
 $l['delete_now'] = "Delete Now";
-$l['delete_no_checkbox'] = "The event was not deleted because you didn't check the \"Delete\" checkbox.";
 $l['jump_to_calendar'] = "Jump to calendar:";
 $l['select_calendar'] = "Calendar:";
 $l['type_single'] = "Single day event";
@@ -141,4 +141,4 @@ $l['redirect_eventadded'] = "Your event has been added successfully.<br />You wi
 $l['redirect_eventadded_moderation'] = "Your event has been added successfully but requires moderation by a forum moderator before it is visible.<br />You will now be taken back to the calendar.";
 $l['redirect_eventunapproved'] = "The event has been unapproved successfully.<br />You will now be taken to it.";
 $l['redirect_eventapproved'] = "The event has been approved successfully.<br />You will now be taken to it.";
-$l['redirect_eventmoved'] = "The event has been moved successfully.<br />You will now be taken to it.";
+?>

@@ -1,11 +1,12 @@
 <?php
 /**
- * MyBB 1.8
- * Copyright 2014 MyBB Group, All Rights Reserved
+ * MyBB 1.6
+ * Copyright 2010 MyBB Group, All Rights Reserved
  *
- * Website: //www.mybb.com
- * License: //www.mybb.com/about/license
+ * Website: http://mybb.com
+ * License: http://mybb.com/about/license
  *
+ * $Id$
  */
 
 /**
@@ -60,11 +61,11 @@ class DataHandler
 	/**
 	 * Constructor for the data handler.
 	 *
-	 * @param string $method The method we're performing with this object.
+	 * @param string The method we're performing with this object.
 	 */
 	function __construct($method="insert")
 	{
-		if($method != "update" && $method != "insert" && $method != "get" && $method != "delete")
+		if($method != "update" && $method != "insert")
 		{
 			die("A valid method was not supplied to the data handler.");
 		}
@@ -74,8 +75,7 @@ class DataHandler
 	/**
 	 * Sets the data to be used for the data handler
 	 *
-	 * @param array $data The data.
-	 * @return bool
+	 * @param array The data.
 	 */
 	function set_data($data)
 	{
@@ -90,8 +90,7 @@ class DataHandler
 	/**
 	 * Add an error to the error array.
 	 *
-	 * @param string $error The error name.
-	 * @param string $data
+	 * @param string The error name.
 	 */
 	function set_error($error, $data='')
 	{
@@ -104,7 +103,7 @@ class DataHandler
 	/**
 	 * Returns the error(s) that occurred when handling data.
 	 *
-	 * @return array An array of errors.
+	 * @return string|array An array of errors.
 	 */
 	function get_errors()
 	{
@@ -115,7 +114,7 @@ class DataHandler
 	 * Returns the error(s) that occurred when handling data
 	 * in a format that MyBB can handle.
 	 *
-	 * @return array An array of errors in a MyBB format.
+	 * @return An array of errors in a MyBB format.
 	 */
 	function get_friendly_errors()
 	{
@@ -127,7 +126,6 @@ class DataHandler
 			$lang->load($this->language_file, true);
 		}
 		// Prefix all the error codes with the language prefix.
-		$errors = array();
 		foreach($this->errors as $error)
 		{
 			$lang_string = $this->language_prefix.'_'.$error['error_code'];
@@ -136,7 +134,7 @@ class DataHandler
 				$errors[] = $error['error_code'];
 				continue;
 			}
-
+			
 			if(!empty($error['data']) && !is_array($error['data']))
 			{
 				$error['data'] = array($error['data']);
@@ -181,19 +179,19 @@ class DataHandler
 			return false;
 		}
 	}
-
+	
 	/**
 	* Verifies if yes/no options haven't been modified.
 	*
-	* @param array $options The user options array.
-	* @param string $option The specific option to check.
-	* @param int|bool $default Optionally specify if the default should be used.
+	* @param array The user options array.
+	* @param string The specific option to check.
+	* @param string Optionally specify if the default should be used.
 	*/
 	function verify_yesno_option(&$options, $option, $default=1)
 	{
 		if($this->method == "insert" || array_key_exists($option, $options))
 		{
-			if(isset($options[$option]) && $options[$option] != $default && $options[$option] != "")
+			if($options[$option] != $default && $options[$option] != "")
 			{
 				if($default == 1)
 				{
@@ -215,3 +213,4 @@ class DataHandler
 		}
 	}
 }
+?>

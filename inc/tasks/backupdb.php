@@ -1,30 +1,31 @@
 <?php
 /**
- * MyBB 1.8
- * Copyright 2014 MyBB Group, All Rights Reserved
+ * MyBB 1.6
+ * Copyright 2010 MyBB Group, All Rights Reserved
  *
- * Website: //www.mybb.com
- * License: //www.mybb.com/about/license
+ * Website: http://mybb.com
+ * License: http://mybb.com/about/license
  *
+ * $Id$
  */
 
 function task_backupdb($task)
 {
-	global $db, $config, $lang, $plugins;
+	global $db, $config, $lang;
 	static $contents;
 
 	@set_time_limit(0);
-
+	
 	if(!defined('MYBB_ADMIN_DIR'))
 	{
 		if(!isset($config['admin_dir']))
 		{
 			$config['admin_dir'] = "admin";
 		}
-
+	
 		define('MYBB_ADMIN_DIR', MYBB_ROOT.$config['admin_dir'].'/');
 	}
-
+	
 	// Check if folder is writable, before allowing submission
 	if(!is_writable(MYBB_ADMIN_DIR."/backups"))
 	{
@@ -33,32 +34,23 @@ function task_backupdb($task)
 	else
 	{
 		$db->set_table_prefix('');
-
-		$file = MYBB_ADMIN_DIR.'backups/backup_'.date("_Ymd_His_").random_str(16);
-
+		
+		$file = MYBB_ADMIN_DIR.'backups/backup_'.substr(md5($mybb->user['uid'].TIME_NOW), 0, 10).random_str(54);
+		
 		if(function_exists('gzopen'))
 		{
-			$fp = gzopen($file.'.incomplete.sql.gz', 'w9');
+			$fp = gzopen($file.'.sql.gz', 'w9');
 		}
 		else
 		{
-			$fp = fopen($file.'.incomplete.sql', 'w');
+			$fp = fopen($file.'.sql', 'w');
 		}
-
+		
 		$tables = $db->list_tables($config['database']['database'], $config['database']['table_prefix']);
-
+	
 		$time = date('dS F Y \a\t H:i', TIME_NOW);
-		$contents = "-- MyBB Database Backup\n-- Generated: {$time}\n-- -------------------------------------\n\n";
-
-		if(is_object($plugins))
-		{
-			$args = array(
-				'task' =>  &$task,
-				'tables' =>  &$tables,
-			);
-			$plugins->run_hooks('task_backupdb', $args);
-		}
-
+		$header = "-- MyBB Database Backup\n-- Generated: {$time}\n-- -------------------------------------\n\n";
+		$contents = $header;
 		foreach($tables as $table)
 		{
 			$field_list = array();
@@ -67,22 +59,14 @@ function task_backupdb($task)
 			{
 				$field_list[] = $field['Field'];
 			}
-
+			
 			$fields = "`".implode("`,`", $field_list)."`";
-
+	
 			$structure = $db->show_create_table($table).";\n";
 			$contents .= $structure;
 			clear_overflow($fp, $contents);
-
-			if($db->engine == 'mysqli')
-			{
-				$query = mysqli_query($db->read_link, "SELECT * FROM {$db->table_prefix}{$table}", MYSQLI_USE_RESULT);
-			}
-			else
-			{
-				$query = $db->simple_select($table);
-			}
-
+			
+			$query = $db->simple_select($table);
 			while($row = $db->fetch_array($query))
 			{
 				$insert = "INSERT INTO {$table} ($fields) VALUES (";
@@ -92,10 +76,6 @@ function task_backupdb($task)
 					if(!isset($row[$field]) || is_null($row[$field]))
 					{
 						$insert .= $comma."NULL";
-					}
-					else if($db->engine == 'mysqli')
-					{
-						$insert .= $comma."'".mysqli_real_escape_string($db->read_link, $row[$field])."'";
 					}
 					else
 					{
@@ -107,41 +87,39 @@ function task_backupdb($task)
 				$contents .= $insert;
 				clear_overflow($fp, $contents);
 			}
-			$db->free_result($query);
 		}
-
+		
 		$db->set_table_prefix(TABLE_PREFIX);
-
+		
 		if(function_exists('gzopen'))
 		{
 			gzwrite($fp, $contents);
 			gzclose($fp);
-			rename($file.'.incomplete.sql.gz', $file.'.sql.gz');
 		}
 		else
 		{
 			fwrite($fp, $contents);
 			fclose($fp);
-			rename($file.'.incomplete.sql', $file.'.sql');
 		}
-
+		
 		add_task_log($task, $lang->task_backup_ran);
 	}
 }
 
 // Allows us to refresh cache to prevent over flowing
-function clear_overflow($fp, &$contents)
+function clear_overflow($fp, &$contents) 
 {
 	global $mybb;
-
-	if(function_exists('gzopen'))
+	
+	if(function_exists('gzopen')) 
 	{
 		gzwrite($fp, $contents);
-	}
-	else
+	} 
+	else 
 	{
 		fwrite($fp, $contents);
 	}
-
-	$contents = '';
+		
+	$contents = '';	
 }
+?>

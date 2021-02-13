@@ -1,11 +1,12 @@
 <?php
 /**
- * MyBB 1.8
- * Copyright 2014 MyBB Group, All Rights Reserved
+ * MyBB 1.6
+ * Copyright 2010 MyBB Group, All Rights Reserved
  *
- * Website: //www.mybb.com
- * License: //www.mybb.com/about/license
+ * Website: http://mybb.com
+ * License: http://mybb.com/about/license
  *
+ * $Id$
  */
 
 /**
@@ -26,33 +27,33 @@ function upgrade1_dbchanges()
 	$output->print_header("Database Changes since Release Candidate 2");
 
 	$contents .= "<p>Making necessary database modifications...";
-
+	
 	if($db->field_exists('regip', "users"))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."users DROP regid;");
 	}
 	$db->write_query("ALTER TABLE users ADD regip varchar(50) NOT NULL;");
-
+	
 	$db->write_query("ALTER TABLE banned CHANGE lifted lifted varchar(40) NOT NULL;");
-
+		
 	if($db->field_exists('posthash', "attachments"))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."attachments DROP posthash;");
 	}
 	$db->write_query("ALTER TABLE attachments ADD posthash varchar(50) NOT NULL AFTER pid;");
-
+	
 	if($db->field_exists('thumbnail', "attachments"))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."attachments DROP thumbnail;");
 	}
 	$db->write_query("ALTER TABLE attachments ADD thumbnail blob NOT NULL");
-
+	
 	if($db->field_exists('thumbnailsm', "attachments"))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."attachments DROP thumbnailsm;");
 	}
 	$db->write_query("ALTER TABLE attachments ADD thumbnailsm char(3) NOT NULL;");
-
+	
 	$db->write_query("DELETE FROM attachtypes");
 	$db->write_query("INSERT INTO attachtypes VALUES(NULL,'Compressed Archive','','zip gz tar rar ace cab','1024');");
 	$db->write_query("INSERT INTO attachtypes VALUES(NULL,'JPEG Image','','jpg jpe jpeg','500');");
@@ -88,7 +89,7 @@ function upgrade1_dbchanges()
 	{
 		$db->write_query("ALTER TABLE themes DROP largeend;");
 	}
-
+	
 	if($db->field_exists('smallfont', "themes"))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."themes DROP smallfont;");
@@ -100,91 +101,91 @@ function upgrade1_dbchanges()
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."themes DROP smallfontsize;");
 	}
 	$db->write_query("ALTER TABLE themes ADD smallfontsize varchar(20) NOT NULL;");
-
+	
 	if($db->field_exists('normalfont', "themes"))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."themes DROP normalfont;");
 	}
 	$db->write_query("ALTER TABLE themes ADD normalfont varchar(150) NOT NULL;");
-
+	
 	if($db->field_exists('normalfontsize', "themes"))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."themes DROP normalfontsize;");
 	}
 	$db->write_query("ALTER TABLE themes ADD normalfontsize varchar(20) NOT NULL;");
-
+	
 	if($db->field_exists('largefont', "themes"))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."themes DROP largefont;");
 	}
 	$db->write_query("ALTER TABLE themes ADD largefont varchar(150) NOT NULL;");
-
+	
 	if($db->field_exists('largefontsize', "themes"))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."themes DROP largefontsize;");
 	}
 	$db->write_query("ALTER TABLE themes ADD largefontsize varchar(20) NOT NULL;");
-
+	
 	if($db->field_exists('menubgcolor', "themes"))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."themes DROP menubgcolor;");
 	}
 	$db->write_query("ALTER TABLE themes ADD menubgcolor varchar(15) NOT NULL;");
-
+	
 	if($db->field_exists('menubgimage', "themes"))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."themes DROP menubgimage;");
 	}
 	$db->write_query("ALTER TABLE themes ADD menubgimage varchar(100) NOT NULL;");
-
+	
 	if($db->field_exists('menucolor', "themes"))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."themes DROP menucolor;");
 	}
 	$db->write_query("ALTER TABLE themes ADD menucolor varchar(15) NOT NULL;");
-
+	
 	if($db->field_exists('menuhoverbgcolor', "themes"))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."themes DROP menuhoverbgcolor;");
 	}
 	$db->write_query("ALTER TABLE themes ADD menuhoverbgcolor varchar(15) NOT NULL;");
-
+	
 	if($db->field_exists('menuhoverbgimage', "themes"))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."themes DROP menuhoverbgimage;");
 	}
 	$db->write_query("ALTER TABLE themes ADD menuhoverbgimage varchar(100) NOT NULL;");
-
+	
 	if($db->field_exists('menuhovercolor', "themes"))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."themes DROP menuhovercolor;");
 	}
 	$db->write_query("ALTER TABLE themes ADD menuhovercolor varchar(15) NOT NULL;");
-
+	
 	if($db->field_exists('panelbgcolor', "themes"))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."themes DROP panelbgcolor;");
 	}
 	$db->write_query("ALTER TABLE themes ADD panelbgcolor varchar(15) NOT NULL;");
-
+	
 	if($db->field_exists('panelbgimage', "themes"))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."themes DROP panelbgimage;");
 	}
 	$db->write_query("ALTER TABLE themes ADD panelbgimage varchar(100) NOT NULL;");
-
+	
 	if($db->field_exists('linkhover', "themes"))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."themes DROP linkhover;");
 	}
 	$db->write_query("ALTER TABLE themes ADD linkhover varchar(15) NOT NULL AFTER link;");
-
+	
 	if($db->field_exists('extracss', "themes"))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."themes DROP extracss;");
 	}
 	$db->write_query("ALTER TABLE themes ADD extracss varchar(10) NOT NULL AFTER linkhover;");
-
+	
 
 	$db->write_query("UPDATE themes SET linkhover='#000000'");
 
@@ -248,6 +249,7 @@ function upgrade1_dbchanges2()
 		}
 	}
 
+
 	// add the theme set
 	$tquery1 = "";
 	$tquery2 = "";
@@ -299,9 +301,9 @@ function upgrade1_dbchanges3()
 	$db->write_query("INSERT INTO `settings` (`sid`, `name`, `title`, `description`, `optionscode`, `value`, `disporder`, `gid`) VALUES (1, 'boardclosed', 'Board Closed', 'If you need to close your forums to make some changes or perform an upgrade, this is the global switch. Viewers will not be able to view your forums, however, they will see a message with the reason you specify below.<br />\r\n<br />\r\n<b>Administrators will still be able to view the forums.</b>', 'yesno', 'no', 1, 26);");
 	$db->write_query("INSERT INTO `settings` (`sid`, `name`, `title`, `description`, `optionscode`, `value`, `disporder`, `gid`) VALUES (2, 'boardclosed_reason', 'Board Closed Reason', 'If your forum is closed, you can set a message here that your visitors will be able to see when they visit your forums.', 'textarea', 'These forums are currently closed for maintenance. Please check back later.', 2, 26);");
 	$db->write_query("INSERT INTO `settings` (`sid`, `name`, `title`, `description`, `optionscode`, `value`, `disporder`, `gid`) VALUES (3, 'bbname', 'Board Name', 'The name of your message boards. We recommend that it is not over 75 characters.', 'text', 'MyBB Community Forums', 1, 1);");
-	$db->write_query("INSERT INTO `settings` (`sid`, `name`, `title`, `description`, `optionscode`, `value`, `disporder`, `gid`) VALUES (4, 'bburl', 'Board URL', 'The url to your forums.<br />Include the //. Do NOT include a trailing slash.', 'text', '//www.mybb.com/community', 2, 1);");
+	$db->write_query("INSERT INTO `settings` (`sid`, `name`, `title`, `description`, `optionscode`, `value`, `disporder`, `gid`) VALUES (4, 'bburl', 'Board URL', 'The url to your forums.<br />Include the http://. Do NOT include a trailing slash.', 'text', 'http://mybb.com/community', 2, 1);");
 	$db->write_query("INSERT INTO `settings` (`sid`, `name`, `title`, `description`, `optionscode`, `value`, `disporder`, `gid`) VALUES (5, 'homename', 'Homepage Name', 'The name of your homepage. This will appear in the footer with a link to it.', 'text', 'MyBB', 3, 1);");
-	$db->write_query("INSERT INTO `settings` (`sid`, `name`, `title`, `description`, `optionscode`, `value`, `disporder`, `gid`) VALUES (6, 'homeurl', 'Homepage URL', 'The full URL of your homepage. This will be linked to in the footer along with its name.', 'text', '//www.mybb.com', 4, 1);");
+	$db->write_query("INSERT INTO `settings` (`sid`, `name`, `title`, `description`, `optionscode`, `value`, `disporder`, `gid`) VALUES (6, 'homeurl', 'Homepage URL', 'The full URL of your homepage. This will be linked to in the footer along with its name.', 'text', 'http://mybb.com', 4, 1);");
 	$db->write_query("INSERT INTO `settings` (`sid`, `name`, `title`, `description`, `optionscode`, `value`, `disporder`, `gid`) VALUES (7, 'reportviapms', 'Send Reported Posts via PMS', 'Do you want to send reported post messages via the private messaging function to moderators?', 'yesno', 'yes', 5, 8);");
 	$db->write_query("INSERT INTO `settings` (`sid`, `name`, `title`, `description`, `optionscode`, `value`, `disporder`, `gid`) VALUES (8, 'dateformat', 'Date Format', 'The format of the dates used on the forum. This format uses the PHP date() function. We recommend not changing this unless you know what you\'re doing.', 'text', 'm-d-Y', 1, 3);");
 	$db->write_query("INSERT INTO `settings` (`sid`, `name`, `title`, `description`, `optionscode`, `value`, `disporder`, `gid`) VALUES (9, 'adminemail', 'Admin Email', 'The administrator\'s email address. This will be used for outgoing emails sent via the forums.', 'text', 'contact@mybb.com', 1, 1);");
@@ -402,7 +404,8 @@ function upgrade1_dbchanges3()
 	$db->write_query("INSERT INTO `settings` (`sid`, `name`, `title`, `description`, `optionscode`, `value`, `disporder`, `gid`) VALUES (119, 'attachthumbnails', 'Show Attached Thumbnails in Posts', 'Do you want to show the generated thumbnails for attached images inside the posts?', 'yesno', 'yes', 11, 13);");
 	$db->write_query("INSERT INTO `settings` (`sid`, `name`, `title`, `description`, `optionscode`, `value`, `disporder`, `gid`) VALUES (120, 'polloptionlimit', 'Maximum Poll Option Length', 'The maximum length that each poll option can be. (Set to 0 to disable).', 'text', '250', 1, 13);");
 	$db->write_query("INSERT INTO `settings` (`sid`, `name`, `title`, `description`, `optionscode`, `value`, `disporder`, `gid`) VALUES (122, 'timezoneoffset', 'Default Timezone Offset', 'Here you can set the default timezone offset for guests and members using the default offset.', 'text', '+10', 5, 3);");
-
+	
 	$output->print_contents("$contents<p>Please click next to continue with the upgrade process.</p>");
 	$output->print_footer("1_done");
 }
+?>

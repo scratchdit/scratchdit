@@ -1,11 +1,12 @@
 <?php
 /**
- * MyBB 1.8
- * Copyright 2014 MyBB Group, All Rights Reserved
+ * MyBB 1.6
+ * Copyright 2010 MyBB Group, All Rights Reserved
  *
- * Website: //www.mybb.com
- * License: //www.mybb.com/about/license
+ * Website: http://mybb.com
+ * License: http://mybb.com/about/license
  *
+ * $Id$
  */
 
 // If archive mode does not work, uncomment the line below and try again
@@ -20,8 +21,6 @@ require_once MYBB_ROOT."inc/functions_archive.php";
 require_once MYBB_ROOT."inc/class_session.php";
 require_once MYBB_ROOT."inc/class_parser.php";
 $parser = new postParser;
-
-$shutdown_queries = $shutdown_functions = array();
 
 $groupscache = $cache->read("usergroups");
 if(!is_array($groupscache))
@@ -43,7 +42,7 @@ if(is_dir(MYBB_ROOT."install") && !file_exists(MYBB_ROOT."install/lock"))
 
 // If the server OS is not Windows and not Apache or the PHP is running as a CGI or we have defined ARCHIVE_QUERY_STRINGS, use query strings - DIRECTORY_SEPARATOR checks if running windows
 //if((DIRECTORY_SEPARATOR != '\\' && stripos($_SERVER['SERVER_SOFTWARE'], 'apache') == false) || stripos(SAPI_NAME, 'cgi') !== false || defined("ARCHIVE_QUERY_STRINGS"))
-// //dev.mybb.com/issues/1489 - remove automatic detection and rely on users to set the right option here
+// http://dev.mybb.com/issues/1489 - remove automatic detection and rely on users to set the right option here
 if($mybb->settings['seourls_archive'] == 1)
 {
 	if($_SERVER['REQUEST_URI'])
@@ -85,22 +84,8 @@ if($endpart != "index.php")
 	{
 		$action = $action2 = $todo[0];
 	}
-	if(!empty($todo[2]))
-	{
-		$page = (int)$todo[2];
-	}
-	else
-	{
-		$page = 1;
-	}
-	if(!empty($todo[1]))
-	{
-		$id = (int)$todo[1];
-	}
-	else
-	{
-		$id = 0;
-	}
+	$page = intval($todo[2]);
+	$id = intval($todo[1]);
 
 	// Get the thread, announcement or forum information.
 	if($action == "announcement")
@@ -145,19 +130,19 @@ if($endpart != "index.php")
 // Define the full MyBB version location of this page.
 if($action == "thread")
 {
-	define('MYBB_LOCATION', get_thread_link($id));
+	define(MYBB_LOCATION, get_thread_link($id));
 }
 elseif($action == "forum")
 {
-	define('MYBB_LOCATION', get_forum_link($id));
+	define(MYBB_LOCATION, get_forum_link($id));
 }
 elseif($action == "announcement")
 {
-	define('MYBB_LOCATION', get_announcement_link($id));
+	define(MYBB_LOCATION, get_announcement_link($id));
 }
 else
 {
-	define('MYBB_LOCATION', INDEX_URL);
+	define(MYBB_LOCATION, INDEX_URL);
 }
 
 // Initialise session
@@ -188,24 +173,10 @@ if(is_banned_ip($session->ipaddress))
 // If our board is closed..
 if($mybb->settings['boardclosed'] == 1)
 {
-	if($mybb->usergroup['canviewboardclosed'] != 1)
+	if($mybb->usergroup['cancp'] != 1)
 	{
-		if(!$mybb->settings['boardclosed_reason'])
-		{
-			$mybb->settings['boardclosed_reason'] = $lang->boardclosed_reason;
-		}
-
 		$lang->error_boardclosed .= "<blockquote>".$mybb->settings['boardclosed_reason']."</blockquote>";
 		archive_error($lang->error_boardclosed);
-	}
-}
-
-// Do we require users to login?
-if($mybb->settings['forcelogin'] == 1)
-{
-	if($mybb->user['uid'] == 0)
-	{
-		archive_error($lang->error_mustlogin);
 	}
 }
 
@@ -227,3 +198,4 @@ if($mybb->usergroup['canview'] == 0)
 {
 	archive_error_no_permission();
 }
+?>

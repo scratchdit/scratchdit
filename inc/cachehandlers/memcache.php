@@ -1,36 +1,33 @@
 <?php
 /**
- * MyBB 1.8
- * Copyright 2014 MyBB Group, All Rights Reserved
+ * MyBB 1.6
+ * Copyright 2010 MyBB Group, All Rights Reserved
  *
- * Website: //www.mybb.com
- * License: //www.mybb.com/about/license
+ * Website: http://mybb.com
+ * License: http://mybb.com/about/license
  *
+ * $Id$
  */
 
 /**
  * Memcache Cache Handler
  */
-class memcacheCacheHandler implements CacheHandlerInterface
+class memcacheCacheHandler
 {
 	/**
 	 * The memcache server resource
-	 *
-	 * @var Memcache
 	 */
 	public $memcache;
 
 	/**
 	 * Unique identifier representing this copy of MyBB
-	 *
-	 * @var string
 	 */
 	public $unique_id;
-
-	function __construct()
+	
+	function memcacheCacheHandler($silent=false)
 	{
 		global $mybb;
-
+		
 		if(!function_exists("memcache_connect"))
 		{
 			// Check if our DB engine is loaded
@@ -51,16 +48,16 @@ class memcacheCacheHandler implements CacheHandlerInterface
 	function connect()
 	{
 		global $mybb, $error_handler;
-
+		
 		$this->memcache = new Memcache;
-
+		
 		if($mybb->config['memcache']['host'])
 		{
 			$mybb->config['memcache'][0] = $mybb->config['memcache'];
 			unset($mybb->config['memcache']['host']);
 			unset($mybb->config['memcache']['port']);
 		}
-
+		
 		foreach($mybb->config['memcache'] as $memcache)
 		{
 			if(!$memcache['host'])
@@ -70,7 +67,7 @@ class memcacheCacheHandler implements CacheHandlerInterface
 				die;
 			}
 
-			if(!isset($memcache['port']))
+			if(!$memcache['port'])
 			{
 				$memcache['port'] = "11211";
 			}
@@ -90,14 +87,16 @@ class memcacheCacheHandler implements CacheHandlerInterface
 
 		return true;
 	}
-
+	
 	/**
 	 * Retrieve an item from the cache.
 	 *
-	 * @param string $name The name of the cache
+	 * @param string The name of the cache
+	 * @param boolean True if we should do a hard refresh
 	 * @return mixed Cache data if successful, false if failure
 	 */
-	function fetch($name)
+	
+	function fetch($name, $hard_refresh=false)
 	{
 		$data = $this->memcache->get($this->unique_id."_".$name);
 
@@ -110,30 +109,30 @@ class memcacheCacheHandler implements CacheHandlerInterface
 			return $data;
 		}
 	}
-
+	
 	/**
 	 * Write an item to the cache.
 	 *
-	 * @param string $name The name of the cache
-	 * @param mixed $contents The data to write to the cache item
+	 * @param string The name of the cache
+	 * @param mixed The data to write to the cache item
 	 * @return boolean True on success, false on failure
 	 */
 	function put($name, $contents)
 	{
-		return $this->memcache->set($this->unique_id."_".$name, $contents);
+		return $this->memcache->set($this->unique_id."_".$name, $contents, MEMCACHE_COMPRESSED);
 	}
-
+	
 	/**
 	 * Delete a cache
 	 *
-	 * @param string $name The name of the cache
+	 * @param string The name of the cache
 	 * @return boolean True on success, false on failure
 	 */
 	function delete($name)
 	{
 		return $this->memcache->delete($this->unique_id."_".$name);
 	}
-
+	
 	/**
 	 * Disconnect from the cache
 	 */
@@ -141,17 +140,13 @@ class memcacheCacheHandler implements CacheHandlerInterface
 	{
 		@$this->memcache->close();
 	}
-
-	/**
-	 * @param string $name
-	 *
-	 * @return string
-	 */
-	function size_of($name='')
+	
+	function size_of($name)
 	{
 		global $lang;
-
+		
 		return $lang->na;
 	}
 }
 
+?>

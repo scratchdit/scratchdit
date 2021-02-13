@@ -1,8 +1,9 @@
 <?php
 /**
- * MyBB 1.8 English Language Pack
- * Copyright 2014 MyBB Group, All Rights Reserved
- *
+ * MyBB 1.6 English Language Pack
+ * Copyright 2010 MyBB Group, All Rights Reserved
+ * 
+ * $Id$
  */
 
 
@@ -38,12 +39,10 @@ $l['in'] = "in";
 $l['order'] = "order";
 
 $l['success_pruned_admin_logs'] = "The administrator logs have been pruned successfully.";
-$l['note_logs_locked'] = "For security reasons, logs less than 24 hours old cannot be pruned.";
 
 $l['admin_log_config_attachment_types_add'] = "Added attachment extension #{1} ({2})";
 $l['admin_log_config_attachment_types_edit'] = "Edited attachment extension #{1} ({2})";
 $l['admin_log_config_attachment_types_delete'] = "Deleted attachment extension #{1} ({2})";
-$l['admin_log_config_attachment_types_toggle_status'] = "Toggled attachment status #{1} ({2})";
 
 $l['admin_log_config_badwords_add'] = "Added word filter #{1} ({2})";
 $l['admin_log_config_badwords_edit'] = "Edited word filter #{1} ({2})";
@@ -60,7 +59,7 @@ $l['admin_log_config_calendars_add'] = "Added calendar #{1} ({2})";
 $l['admin_log_config_calendars_permissions'] = "Modified permissions for calendar #{1} ({2})";
 $l['admin_log_config_calendars_edit'] = "Edited calendar #{1} ({2})";
 $l['admin_log_config_calendars_delete'] = "Deleted calendar #{1} ({2})";
-$l['admin_log_config_calendars_update_order'] = "Updated calendar display order";
+$l['admin_log_config_calendars_update_orders'] = "Updated calendar display order";
 
 $l['admin_log_config_help_documents_add_section'] = "Added help section #{1} ({2})";
 $l['admin_log_config_help_documents_add_document'] = "Added help document #{1} ({2})";
@@ -100,16 +99,6 @@ $l['admin_log_config_post_icons_delete'] = "Deleted post icon #{1} ({2})";
 $l['admin_log_config_profile_fields_add'] = "Added custom profile field #{1} ({2})";
 $l['admin_log_config_profile_fields_edit'] = "Edited custom profile field #{1} ({2})";
 $l['admin_log_config_profile_fields_delete'] = "Deleted custom profile field #{1} ({2})";
-
-$l['admin_log_config_questions_add'] = "Added question #{1} ({2})";
-$l['admin_log_config_questions_edit'] = "Edited question #{1} ({2})";
-$l['admin_log_config_questions_delete'] = "Deleted question #{1} ({2})";
-$l['admin_log_config_questions_enable'] = "Enabled question #{1} ({2})";
-$l['admin_log_config_questions_disable'] = "Disabled question #{1} ({2})";
-
-$l['admin_log_config_report_reasons_add'] = "Added report reason #{1} ({2})";
-$l['admin_log_config_report_reasons_edit'] = "Edited report reason #{1} ({2})";
-$l['admin_log_config_report_reasons_delete'] = "Deleted report reason #{1} ({2})";
 
 $l['admin_log_config_settings_delete_duplicates'] = "Deleted duplicate settings and setting groups";
 $l['admin_log_config_settings_addgroup'] = "Added setting group #{1} ({2}) properties ";
@@ -167,9 +156,6 @@ $l['admin_log_forum_moderation_queue_threads'] = "Moderated unapproved threads";
 $l['admin_log_forum_moderation_queue_posts'] = "Moderated unapproved posts";
 $l['admin_log_forum_moderation_queue_attachments'] = "Moderated unapproved attachments";
 
-$l['admin_log_home_preferences_enabled'] = "Enabled Two-Factor Authentication";
-$l['admin_log_home_preferences_disabled'] = "Disabled Two-Factor Authentication";
-
 $l['admin_log_style_templates_delete_set'] = "Deleted template set #{1} ({2})";
 $l['admin_log_style_templates_delete_template'] = "Deleted template #{1} ({2}) from template set #{3} ({4})";
 $l['admin_log_style_templates_delete_template_global'] = "Deleted template #{1} ({2}) from the global template set";
@@ -180,12 +166,8 @@ $l['admin_log_style_templates_edit_template'] = "Edited template #{1} ({2}) from
 $l['admin_log_style_templates_edit_template_global'] = "Edited template #{1} ({2}) from the global template set";
 $l['admin_log_style_templates_search_replace'] = "Searched templates for '{1}' and replaced with '{2}'";
 $l['admin_log_style_templates_revert'] = "Reverted template #{1} ({2}) in template set #{3} ({4})";
-$l['admin_log_style_templates_add_template_group'] = "Added template group #{1} ({2})";
-$l['admin_log_style_templates_edit_template_group'] = "Edited template group #{1} ({2})";
-$l['admin_log_style_templates_delete_template_group'] = "Deleted template group #{1} ({2})";
 
 $l['admin_log_style_themes_import'] = "Imported theme #{1}";
-$l['admin_log_style_themes_duplicate'] = "Duplicated theme #{2} to #{1}";
 $l['admin_log_style_themes_add'] = "Created theme #{2} ({1})";
 $l['admin_log_style_themes_edit_stylesheet'] = "Edited stylesheet {2} in {1}";
 $l['admin_log_style_themes_delete_stylesheet'] = "Deleted / Reverted stylesheet #{1} ({2}) in theme #{3} ({4})";
@@ -200,14 +182,14 @@ $l['admin_log_style_themes_export'] = "Exported theme #{1} ({2})";
 $l['admin_log_tools_system_health_utf8_conversion'] = "Converted table {1} to UTF-8 Character Set.";
 
 $l['admin_log_tools_adminlog_prune'] = "Pruned {4} administrator logs older than {1} days";
-$l['admin_log_tools_adminlog_prune_user'] = "Pruned {4} administrator logs older than {1} days for user #{2}";
+$l['admin_log_tools_adminlog_prune_user'] = "Pruned {4} administrator logs older than {1} days for user {2}";
 $l['admin_log_tools_adminlog_prune_module'] = "Pruned {4} administrator logs older than {1} days for module {3}";
-$l['admin_log_tools_adminlog_prune_user_module'] = "Pruned {4} administrator logs older than {1} days for user #{2} and module {3}";
+$l['admin_log_tools_adminlog_prune_user_module'] = "Pruned {4} administrator logs older than {1} days for user {2} and module {3}";
 
 $l['admin_log_tools_modlog_prune'] = "Pruned {4} moderator logs older than {1} days";
-$l['admin_log_tools_modlog_prune_user'] = "Pruned {4} moderator logs older than {1} days for user #{2}";
+$l['admin_log_tools_modlog_prune_user'] = "Pruned {4} moderator logs older than {1} days for user {2}";
 $l['admin_log_tools_modlog_prune_forum'] = "Pruned {4} moderator logs older than {1} days for forum #{3} ({5})";
-$l['admin_log_tools_modlog_prune_user_forum'] = "Pruned {4} moderator logs older than {1} days for user #{2} and forum #{3} ({5})";
+$l['admin_log_tools_modlog_prune_user_forum'] = "Pruned {4} moderator logs older than {1} days for user {2} and forum #{5} ({4})";
 
 $l['admin_log_tools_backupdb_dlbackup'] = "Downloaded an existing backup: {1}";
 $l['admin_log_tools_backupdb_delete'] = "Deleted a backup: {1}";
@@ -215,14 +197,10 @@ $l['admin_log_tools_backupdb_backup'] = "Created a backup: {2}";
 $l['admin_log_tools_backupdb_backup_download'] = "Downloaded a backup of the current database";
 
 $l['admin_log_tools_cache_rebuild'] = "Rebuilt cache ({1})";
-$l['admin_log_tools_cache_reload'] = "Reload cache ({1})";
-$l['admin_log_tools_cache_rebuild_all'] = "Rebuilt & reloaded all caches";
 
 $l['admin_log_tools_index_utf8_conversion'] = "Converted table {1} to UTF-8";
 
 $l['admin_log_tools_mailerrors_prune'] = "Pruned {1} email error logs";
-
-$l['admin_log_tools_maillogs_prune'] = "Pruned {1} email logs";
 
 $l['admin_log_tools_optimizedb_'] = "Optimized database tables: {1}";
 
@@ -232,20 +210,8 @@ $l['admin_log_tools_recount_rebuild_'] = "Recounted and rebuilt ({1})";
 $l['admin_log_tools_recount_rebuild_stats'] = "Recounted and rebuilt statistics";
 $l['admin_log_tools_recount_rebuild_forum'] = "Recounted and rebuilt forum counters";
 $l['admin_log_tools_recount_rebuild_thread'] = "Recounted and rebuilt thread counters";
-$l['admin_log_tools_recount_rebuild_poll'] = "Recounted and rebuilt poll votes";
 $l['admin_log_tools_recount_rebuild_userposts'] = "Recounted and rebuilt user post counts";
-$l['admin_log_tools_recount_rebuild_userthreads'] = "Recounted and rebuilt user thread counts";
-$l['admin_log_tools_recount_rebuild_attachmentthumbs'] = "Recounted and rebuilt attachment thumbnails";
-$l['admin_log_tools_recount_rebuild_reputation'] = "Recounted and rebuilt user reputation";
-$l['admin_log_tools_recount_rebuild_warning'] = "Recounted and rebuilt warning points";
-$l['admin_log_tools_recount_rebuild_privatemessages'] = "Recounted and rebuilt private messages";
-$l['admin_log_tools_recount_rebuild_referral'] = "Recounted and rebuilt user referral count";
-$l['admin_log_tools_recount_rebuild_threadrating'] = "Recounted and rebuilt thread ratings";
-
-$l['admin_log_tools_spamlog_prune'] = "Pruned {4} spam logs older than {1} days";
-$l['admin_log_tools_spamlog_prune_user'] = "Pruned {4} spam logs older than {1} days with username {2}";
-$l['admin_log_tools_spamlog_prune_email'] = "Pruned {4} spam logs older than {1} days with email {3}";
-$l['admin_log_tools_spamlog_prune_user_email'] = "Pruned {4} spam logs older than {1} days with username {2} and email {3}";
+$l['admin_log_tools_recount_rebuild_attachmentthumbs'] = "Recounted and rebuilt attachment thumbnails"; 
 
 $l['admin_log_tools_tasks_add'] = "Added task #{1} ({2})";
 $l['admin_log_tools_tasks_edit'] = "Edited task #{1} ({2})";
@@ -254,11 +220,7 @@ $l['admin_log_tools_tasks_enable'] = "Enabled task #{1} ({2})";
 $l['admin_log_tools_tasks_disable'] = "Disabled task #{1} ({2})";
 $l['admin_log_tools_tasks_run'] = "Executed task #{1} ({2})";
 
-$l['admin_log_user_awaiting_activation_activate_activated'] = "Activated {2} user account(s)";
-$l['admin_log_user_awaiting_activation_activate_deleted'] = "Deleted {2} user account(s)";
-
-$l['admin_log_user_admin_permissions_delete_user'] = "Deleted administrator permissions for user #{1} ({2})";
-$l['admin_log_user_admin_permissions_delete_group'] = "Deleted group administrator permissions for usergroup #{1} ({2})";
+$l['admin_log_user_admin_permissions_delete'] = "Deleted administrator permissions for user #{1} ({2})";
 $l['admin_log_user_admin_permissions_edit_user'] = "Edited administrator permissions for user #{1} ({2})";
 $l['admin_log_user_admin_permissions_edit_group'] = "Edited group administrator permissions for usergroup #{1} ({2})";
 $l['admin_log_user_admin_permissions_edit'] = "Edited default administrator permissions";
@@ -275,6 +237,7 @@ $l['admin_log_user_group_promotions_enable'] = "Enabled group promotion #{1} ({2
 $l['admin_log_user_group_promotions_edit'] = "Edited group promotion #{1} ({2})";
 $l['admin_log_user_group_promotions_add'] = "Added group promotion #{1} ({2})";
 
+$l['admin_log_user_groups_export'] = "Exported usergroups to XML";
 $l['admin_log_user_groups_add_leader'] = "Added user #{1} ({2}) as a leader for usergroup #{3} ({4})";
 $l['admin_log_user_groups_delete_leader'] = "Removed user #{1} ({2}) as a leader for usergroup #{3} ({4})";
 $l['admin_log_user_groups_edit_leader'] = "Edited user #{1} ({2}) as a leader for usergroup #{3} ({4})";
@@ -282,8 +245,8 @@ $l['admin_log_user_groups_add'] = "Added usergroup #{1} ({2})";
 $l['admin_log_user_groups_edit'] = "Edited usergroup #{1} ({2})";
 $l['admin_log_user_groups_delete'] = "Deleted usergroup #{1} ({2})";
 $l['admin_log_user_groups_disporder'] = "Updated usergroup display orders";
-$l['admin_log_user_groups_join_requests_approve'] = "Approved selected join requests for usergroup #{3} ({2})";
-$l['admin_log_user_groups_join_requests_deny'] = "Denied selected join requests for usergroup #{3} ({2})";
+$l['admin_log_user_groups_join_requests_approve'] = "Approved selected join requests for usergroup #{1} ({2})";
+$l['admin_log_user_groups_join_requests_deny'] = "Denied selected join requests for usergroup #{1} ({2})";
 
 $l['admin_log_user_titles_add'] = "Added default user title #{1} ({2}) at {3} posts";
 $l['admin_log_user_titles_edit'] = "Edited default user title #{1} ({2}) at {3} posts";
@@ -304,8 +267,6 @@ $l['admin_log_user_users_inline_banned_temp'] = "Banned {1} user(s) until {2}";
 $l['admin_log_user_users_inline_activated'] = "Activated {1} user(s)";
 $l['admin_log_user_users_inline_lift'] = "Lifted {1} user(s) bans";
 
-$l['admin_log_user_mass_mail_delete'] = "Deleted mass mail #{1} ({2})";
-
-$l['admin_log_admin_locked_out'] = 'Administrator login attempt for user #{1} ({2}) locked out.';
-
-
+$l['admin_log_user_mass_mail_delete'] = "Deleted mass mail #{1} ({2})"; 
+ 
+?>

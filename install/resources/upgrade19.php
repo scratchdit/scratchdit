@@ -1,15 +1,16 @@
 <?php
 /**
- * MyBB 1.8
- * Copyright 2014 MyBB Group, All Rights Reserved
+ * MyBB 1.6
+ * Copyright 2010 MyBB Group, All Rights Reserved
  *
- * Website: //www.mybb.com
- * License: //www.mybb.com/about/license
+ * Website: http://www.mybboard.com
+ * License: http://mybb.com/about/license
  *
+ * $Id$
  */
 
 /**
- * Upgrade Script: 1.6.1 or 1.6.2
+ * Upgrade Script: 1.6.1, 1.6.2
  */
 
 $upgrade_detail = array(
@@ -22,3 +23,4 @@ $upgrade_detail = array(
 
 /* Nothing to do for 1.6.1 and 1.6.2 */
 
+?>
