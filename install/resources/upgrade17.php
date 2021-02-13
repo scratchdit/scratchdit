@@ -3,8 +3,8 @@
  * MyBB 1.8
  * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * Website: http://www.mybb.com
- * License: http://www.mybb.com/about/license
+ * Website: //www.mybb.com
+ * License: //www.mybb.com/about/license
  *
  */
 
@@ -712,7 +712,7 @@ function upgrade17_redoconfig()
  *
  * Please see the MyBB Docs for advanced
  * database configuration for larger installations
- * https://docs.mybb.com/
+ * //docs.mybb.com/
  */
 
 {$database_config}
@@ -776,7 +776,7 @@ function upgrade17_redoconfig()
  *  If you wish to set an encoding for MyBB uncomment
  *  the line below (if it isn't already) and change
  *  the current value to the mysql charset:
- *  http://dev.mysql.com/doc/refman/5.1/en/charset-mysql.html
+ *  //dev.mysql.com/doc/refman/5.1/en/charset-mysql.html
  */
 
 {$comment}\$config['database']['encoding'] = '{$config['database']['encoding']}';

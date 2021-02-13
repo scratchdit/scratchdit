@@ -3,8 +3,8 @@
  * MyBB 1.8
  * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * Website: http://www.mybb.com
- * License: http://www.mybb.com/about/license
+ * Website: //www.mybb.com
+ * License: //www.mybb.com/about/license
  *
  */
 
@@ -1496,12 +1496,12 @@ if($foruminfo['type'] != "c")
 
 	// Populate Forumsort
 	$forumsort = '';
-	
+
 	if($threadcount > 0)
 	{
 		eval("\$forumsort = \"".$templates->get("forumdisplay_forumsort")."\";");
 	}
-	
+
 	$plugins->run_hooks("forumdisplay_threadlist");
 
 	$lang->rss_discovery_forum = $lang->sprintf($lang->rss_discovery_forum, htmlspecialchars_uni(strip_tags($foruminfo['name'])));

@@ -3,8 +3,8 @@
  * MyBB 1.8
  * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * Website: http://www.mybb.com
- * License: http://www.mybb.com/about/license
+ * Website: //www.mybb.com
+ * License: //www.mybb.com/about/license
  *
  */
 
@@ -305,7 +305,7 @@ class UserDataHandler extends DataHandler
 
 		if(!empty($website) && !my_validate_url($website))
 		{
-			$website = 'http://'.$website;
+			$website = '//'.$website;
 		}
 
 		if(!empty($website) && !my_validate_url($website))

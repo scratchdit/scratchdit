@@ -3,8 +3,8 @@
  * MyBB 1.8
  * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * Website: http://www.mybb.com
- * License: http://www.mybb.com/about/license
+ * Website: //www.mybb.com
+ * License: //www.mybb.com/about/license
  *
  */
 
@@ -24,8 +24,8 @@ function home_meta()
 	$sub_menu = array();
 	$sub_menu['10'] = array("id" => "dashboard", "title" => $lang->dashboard, "link" => "index.php?module=home-dashboard");
 	$sub_menu['20'] = array("id" => "preferences", "title" => $lang->preferences, "link" => "index.php?module=home-preferences");
-	$sub_menu['30'] = array("id" => "docs", "title" => $lang->mybb_documentation, "link" => "https://docs.mybb.com");
-	$sub_menu['40'] = array("id" => "credits", "title" => $lang->mybb_credits, "link" => "https://mybb.com/credits");
+	$sub_menu['30'] = array("id" => "docs", "title" => $lang->mybb_documentation, "link" => "//docs.mybb.com");
+	$sub_menu['40'] = array("id" => "credits", "title" => $lang->mybb_credits, "link" => "//mybb.com/credits");
 	$sub_menu = $plugins->run_hooks("admin_home_menu", $sub_menu);
 
 	$page->add_menu_item($lang->home, "home", "index.php", 1, $sub_menu);
@@ -102,7 +102,7 @@ function home_action_handler($action)
 			global $mybb;
 
 			// Are we on a mobile device?
-			// Stolen from http://stackoverflow.com/a/10989424
+			// Stolen from //stackoverflow.com/a/10989424
 			$user_type = "desktop";
 			if(is_mobile($user["useragent"]))
 			{

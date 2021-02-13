@@ -3,8 +3,8 @@
  * MyBB 1.8
  * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * Website: http://www.mybb.com
- * License: http://www.mybb.com/about/license
+ * Website: //www.mybb.com
+ * License: //www.mybb.com/about/license
  *
  */
 
@@ -768,7 +768,7 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 			{
 				$postoptionschecked['disablesmilies'] = " checked=\"checked\"";
 			}
-			
+
 			$subscription_method = get_subscription_method($tid, $postoptions);
 			${$subscription_method.'subscribe'} = "checked=\"checked\" ";
 		}
@@ -874,17 +874,17 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 		$lang->max_options = $lang->sprintf($lang->max_options, $mybb->settings['maxpolloptions']);
 		$numpolloptions = $mybb->get_input('numpolloptions', MyBB::INPUT_INT);
 		$postpollchecked = '';
-		
+
 		if($numpolloptions < 1)
 		{
 			$numpolloptions = 2;
 		}
-		
+
 		if($mybb->get_input('postpoll', MyBB::INPUT_INT) == 1)
 		{
 			$postpollchecked = 'checked="checked"';
 		}
-		
+
 		eval("\$pollbox = \"".$templates->get("newthread_postpoll")."\";");
 	}
 	else

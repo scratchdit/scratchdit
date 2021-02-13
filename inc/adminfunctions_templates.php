@@ -3,8 +3,8 @@
  * MyBB 1.8
  * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * Website: http://www.mybb.com
- * License: http://www.mybb.com/about/license
+ * Website: //www.mybb.com
+ * License: //www.mybb.com/about/license
  *
  */
 
@@ -26,7 +26,7 @@ function find_replace_templatesets($title, $find, $replace, $autocreate=1, $sid=
 
 	$return = false;
 	$template_sets = array(-2, -1);
-	
+
 	// Select all templates with that title (including global) if not working on a specific template set
 	$sqlwhere = '>0 OR sid=-1';
 	$sqlwhere2 = '>0';

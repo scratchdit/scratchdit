@@ -3,8 +3,8 @@
  * MyBB 1.8
  * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * Website: http://www.mybb.com
- * License: http://www.mybb.com/about/license
+ * Website: //www.mybb.com
+ * License: //www.mybb.com/about/license
  *
  */
 
@@ -416,7 +416,7 @@ class DB_PgSQL implements DB_Base
 	 *
 	 * @param resource $query The query ID.
 	 * @param int $resulttype The type of array to return. Either PGSQL_NUM, PGSQL_BOTH or PGSQL_ASSOC
-	 * @return array The array of results. Note that all fields are returned as string: http://php.net/manual/en/function.pg-fetch-array.php
+	 * @return array The array of results. Note that all fields are returned as string: //php.net/manual/en/function.pg-fetch-array.php
 	 */
 	function fetch_array($query, $resulttype=PGSQL_ASSOC)
 	{
@@ -441,7 +441,7 @@ class DB_PgSQL implements DB_Base
 	 * @param resource $query The query ID.
 	 * @param string $field The name of the field to return.
 	 * @param int|bool The number of the row to fetch it from.
-	 * @return string|bool|null As per http://php.net/manual/en/function.pg-fetch-result.php
+	 * @return string|bool|null As per //php.net/manual/en/function.pg-fetch-result.php
 	 */
 	function fetch_field($query, $field, $row=false)
 	{

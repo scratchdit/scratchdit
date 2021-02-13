@@ -3,8 +3,8 @@
  * MyBB 1.8
  * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * Website: http://www.mybb.com
- * License: http://www.mybb.com/about/license
+ * Website: //www.mybb.com
+ * License: //www.mybb.com/about/license
  *
  */
 
@@ -228,7 +228,7 @@ function license_agreement()
                    GNU LESSER GENERAL PUBLIC LICENSE
                        Version 3, 29 June 2007
 
- Copyright (C) 2007 Free Software Foundation, Inc. <http://fsf.org/>
+ Copyright (C) 2007 Free Software Foundation, Inc. <//fsf.org/>
  Everyone is permitted to copy and distribute verbatim copies
  of this license document, but changing it is not allowed.
 
@@ -394,7 +394,7 @@ Library.
                     GNU GENERAL PUBLIC LICENSE
                        Version 3, 29 June 2007
 
- Copyright (C) 2007 Free Software Foundation, Inc. &lt;http://fsf.org/&gt;
+ Copyright (C) 2007 Free Software Foundation, Inc. &lt;//fsf.org/&gt;
  Everyone is permitted to copy and distribute verbatim copies
  of this license document, but changing it is not allowed.
 
@@ -1495,7 +1495,7 @@ function create_tables()
  *
  * Please see the MyBB Docs for advanced
  * database configuration for larger installations
- * https://docs.mybb.com/
+ * //docs.mybb.com/
  */
 
 \$config['database']['type'] = '".addcslashes($mybb->input['dbengine'], "'")."';
@@ -1578,7 +1578,7 @@ function create_tables()
  *  If you wish to set an encoding for MyBB uncomment
  *  the line below (if it isn't already) and change
  *  the current value to the mysql charset:
- *  http://dev.mysql.com/doc/refman/5.1/en/charset-mysql.html
+ *  //dev.mysql.com/doc/refman/5.1/en/charset-mysql.html
  */
 
 {$db_encoding}
@@ -1902,10 +1902,10 @@ EOF;
 		$cookiedomain = '';
 		$websitename = 'Your Website';
 
-		$protocol = "http://";
+		$protocol = "//";
 		if((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != "off"))
 		{
-			$protocol = "https://";
+			$protocol = "//";
 		}
 
 		// Attempt auto-detection

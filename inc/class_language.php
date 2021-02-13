@@ -3,8 +3,8 @@
  * MyBB 1.8
  * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * Website: http://www.mybb.com
- * License: http://www.mybb.com/about/license
+ * Website: //www.mybb.com
+ * License: //www.mybb.com/about/license
  *
  */
 
@@ -20,7 +20,7 @@ class MyLanguage
 
 	/**
 	 * The language we are using and the area (if admin).
-	 * 
+	 *
 	 * For example 'english' or 'english/admin'.
 	 *
 	 * @var string
@@ -29,7 +29,7 @@ class MyLanguage
 
 	/**
 	 * The fallback language we are using and the area (if admin).
-	 * 
+	 *
 	 * For example 'english' or 'english/admin'.
 	 *
 	 * @var string

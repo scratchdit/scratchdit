@@ -3,8 +3,8 @@
  * MyBB 1.8
  * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * Website: http://www.mybb.com
- * License: http://www.mybb.com/about/license
+ * Website: //www.mybb.com
+ * License: //www.mybb.com/about/license
  *
  */
 
@@ -244,7 +244,7 @@ if($mybb->request_method == "post")
 			);
 			$db->insert_query("maillogs", $log_entry);
 		}
-		
+
 		$mybb->input['from'] = $mybb->get_input('from');
 		if(!empty($mybb->input['from']))
 		{

@@ -3,8 +3,8 @@
  * MyBB 1.8
  * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * Website: http://www.mybb.com
- * License: http://www.mybb.com/about/license
+ * Website: //www.mybb.com
+ * License: //www.mybb.com/about/license
  *
  */
 
@@ -774,7 +774,7 @@ if(!$mybb->input['action'])
 		$table->construct_cell($registration, array("class" => "align_center", 'width' => '10%'));
 		$table->construct_cell($editable, array("class" => "align_center", 'width' => '10%'));
 		$table->construct_cell($profile, array("class" => "align_center", 'width' => '10%'));
-		$table->construct_cell($postbit, array("class" => "align_center", 'width' => '10%')); 
+		$table->construct_cell($postbit, array("class" => "align_center", 'width' => '10%'));
 
 		$popup = new PopupMenu("field_{$field['fid']}", $lang->options);
 		$popup->add_item($lang->edit_field, "index.php?module=config-profile_fields&amp;action=edit&amp;fid={$field['fid']}");

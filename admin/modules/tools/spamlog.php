@@ -2,8 +2,8 @@
 /**
  * MyBB 1.8
  * Copyright 2014 MyBB Group, All Rights Reserved
- * Website: http://www.mybb.com
- * License: http://www.mybb.com/about/license
+ * Website: //www.mybb.com
+ * License: //www.mybb.com/about/license
 
  */
 
@@ -54,7 +54,7 @@ if($mybb->input['action'] == 'prune')
 		{
 			$where .= " AND username='".$db->escape_string($mybb->input['filter_username'])."'";
 		}
-		
+
 		// Searching for entries in a specific module
 		if($mybb->input['filter_email'])
 		{
@@ -114,7 +114,7 @@ if(!$mybb->get_input('action'))
 	$page->output_header($lang->spam_logs);
 
 	$page->output_nav_tabs($sub_tabs, 'spam_logs');
-	
+
 	$perpage = $mybb->get_input('perpage', MyBB::INPUT_INT);
 	if(!$perpage)
 	{
@@ -138,7 +138,7 @@ if(!$mybb->get_input('action'))
 		$where .= " AND email='".$db->escape_string($mybb->get_input('email'))."'";
 		$additional_criteria[] = "email=".urlencode($mybb->get_input('email'));
 	}
-	
+
 	// Searching for entries with a specific IP
 	if($mybb->get_input('ipaddress') > 0)
 	{
@@ -239,7 +239,7 @@ if(!$mybb->get_input('action'))
 			}
 		}
 
-		$search_sfs = "<div class=\"float_right\"><a href=\"http://www.stopforumspam.com/ipcheck/{$ip_address}\" target=\"_blank\" rel=\"noopener\"><img src=\"styles/{$page->style}/images/icons/find.png\" title=\"{$lang->search_ip_on_sfs}\" alt=\"{$lang->search}\" /></a></div>";
+		$search_sfs = "<div class=\"float_right\"><a href=\"//www.stopforumspam.com/ipcheck/{$ip_address}\" target=\"_blank\" rel=\"noopener\"><img src=\"styles/{$page->style}/images/icons/find.png\" title=\"{$lang->search_ip_on_sfs}\" alt=\"{$lang->search}\" /></a></div>";
 
 		$table->construct_cell($username);
 		$table->construct_cell($email);

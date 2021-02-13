@@ -3,7 +3,7 @@
 
 /**
 ADOdb Date Library, part of the ADOdb abstraction library
-Download: http://phplens.com/phpeverywhere/
+Download: //phplens.com/phpeverywhere/
 
 PHP native date functions use integer timestamps for computations.
 Because of this, dates are restricted to the years 1901-2038 on Unix
@@ -61,7 +61,7 @@ COPYRIGHT
 
 (c) 2003-2005 John Lim and released under BSD-style license except for code by
 jackbbs, which includes adodb_mktime, adodb_get_gmt_diff, adodb_is_leap_year
-and originally found at http://www.php.net/manual/en/function.mktime.php
+and originally found at //www.php.net/manual/en/function.mktime.php
 
 =============================================================================
 
@@ -69,7 +69,7 @@ BUG REPORTS
 
 These should be posted to the ADOdb forums at
 
-	http://phplens.com/lens/lensforum/topics.php?id=4
+	//phplens.com/lens/lensforum/topics.php?id=4
 
 =============================================================================
 */
@@ -93,8 +93,8 @@ $ADODB_DATETIME_CLASS = (PHP_VERSION >= 5.2);
 	echo (mktime(0, 0, 0, 1, 1, 1960));  // prints -1
 
 	References:
-	 http://bugs.php.net/bug.php?id=20048&edit=2
-	 http://lists.debian.org/debian-glibc/2002/debian-glibc-200205/msg00010.html
+	 //bugs.php.net/bug.php?id=20048&edit=2
+	 //lists.debian.org/debian-glibc/2002/debian-glibc-200205/msg00010.html
 */
 
 if (!defined('ADODB_ALLOW_NEGATIVE_TS')) define('ADODB_NO_NEGATIVE_TS',1);
@@ -789,7 +789,7 @@ global $ADODB_DATE_LOCALE;
 		$sep = substr($tstr,2,1);
 		$hasAM = strrpos($tstr,'M') !== false;
 	*/
-		# see http://phplens.com/lens/lensforum/msgs.php?id=14865 for reasoning, and changelog for version 0.24
+		# see //phplens.com/lens/lensforum/msgs.php?id=14865 for reasoning, and changelog for version 0.24
 		$dstr = gmstrftime('%x',31366800); // 30 Dec 1970, 1 am
 		$sep = substr($dstr,2,1);
 		$tstr = strtoupper(gmstrftime('%X',31366800)); // 30 Dec 1970, 1 am

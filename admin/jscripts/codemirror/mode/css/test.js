@@ -1,5 +1,5 @@
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
-// Distributed under an MIT license: http://codemirror.net/LICENSE
+// Distributed under an MIT license: //codemirror.net/LICENSE
 
 (function() {
   var mode = CodeMirror.getMode({indentUnit: 2}, "css");
@@ -121,8 +121,8 @@
      "[def @font-face] {",
      "  [property font-family]: [string 'myfont'];",
      "  [error nonsense]: [string 'abc'];",
-     "  [property src]: [atom url]([string http://blah]),",
-     "    [atom url]([string http://foo]);",
+     "  [property src]: [atom url]([string ://blah]),",
+     "    [atom url]([string //foo]);",
      "}");
 
   MT("empty_url",
@@ -152,8 +152,8 @@
      "}");
 
    MT("document",
-      "[def @document] [tag url]([string http://blah]),",
-      "  [tag url-prefix]([string https://]),",
+      "[def @document] [tag url]([string ),",
+      "  [tag url-prefix]([string //]),",
       "  [tag domain]([string blah.com]),",
       "  [tag regexp]([string \".*blah.+\"]) {",
       "    [builtin #id] {",
@@ -165,10 +165,10 @@
       "}");
 
    MT("document_url",
-      "[def @document] [tag url]([string http://blah]) { [qualifier .class] { } }");
+      "[def @document] [tag url]([string //blah]) { [qualifier .class] { } }");
 
    MT("document_urlPrefix",
-      "[def @document] [tag url-prefix]([string https://]) { [builtin #id] { } }");
+      "[def @document] [tag url-prefix]([string //]) { [builtin #id] { } }");
 
    MT("document_domain",
       "[def @document] [tag domain]([string blah.com]) { [tag foo] { } }");

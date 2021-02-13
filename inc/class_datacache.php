@@ -3,8 +3,8 @@
  * MyBB 1.8
  * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * Website: http://www.mybb.com
- * License: http://www.mybb.com/about/license
+ * Website: //www.mybb.com
+ * License: //www.mybb.com/about/license
  *
  */
 
@@ -912,7 +912,7 @@ class datacache
 
 		$query = $db->simple_select("reportedcontent", "COUNT(rid) AS reportcount");
 		$reportcount = $db->fetch_field($query, 'reportcount');
-		
+
 		$query = $db->simple_select("reportedcontent", "dateline", "reportstatus='0'", array('order_by' => 'dateline', 'order_dir' => 'DESC', 'limit' => 1));
 		$dateline = $db->fetch_field($query, 'dateline');
 

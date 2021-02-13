@@ -3,8 +3,8 @@
  * MyBB 1.8
  * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * Website: http://www.mybb.com
- * License: http://www.mybb.com/about/license
+ * Website: //www.mybb.com
+ * License: //www.mybb.com/about/license
  *
  */
 
@@ -184,7 +184,7 @@ function remove_avatars($uid, $exclude="")
 
 /**
  * Create the attachment directory index file.
- * 
+ *
  * @param string $path The path to the attachment directory to create the file in.
  */
 function create_attachment_index($path)

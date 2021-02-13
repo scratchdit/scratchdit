@@ -3,8 +3,8 @@
  * MyBB 1.8
  * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * Website: http://www.mybb.com
- * License: http://www.mybb.com/about/license
+ * Website: //www.mybb.com
+ * License: //www.mybb.com/about/license
  *
  */
 
@@ -168,7 +168,7 @@ switch($mybb->input['action'])
 	case "delayedmoderation":
 		// Verify incoming POST request
 		verify_post_check($mybb->get_input('my_post_key'));
-		
+
 		$localized_time_offset = $mybb->user['timezone']*3600 + $mybb->user['dst']*3600;
 
 		if(!$mybb->get_input('date_day', MyBB::INPUT_INT))
@@ -649,7 +649,7 @@ switch($mybb->input['action'])
 				$datemonth[$month] = ' selected="selected"';
 			}
 		}
-		
+
 
 		eval('$datemonth = "'.$templates->get('moderation_delayedmoderation_date_month').'";');
 
@@ -684,7 +684,7 @@ switch($mybb->input['action'])
 		if(is_moderator($fid, "canapproveunapprovethreads"))
 		{
 			eval('$approveunapprovethread = "'.$templates->get('moderation_delayedmoderation_approve').'";');
-		} 
+		}
 
 		$plugins->run_hooks("moderation_delayedmoderation");
 
@@ -1043,7 +1043,7 @@ switch($mybb->input['action'])
 		{
 			error($lang->error_thread_deleted, $lang->error);
 		}
-		
+
 		$newperms = forum_permissions($moveto);
 		if($newperms['canview'] == 0 && !is_moderator($fid, "canmovetononmodforum"))
 		{
@@ -3035,7 +3035,7 @@ switch($mybb->input['action'])
 				// First delete everything
 				$userhandler->delete_content($uid);
 				$userhandler->delete_posts($uid);
-				
+
 				// Next ban him (or update the banned reason, shouldn't happen)
 				$query = $db->simple_select("banned", "uid", "uid = '{$uid}'");
 				if($db->num_rows($query) > 0)
@@ -3098,7 +3098,7 @@ switch($mybb->input['action'])
 			// Submit the user to stop forum spam
 			if(!empty($mybb->settings['purgespammerapikey']))
 			{
-				$sfs = @fetch_remote_file("http://stopforumspam.com/add.php?username=" . urlencode($user['username']) . "&ip_addr=" . urlencode(my_inet_ntop($db->unescape_binary($user['lastip']))) . "&email=" . urlencode($user['email']) . "&api_key=" . urlencode($mybb->settings['purgespammerapikey']));
+				$sfs = @fetch_remote_file("//stopforumspam.com/add.php?username=" . urlencode($user['username']) . "&ip_addr=" . urlencode(my_inet_ntop($db->unescape_binary($user['lastip']))) . "&email=" . urlencode($user['email']) . "&api_key=" . urlencode($mybb->settings['purgespammerapikey']));
 			}
 
 			log_moderator_action(array('uid' => $uid, 'username' => $user['username']), $lang->purgespammer_modlog);
@@ -3124,7 +3124,7 @@ switch($mybb->input['action'])
 			}
 			else
 			{
-				$lang->purgespammer_purge_desc = $lang->sprintf($lang->purgespammer_purge_desc, $lang->purgespammer_delete);				
+				$lang->purgespammer_purge_desc = $lang->sprintf($lang->purgespammer_purge_desc, $lang->purgespammer_delete);
 			}
 			eval("\$purgespammer = \"".$templates->get('moderation_purgespammer')."\";");
 			output_page($purgespammer);
@@ -3145,7 +3145,7 @@ switch($mybb->input['action'])
 			{
 				error_no_permission();
 			}
-			
+
 			if($thread['visible'] == -1)
 			{
 				error($lang->error_thread_deleted, $lang->error);

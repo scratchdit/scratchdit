@@ -3,8 +3,8 @@
  * MyBB 1.8
  * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * Website: http://www.mybb.com
- * License: http://www.mybb.com/about/license
+ * Website: //www.mybb.com
+ * License: //www.mybb.com/about/license
  *
  */
 
@@ -2160,7 +2160,7 @@ function upgrade30_updatetheme()
 	$contents .= "done.</p>";
 
 	$contents .= "<p>Adding new stylesheets... ";
-	
+
 	$query = $db->simple_select("themes", "*", "tid='1'");
 
 	$theme = $db->fetch_array($query);
@@ -2307,7 +2307,7 @@ function upgrade30_updatetheme()
 		$theme = $db->fetch_array($query);
 		$properties = my_unserialize($theme['properties']);
 		$stylesheets = my_unserialize($theme['stylesheets']);
-		
+
 		$properties['editortheme'] = "mybb.css"; // New editor, so reset the theme for it
 		$properties['tablespace'] = 5;
 		$properties['borderwidth'] = 0;
@@ -2316,11 +2316,11 @@ function upgrade30_updatetheme()
 		{
 			$properties['logo'] = "images/logo.png";
 		}
-	
+
 		$colors = @file_get_contents(INSTALL_ROOT.'resources/mybb_theme_colors.xml');
 		$parser = create_xml_parser($colors);
 		$tree = $parser->get_tree();
-	
+
 		if(is_array($tree) && is_array($tree['colors']))
 		{
 			if(is_array($tree['colors']['scheme']))
@@ -2328,11 +2328,11 @@ function upgrade30_updatetheme()
 				foreach($tree['colors']['scheme'] as $tag => $value)
 				{
 					$exp = explode("=", $value['value']);
-	
+
 					$properties['colors'][$exp[0]] = $exp[1];
 				}
 			}
-	
+
 			if(is_array($tree['colors']['stylesheets']))
 			{
 				$count = count($properties['disporder']) + 1;
@@ -2346,30 +2346,30 @@ function upgrade30_updatetheme()
 						"lastmodified" => TIME_NOW,
 						"cachefile" => $db->escape_string($stylesheet['attributes']['name'])
 					);
-	
+
 					$sid = $db->insert_query("themestylesheets", $new_stylesheet);
 					$css_url = "css.php?stylesheet={$sid}";
-	
+
 					$cached = cache_stylesheet($tid, $stylesheet['attributes']['name'], $stylesheet['value']);
-	
+
 					if($cached)
 					{
 						$css_url = $cached;
 					}
-	
+
 					// Add to display and stylesheet list
 					$properties['disporder'][$stylesheet['attributes']['name']] = $count;
 					$stylesheets[$stylesheet['attributes']['attachedto']]['global'][] = $css_url;
-	
+
 					++$count;
 				}
 			}
-	
+
 			$update_array = array(
 				"properties" => $db->escape_string(my_serialize($properties)),
 				"stylesheets" => $db->escape_string(my_serialize($stylesheets))
 			);
-	
+
 			$db->update_query("themes", $update_array, "tid = '2'");
 		}
 	}
@@ -2473,7 +2473,7 @@ function upgrade30_acppin_submit()
 
 		@fclose($file);
 
-		$content .= "Done";		
+		$content .= "Done";
 	}
 
 	echo $content."</p>";

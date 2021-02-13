@@ -3,8 +3,8 @@
  * MyBB 1.8
  * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * Website: http://www.mybb.com
- * License: http://www.mybb.com/about/license
+ * Website: //www.mybb.com
+ * License: //www.mybb.com/about/license
  *
  */
 
@@ -60,8 +60,8 @@ class installerOutput {
 			$dbconfig_add = "<script type=\"text/javascript\">document.write('<style type=\"text/css\">.db_type { display: none; }</style>');</script>";
 		}
 		echo <<<END
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "//www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="//www.w3.org/1999/xhtml">
 <head>
 	<title>{$this->title} &gt; {$title}</title>
 	<link rel="stylesheet" href="stylesheet.css" type="text/css" />
