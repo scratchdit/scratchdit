@@ -7,7 +7,7 @@
  * https://docs.mybb.com/
  */
 
-$config['database']['type'] = 'postgres';
+$config['database']['type'] = 'pgsql';
 $config['database']['database'] = '';
 $config['database']['table_prefix'] = 'mybb_';
 
