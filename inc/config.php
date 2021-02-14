@@ -8,7 +8,7 @@
  */
 
 $config['database']['type'] = 'pgsql';
-$config['database']['database'] = '';
+$config['database']['database'] = 'd8rjlipok0f83m';
 $config['database']['table_prefix'] = 'mybb_';
 
 $config['database']['hostname'] = 'ec2-54-90-13-87.compute-1.amazonaws.com';
