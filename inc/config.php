@@ -7,13 +7,13 @@
  * https://docs.mybb.com/
  */
 
-$config['database']['type'] = '';
+$config['database']['type'] = 'postgres';
 $config['database']['database'] = '';
 $config['database']['table_prefix'] = 'mybb_';
 
-$config['database']['hostname'] = '';
-$config['database']['username'] = '';
-$config['database']['password'] = '';
+$config['database']['hostname'] = 'ec2-54-90-13-87.compute-1.amazonaws.com';
+$config['database']['username'] = 'mknzigyrzqkxrw';
+$config['database']['password'] = '459aca8d4ee638bbae583732c67b0fff3c015d37ede47f71098ca573446bd8db';
 
 /**
  * Admin CP directory
