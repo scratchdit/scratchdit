@@ -17,7 +17,7 @@ if(!defined("IN_MYBB"))
 
 class Horde_Text_Diff_ThreeWay_Op_Copy extends Horde_Text_Diff_ThreeWay_Op_Base
 {
-    public function __construct($lines = false)
+    public function __construct($lines = FALSE)
     {
         $this->orig = $lines ? $lines : array();
         $this->final1 = &$this->orig;
@@ -31,6 +31,6 @@ class Horde_Text_Diff_ThreeWay_Op_Copy extends Horde_Text_Diff_ThreeWay_Op_Base
 
     public function isConflict()
     {
-        return false;
+        return FALSE;
     }
 }

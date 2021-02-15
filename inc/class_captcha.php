@@ -88,7 +88,7 @@ class captcha
 	 */
 	public $errors = array();
 
-	function __construct($build = false, $template = "")
+	function __construct($build = FALSE, $template = "")
 	{
 		global $mybb;
 
@@ -113,7 +113,7 @@ class captcha
 			$this->secure_server = "https://www.google.com/recaptcha/api";
 			$this->verify_server = "www.google.com";
 
-			if($build == true)
+			if($build == TRUE)
 			{
 				$this->build_recaptcha();
 			}
@@ -123,9 +123,9 @@ class captcha
 			if(!function_exists("imagecreatefrompng"))
 			{
 				// We want to use the default CAPTCHA, but it's not installed
-				return false;
+				return FALSE;
 			}
-			else if($build == true)
+			else if($build == TRUE)
 			{
 				$this->build_captcha();
 			}
@@ -134,7 +134,7 @@ class captcha
 		// Plugin hook
 	}
 
-	function build_captcha($return = false)
+	function build_captcha($return = FALSE)
 	{
 		global $db, $lang, $templates;
 
@@ -248,7 +248,7 @@ class captcha
 
 				$fs = @fsockopen($this->verify_server, 80, $errno, $errstr, 10);
 
-				if($fs == false)
+				if($fs == FALSE)
 				{
 					$this->set_error($lang->invalid_captcha_transmit);
 				}
@@ -267,7 +267,7 @@ class captcha
 					$response = explode("\r\n\r\n", $response, 2);
 					$answer = explode("\n", $response[1]);
 
-					if(trim($answer[0]) != 'true')
+					if(trim($answer[0]) != 'TRUE')
 					{
 						// We got it wrong! Oh no...
 						$this->set_error($lang->invalid_captcha_verify);
@@ -280,11 +280,11 @@ class captcha
 
 		if(count($this->errors) > 0)
 		{
-			return false;
+			return FALSE;
 		}
 		else
 		{
-			return true;
+			return TRUE;
 		}
 	}
 
@@ -330,7 +330,7 @@ class captcha
 				$errors[] = $error['error_code'];
 				continue;
 			}
-			
+
 			if(!empty($error['data']) && !is_array($error['data']))
 			{
 				$error['data'] = array($error['data']);

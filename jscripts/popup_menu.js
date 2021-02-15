@@ -8,35 +8,35 @@ PopupMenu.prototype = {
 
 		if(!$(id))
 		{
-			return false;
+			return FALSE;
 		}
 		this.id = id;
 		var element = $(id);
-		
+
 		var popupMenu = element.id+"_popup";
 		if(!$(popupMenu))
 		{
-			return false;
+			return FALSE;
 		}
-		
+
 		this.menu = $(popupMenu);
 		this.menu.style.display = "none";
 		element.onclick = this.openMenu.bindAsEventListener(this);
 	},
-	
+
 	openMenu: function(e)
 	{
 		Event.stop(e);
 		if(document.currentMenu && document.currentMenu == this.id)
 		{
 			this.closeMenu();
-			return false;
+			return FALSE;
 		}
 		else if(document.currentMenu != "")
 		{
 			this.closeMenu();
 		}
-		
+
 		offsetTop = offsetLeft = 0;
 		var element = $(this.id);
 		do
@@ -51,9 +51,9 @@ PopupMenu.prototype = {
 		} while(element);
 		offsetTopReal = offsetTop;
 		offsetLeftReal = offsetLeft;
-		if(element) // will be true if we broke off the last loop
+		if(element) // will be TRUE if we broke off the last loop
 		{
-			// calculate the true top/left position relative to page borders (this is used for checking whether the popup menu will be displayed within the page)
+			// calculate the TRUE top/left position relative to page borders (this is used for checking whether the popup menu will be displayed within the page)
 			do
 			{
 				offsetTopReal += element.offsetTop || 0;
@@ -86,13 +86,13 @@ PopupMenu.prototype = {
 		{
 			this.menu.style.left = (offsetLeft-menuWidth+element.offsetWidth)+"px";
 		}
-		this.menu.style.display = 'block';	
+		this.menu.style.display = 'block';
 		this.menu.style.visibility = 'visible';
 
 		document.currentMenu = element.id;
 		Event.observe(document, 'click', this.closeMenu.bindAsEventListener(this));
 	},
-	
+
 	closeMenu: function()
 	{
 		if(!document.currentMenu)

@@ -27,7 +27,7 @@ function build_mini_calendar($calendar, $month, $year, &$events_cache)
 	{
 		$year = my_date("Y");
 	}
-	
+
 	// Then the month
 	if($month < 1 || $month > 12)
 	{
@@ -35,7 +35,7 @@ function build_mini_calendar($calendar, $month, $year, &$events_cache)
 	}
 
 	$weekdays = fetch_weekday_structure($calendar['startofweek']);
-	
+
 	$calendar_permissions = get_calendar_permissions($calendar['cid']);
 
 	$month_link = get_calendar_link($calendar['cid'], $year, $month);
@@ -82,7 +82,7 @@ function build_mini_calendar($calendar, $month, $year, &$events_cache)
 	// Build weekday headers
 	foreach($weekdays as $weekday)
 	{
-		$weekday_name = fetch_weekday_name($weekday, true);
+		$weekday_name = fetch_weekday_name($weekday, TRUE);
 		eval("\$weekday_headers .= \"".$templates->get("calendar_mini_weekdayheader")."\";");
 	}
 
@@ -130,7 +130,7 @@ function build_mini_calendar($calendar, $month, $year, &$events_cache)
 			// Any events on this specific day?
 			if(@count($events_cache["$day-$calendar_month-$calendar_year"]) > 0)
 			{
-				$link_to_day = true;
+				$link_to_day = TRUE;
 			}
 
 			// Is the current day
@@ -157,7 +157,7 @@ function build_mini_calendar($calendar, $month, $year, &$events_cache)
 				$day_link = $day;
 			}
 			eval("\$day_bits .= \"".$templates->get("calendar_mini_weekrow_day")."\";");
-			$link_to_day = false;
+			$link_to_day = FALSE;
 			++$day;
 		}
 		if($day_bits)
@@ -281,14 +281,14 @@ function get_calendar_permissions($cid=0)
 function fetch_calendar_permissions($cid, $gid, $calendar_permissions)
 {
 	$groups = explode(",", $gid);
-	
+
 	if(!is_array($calendar_permissions))
 	{
 		return;
 	}
 
 	$current_permissions = array();
-	
+
 	foreach($groups as $gid)
 	{
 		// If this calendar has permissions set for this group
@@ -304,7 +304,7 @@ function fetch_calendar_permissions($cid, $gid, $calendar_permissions)
 			}
 		}
 	}
-	
+
 	if(count($current_permissions) == 0)
 	{
 		return;
@@ -411,7 +411,7 @@ function get_prev_month($month, $year)
 function get_events($calendar, $start, $end, $unapproved=0, $private=1)
 {
 	global $db, $mybb;
-	
+
 	// We take in to account timezones here - we add/subtract 12 hours from our GMT time ranges
 	$start -= 12*3600;
 	$end += 12*3600;
@@ -470,11 +470,11 @@ function get_events($calendar, $start, $end, $unapproved=0, $private=1)
 			}
 			else
 			{
-				$range_start = fetch_next_occurance($event, array("start" => $start, "end" => $end), $start_day, true);
+				$range_start = fetch_next_occurance($event, array("start" => $start, "end" => $end), $start_day, TRUE);
 			}
 			$first = "";
 			$event_date = explode("-", gmdate("j-n-Y", $range_start));
-			
+
 			// Get rid of hour/minutes because sometimes they cause the events to stretch into the next day
 			$range_end = gmmktime(23, 59, 59, gmdate("n", $event['endtime_user']), gmdate("j", $event['endtime_user']), gmdate("Y", $event['endtime_user']));
 			while($range_start < $range_end)
@@ -613,10 +613,10 @@ function fetch_weekday_structure($week_start)
  * Fetch a weekday name based on a number
  *
  * @param int The weekday number
- * @param boolean True to fetch the short name ('S'), false to fetch full name
+ * @param boolean TRUE to fetch the short name ('S'), FALSE to fetch full name
  * @param string The weekday name
  */
-function fetch_weekday_name($weekday, $short=false)
+function fetch_weekday_name($weekday, $short=FALSE)
 {
 	global $lang;
 	switch($weekday)
@@ -650,8 +650,8 @@ function fetch_weekday_name($weekday, $short=false)
 			$short_weekday_name = $lang->short_sunday;
 			break;
 	}
-	
-	if($short == true)
+
+	if($short == TRUE)
 	{
 		return $short_weekday_name;
 	}
@@ -667,13 +667,13 @@ function fetch_weekday_name($weekday, $short=false)
  * @param array The event array
  * @param array The range of start/end timestamps
  * @param int The last occurance of this event
- * @param boolean True if this is our first iteration of this function (Does some special optimised calculations on false)
+ * @param boolean TRUE if this is our first iteration of this function (Does some special optimised calculations on FALSE)
  * @return int The next occurance timestamp
  */
-function fetch_next_occurance($event, $range, $last_occurance, $first=false)
+function fetch_next_occurance($event, $range, $last_occurance, $first=FALSE)
 {
 	$new_time = $last_occurance;
-	
+
 	$repeats = $event['repeats'];
 
 	$start_day = explode("-", gmdate("j-n-Y", $event['starttime_user']));
@@ -687,7 +687,7 @@ function fetch_next_occurance($event, $range, $last_occurance, $first=false)
 	else if($repeats['repeats'] == 1)
 	{
 		// If this isn't the first time we've called this function then we can just tack on the time since $last_occurance
-		if($first == false)
+		if($first == FALSE)
 		{
 			$new_time += 86400*$repeats['days'];
 		}
@@ -710,7 +710,7 @@ function fetch_next_occurance($event, $range, $last_occurance, $first=false)
 	// Repeats on weekdays only
 	else if($repeats['repeats'] == 2)
 	{
-		if($first == false)
+		if($first == FALSE)
 		{
 			$last_dow = gmdate("w", $last_occurance);
 			// Last day of week = friday, +3 gives monday
@@ -755,7 +755,7 @@ function fetch_next_occurance($event, $range, $last_occurance, $first=false)
 	{
 		$weekdays = fetch_weekday_structure($event['weekday_start']);
 		$last_dow = gmdate("w", $last_occurance);
-		if($first == true)
+		if($first == TRUE)
 		{
 			$last_dow = -1;
 			$start_day = gmdate('w', $last_occurance);
@@ -809,7 +809,7 @@ function fetch_next_occurance($event, $range, $last_occurance, $first=false)
 		// X of every Y months
 		if($repeats['day'])
 		{
-			if($first == true)
+			if($first == TRUE)
 			{
 				if($last_day <= $repeats['day'])
 				{
@@ -820,7 +820,7 @@ function fetch_next_occurance($event, $range, $last_occurance, $first=false)
 					$new_time = gmmktime(0, 0, 0, $last_month+1, $repeats['day'], $last_year);
 					if($new_time > $event['endtime'])
 					{
-						return false;
+						return FALSE;
 					}
 				}
 			}
@@ -832,7 +832,7 @@ function fetch_next_occurance($event, $range, $last_occurance, $first=false)
 		// The 1st/etc (weekday) of every X months
 		else
 		{
-			if($first == true)
+			if($first == TRUE)
 			{
 				$new_time = fetch_weekday_monthly_repetition($repeats, $last_month, $last_year);
 				if($new_time < $last_occurance)
@@ -854,7 +854,7 @@ function fetch_next_occurance($event, $range, $last_occurance, $first=false)
 		// Repeats on (day) of (month) every (years)
 		if($repeats['day'])
 		{
-			if($first == true)
+			if($first == TRUE)
 			{
 				$new_time = gmmktime(0, 0, 0, $repeats['month'], $repeats['day'], $last_year);
 				if($new_time < $last_occurance)
@@ -870,7 +870,7 @@ function fetch_next_occurance($event, $range, $last_occurance, $first=false)
 		// The 1st/etc (weekday) of (month) every (years)
 		else
 		{
-			if($first == true)
+			if($first == TRUE)
 			{
 				$new_time = fetch_weekday_monthly_repetition($repeats, $repeats['month'], $last_year);
 				if($new_time < $last_occurance)
@@ -918,7 +918,7 @@ function fetch_friendly_repetition($event)
 		$event['repeats'] = @unserialize($event['repeats']);
 		if(!is_array($event['repeats']))
 		{
-			return false;
+			return FALSE;
 		}
 	}
 
@@ -1000,7 +1000,7 @@ function fetch_friendly_repetition($event)
 				else
 				{
 					return $lang->sprintf($lang->every_x_months_on_weekday, $occurance, $weekday_name, $event['repeats']['months']);
-				} 
+				}
 			}
 			break;
 		case 5:

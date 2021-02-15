@@ -46,7 +46,7 @@ class memcachedCacheHandler implements CacheHandlerInterface
 	/**
 	 * Connect and initialize this handler.
 	 *
-	 * @return boolean True if successful, false on failure
+	 * @return boolean TRUE if successful, FALSE on failure
 	 */
 	function connect()
 	{
@@ -88,22 +88,22 @@ class memcachedCacheHandler implements CacheHandlerInterface
 		// Set a unique identifier for all queries in case other forums are using the same memcache server
 		$this->unique_id = md5(MYBB_ROOT);
 
-		return true;
+		return TRUE;
 	}
 
 	/**
 	 * Retrieve an item from the cache.
 	 *
 	 * @param string $name The name of the cache
-	 * @return mixed Cache data if successful, false if failure
+	 * @return mixed Cache data if successful, FALSE if failure
 	 */
 	function fetch($name)
 	{
 		$data = $this->memcached->get($this->unique_id."_".$name);
 
-		if($data === false)
+		if($data === FALSE)
 		{
-			return false;
+			return FALSE;
 		}
 		else
 		{
@@ -116,7 +116,7 @@ class memcachedCacheHandler implements CacheHandlerInterface
 	 *
 	 * @param string $name The name of the cache
 	 * @param mixed $contents The data to write to the cache item
-	 * @return boolean True on success, false on failure
+	 * @return boolean TRUE on success, FALSE on failure
 	 */
 	function put($name, $contents)
 	{
@@ -127,7 +127,7 @@ class memcachedCacheHandler implements CacheHandlerInterface
 	 * Delete a cache
 	 *
 	 * @param string $name The name of the cache
-	 * @return boolean True on success, false on failure
+	 * @return boolean TRUE on success, FALSE on failure
 	 */
 	function delete($name)
 	{

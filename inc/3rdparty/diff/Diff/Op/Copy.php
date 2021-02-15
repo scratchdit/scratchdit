@@ -21,7 +21,7 @@ if(!defined("IN_MYBB"))
 
 class Horde_Text_Diff_Op_Copy extends Horde_Text_Diff_Op_Base
 {
-    public function __construct($orig, $final = false)
+    public function __construct($orig, $final = FALSE)
     {
         if (!is_array($final)) {
             $final = $orig;

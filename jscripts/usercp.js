@@ -7,13 +7,13 @@ var UserCP = {
 	{
 		if(!$(field))
 		{
-			return false;
+			return FALSE;
 		}
 		this.buddy_field = field;
 		if($('buddyselect_container'))
 		{
 			UserCP.buddySelectLoaded();
-			return false;
+			return FALSE;
 		}
 		if(use_xmlhttprequest == 1)
 		{
@@ -40,7 +40,7 @@ var UserCP = {
 					this.spinner = '';
 				}
 				alert('There was an error fetching the posts.\n\n'+message[1]);
-				return false;
+				return FALSE;
 			}
 			else if(request.responseText)
 			{
@@ -60,14 +60,14 @@ var UserCP = {
 			Element.hide('buddyselect_container');
 			var checkboxes = $('buddyselect_container').getElementsByTagName("input");
 			$A(checkboxes).each(function(item) {
-				item.checked = false;
+				item.checked = FALSE;
 			});
 			$('buddyselect_buddies').innerHTML = '';
 			container = $('buddyselect_container');
 		}
 
 		// Clone off screen
-		var clone = container.cloneNode(true);
+		var clone = container.cloneNode(TRUE);
 		document.body.appendChild(clone);
 		clone.style.width = '300px';
 		clone.style.top = "-10000px";
@@ -125,7 +125,7 @@ var UserCP = {
 
 	closeBuddySelect: function(canceled)
 	{
-		if(canceled != true)
+		if(canceled != TRUE)
 		{
 			var buddies = $('buddyselect_buddies').innerHTML.stripTags();
 			existing_buddies = $(this.buddy_field).value;
@@ -161,11 +161,11 @@ var UserCP = {
 	{
 		if(!$(type+'_add_username').value)
 		{
-			return false;
+			return FALSE;
 		}
 		if(use_xmlhttprequest != 1)
 		{
-			return true;
+			return TRUE;
 		}
 
 		var old_value = $(type+'_submit').value;
@@ -181,10 +181,10 @@ var UserCP = {
 			var list = 'buddy';
 		}
 
-		new Ajax.Updater(list+'_list', 'usercp.php?action=do_editlists&my_post_key='+my_post_key+'&manage='+type, {method: 'post', postBody: 'ajax=1&add_username='+encodeURIComponent($(type+'_add_username').value), evalScripts: true, onComplete: function() { $(type+'_submit').value = old_value; $(type+'_submit').disabled = false; $(type+'_add_username').disabled = false; $(type+'_add_username').value = ''; $(type+'_add_username').focus(); }});
-		$(type+'_add_username').disabled = true;
-		$(type+'_submit').disabled = true;
-		return false;
+		new Ajax.Updater(list+'_list', 'usercp.php?action=do_editlists&my_post_key='+my_post_key+'&manage='+type, {method: 'post', postBody: 'ajax=1&add_username='+encodeURIComponent($(type+'_add_username').value), evalScripts: TRUE, onComplete: function() { $(type+'_submit').value = old_value; $(type+'_submit').disabled = FALSE; $(type+'_add_username').disabled = FALSE; $(type+'_add_username').value = ''; $(type+'_add_username').focus(); }});
+		$(type+'_add_username').disabled = TRUE;
+		$(type+'_submit').disabled = TRUE;
+		return FALSE;
 	},
 
 	removeBuddy: function(type, uid)
@@ -202,11 +202,11 @@ var UserCP = {
 		{
 			if(use_xmlhttprequest != 1)
 			{
-				return true;
+				return TRUE;
 			}
 			new Ajax.Request('usercp.php?action=do_editlists&my_post_key='+my_post_key+'&manage='+type+'&delete='+uid, {method: 'post', postBody: 'ajax=1'});
 		}
 
-		return false;
+		return FALSE;
 	}
 };

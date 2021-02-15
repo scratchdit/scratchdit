@@ -22,7 +22,7 @@ class DefaultForm
 	private $_return = FALSE;
 
 	/**
-	 * @var string Contents of the form if $_return is true from __construct
+	 * @var string Contents of the form if $_return is TRUE from __construct
 	 */
 	public $construct_return = "";
 
@@ -324,7 +324,7 @@ class DefaultForm
 	 *
 	 * @param  string The name of the select box.
 	 * @param  array Array of options in key => val format.
-	 * @param  mixed Either a string containing the selected item or an array containing multiple selected items (options['multiple'] must be true)
+	 * @param  mixed Either a string containing the selected item or an array containing multiple selected items (options['multiple'] must be TRUE)
 	 * @param  array Array of options for the select box (multiple, class, id, size)
 	 * @return string The select box.
 	 */

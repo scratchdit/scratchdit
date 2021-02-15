@@ -40,15 +40,15 @@ $tid = $thread['tid'];
 // Is the currently logged in user a moderator of this forum?
 if(is_moderator($fid))
 {
-	$ismod = true;
+	$ismod = TRUE;
 }
 else
 {
-	$ismod = false;
+	$ismod = FALSE;
 }
 
 // Make sure we are looking at a real thread here.
-if(!$tid || ($thread['visible'] == 0 && $ismod == false) || ($thread['visible'] > 1 && $ismod == true))
+if(!$tid || ($thread['visible'] == 0 && $ismod == FALSE) || ($thread['visible'] > 1 && $ismod == TRUE))
 {
 	error($lang->error_invalidthread);
 }
@@ -127,7 +127,7 @@ $query = $db->query("
     WHERE p.tid='$tid' {$visible}
     ORDER BY p.dateline
 	LIMIT {$start}, {$perpage}
-"); 
+");
 while($postrow = $db->fetch_array($query))
 {
 	if($postrow['userusername'])

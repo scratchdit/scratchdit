@@ -108,7 +108,7 @@ function create_text_message($message)
 	{
 		$message = str_replace("  ", " ", $message);
 	}
-	while(strpos($message, "  ") !== false);
+	while(strpos($message, "  ") !== FALSE);
 
 	$search = array('@<script[^>]*?>.*?</script>@si',  // Strip out javascript
 				   '@<style[^>]*?>.*?</style>@siU',    // Strip style tags properly
@@ -133,12 +133,12 @@ function make_pretty_links($message_html)
 	do
 	{
 		$start = stripos($message_html, "<a", $offset);
-		if($start === false)
+		if($start === FALSE)
 		{
 			break;
 		}
 		$end = stripos($message_html, "</a>", $start);
-		if($end === false)
+		if($end === FALSE)
 		{
 			break;
 		}

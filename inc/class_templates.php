@@ -58,8 +58,8 @@ class templates
 	 * Gets templates.
 	 *
 	 * @param string The title of the template to get.
-	 * @param boolean True if template contents must be escaped, false if not.
-	 * @param boolean True to output HTML comments, false to not output.
+	 * @param boolean TRUE if template contents must be escaped, FALSE if not.
+	 * @param boolean TRUE to output HTML comments, FALSE to not output.
 	 * @return string The template HTML.
 	 */
 	function get($title, $eslashes=1, $htmlcomments=1)
@@ -72,12 +72,12 @@ class templates
 		if($mybb->dev_mode == 1)
 		{
 			$template = $this->dev_get($title);
-			if($template !== false)
+			if($template !== FALSE)
 			{
 				$this->cache[$title] = $template;
 			}
 		}
-		
+
 		if(!isset($this->cache[$title]))
 		{
 			$query = $db->simple_select("templates", "template", "title='".$db->escape_string($title)."' AND sid IN ('-2','-1','".$theme['templateset']."')", array('order_by' => 'sid', 'order_dir' => 'DESC', 'limit' => 1));
@@ -87,7 +87,7 @@ class templates
 			{
 				$this->uncached_templates[$title] = $title;
 			}
-			
+
 			if(!$gettemplate)
 			{
 				$gettemplate['template'] = "";
@@ -108,7 +108,7 @@ class templates
 				$template = "\n{$template}\n";
 			}
 		}
-		
+
 		if($eslashes)
 		{
 			$template = str_replace("\\'", "'", addslashes($template));
@@ -131,7 +131,7 @@ class templates
 			}
 			else
 			{
-				return false;
+				return FALSE;
 			}
 		}
 		$res = $template_xml->xpath("//template[@name='{$title}']");

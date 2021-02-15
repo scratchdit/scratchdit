@@ -59,7 +59,7 @@ class UserDataHandler extends DataHandler
 	/**
 	 * Verifies if a username is valid or invalid.
 	 *
-	 * @param boolean True when valid, false when invalid.
+	 * @param boolean TRUE when valid, FALSE when invalid.
 	 */
 	function verify_username()
 	{
@@ -79,37 +79,37 @@ class UserDataHandler extends DataHandler
 		if($username == '')
 		{
 			$this->set_error('missing_username');
-			return false;
+			return FALSE;
 		}
 
 		// Check if the username belongs to the list of banned usernames.
-		if(is_banned_username($username, true))
+		if(is_banned_username($username, TRUE))
 		{
 			$this->set_error('banned_username');
-			return false;
+			return FALSE;
 		}
 
 		// Check for certain characters in username (<, >, &, commas and slashes)
-		if(strpos($username, "<") !== false || strpos($username, ">") !== false || strpos($username, "&") !== false || my_strpos($username, "\\") !== false || strpos($username, ";") !== false || strpos($username, ",") !== false)
+		if(strpos($username, "<") !== FALSE || strpos($username, ">") !== FALSE || strpos($username, "&") !== FALSE || my_strpos($username, "\\") !== FALSE || strpos($username, ";") !== FALSE || strpos($username, ",") !== FALSE)
 		{
 			$this->set_error("bad_characters_username");
-			return false;
+			return FALSE;
 		}
 
 		// Check if the username is of the correct length.
 		if(($mybb->settings['maxnamelength'] != 0 && my_strlen($username) > $mybb->settings['maxnamelength']) || ($mybb->settings['minnamelength'] != 0 && my_strlen($username) < $mybb->settings['minnamelength']))
 		{
 			$this->set_error('invalid_username_length', array($mybb->settings['minnamelength'], $mybb->settings['maxnamelength']));
-			return false;
+			return FALSE;
 		}
 
-		return true;
+		return TRUE;
 	}
 
 	/**
 	 * Verifies if a usertitle is valid or invalid.
 	 *
-	 * @param boolean True when valid, false when invalid.
+	 * @param boolean TRUE when valid, FALSE when invalid.
 	 */
 	function verify_usertitle()
 	{
@@ -121,16 +121,16 @@ class UserDataHandler extends DataHandler
 		if($mybb->settings['customtitlemaxlength'] != 0 && my_strlen($usertitle) > $mybb->settings['customtitlemaxlength'])
 		{
 			$this->set_error('invalid_usertitle_length', $mybb->settings['customtitlemaxlength']);
-			return false;
+			return FALSE;
 		}
 
-		return true;
+		return TRUE;
 	}
-	
+
 	/**
 	 * Verifies if a username is already in use or not.
 	 *
-	 * @return boolean False when the username is not in use, true when it is.
+	 * @return boolean FALSE when the username is not in use, TRUE when it is.
 	 */
 	function verify_username_exists()
 	{
@@ -138,30 +138,30 @@ class UserDataHandler extends DataHandler
 
 		$username = &$this->data['username'];
 
-		$uid_check = "";		
+		$uid_check = "";
 		if($this->data['uid'])
 		{
 			$uid_check = " AND uid!='{$this->data['uid']}'";
 		}
-		
+
 		$query = $db->simple_select("users", "COUNT(uid) AS count", "LOWER(username)='".$db->escape_string(strtolower(trim($username)))."'{$uid_check}");
-		
+
 		$user_count = $db->fetch_field($query, "count");
 		if($user_count > 0)
 		{
 			$this->set_error("username_exists", array($username));
-			return true;
+			return TRUE;
 		}
 		else
 		{
-			return false;
+			return FALSE;
 		}
 	}
 
 	/**
 	* Verifies if a new password is valid or not.
 	*
-	* @return boolean True when valid, false when invalid.
+	* @return boolean TRUE when valid, FALSE when invalid.
 	*/
 	function verify_password()
 	{
@@ -173,7 +173,7 @@ class UserDataHandler extends DataHandler
 		if(my_strlen($user['password']) < $mybb->settings['minpasswordlength'] || my_strlen($user['password']) > $mybb->settings['maxpasswordlength'])
 		{
 			$this->set_error('invalid_password_length', array($mybb->settings['minpasswordlength'], $mybb->settings['maxpasswordlength']));
-			return false;
+			return FALSE;
 		}
 
 		// See if the board has "require complex passwords" enabled.
@@ -184,7 +184,7 @@ class UserDataHandler extends DataHandler
 			if(!preg_match("/^.*(?=.{".$mybb->settings['minpasswordlength'].",})(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).*$/", $user['password']))
 			{
 				$this->set_error('no_complex_characters');
-				return false;
+				return FALSE;
 			}
 		}
 
@@ -192,7 +192,7 @@ class UserDataHandler extends DataHandler
 		if(isset($user['password2']) && $user['password'] != $user['password2'])
 		{
 			$this->set_error("passwords_dont_match");
-			return false;
+			return FALSE;
 		}
 
 		// MD5 the password
@@ -207,23 +207,23 @@ class UserDataHandler extends DataHandler
 		// Generate the user login key
 		$user['loginkey'] = generate_loginkey();
 
-		return true;
+		return TRUE;
 	}
 
 	/**
 	* Verifies usergroup selections and other group details.
 	*
-	* @return boolean True when valid, false when invalid.
+	* @return boolean TRUE when valid, FALSE when invalid.
 	*/
 	function verify_usergroup()
 	{
 		$user = &$this->data;
-		return true;
+		return TRUE;
 	}
 	/**
 	* Verifies if an email address is valid or not.
 	*
-	* @return boolean True when valid, false when invalid.
+	* @return boolean TRUE when valid, FALSE when invalid.
 	*/
 	function verify_email()
 	{
@@ -235,23 +235,23 @@ class UserDataHandler extends DataHandler
 		if(trim_blank_chrs($user['email']) == '')
 		{
 			$this->set_error('missing_email');
-			return false;
+			return FALSE;
 		}
 
 		// Check if this is a proper email address.
 		if(!validate_email_format($user['email']))
 		{
 			$this->set_error('invalid_email_format');
-			return false;
+			return FALSE;
 		}
 
 		// Check banned emails
-		if(is_banned_email($user['email'], true))
+		if(is_banned_email($user['email'], TRUE))
 		{
 			$this->set_error('banned_email');
-			return false;
+			return FALSE;
 		}
-		
+
 		// Check signed up emails
 		// Ignore the ACP because the Merge System sometimes produces users with duplicate email addresses (Not A Bug)
 		if($mybb->settings['allowmultipleemails'] == 0 && !defined("IN_ADMINCP"))
@@ -259,7 +259,7 @@ class UserDataHandler extends DataHandler
 			if(email_already_in_use($user['email'], $user['uid']))
 			{
 				$this->set_error('email_already_in_use');
-				return false;
+				return FALSE;
 			}
 		}
 
@@ -267,16 +267,16 @@ class UserDataHandler extends DataHandler
 		if(isset($user['email2']) && $user['email'] != $user['email2'])
 		{
 			$this->set_error("emails_dont_match");
-			return false;
+			return FALSE;
 		}
 
-		return true;
+		return TRUE;
 	}
 
 	/**
 	* Verifies if a website is valid or not.
 	*
-	* @return boolean True when valid, false when invalid.
+	* @return boolean TRUE when valid, FALSE when invalid.
 	*/
 	function verify_website()
 	{
@@ -285,7 +285,7 @@ class UserDataHandler extends DataHandler
 		if(empty($website) || my_strtolower($website) == 'http://' || my_strtolower($website) == 'https://')
 		{
 			$website = '';
-			return true;
+			return TRUE;
 		}
 
 		// Does the website start with http(s)://?
@@ -295,13 +295,13 @@ class UserDataHandler extends DataHandler
 			$website = "http://".$website;
 		}
 
-		return true;
+		return TRUE;
 	}
 
 	/**
 	 * Verifies if an ICQ number is valid or not.
 	 *
-	 * @return boolean True when valid, false when invalid.
+	 * @return boolean TRUE when valid, FALSE when invalid.
 	 */
 	function verify_icq()
 	{
@@ -310,33 +310,33 @@ class UserDataHandler extends DataHandler
 		if($icq != '' && !is_numeric($icq))
 		{
 			$this->set_error("invalid_icq_number");
-			return false;
+			return FALSE;
 		}
 		$icq = intval($icq);
-		return true;
+		return TRUE;
 	}
 
 	/**
 	 * Verifies if an MSN Messenger address is valid or not.
 	 *
-	 * @return boolean True when valid, false when invalid.
+	 * @return boolean TRUE when valid, FALSE when invalid.
 	 */
 	function verify_msn()
 	{
 		$msn = &$this->data['msn'];
 
-		if($msn != '' && validate_email_format($msn) == false)
+		if($msn != '' && validate_email_format($msn) == FALSE)
 		{
 			$this->set_error("invalid_msn_address");
-			return false;
+			return FALSE;
 		}
-		return true;
+		return TRUE;
 	}
 
 	/**
 	* Verifies if a birthday is valid or not.
 	*
-	* @return boolean True when valid, false when invalid.
+	* @return boolean TRUE when valid, FALSE when invalid.
 	*/
 	function verify_birthday()
 	{
@@ -347,7 +347,7 @@ class UserDataHandler extends DataHandler
 
 		if(!is_array($birthday))
 		{
-			return true;
+			return TRUE;
 		}
 
 		// Sanitize any input we have
@@ -361,7 +361,7 @@ class UserDataHandler extends DataHandler
 			if($birthday['day'] < 1 || $birthday['day'] > 31 || $birthday['month'] < 1 || $birthday['month'] > 12 || ($birthday['month'] == 2 && $birthday['day'] > 29))
 			{
 				$this->set_error("invalid_birthday");
-				return false;
+				return FALSE;
 			}
 		}
 
@@ -370,14 +370,14 @@ class UserDataHandler extends DataHandler
 		if($birthday['day'] > $months[$birthday['month']-1])
 		{
 			$this->set_error("invalid_birthday");
-			return false;
+			return FALSE;
 		}
 
 		// Error if a year exists and the year is out of range
 		if($birthday['year'] != 0 && ($birthday['year'] < (date("Y")-100)) || $birthday['year'] > date("Y"))
 		{
 			$this->set_error("invalid_birthday");
-			return false;
+			return FALSE;
 		}
 		else if($birthday['year'] == date("Y"))
 		{
@@ -385,7 +385,7 @@ class UserDataHandler extends DataHandler
 			if($birthday['month'] > date("m") || ($birthday['month'] == date("m") && $birthday['day'] > date("d")))
 			{
 				$this->set_error("invalid_birthday");
-				return false;
+				return FALSE;
 			}
 		}
 
@@ -393,12 +393,12 @@ class UserDataHandler extends DataHandler
 		if($mybb->settings['coppa'] == "enabled" && ($birthday['year'] == 0 || !$birthday['year']))
 		{
 			$this->set_error("invalid_birthday_coppa");
-			return false;
+			return FALSE;
 		}
 		elseif($mybb->settings['coppa'] == "deny" && $birthday['year'] > (date("Y")-13))
 		{
 			$this->set_error("invalid_birthday_coppa2");
-			return false;
+			return FALSE;
 		}
 
 		// Make the user's birthday field
@@ -417,31 +417,31 @@ class UserDataHandler extends DataHandler
 			// No field is specified, so return an empty string for an unknown birthday
 			$user['bday'] = '';
 		}
-		return true;
+		return TRUE;
 	}
-	
+
 	/**
 	* Verifies if the post count field is filled in correctly.
 	*
-	* @return boolean True when valid, false when invalid.
+	* @return boolean TRUE when valid, FALSE when invalid.
 	*/
 	function verify_postnum()
 	{
 		$user = &$this->data;
-		
+
 		if($user['postnum'] < 0)
 		{
 			$this->set_error("invalid_postnum");
-			return false;
+			return FALSE;
 		}
-		
-		return true;
+
+		return TRUE;
 	}
 
 	/**
 	* Verifies if a profile fields are filled in correctly.
 	*
-	* @return boolean True when valid, false when invalid.
+	* @return boolean TRUE when valid, FALSE when invalid.
 	*/
 	function verify_profile_fields()
 	{
@@ -454,7 +454,7 @@ class UserDataHandler extends DataHandler
 		$userfields = array();
 		$comma = '';
 		$editable = '';
-		
+
 		if(!$this->data['profile_fields_editable'])
 		{
 			$editable = "editable=1";
@@ -537,13 +537,13 @@ class UserDataHandler extends DataHandler
 			$user['user_fields'][$field] = $options;
 		}
 
-		return true;
+		return TRUE;
 	}
 
 	/**
 	* Verifies if an optionally entered referrer exists or not.
 	*
-	* @return boolean True when valid, false when invalid.
+	* @return boolean TRUE when valid, FALSE when invalid.
 	*/
 	function verify_referrer()
 	{
@@ -559,23 +559,23 @@ class UserDataHandler extends DataHandler
 			if(!$referrer['uid'])
 			{
 				$this->set_error('invalid_referrer', array($user['referrer']));
-				return false;
+				return FALSE;
 			}
 		}
 		$user['referrer_uid'] = $referrer['uid'];
 
-		return true;
+		return TRUE;
 	}
 
 	/**
 	* Verifies user options.
 	*
-	* @return boolean True when valid, false when invalid.
+	* @return boolean TRUE when valid, FALSE when invalid.
 	*/
 	function verify_options()
 	{
 		global $mybb;
-		
+
 		$options = &$this->data['options'];
 
 		// Verify yes/no options.
@@ -591,7 +591,7 @@ class UserDataHandler extends DataHandler
 		$this->verify_yesno_option($options, 'showavatars', 1);
 		$this->verify_yesno_option($options, 'showquickreply', 1);
 		$this->verify_yesno_option($options, 'showredirect', 1);
-		
+
 		if($mybb->settings['postlayout'] == 'classic')
 		{
 			$this->verify_yesno_option($options, 'classicpostbit', 1);
@@ -600,7 +600,7 @@ class UserDataHandler extends DataHandler
 		{
 			$this->verify_yesno_option($options, 'classicpostbit', 0);
 		}
-		
+
 		if(array_key_exists('subscriptionmethod', $options))
 		{
 			// Value out of range
@@ -620,7 +620,7 @@ class UserDataHandler extends DataHandler
 				$options['dstcorrection'] = 0;
 			}
 		}
-		
+
 		if($options['dstcorrection'] == 1)
 		{
 			$options['dst'] = 1;
@@ -642,7 +642,7 @@ class UserDataHandler extends DataHandler
         {
             $options['showcodebuttons'] = 1;
         }
-		
+
 		if($this->method == "insert" || (isset($options['threadmode']) && $options['threadmode'] != "linear" && $options['threadmode'] != "threaded"))
 		{
 			if($mybb->settings['threadusenetstyle'])
@@ -702,7 +702,7 @@ class UserDataHandler extends DataHandler
 	/**
 	 * Verifies if a registration date is valid or not.
 	 *
-	 * @return boolean True when valid, false when invalid.
+	 * @return boolean TRUE when valid, FALSE when invalid.
 	 */
 	function verify_regdate()
 	{
@@ -714,13 +714,13 @@ class UserDataHandler extends DataHandler
 		{
 			$regdate = TIME_NOW;
 		}
-		return true;
+		return TRUE;
 	}
 
 	/**
 	 * Verifies if a last visit date is valid or not.
 	 *
-	 * @return boolean True when valid, false when invalid.
+	 * @return boolean TRUE when valid, FALSE when invalid.
 	 */
 	function verify_lastvisit()
 	{
@@ -732,14 +732,14 @@ class UserDataHandler extends DataHandler
 		{
 			$lastvisit = TIME_NOW;
 		}
-		return true;
+		return TRUE;
 
 	}
 
 	/**
 	 * Verifies if a last active date is valid or not.
 	 *
-	 * @return boolean True when valid, false when invalid.
+	 * @return boolean TRUE when valid, FALSE when invalid.
 	 */
 	function verify_lastactive()
 	{
@@ -751,14 +751,14 @@ class UserDataHandler extends DataHandler
 		{
 			$lastactive = TIME_NOW;
 		}
-		return true;
+		return TRUE;
 
 	}
 
 	/**
 	 * Verifies if an away mode status is valid or not.
 	 *
-	 * @return boolean True when valid, false when invalid.
+	 * @return boolean TRUE when valid, FALSE when invalid.
 	 */
 	function verify_away()
 	{
@@ -772,7 +772,7 @@ class UserDataHandler extends DataHandler
 			$user['away']['date'] = 0;
 			$user['away']['returndate'] = 0;
 			$user['away']['reason'] = '';
-			return true;
+			return TRUE;
 		}
 		else if($user['away']['returndate'])
 		{
@@ -780,19 +780,19 @@ class UserDataHandler extends DataHandler
 			if(!$returnday || !$returnmonth || !$returnyear)
 			{
 				$this->set_error("missing_returndate");
-				return false;
+				return FALSE;
 			}
-			
+
 			// Validate the return date lengths
 			$user['away']['returndate'] = substr($returnday, 0, 2).'-'.substr($returnmonth, 0, 2).'-'.substr($returnyear, 0, 4);
 		}
-		return true;
+		return TRUE;
 	}
 
 	/**
 	 * Verifies if a langage is valid for this user or not.
 	 *
-	 * @return boolean True when valid, false when invalid.
+	 * @return boolean TRUE when valid, FALSE when invalid.
 	 */
 	function verify_language()
 	{
@@ -804,33 +804,33 @@ class UserDataHandler extends DataHandler
 		if($language != '' && !$lang->language_exists($language))
 		{
 			$this->set_error("invalid_language");
-			return false;
+			return FALSE;
 		}
-		return true;
+		return TRUE;
 	}
-	
+
 	/**
 	 * Verifies if this is coming from a spam bot or not
 	 *
-	 * @return boolean True when valid, false when invalid.
+	 * @return boolean TRUE when valid, FALSE when invalid.
 	 */
 	function verify_checkfields()
 	{
 		$user = &$this->data;
-		
+
 		// An invalid language has been specified?
-		if($user['regcheck1'] !== "" || $user['regcheck2'] !== "true")
+		if($user['regcheck1'] !== "" || $user['regcheck2'] !== "TRUE")
 		{
 			$this->set_error("invalid_checkfield");
-			return false;
+			return FALSE;
 		}
-		return true;
+		return TRUE;
 	}
 
 	/**
 	* Validate all user assets.
 	*
-	* @return boolean True when valid, false when invalid.
+	* @return boolean TRUE when valid, FALSE when invalid.
 	*/
 	function validate_user()
 	{
@@ -929,18 +929,18 @@ class UserDataHandler extends DataHandler
 		{
 			$this->verify_checkfields();
 		}
-		
+
 		$plugins->run_hooks("datahandler_user_validate", $this);
-		
+
 		// We are done validating, return.
-		$this->set_validated(true);
+		$this->set_validated(TRUE);
 		if(count($this->get_errors()) > 0)
 		{
-			return false;
+			return FALSE;
 		}
 		else
 		{
-			return true;
+			return TRUE;
 		}
 	}
 
@@ -1031,7 +1031,7 @@ class UserDataHandler extends DataHandler
 			"classicpostbit" => $user['options']['classicpostbit'],
 			"usernotes" => ''
 		);
-		
+
 		if($user['options']['dstcorrection'] == 1)
 		{
 			$this->user_insert_data['dst'] = 1;
@@ -1042,11 +1042,11 @@ class UserDataHandler extends DataHandler
 		}
 
 		$plugins->run_hooks("datahandler_user_insert", $this);
-		
+
 		$this->uid = $db->insert_query("users", $this->user_insert_data);
-		
+
 		$user['user_fields']['ufid'] = $this->uid;
-		
+
 		$query = $db->simple_select("profilefields", "fid");
 		while($profile_field = $db->fetch_array($query))
 		{
@@ -1057,8 +1057,8 @@ class UserDataHandler extends DataHandler
 			$user['user_fields']["fid{$profile_field['fid']}"] = '';
 		}
 
-		$db->insert_query("userfields", $user['user_fields'], false);
-		
+		$db->insert_query("userfields", $user['user_fields'], FALSE);
+
 		if($this->user_insert_data['referrer'] != 0)
 		{
 			$db->write_query("
@@ -1244,20 +1244,20 @@ class UserDataHandler extends DataHandler
 		{
 			unset($this->user_update_data['pmnotice']);
 		}
-		
+
 		$plugins->run_hooks("datahandler_user_update", $this);
-		
+
 		if(count($this->user_update_data) < 1 && empty($user['user_fields']))
-		{ 
-			return false; 
-		}		
+		{
+			return FALSE;
+		}
 
 		if(count($this->user_update_data) > 0)
 		{
 			// Actual updating happens here.
 			$db->update_query("users", $this->user_update_data, "uid='{$user['uid']}'");
 		}
-		
+
 		$cache->update_moderators();
 		if(isset($user['bday']) || isset($user['username']))
 		{
@@ -1286,7 +1286,7 @@ class UserDataHandler extends DataHandler
 				}
 				$db->insert_query("userfields", $user_fields);
 			}
-			$db->update_query("userfields", $user['user_fields'], "ufid='{$user['uid']}'", false);
+			$db->update_query("userfields", $user['user_fields'], "ufid='{$user['uid']}'", FALSE);
 		}
 
 		// Let's make sure the user's name gets changed everywhere in the db if it changed.
@@ -1303,7 +1303,7 @@ class UserDataHandler extends DataHandler
 			$db->update_query("threads", $username_update, "uid='{$user['uid']}'");
 			$db->update_query("threads", $lastposter_update, "lastposteruid='{$user['uid']}'");
 			$db->update_query("forums", $lastposter_update, "lastposteruid='{$user['uid']}'");
-			
+
 			$stats = $cache->read("stats");
 			if($stats['lastuid'] == $user['uid'])
 			{

@@ -14,7 +14,7 @@
  *
  * @param int The user ID to perform the action on.
  * @param int the moderators user ID
- * @return boolean True if the user has necessary permissions
+ * @return boolean TRUE if the user has necessary permissions
  */
 function modcp_can_manage_user($uid)
 {
@@ -25,14 +25,14 @@ function modcp_can_manage_user($uid)
 	// Current user is only a local moderator or use with ModCP permissions, cannot manage super mods or admins
 	if($mybb->usergroup['issupermod'] == 0 && ($user_permissions['issupermod'] == 1 || $user_permissions['cancp'] == 1))
 	{
-		return false;
+		return FALSE;
 	}
 	// Current user is a super mod or is an administrator
-	else if($user_permissions['cancp'] == 1 && ($mybb->usergroup['cancp'] != 1 || (is_super_admin($uid) && !is_super_admin($mybb->user['uid'])))) 
+	else if($user_permissions['cancp'] == 1 && ($mybb->usergroup['cancp'] != 1 || (is_super_admin($uid) && !is_super_admin($mybb->user['uid']))))
 	{
-		return false;
+		return FALSE;
 	}
-	return true;
+	return TRUE;
 }
 
 function fetch_forum_announcements($pid=0, $depth=1)
@@ -94,17 +94,17 @@ function fetch_forum_announcements($pid=0, $depth=1)
 			{
 				// This forum is moderated by the user, so print out the forum's title, and its announcements
 				$trow = alt_trow();
-				
+
 				$padding = 40*($depth-1);
-				
+
 				eval("\$announcements_forum .= \"".$templates->get("modcp_announcements_forum")."\";");
-					
+
 				if($announcements[$forum['fid']])
 				{
 					foreach($announcements[$forum['fid']] as $aid => $announcement)
 					{
 						$trow = alt_trow();
-						
+
 						if($announcement['enddate'] < TIME_NOW && $announcement['enddate'] != 0)
 						{
 							$icon = "<img src=\"{$theme['imgdir']}/minioff.gif\" alt=\"({$lang->expired})\" title=\"{$lang->expired_announcement}\"  style=\"vertical-align: middle;\" /> ";
@@ -113,9 +113,9 @@ function fetch_forum_announcements($pid=0, $depth=1)
 						{
 							$icon = "<img src=\"{$theme['imgdir']}/minion.gif\" alt=\"({$lang->active})\" title=\"{$lang->active_announcement}\"  style=\"vertical-align: middle;\" /> ";
 						}
-						
+
 						$subject = htmlspecialchars_uni($announcement['subject']);
-								
+
 						eval("\$announcements_forum .= \"".$templates->get("modcp_announcements_announcement")."\";");
 					}
 				}

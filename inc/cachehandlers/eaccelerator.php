@@ -18,11 +18,11 @@ class eacceleratorCacheHandler
 	 * Unique identifier representing this copy of MyBB
 	 */
 	public $unique_id;
-	
-	function eacceleratorCacheHandler($silent=false)
+
+	function eacceleratorCacheHandler($silent=FALSE)
 	{
 		global $mybb;
-		
+
 		if(!function_exists("eaccelerator_get"))
 		{
 			// Check if our DB engine is loaded
@@ -33,13 +33,13 @@ class eacceleratorCacheHandler
 				die;
 			}
 		}
-		return false;
+		return FALSE;
 	}
 
 	/**
 	 * Connect and initialize this handler.
 	 *
-	 * @return boolean True if successful, false on failure
+	 * @return boolean TRUE if successful, FALSE on failure
 	 */
 	function connect()
 	{
@@ -48,34 +48,34 @@ class eacceleratorCacheHandler
 		// Set a unique identifier for all queries in case other forums on this server also use this cache handler
 		$this->unique_id = md5(MYBB_ROOT);
 
-		return true;
+		return TRUE;
 	}
-	
+
 	/**
 	 * Retrieve an item from the cache.
 	 *
 	 * @param string The name of the cache
-	 * @param boolean True if we should do a hard refresh
-	 * @return mixed Cache data if successful, false if failure
+	 * @param boolean TRUE if we should do a hard refresh
+	 * @return mixed Cache data if successful, FALSE if failure
 	 */
-	
-	function fetch($name, $hard_refresh=false)
+
+	function fetch($name, $hard_refresh=FALSE)
 	{
 		$data = eaccelerator_get($this->unique_id."_".$name);
-		if($data === false)
+		if($data === FALSE)
 		{
-			return false;
+			return FALSE;
 		}
 
 		return @unserialize($data);
 	}
-	
+
 	/**
 	 * Write an item to the cache.
 	 *
 	 * @param string The name of the cache
 	 * @param mixed The data to write to the cache item
-	 * @return boolean True on success, false on failure
+	 * @return boolean TRUE on success, FALSE on failure
 	 */
 	function put($name, $contents)
 	{
@@ -84,30 +84,30 @@ class eacceleratorCacheHandler
 		eaccelerator_unlock($this->unique_id."_".$name);
 		return $status;
 	}
-	
+
 	/**
 	 * Delete a cache
 	 *
 	 * @param string The name of the cache
-	 * @return boolean True on success, false on failure
+	 * @return boolean TRUE on success, FALSE on failure
 	 */
 	function delete($name)
 	{
 		return eaccelerator_rm($this->unique_id."_".$name);
 	}
-	
+
 	/**
 	 * Disconnect from the cache
 	 */
 	function disconnect()
 	{
-		return true;
+		return TRUE;
 	}
-	
+
 	function size_of($name)
 	{
 		global $lang;
-		
+
 		return $lang->na;
 	}
 }

@@ -39,21 +39,21 @@ class apcCacheHandler implements CacheHandlerInterface
 	/**
 	 * Connect and initialize this handler.
 	 *
-	 * @return boolean True if successful, false on failure
+	 * @return boolean TRUE if successful, FALSE on failure
 	 */
 	function connect()
 	{
 		// Set a unique identifier for all queries in case other forums on this server also use this cache handler
 		$this->unique_id = md5(MYBB_ROOT);
 
-		return true;
+		return TRUE;
 	}
 
 	/**
 	 * Connect and initialize this handler.
 	 *
 	 * @param string $name
-	 * @return boolean True if successful, false on failure
+	 * @return boolean TRUE if successful, FALSE on failure
 	 */
 	function fetch($name)
 	{
@@ -63,7 +63,7 @@ class apcCacheHandler implements CacheHandlerInterface
 			return unserialize($data);
 		}
 
-		return false;
+		return FALSE;
 	}
 
 	/**
@@ -71,7 +71,7 @@ class apcCacheHandler implements CacheHandlerInterface
 	 *
 	 * @param string $name The name of the cache
 	 * @param mixed $contents The data to write to the cache item
-	 * @return boolean True on success, false on failure
+	 * @return boolean TRUE on success, FALSE on failure
 	 */
 	function put($name, $contents)
 	{
@@ -83,7 +83,7 @@ class apcCacheHandler implements CacheHandlerInterface
 	 * Delete a cache
 	 *
 	 * @param string $name The name of the cache
-	 * @return boolean True on success, false on failure
+	 * @return boolean TRUE on success, FALSE on failure
 	 */
 	function delete($name)
 	{
@@ -97,7 +97,7 @@ class apcCacheHandler implements CacheHandlerInterface
 	 */
 	function disconnect()
 	{
-		return true;
+		return TRUE;
 	}
 
 	/**

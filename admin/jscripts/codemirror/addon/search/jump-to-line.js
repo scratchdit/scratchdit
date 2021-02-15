@@ -18,7 +18,7 @@
   "use strict";
 
   function dialog(cm, text, shortText, deflt, f) {
-    if (cm.openDialog) { cm.openDialog(text, f, {value: deflt, selectValueOnOpen: true});
+    if (cm.openDialog) { cm.openDialog(text, f, {value: deflt, selectValueOnOpen: TRUE});
     } else { f(prompt(shortText, deflt));
     }
   }

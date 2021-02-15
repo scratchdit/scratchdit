@@ -17,7 +17,7 @@
 
 if(!function_exists('memory_get_peak_usage'))
 {
-	function memory_get_peak_usage($real_usage=false)
+	function memory_get_peak_usage($real_usage=FALSE)
 	{
 		return memory_get_usage($real_usage);
 	}

@@ -13,7 +13,7 @@ Language.syntax = [
 	{ input : /(\?&gt;)/g, output : '$1</strong>' }, // .*?>
 	{ input : /(&lt;\?php|&lt;\?=|&lt;\?|\?&gt;)/g, output : '<cite>$1</cite>' }, // php tags
 	{ input : /(\$[\w\.]*)/g, output : '<a>$1</a>' }, // vars
-	{ input : /\b(false|true|and|or|xor|__FILE__|exception|__LINE__|array|as|break|case|class|const|continue|declare|default|die|do|echo|else|elseif|empty|enddeclare|endfor|endforeach|endif|endswitch|endwhile|eval|exit|extends|for|foreach|function|global|if|include|include_once|isset|list|new|print|require|require_once|return|static|switch|unset|use|while|__FUNCTION__|__CLASS__|__METHOD__|final|php_user_filter|interface|implements|extends|public|private|protected|abstract|clone|try|catch|throw|this)\b/g, output : '<u>$1</u>' }, // reserved words
+	{ input : /\b(FALSE|TRUE|and|or|xor|__FILE__|exception|__LINE__|array|as|break|case|class|const|continue|declare|default|die|do|echo|else|elseif|empty|enddeclare|endfor|endforeach|endif|endswitch|endwhile|eval|exit|extends|for|foreach|function|global|if|include|include_once|isset|list|new|print|require|require_once|return|static|switch|unset|use|while|__FUNCTION__|__CLASS__|__METHOD__|final|php_user_filter|interface|implements|extends|public|private|protected|abstract|clone|try|catch|throw|this)\b/g, output : '<u>$1</u>' }, // reserved words
 	{ input : /([^:])\/\/(.*?)(<br|<\/P)/g, output : '$1<i>//$2</i>$3' }, // php comments //
 	{ input : /([^:])#(.*?)(<br|<\/P)/g, output : '$1<i>#$2</i>$3' }, // php comments #
 	{ input : /\/\*(.*?)\*\//g, output : '<i>/*$1*/</i>' }, // php comments /* */
@@ -27,8 +27,8 @@ Language.snippets = [
 	{ input : 'elseif', output : '}\nelseif($0) {\n\t' },
 	{ input : 'do', output : 'do{\n\t$0\n}\nwhile();' },
 	{ input : 'inc', output : 'include_once("$0");' },
-	{ input : 'fun', output : 'function $0(){\n\t\n}' },	
-	{ input : 'func', output : 'function $0(){\n\t\n}' },	
+	{ input : 'fun', output : 'function $0(){\n\t\n}' },
+	{ input : 'func', output : 'function $0(){\n\t\n}' },
 	{ input : 'while', output : 'while($0){\n\t\n}' },
 	{ input : 'for', output : 'for($0,,){\n\t\n}' },
 	{ input : 'fore', output : 'foreach($0 as ){\n\t\n}' },
@@ -36,10 +36,10 @@ Language.snippets = [
 	{ input : 'echo', output : 'echo \'$0\';' },
 	{ input : 'switch', output : 'switch($0) {\n\tcase "": break;\n\tdefault: ;\n}' },
 	{ input : 'case', output : 'case "$0" : break;' },
-	{ input : 'ret0', output : 'return false;' },
-	{ input : 'retf', output : 'return false;' },
-	{ input : 'ret1', output : 'return true;' },
-	{ input : 'rett', output : 'return true;' },
+	{ input : 'ret0', output : 'return FALSE;' },
+	{ input : 'retf', output : 'return FALSE;' },
+	{ input : 'ret1', output : 'return TRUE;' },
+	{ input : 'rett', output : 'return TRUE;' },
 	{ input : 'ret', output : 'return $0;' },
 	{ input : 'def', output : 'define(\'$0\',\'\');' },
 	{ input : '<?', output : 'php\n$0\n?>' }
@@ -50,7 +50,7 @@ Language.complete = [
 	{ input : '"', output : '"$0"' },
 	{ input : '(', output : '\($0\)' },
 	{ input : '[', output : '\[$0\]' },
-	{ input : '{', output : '{\n\t$0\n}' }		
+	{ input : '{', output : '{\n\t$0\n}' }
 ]
 
 Language.shortcuts = [

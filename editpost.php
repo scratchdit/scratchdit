@@ -172,7 +172,7 @@ if(!$mybb->input['attachmentaid'] && ($mybb->input['newattachment'] || $mybb->in
 	// If there's an attachment, check it and upload it
 	if($_FILES['attachment']['size'] > 0 && $forumpermissions['canpostattachments'] != 0 && ($mybb->settings['maxattachments'] == 0 || $attachcount < $mybb->settings['maxattachments']))
 	{
-		$update_attachment = false;
+		$update_attachment = FALSE;
 		if($mybb->input['updateattachment'] && ($mybb->usergroup['caneditattachments'] || $forumpermissions['caneditattachments']))
 		{
 			$update_attachment = TRUE;

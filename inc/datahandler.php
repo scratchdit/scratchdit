@@ -25,9 +25,9 @@ class DataHandler
 	/**
 	 * Whether or not the data has been validated. Note: "validated" != "valid".
 	 *
-	 * @var boolean True when validated, false when not validated.
+	 * @var boolean TRUE when validated, FALSE when not validated.
 	 */
-	public $is_validated = false;
+	public $is_validated = FALSE;
 
 	/**
 	 * The errors that occurred when handling data.
@@ -41,7 +41,7 @@ class DataHandler
 	 *
 	 * @var boolean
 	 */
-	public $admin_override = false;
+	public $admin_override = FALSE;
 
 	/**
 	 * Defines if we're performing an update or an insert.
@@ -81,10 +81,10 @@ class DataHandler
 	{
 		if(!is_array($data))
 		{
-			return false;
+			return FALSE;
 		}
 		$this->data = $data;
-		return true;
+		return TRUE;
 	}
 
 	/**
@@ -123,7 +123,7 @@ class DataHandler
 		// Load the language pack we need
 		if($this->language_file)
 		{
-			$lang->load($this->language_file, true);
+			$lang->load($this->language_file, TRUE);
 		}
 		// Prefix all the error codes with the language prefix.
 		foreach($this->errors as $error)
@@ -134,7 +134,7 @@ class DataHandler
 				$errors[] = $error['error_code'];
 				continue;
 			}
-			
+
 			if(!empty($error['data']) && !is_array($error['data']))
 			{
 				$error['data'] = array($error['data']);
@@ -156,9 +156,9 @@ class DataHandler
 	/**
 	 * Sets whether or not we are done validating.
 	 *
-	 * @param boolean True when done, false when not done.
+	 * @param boolean TRUE when done, FALSE when not done.
 	 */
-	function set_validated($validated = true)
+	function set_validated($validated = TRUE)
 	{
 		$this->is_validated = $validated;
 	}
@@ -166,20 +166,20 @@ class DataHandler
 	/**
 	 * Returns whether or not we are done validating.
 	 *
-	 * @return boolean True when done, false when not done.
+	 * @return boolean TRUE when done, FALSE when not done.
 	 */
 	function get_validated()
 	{
-		if($this->is_validated == true)
+		if($this->is_validated == TRUE)
 		{
-			return true;
+			return TRUE;
 		}
 		else
 		{
-			return false;
+			return FALSE;
 		}
 	}
-	
+
 	/**
 	* Verifies if yes/no options haven't been modified.
 	*

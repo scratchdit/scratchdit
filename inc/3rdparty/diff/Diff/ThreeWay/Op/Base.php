@@ -17,7 +17,7 @@ if(!defined("IN_MYBB"))
 
 class Horde_Text_Diff_ThreeWay_Op_Base
 {
-    public function __construct($orig = false, $final1 = false, $final2 = false)
+    public function __construct($orig = FALSE, $final1 = FALSE, $final2 = FALSE)
     {
         $this->orig = $orig ? $orig : array();
         $this->final1 = $final1 ? $final1 : array();
@@ -34,7 +34,7 @@ class Horde_Text_Diff_ThreeWay_Op_Base
             } elseif ($this->final2 === $this->orig) {
                 $this->_merged = &$this->final1;
             } else {
-                $this->_merged = false;
+                $this->_merged = FALSE;
             }
         }
 
@@ -43,6 +43,6 @@ class Horde_Text_Diff_ThreeWay_Op_Base
 
     public function isConflict()
     {
-        return $this->merged() === false;
+        return $this->merged() === FALSE;
     }
 }

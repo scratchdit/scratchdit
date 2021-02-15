@@ -16,70 +16,70 @@ class MyBB {
 	 * @var string
 	 */
 	public $version = "1.6.9";
-	
+
 	/**
 	 * The version code of MyBB we're running.
 	 *
 	 * @var integer
 	 */
 	public $version_code = 1609;
-	
+
 	/**
 	 * The current working directory.
 	 *
 	 * @var string
 	 */
 	public $cwd = ".";
-	
+
 	/**
 	 * Input variables received from the outer world.
 	 *
 	 * @var array
 	 */
 	public $input = array();
-	
+
 	/**
 	 * Cookie variables received from the outer world.
 	 *
 	 * @var array
 	 */
 	public $cookies = array();
-	
+
 	/**
 	 * Information about the current user.
 	 *
 	 * @var array
 	 */
 	public $user = array();
-	
+
 	/**
 	 * Information about the current usergroup.
 	 *
 	 * @var array
 	 */
 	public $usergroup = array();
-	
+
 	/**
 	 * MyBB settings.
 	 *
 	 * @var array
 	 */
 	public $settings = array();
-	
+
 	/**
 	 * Whether or not magic quotes are enabled.
 	 *
 	 * @var unknown_type
 	 */
 	public $magicquotes = 0;
-	
+
 	/**
 	 * MyBB configuration.
 	 *
 	 * @var array
 	 */
 	public $config = array();
-	
+
 	/**
 	 * The request method that called this page.
 	 *
@@ -105,23 +105,23 @@ class MyBB {
 			"sortby", "order"
 		)
 	);
-	
+
 	/**
 	 * Variables that are to be ignored from cleansing process
 	 *
 	 * @var array
 	 */
 	public $ignore_clean_variables = array();
-	
+
 	/**
 	 * Using built in shutdown functionality provided by register_shutdown_function for < PHP 5?
 	 */
-	public $use_shutdown = true;
-	
+	public $use_shutdown = TRUE;
+
 	/**
 	 * Debug mode?
 	 */
-	public $debug_mode = false;
+	public $debug_mode = FALSE;
 
 	/**
 	 * Constructor of class.
@@ -166,11 +166,11 @@ class MyBB {
 			@ini_set("magic_quotes_gpc", 0);
 			@ini_set("magic_quotes_runtime", 0);
 		}
-		
+
 		// Determine input
 		$this->parse_incoming($_GET);
 		$this->parse_incoming($_POST);
-		
+
 		if($_SERVER['REQUEST_METHOD'] == "POST")
 		{
 			$this->request_method = "post";
@@ -179,7 +179,7 @@ class MyBB {
 		{
 			$this->request_method = "get";
 		}
-		
+
 		// If we've got register globals on, then kill them too
 		if(@ini_get("register_globals") == 1)
 		{
@@ -192,13 +192,13 @@ class MyBB {
 
 		if(@ini_get("safe_mode") == 1)
 		{
-			$this->safemode = true;
+			$this->safemode = TRUE;
 		}
 
 		// Are we running in debug mode?
 		if(isset($this->input['debug']) && $this->input['debug'] == 1)
 		{
-			$this->debug_mode = true;
+			$this->debug_mode = TRUE;
 		}
 
 		if(isset($this->input['action']) && $this->input['action'] == "mybb_logo")
@@ -206,7 +206,7 @@ class MyBB {
 			require_once dirname(__FILE__)."/mybb_group.php";
 			output_logo();
 		}
-		
+
 		if(isset($this->input['intcheck']) && $this->input['intcheck'] == 1)
 		{
 			die("&#077;&#089;&#066;&#066;");
@@ -230,7 +230,7 @@ class MyBB {
 			$this->input[$key] = $val;
 		}
 	}
-	
+
 	/**
 	 * Parses the incoming cookies
 	 *
@@ -241,7 +241,7 @@ class MyBB {
 		{
 			return;
 		}
-		
+
 		$prefix_length = strlen($this->settings['cookieprefix']);
 
 		foreach($_COOKIE as $key => $val)
@@ -249,7 +249,7 @@ class MyBB {
 			if($prefix_length && substr($key, 0, $prefix_length) == $this->settings['cookieprefix'])
 			{
 				$key = substr($key, $prefix_length);
-				
+
 				// Fixes conflicts with one board having a prefix and another that doesn't on the same domain
 				// Gives priority to our cookies over others (overwrites them)
 				if($this->cookies[$key])
@@ -257,7 +257,7 @@ class MyBB {
 					unset($this->cookies[$key]);
 				}
 			}
-			
+
 			if(!$this->cookies[$key])
 			{
 				$this->cookies[$key] = $val;
@@ -343,7 +343,7 @@ class MyBB {
 	function trigger_generic_error($code)
 	{
 		global $error_handler;
-		
+
 		switch($code)
 		{
 			case "cache_no_write":
@@ -384,7 +384,7 @@ class MyBB {
 		}
 		$error_handler->trigger($message, $error_code);
 	}
-	
+
 	function __destruct()
 	{
 		// Run shutdown function

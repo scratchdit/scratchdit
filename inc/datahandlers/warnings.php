@@ -58,7 +58,7 @@ class WarningsHandler extends DataHandler
 	/**
 	* Validate a warning user assets.
 	*
-	* @return boolean True when valid, false when invalid.
+	* @return boolean TRUE when valid, FALSE when invalid.
 	*/
 	function validate_user()
 	{
@@ -71,28 +71,28 @@ class WarningsHandler extends DataHandler
 		if(!$user['uid'])
 		{
 			$this->set_error('error_invalid_user');
-			return false;
+			return FALSE;
 		}
 
 		if($user['uid'] == $mybb->user['uid'])
 		{
 			$this->set_error('error_cannot_warn_self');
-			return false;
+			return FALSE;
 		}
 
 		if($user['warningpoints'] >= $mybb->settings['maxwarningpoints'])
 		{
 			$this->set_error('error_user_reached_max_warning');
-			return false;
+			return FALSE;
 		}
 
-		return true;
+		return TRUE;
 	}
 
 	/**
 	* Validate a warning post.
 	*
-	* @return boolean True when valid, false when invalid.
+	* @return boolean TRUE when valid, FALSE when invalid.
 	*/
 	function validate_post()
 	{
@@ -103,16 +103,16 @@ class WarningsHandler extends DataHandler
 		if(!$post['pid'])
 		{
 			$this->set_error('error_invalid_post');
-			return false;
+			return FALSE;
 		}
 
-		return true;
+		return TRUE;
 	}
 
 	/**
 	* Validate a warning notes.
 	*
-	* @return boolean True when valid, false when invalid.
+	* @return boolean TRUE when valid, FALSE when invalid.
 	*/
 	function validate_notes()
 	{
@@ -121,16 +121,16 @@ class WarningsHandler extends DataHandler
 		if(!trim($warning['notes']))
 		{
 			$this->set_error('error_no_note');
-			return false;
+			return FALSE;
 		}
 
-		return true;
+		return TRUE;
 	}
 
 	/**
 	* Validate maximum warnings per day for current user.
 	*
-	* @return boolean True when valid, false when invalid.
+	* @return boolean TRUE when valid, FALSE when invalid.
 	*/
 	function validate_maximum()
 	{
@@ -144,17 +144,17 @@ class WarningsHandler extends DataHandler
 			if($given_today >= $mybb->usergroup['maxwarningsday'])
 			{
 				$this->set_error('reached_max_warnings_day', array(my_number_format($mybb->usergroup['maxwarningsday'])));
-				return false;
+				return FALSE;
 			}
 		}
 
-		return true;
+		return TRUE;
 	}
 
 	/**
 	* Validate warnings type.
 	*
-	* @return boolean True when valid, false when invalid.
+	* @return boolean TRUE when valid, FALSE when invalid.
 	*/
 	function validate_type()
 	{
@@ -168,13 +168,13 @@ class WarningsHandler extends DataHandler
 			if($mybb->settings['allowcustomwarnings'] == 0)
 			{
 				$this->set_error('error_cant_custom_warn');
-				return false;
+				return FALSE;
 			}
 
 			if(!$warning['custom_reason'])
 			{
 				$this->set_error('error_no_custom_reason');
-				return false;
+				return FALSE;
 			}
 
 			$warning['title'] = $warning['custom_reason'];
@@ -182,7 +182,7 @@ class WarningsHandler extends DataHandler
 			if(!$warning['custom_points'] || $warning['custom_points'] > $mybb->settings['maxwarningpoints'] || $warning['custom_points'] < 0)
 			{
 				$this->set_error('error_invalid_custom_points', array(my_number_format($mybb->settings['maxwarningpoints'])));
-				return false;
+				return FALSE;
 			}
 
 			$warning['points'] = round($warning['custom_points']);
@@ -212,7 +212,7 @@ class WarningsHandler extends DataHandler
 			{
 				// unkown expires_period
 				$this->set_error('error_invalid_expires_period');
-				return false;
+				return FALSE;
 			}
 		}
 		// Using a predefined warning type
@@ -224,7 +224,7 @@ class WarningsHandler extends DataHandler
 			if(!$this->warning_type)
 			{
 				$this->set_error('error_invalid_type');
-				return false;
+				return FALSE;
 			}
 
 			$warning['points'] = $this->warning_type['points'];
@@ -237,13 +237,13 @@ class WarningsHandler extends DataHandler
 			}
 		}
 
-		return true;
+		return TRUE;
 	}
 
 	/**
 	 * Validate a warning.
 	 *
-	 * @return boolean True when valid, false when invalid.
+	 * @return boolean TRUE when valid, FALSE when invalid.
 	 */
 	function validate_warning()
 	{
@@ -268,21 +268,21 @@ class WarningsHandler extends DataHandler
 		$plugins->run_hooks("datahandler_warnings_validate_warning", $this);
 
 		// We are done validating, return.
-		$this->set_validated(true);
+		$this->set_validated(TRUE);
 
 		if(count($this->get_errors()) > 0)
 		{
-			return false;
+			return FALSE;
 		}
 
-		return true;
+		return TRUE;
 	}
 
 	/**
 	* Gets a valid warning from the DB engine.
 	*
 	* @param int $wid
-	* @return array|bool array when valid, boolean false when invalid.
+	* @return array|bool array when valid, boolean FALSE when invalid.
 	*/
 	function get($wid)
 	{
@@ -291,7 +291,7 @@ class WarningsHandler extends DataHandler
 		$wid = (int)$wid;
 		if($wid <= 0)
 		{
-			return false;
+			return FALSE;
 		}
 
 		$query = $db->simple_select("warnings", "*", "wid='".$wid."'");
@@ -299,7 +299,7 @@ class WarningsHandler extends DataHandler
 
 		if(!$this->read_warning_data['wid'])
 		{
-			return false;
+			return FALSE;
 		}
 
 		return $this->read_warning_data;
@@ -308,7 +308,7 @@ class WarningsHandler extends DataHandler
 	/**
 	* Expire old warnings in the database.
 	*
-	* @return boolean True when finished.
+	* @return boolean TRUE when finished.
 	*/
 	function expire_warnings()
 	{
@@ -352,7 +352,7 @@ class WarningsHandler extends DataHandler
 			$db->update_query("users", $updated_user, "uid='".(int)$uid."'");
 		}
 
-		return true;
+		return TRUE;
 	}
 
 	/**
@@ -718,7 +718,7 @@ class WarningsHandler extends DataHandler
 		$warning['wid'] = (int)$warning['wid'];
 		if($warning['wid'] <= 0)
 		{
-			return false;
+			return FALSE;
 		}
 
 		$this->write_warning_data = array(

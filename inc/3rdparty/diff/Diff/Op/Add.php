@@ -24,7 +24,7 @@ class Horde_Text_Diff_Op_Add extends Horde_Text_Diff_Op_Base
     public function __construct($lines)
     {
         $this->final = $lines;
-        $this->orig = false;
+        $this->orig = FALSE;
     }
 
     public function reverse()

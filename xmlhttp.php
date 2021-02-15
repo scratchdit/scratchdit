@@ -18,7 +18,7 @@
  * This is done to make response times when using XML HTTP Requests faster and
  * less intense on the server.
  */
- 
+
 define("IN_MYBB", 1);
 
 // We don't want visits here showing up on the Who's Online
@@ -122,13 +122,13 @@ if($mybb->input['action'] == "get_users")
 	{
 		exit;
 	}
-	
+
 	// Send our headers.
 	header("Content-type: text/plain; charset={$charset}");
 
 	// Sanitize the input.
 	$mybb->input['query'] = str_replace(array("%", "_"), array("\\%", "\\_"), $mybb->input['query']);
-	
+
 	// Query for any matching users.
 	$query_options = array(
 		"order_by" => "username",
@@ -136,7 +136,7 @@ if($mybb->input['action'] == "get_users")
 		"limit_start" => 0,
 		"limit" => 15
 	);
-	
+
 	$query = $db->simple_select("users", "uid, username", "username LIKE '".$db->escape_string($mybb->input['query'])."%'", $query_options);
 	while($user = $db->fetch_array($query))
 	{
@@ -154,13 +154,13 @@ else if($mybb->input['action'] == "get_usergroups")
 	{
 		exit;
 	}
-	
+
 	// Send our headers.
 	header("Content-type: text/plain; charset={$charset}");
 
 	// Sanitize the input.
 	$mybb->input['query'] = str_replace(array("%", "_"), array("\\%", "\\_"), $mybb->input['query']);
-	
+
 	// Query for any matching usergroups.
 	$query_options = array(
 		"order_by" => "title",
@@ -168,7 +168,7 @@ else if($mybb->input['action'] == "get_usergroups")
 		"limit_start" => 0,
 		"limit" => 15
 	);
-	
+
 	$query = $db->simple_select("usergroups", "gid, title", "title LIKE '".$db->escape_string($mybb->input['query'])."%'", $query_options);
 	while($group = $db->fetch_array($query))
 	{
@@ -183,33 +183,33 @@ else if($mybb->input['action'] == "get_usergroups")
 else if($mybb->input['action'] == "edit_subject" && $mybb->request_method == "post")
 {
 	// Verify POST request
-	if(!verify_post_check($mybb->input['my_post_key'], true))
+	if(!verify_post_check($mybb->input['my_post_key'], TRUE))
 	{
 		xmlhttp_error($lang->invalid_post_code);
 	}
-	
+
 	// Editing a post subject.
 	if($mybb->input['pid'])
 	{
 		// Fetch the post from the database.
 		$post = get_post($mybb->input['pid']);
-		
+
 		// No result, die.
 		if(!$post['pid'])
 		{
 			xmlhttp_error($lang->post_doesnt_exist);
 		}
-		
+
 		// Fetch the thread associated with this post.
 		$thread = get_thread($post['tid']);
 	}
-	
+
 	// We're editing a thread subject.
 	else if($mybb->input['tid'])
 	{
 		// Fetch the thread.
 		$thread = get_thread($mybb->input['tid']);
-		
+
 		// Fetch some of the information from the first post of this thread.
 		$query_options = array(
 			"order_by" => "dateline",
@@ -226,10 +226,10 @@ else if($mybb->input['action'] == "edit_subject" && $mybb->request_method == "po
 	{
 		xmlhttp_error($lang->thread_doesnt_exist);
 	}
-	
+
 	// Fetch forum permissions.
 	$forumpermissions = forum_permissions($forum['fid']);
-	
+
 	// If this user is not a moderator with "caneditposts" permissions.
 	if(!is_moderator($forum['fid'], "caneditposts"))
 	{
@@ -249,11 +249,11 @@ else if($mybb->input['action'] == "edit_subject" && $mybb->request_method == "po
 			$lang->edit_time_limit = $lang->sprintf($lang->edit_time_limit, $mybb->settings['edittimelimit']);
 			xmlhttp_error($lang->edit_time_limit);
 		}
-		$ismod = false;
+		$ismod = FALSE;
 	}
 	else
 	{
-		$ismod = true;
+		$ismod = TRUE;
 	}
 	$subject = $mybb->input['value'];
 	if(my_strtolower($charset) != "utf-8")
@@ -270,8 +270,8 @@ else if($mybb->input['action'] == "edit_subject" && $mybb->request_method == "po
 		{
 			$subject = utf8_decode($subject);
 		}
-	}	
-	
+	}
+
 	// Set up posthandler.
 	require_once MYBB_ROOT."inc/datahandlers/post.php";
 	$posthandler = new PostDataHandler("update");
@@ -297,7 +297,7 @@ else if($mybb->input['action'] == "edit_subject" && $mybb->request_method == "po
 	else
 	{
 		$posthandler->update_post();
-		if($ismod == true)
+		if($ismod == TRUE)
 		{
 			$modlogdata = array(
 				"tid" => $thread['tid'],
@@ -307,32 +307,32 @@ else if($mybb->input['action'] == "edit_subject" && $mybb->request_method == "po
 			log_moderator_action($modlogdata, $lang->edited_post);
 		}
 	}
-	
+
 	require_once MYBB_ROOT."inc/class_parser.php";
 	$parser = new postParser;
 
 	// Send our headers.
 	header("Content-type: text/plain; charset={$charset}");
-	
+
 	$mybb->input['value'] = $parser->parse_badwords($mybb->input['value']);
-	
+
 	// Spit the subject back to the browser.
 	echo substr($mybb->input['value'], 0, 120); // 120 is the varchar length for the subject column
-	
+
 	// Close the connection.
 	exit;
 }
 else if($mybb->input['action'] == "edit_post")
-{	
+{
 	// Fetch the post from the database.
 	$post = get_post($mybb->input['pid']);
-		
+
 	// No result, die.
 	if(!$post['pid'])
 	{
 		xmlhttp_error($lang->post_doesnt_exist);
 	}
-	
+
 	// Fetch the thread associated with this post.
 	$thread = get_thread($post['tid']);
 
@@ -344,10 +344,10 @@ else if($mybb->input['action'] == "edit_post")
 	{
 		xmlhttp_error($lang->thread_doesnt_exist);
 	}
-	
+
 	// Fetch forum permissions.
 	$forumpermissions = forum_permissions($forum['fid']);
-	
+
 	// If this user is not a moderator with "caneditposts" permissions.
 	if(!is_moderator($forum['fid'], "caneditposts"))
 	{
@@ -379,9 +379,9 @@ else if($mybb->input['action'] == "edit_post")
 	{
 		// Send our headers.
 		header("Content-type: text/xml; charset={$charset}");
-		
+
 		$post['message'] = htmlspecialchars_uni($post['message']);
-		
+
 		// Send the contents of the post.
 		eval("\$inline_editor = \"".$templates->get("xmlhttp_inline_post_editor")."\";");
 		echo "<?xml version=\"1.0\" encoding=\"{$charset}\"?".">";
@@ -391,7 +391,7 @@ else if($mybb->input['action'] == "edit_post")
 	else if($mybb->input['do'] == "update_post")
 	{
 		// Verify POST request
-		if(!verify_post_check($mybb->input['my_post_key'], true))
+		if(!verify_post_check($mybb->input['my_post_key'], TRUE))
 		{
 			xmlhttp_error($lang->invalid_post_code);
 		}
@@ -412,7 +412,7 @@ else if($mybb->input['action'] == "edit_post")
 				$message = utf8_decode($message);
 			}
 		}
-		
+
 		// Set up posthandler.
 		require_once MYBB_ROOT."inc/datahandlers/post.php";
 		$posthandler = new PostDataHandler("update");
@@ -449,7 +449,7 @@ else if($mybb->input['action'] == "edit_post")
 
 		require_once MYBB_ROOT."inc/class_parser.php";
 		$parser = new postParser;
-		
+
 		$parser_options = array(
 			"allow_html" => $forum['allowhtml'],
 			"allow_mycode" => $forum['allowmycode'],
@@ -459,23 +459,23 @@ else if($mybb->input['action'] == "edit_post")
 			"me_username" => $post['username'],
 			"filter_badwords" => 1
 		);
-		
+
 		if($post['smilieoff'] == 1)
 		{
 			$parser_options['allow_smilies'] = 0;
 		}
-	
+
 		$post['message'] = $parser->parse_message($message, $parser_options);
-		
+
 		// Now lets fetch all of the attachments for these posts.
 		$query = $db->simple_select("attachments", "*", "pid='{$post['pid']}'");
 		while($attachment = $db->fetch_array($query))
 		{
 			$attachcache[$attachment['pid']][$attachment['aid']] = $attachment;
 		}
-		
+
 		require_once MYBB_ROOT."inc/functions_post.php";
-		
+
 		get_post_attachments($post['pid'], $post);
 
 		// Figure out if we need to show an "edited by" message
@@ -488,7 +488,7 @@ else if($mybb->input['action'] == "edit_post")
 			$post['editedprofilelink'] = build_profile_link($mybb->user['username'], $mybb->user['uid']);
 			eval("\$editedmsg = \"".$templates->get("postbit_editedby")."\";");
 		}
-		
+
 		// Send our headers.
 		header("Content-type: text/plain; charset={$charset}");
 		echo "<p>\n";
@@ -510,13 +510,13 @@ else if($mybb->input['action'] == "get_multiquoted")
 	}
 	// Divide up the cookie using our delimeter
 	$multiquoted = explode("|", $mybb->cookies['multiquote']);
-	
+
 	// No values - exit
 	if(!is_array($multiquoted))
 	{
 		exit;
 	}
-	
+
 	// Loop through each post ID and sanitize it before querying
 	foreach($multiquoted as $post)
 	{
@@ -525,7 +525,7 @@ else if($mybb->input['action'] == "get_multiquoted")
 
 	// Join the post IDs back together
 	$quoted_posts = implode(",", $quoted_posts);
-	
+
 	// Fetch unviewable forums
 	$unviewable_forums = get_unviewable_forums();
 	if($unviewable_forums)
@@ -533,7 +533,7 @@ else if($mybb->input['action'] == "get_multiquoted")
 		$unviewable_forums = "AND t.fid NOT IN ({$unviewable_forums})";
 	}
 	$message = '';
-	
+
 	// Are we loading all quoted posts or only those not in the current thread?
 	if(!$mybb->input['load_all'])
 	{
@@ -563,18 +563,18 @@ else if($mybb->input['action'] == "get_multiquoted")
 		{
 			continue;
 		}
-		
-		$message .= parse_quoted_message($quoted_post, false);
+
+		$message .= parse_quoted_message($quoted_post, FALSE);
 	}
 	if($mybb->settings['maxquotedepth'] != '0')
 	{
 		$message = remove_message_quotes($message);
 	}
-	
+
 	// Send our headers.
 	header("Content-type: text/plain; charset={$charset}");
 	echo $message;
-	exit;	
+	exit;
 }
 else if($mybb->input['action'] == "refresh_captcha")
 {
@@ -639,7 +639,7 @@ else if($mybb->input['action'] == "complex_password")
 }
 else if($mybb->input['action'] == "username_availability")
 {
-	if(!verify_post_check($mybb->input['my_post_key'], true))
+	if(!verify_post_check($mybb->input['my_post_key'], TRUE))
 	{
 		xmlhttp_error($lang->invalid_post_code);
 	}
@@ -661,9 +661,9 @@ else if($mybb->input['action'] == "username_availability")
 		echo "<fail>{$lang->banned_characters_username}</fail>";
 		exit;
 	}
-	
+
 	// Check if the username belongs to the list of banned usernames.
-	$banned_username = is_banned_username($username, true);
+	$banned_username = is_banned_username($username, TRUE);
 	if($banned_username)
 	{
 		echo "<fail>{$lang->banned_username}</fail>";
@@ -671,7 +671,7 @@ else if($mybb->input['action'] == "username_availability")
 	}
 
 	// Check for certain characters in username (<, >, &, and slashes)
-	if(strpos($username, "<") !== false || strpos($username, ">") !== false || strpos($username, "&") !== false || my_strpos($username, "\\") !== false || strpos($username, ";") !== false)
+	if(strpos($username, "<") !== FALSE || strpos($username, ">") !== FALSE || strpos($username, "&") !== FALSE || my_strpos($username, "\\") !== FALSE || strpos($username, ";") !== FALSE)
 	{
 		echo "<fail>{$lang->banned_characters_username}</fail>";
 		exit;
@@ -685,7 +685,7 @@ else if($mybb->input['action'] == "username_availability")
 	{
 		$lang->username_taken = $lang->sprintf($lang->username_taken, htmlspecialchars_uni($username));
 		echo "<fail>{$lang->username_taken}</fail>";
-		exit;		
+		exit;
 	}
 	else
 	{
@@ -696,7 +696,7 @@ else if($mybb->input['action'] == "username_availability")
 }
 else if($mybb->input['action'] == "username_exists")
 {
-	if(!verify_post_check($mybb->input['my_post_key'], true))
+	if(!verify_post_check($mybb->input['my_post_key'], TRUE))
 	{
 		xmlhttp_error($lang->invalid_post_code);
 	}
@@ -740,7 +740,7 @@ else if($mybb->input['action'] == "get_buddyselect")
 			"order_by" => "username",
 			"order_dir" => "asc"
 		);
-		$timecut = TIME_NOW - $mybb->settings['wolcutoff'];		
+		$timecut = TIME_NOW - $mybb->settings['wolcutoff'];
 		$query = $db->simple_select("users", "uid, username, usergroup, displaygroup, lastactive, lastvisit, invisible", "uid IN ({$mybb->user['buddylist']})", $query_options);
 		$online = array();
 		$offline = array();
@@ -776,13 +776,13 @@ else if($mybb->input['action'] == "get_buddyselect")
 function xmlhttp_error($message)
 {
 	global $charset;
-	
+
 	// Send our headers.
 	header("Content-type: text/xml; charset={$charset}");
-	
+
 	// Send the error message.
 	echo "<error>".$message."</error>";
-	
+
 	// Exit
 	exit;
 }

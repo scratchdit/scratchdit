@@ -160,7 +160,7 @@ if($mybb->request_method == "post")
 	{
 		$captcha = new captcha;
 
-		if($captcha->validate_captcha() == false)
+		if($captcha->validate_captcha() == FALSE)
 		{
 			// CAPTCHA validation failed
 			foreach($captcha->get_errors() as $error)
@@ -223,7 +223,7 @@ if($mybb->request_method == "post")
 		$message = $lang->sprintf($lang->email_contact, $mybb->input['email'], $user, $session->ipaddress, $mybb->input['message']);
 
 		// Email the administrator
-		my_mail($contactemail, $subject, $message, '', '', '', false, 'text', '', $mybb->get_input('email', MyBB::INPUT_STRING));
+		my_mail($contactemail, $subject, $message, '', '', '', FALSE, 'text', '', $mybb->get_input('email', MyBB::INPUT_STRING));
 
 		$plugins->run_hooks('contact_do_end');
 
@@ -248,11 +248,11 @@ if($mybb->request_method == "post")
 		$mybb->input['from'] = $mybb->get_input('from');
 		if(!empty($mybb->input['from']))
 		{
-			redirect($mybb->input['from'], $lang->contact_success_message, '', true);
+			redirect($mybb->input['from'], $lang->contact_success_message, '', TRUE);
 		}
 		else
 		{
-			redirect('index.php', $lang->contact_success_message, '', true);
+			redirect('index.php', $lang->contact_success_message, '', TRUE);
 		}
 	}
 	else
@@ -271,7 +271,7 @@ $captcha = '';
 
 if($mybb->settings['captchaimage'] && !$mybb->user['uid'])
 {
-	$post_captcha = new captcha(true, "post_captcha");
+	$post_captcha = new captcha(TRUE, "post_captcha");
 
 	if($post_captcha->html)
 	{
@@ -295,7 +295,7 @@ if(isset($mybb->input['from']))
 {
 	$redirect_url = htmlspecialchars_uni($mybb->get_input('from'));
 }
-else if(isset($_SERVER['HTTP_REFERER']) && strpos($_SERVER['HTTP_REFERER'], $mybb->settings['bburl']) !== false  && strpos($_SERVER['HTTP_REFERER'], "contact.php") === false)
+else if(isset($_SERVER['HTTP_REFERER']) && strpos($_SERVER['HTTP_REFERER'], $mybb->settings['bburl']) !== FALSE  && strpos($_SERVER['HTTP_REFERER'], "contact.php") === FALSE)
 {
 	$redirect_url = htmlentities($_SERVER['HTTP_REFERER']);
 }

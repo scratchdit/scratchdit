@@ -17,14 +17,14 @@ class DB_SQLite
 	 * @var string
 	 */
 	public $title = "SQLite 3";
-	
+
 	/**
 	 * The short title of this layer.
 	 *
 	 * @var string
 	 */
 	public $short_title = "SQLite";
-	
+
 	/**
 	 * The type of db software being used.
 	 *
@@ -80,27 +80,27 @@ class DB_SQLite
 	 * @var string
 	 */
 	public $table_type = "myisam";
-	
+
 	/**
 	 * The table prefix used for simple select, update, insert and delete queries
 	 *
 	 * @var string
 	 */
 	public $table_prefix;
-	
+
 	/**
 	 * The extension used to run the SQL database
 	 *
 	 * @var string
 	 */
 	public $engine = "pdo";
-	
+
 	/**
 	 * Weather or not this engine can use the search functionality
 	 *
 	 * @var boolean
 	 */
-	public $can_search = true;
+	public $can_search = TRUE;
 
 	/**
 	 * The database encoding currently in use (if supported)
@@ -120,14 +120,14 @@ class DB_SQLite
 	 * Connect to the database server.
 	 *
 	 * @param array Array of DBMS connection details.
-	 * @return resource The DB connection resource. Returns false on failure.
+	 * @return resource The DB connection resource. Returns FALSE on failure.
 	 */
 	function connect($config)
 	{
 		$this->get_execution_time();
-		
+
 		require_once MYBB_ROOT."inc/db_pdo.php";
-		
+
 		$this->db = new dbpdoEngine("sqlite:{$config['database']}");
 
 		$query_time = $this->get_execution_time();
@@ -135,15 +135,15 @@ class DB_SQLite
 		$this->query_time += $query_time;
 
 		$this->connections[] = "[WRITE] {$config['database']} (Connected in ".number_format($query_time, 0)."s)";
-		
+
 		if($this->db)
 		{
 			$this->query('PRAGMA short_column_names = 1');
-			return true;
+			return TRUE;
 		}
 		else
 		{
-			return false;
+			return FALSE;
 		}
 	}
 
@@ -157,13 +157,13 @@ class DB_SQLite
 	function query($string, $hide_errors=0)
 	{
 		global $pagestarttime, $db, $mybb;
-		
+
 		$this->get_execution_time();
 
 		if(strtolower(substr(ltrim($string), 0, 5)) == 'alter')
 		{
 			$string = preg_replace("#\sAFTER\s([a-z_]+?)(;*?)$#i", "", $string);
-			
+
 			$queryparts = preg_split("/[\s]+/", $string, 4, PREG_SPLIT_NO_EMPTY);
 			$tablename = $queryparts[2];
 			$alterdefs = $queryparts[3];
@@ -172,7 +172,7 @@ class DB_SQLite
 				$this->error_msg = "near \"{$queryparts[0]}\": syntax error";
 			}
 			else
-			{				
+			{
 				// SQLITE 3 supports ADD Alter statements
 				if(strtolower(substr(ltrim($string), 0, 3)) == 'add')
 				{
@@ -200,17 +200,17 @@ class DB_SQLite
 				$this->error($error['message'], $error['code']);
 			}
 		}
-		
+
 		if($this->error_number($query) > 0 && !$hide_errors)
 		{
 			$this->error($string, $query);
 			exit;
 		}
-		
+
 		$query_time = $this->get_execution_time();
 		$this->query_time += $query_time;
 		$this->query_count++;
-		
+
 		if($mybb->debug_mode)
 		{
 			$this->explain_query($string, $query_time);
@@ -260,7 +260,7 @@ class DB_SQLite
 		$this->querylist[$this->query_count]['query'] = $string;
 		$this->querylist[$this->query_count]['time'] = $qtime;
 	}
-	
+
 	/**
 	 * Execute a write query on the database
 	 *
@@ -293,9 +293,9 @@ class DB_SQLite
 	 * @param string The name of the field to return.
 	 * @param int The number of the row to fetch it from.
 	 */
-	function fetch_field($query, $field, $row=false)
+	function fetch_field($query, $field, $row=FALSE)
 	{
-		if($row !== false)
+		if($row !== FALSE)
 		{
 			$this->data_seek($query, $row);
 		}
@@ -355,9 +355,9 @@ class DB_SQLite
 		{
 			$query = $this->db->last_query;
 		}
-		
+
 		$this->error_number = $this->db->error_number($query);
-		
+
 		return $this->error_number;
 	}
 
@@ -374,10 +374,10 @@ class DB_SQLite
 			{
 				$query = $this->db->last_query;
 			}
-			
+
 			$error_string = $this->db->error_string($query);
 			$this->error_number = "";
-		
+
 			return $error_string;
 		}
 	}
@@ -402,7 +402,7 @@ class DB_SQLite
 			{
 				$error_no = $this->error_number($query);
 			}
-			
+
 			if($error == "")
 			{
 				$error = $this->error_string($query);
@@ -411,13 +411,13 @@ class DB_SQLite
 			if(class_exists("errorHandler"))
 			{
 				global $error_handler;
-				
+
 				if(!is_object($error_handler))
 				{
 					require_once MYBB_ROOT."inc/class_error.php";
 					$error_handler = new errorHandler();
 				}
-				
+
 				$error = array(
 					"error_no" => $error_no,
 					"error" => $error,
@@ -444,7 +444,7 @@ class DB_SQLite
 		{
 			$query = $this->db->last_query;
 		}
-		
+
 		return $this->db->affected_rows($query);
 	}
 
@@ -460,7 +460,7 @@ class DB_SQLite
 		{
 			$query = $this->db->last_query;
 		}
-		
+
 		return $this->db->num_fields($query);
 	}
 
@@ -481,7 +481,7 @@ class DB_SQLite
 		{
 			$query = $this->query("SELECT tbl_name FROM sqlite_master WHERE type = 'table'");
 		}
-		
+
 		while($table = $this->fetch_array($query))
 		{
 			$tables[] = $table['tbl_name'];
@@ -493,7 +493,7 @@ class DB_SQLite
 	 * Check if a table exists in a database.
 	 *
 	 * @param string The table name.
-	 * @return boolean True when exists, false if not.
+	 * @return boolean TRUE when exists, FALSE if not.
 	 */
 	function table_exists($table)
 	{
@@ -502,11 +502,11 @@ class DB_SQLite
 
 		if($exists > 0)
 		{
-			return true;
+			return TRUE;
 		}
 		else
 		{
-			return false;
+			return FALSE;
 		}
 	}
 
@@ -515,14 +515,14 @@ class DB_SQLite
 	 *
 	 * @param string The field name.
 	 * @param string The table name.
-	 * @return boolean True when exists, false if not.
+	 * @return boolean TRUE when exists, FALSE if not.
 	 */
 	function field_exists($field, $table)
 	{
 		$query = $this->query("PRAGMA table_info('{$this->table_prefix}{$table}')");
-		
+
 		$exists = 0;
-		
+
 		while($row = $this->fetch_array($query))
 		{
 			if($row['name'] == $field)
@@ -530,14 +530,14 @@ class DB_SQLite
 				++$exists;
 			}
 		}
-		
+
 		if($exists > 0)
 		{
-			return true;
+			return TRUE;
 		}
 		else
 		{
-			return false;
+			return FALSE;
 		}
 	}
 
@@ -568,26 +568,26 @@ class DB_SQLite
 	 * @param string SQL formatted list of conditions to be matched.
 	 * @param array List of options, order by, order direction, limit, limit start
 	 */
-	
+
 	function simple_select($table, $fields="*", $conditions="", $options=array())
 	{
 		$query = "SELECT ".$fields." FROM ".$this->table_prefix.$table;
-		
+
 		if($conditions != "")
 		{
 			$query .= " WHERE ".$conditions;
 		}
-		
+
 		if(isset($options['order_by']))
 		{
 			$query .= " ORDER BY ".$options['order_by'];
-			
+
 			if(isset($options['order_dir']))
 			{
 				$query .= " ".strtoupper($options['order_dir']);
 			}
 		}
-		
+
 		if(isset($options['limit_start']) && isset($options['limit']))
 		{
 			$query .= " LIMIT ".$options['limit_start'].", ".$options['limit'];
@@ -596,7 +596,7 @@ class DB_SQLite
 		{
 			$query .= " LIMIT ".$options['limit'];
 		}
-		
+
 		return $this->query($query);
 	}
 
@@ -612,18 +612,18 @@ class DB_SQLite
 	{
 		if(!is_array($array))
 		{
-			return false;
+			return FALSE;
 		}
 		$fields = implode(",", array_keys($array));
 		$values = implode("','", $array);
 		$this->write_query("
-			INSERT 
-			INTO {$this->table_prefix}{$table} (".$fields.") 
+			INSERT
+			INTO {$this->table_prefix}{$table} (".$fields.")
 			VALUES ('".$values."')
 		");
 		return $this->insert_id();
 	}
-	
+
 	/**
 	 * Build one query for multiple inserts from a multidimensional array.
 	 *
@@ -635,7 +635,7 @@ class DB_SQLite
 	{
 		if(!is_array($array))
 		{
-			return false;
+			return FALSE;
 		}
 		// Field names
 		$fields = array_keys($array[0]);
@@ -649,8 +649,8 @@ class DB_SQLite
 		$insert_rows = implode(", ", $insert_rows);
 
 		$this->write_query("
-			INSERT 
-			INTO {$this->table_prefix}{$table} ({$fields}) 
+			INSERT
+			INTO {$this->table_prefix}{$table} ({$fields})
 			VALUES {$insert_rows}
 		");
 	}
@@ -665,33 +665,33 @@ class DB_SQLite
 	 * @param boolean An option to quote incoming values of the array.
 	 * @return resource The query data.
 	 */
-	function update_query($table, $array, $where="", $limit="", $no_quote=false)
+	function update_query($table, $array, $where="", $limit="", $no_quote=FALSE)
 	{
 		if(!is_array($array))
 		{
-			return false;
+			return FALSE;
 		}
-		
+
 		$comma = "";
 		$query = "";
 		$quote = "'";
-		
-		if($no_quote == true)
+
+		if($no_quote == TRUE)
 		{
 			$quote = "";
 		}
-		
+
 		foreach($array as $field => $value)
 		{
 			$query .= $comma.$field."={$quote}".$value."{$quote}";
 			$comma = ', ';
 		}
-		
+
 		if(!empty($where))
 		{
 			$query .= " WHERE $where";
 		}
-		
+
 		return $this->query("UPDATE {$this->table_prefix}$table SET $query");
 	}
 
@@ -710,7 +710,7 @@ class DB_SQLite
 		{
 			$query .= " WHERE $where";
 		}
-		
+
 		return $this->query("DELETE FROM {$this->table_prefix}$table $query");
 	}
 
@@ -725,7 +725,7 @@ class DB_SQLite
 		$string = $this->db->escape_string($string);
 		return $string;
 	}
-	
+
 	/**
 	 * Serves no purposes except compatibility
 	 *
@@ -734,7 +734,7 @@ class DB_SQLite
 	{
 		return;
 	}
-	
+
 	/**
 	 * Escape a string used within a like command.
 	 *
@@ -758,7 +758,7 @@ class DB_SQLite
 			return $this->version;
 		}
 		$this->version = $this->db->get_attribute("ATTR_SERVER_VERSION");
-		
+
 		return $this->version;
 	}
 
@@ -771,7 +771,7 @@ class DB_SQLite
 	{
 		$this->query("VACUUM ".$this->table_prefix.$table."");
 	}
-	
+
 	/**
 	 * Analyzes a specific table.
 	 *
@@ -794,7 +794,7 @@ class DB_SQLite
 		$this->set_table_prefix("");
 		$query = $this->simple_select("sqlite_master", "sql", "type = 'table' AND name = '{$this->table_prefix}{$table}' ORDER BY type DESC, name");
 		$this->set_table_prefix($old_tbl_prefix);
-		
+
 		return $this->fetch_field($query, 'sql');
 	}
 
@@ -823,7 +823,7 @@ class DB_SQLite
 
 			$field_info[] = array('Extra' => $entities[1], 'Field' => $column_name);
 		}
-		
+
 		return $field_info;
 	}
 
@@ -832,34 +832,34 @@ class DB_SQLite
 	 *
 	 * @param string The name of the table.
 	 * @param string Optionally specify the name of the index.
-	 * @return boolean True or false if the table has a fulltext index or not.
+	 * @return boolean TRUE or FALSE if the table has a fulltext index or not.
 	 */
 	function is_fulltext($table, $index="")
 	{
-		return false;
+		return FALSE;
 	}
 
 	/**
 	 * Returns whether or not this database engine supports fulltext indexing.
 	 *
 	 * @param string The table to be checked.
-	 * @return boolean True or false if supported or not.
+	 * @return boolean TRUE or FALSE if supported or not.
 	 */
 
 	function supports_fulltext($table)
 	{
-		return false;
+		return FALSE;
 	}
 
 	/**
 	 * Returns whether or not this database engine supports boolean fulltext matching.
 	 *
 	 * @param string The table to be checked.
-	 * @return boolean True or false if supported or not.
+	 * @return boolean TRUE or FALSE if supported or not.
 	 */
 	function supports_fulltext_boolean($table)
 	{
-		return false;
+		return FALSE;
 	}
 
 	/**
@@ -871,7 +871,7 @@ class DB_SQLite
 	 */
 	function create_fulltext_index($table, $column, $name="")
 	{
-		return false;
+		return FALSE;
 	}
 
 	/**
@@ -884,7 +884,7 @@ class DB_SQLite
 	{
 		$this->query("ALTER TABLE {$this->table_prefix}$table DROP INDEX $name");
 	}
-	
+
 	/**
 	 * Checks to see if an index exists on a specified table
 	 *
@@ -893,9 +893,9 @@ class DB_SQLite
 	 */
 	function index_exists($table, $index)
 	{
-		return false;
+		return FALSE;
 	}
-	
+
 	/**
 	 * Drop an table with the specified table
 	 *
@@ -903,9 +903,9 @@ class DB_SQLite
 	 * @param boolean hard drop - no checking
 	 * @param boolean use table prefix
 	 */
-	function drop_table($table, $hard=false, $table_prefix=true)
+	function drop_table($table, $hard=FALSE, $table_prefix=TRUE)
 	{
-		if($table_prefix == false)
+		if($table_prefix == FALSE)
 		{
 			$table_prefix = "";
 		}
@@ -913,8 +913,8 @@ class DB_SQLite
 		{
 			$table_prefix = $this->table_prefix;
 		}
-		
-		if($hard == false)
+
+		if($hard == FALSE)
 		{
 			if($this->table_exists($table))
 			{
@@ -926,16 +926,16 @@ class DB_SQLite
 			$this->query('DROP TABLE '.$table_prefix.$table);
 		}
 	}
-	
+
 	/**
 	 * Replace contents of table with values
 	 *
 	 * @param string The table
 	 * @param array The replacements
 	 * @param mixed The default field(s)
-	 * @param boolean Whether or not to return an insert id. True by default
+	 * @param boolean Whether or not to return an insert id. TRUE by default
 	 */
-	function replace_query($table, $replacements=array(), $default_field="", $insert_id=true)
+	function replace_query($table, $replacements=array(), $default_field="", $insert_id=TRUE)
 	{
 		$columns = '';
 		$values = '';
@@ -944,22 +944,22 @@ class DB_SQLite
 		{
 			$columns .= $comma.$column;
 			$values .= $comma."'".$value."'";
-			
+
 			$comma = ',';
 		}
 
 		if(empty($columns) || empty($values))
 		{
-			 return false;
+			 return FALSE;
 		}
-		
+
 		if($default_field == "")
 		{
 			return $this->query("REPLACE INTO {$this->table_prefix}{$table} ({$columns}) VALUES({$values})");
 		}
 		else
 		{
-			$update = false;
+			$update = FALSE;
 			if(is_array($default_field) && !empty($default_field))
 			{
 				$search_bit = array();
@@ -972,7 +972,7 @@ class DB_SQLite
 				$query = $this->write_query("SELECT COUNT(".$default_field[0].") as count FROM {$this->table_prefix}{$table} WHERE {$search_bit} LIMIT 1");
 				if($this->fetch_field($query, "count") == 1)
 				{
-					$update = true;
+					$update = TRUE;
 				}
 			}
 			else
@@ -982,14 +982,14 @@ class DB_SQLite
 				while($column = $this->fetch_array($query))
 				{
 					if($column[$default_field] == $replacements[$default_field])
-					{				
-						$update = true;
+					{
+						$update = TRUE;
 						break;
 					}
 				}
 			}
 
-			if($update === true)
+			if($update === TRUE)
 			{
 				return $this->update_query($table, $replacements, $search_bit);
 			}
@@ -999,7 +999,7 @@ class DB_SQLite
 			}
 		}
 	}
-	
+
 	/**
 	 * Sets the table prefix used by the simple select, insert, update and delete functions
 	 *
@@ -1009,7 +1009,7 @@ class DB_SQLite
 	{
 		$this->table_prefix = $prefix;
 	}
-	
+
 	/**
 	 * Fetched the total size of all mysql tables or a specific table
 	 *
@@ -1019,7 +1019,7 @@ class DB_SQLite
 	function fetch_size($table='')
 	{
 		global $config, $lang;
-		
+
 		$total = @filesize($config['database']['database']);
 		if(!$total || $table != '')
 		{
@@ -1027,7 +1027,7 @@ class DB_SQLite
 		}
 		return $total;
 	}
-	
+
 	/**
 	 * Perform an "Alter Table" query in SQLite < 3.2.0 - Code taken from http://code.jenseng.com/db/
 	 *
@@ -1040,12 +1040,12 @@ class DB_SQLite
 		{
 			$fullquery = " ... {$alterdefs}";
 		}
-		
+
 		if(!defined("TIME_NOW"))
 		{
 			define("TIME_NOW", time());
 		}
-		
+
 		if($alterdefs != '')
 		{
 			$result = $this->query("SELECT sql,name,type FROM sqlite_master WHERE tbl_name = '{$table}' ORDER BY type DESC");
@@ -1061,59 +1061,59 @@ class DB_SQLite
 				$prevword = $table;
 				$oldcols = preg_split("/[,]+/", substr(trim($createtemptableSQL), strpos(trim($createtemptableSQL), '(')+1), -1, PREG_SPLIT_NO_EMPTY);
 				$newcols = array();
-				
+
 				for($i = 0; $i < sizeof($oldcols); $i++)
 				{
 					$colparts = preg_split("/[\s]+/", $oldcols[$i], -1, PREG_SPLIT_NO_EMPTY);
 					$oldcols[$i] = $colparts[0];
 					$newcols[$colparts[0]] = $colparts[0];
 				}
-				
+
 				$newcolumns = '';
 				$oldcolumns = '';
 				reset($newcols);
-				
+
 				foreach($newcols as $key => $val)
 				{
 					$newcolumns .= ($newcolumns ? ', ' : '').$val;
 					$oldcolumns .= ($oldcolumns ? ', ' : '').$key;
 				}
-				
+
 				$copytotempsql = 'INSERT INTO '.$tmpname.'('.$newcolumns.') SELECT '.$oldcolumns.' FROM '.$table;
 				$dropoldsql = 'DROP TABLE '.$table;
 				$createtesttableSQL = $createtemptableSQL;
-				
+
 				foreach($defs as $def)
 				{
 					$defparts = preg_split("/[\s]+/", $def, -1, PREG_SPLIT_NO_EMPTY);
 					$action = strtolower($defparts[0]);
-					
+
 					switch($action)
 					{
 						case 'change':
 							if(sizeof($defparts) <= 3)
 							{
 								$this->error($alterdefs, 'near "'.$defparts[0].($defparts[1] ? ' '.$defparts[1] : '').($defparts[2] ? ' '.$defparts[2] : '').'": syntax error', E_USER_WARNING);
-								return false;
+								return FALSE;
 							}
-							
+
 							if($severpos = strpos($createtesttableSQL, ' '.$defparts[1].' '))
 							{
 								if($newcols[$defparts[1]] != $defparts[1])
 								{
 									$this->error($alterdefs, 'unknown column "'.$defparts[1].'" in "'.$table.'"');
-									return false;
+									return FALSE;
 								}
-								
+
 								$newcols[$defparts[1]] = $defparts[2];
 								$nextcommapos = strpos($createtesttableSQL, ',', $severpos);
 								$insertval = '';
-								
+
 								for($i = 2; $i < sizeof($defparts); $i++)
 								{
 									$insertval .= ' '.$defparts[$i];
 								}
-								
+
 								if($nextcommapos)
 								{
 									$createtesttableSQL = substr($createtesttableSQL, 0, $severpos).$insertval.substr($createtesttableSQL, $nextcommapos);
@@ -1126,20 +1126,20 @@ class DB_SQLite
 							else
 							{
 								$this->error($fullquery, 'unknown column "'.$defparts[1].'" in "'.$table.'"', E_USER_WARNING);
-								return false;
+								return FALSE;
 							}
 							break;
 						case 'drop':
 							if(sizeof($defparts) < 2)
 							{
 								$this->error($fullquery, 'near "'.$defparts[0].($defparts[1] ? ' '.$defparts[1] : '').'": syntax error');
-								return false;
+								return FALSE;
 							}
-							
+
 							if($severpos = strpos($createtesttableSQL, ' '.$defparts[1].' '))
 							{
 								$nextcommapos = strpos($createtesttableSQL, ',', $severpos);
-								
+
 								if($nextcommapos)
 								{
 									$createtesttableSQL = substr($createtesttableSQL, 0, $severpos).substr($createtesttableSQL, $nextcommapos + 1);
@@ -1148,54 +1148,54 @@ class DB_SQLite
 								{
 									$createtesttableSQL = substr($createtesttableSQL, 0, $severpos-(strpos($createtesttableSQL, ',') ? 0 : 1) - 1).')';
 								}
-								
+
 								unset($newcols[$defparts[1]]);
 							}
 							else
 							{
 								$this->error($fullquery, 'unknown column "'.$defparts[1].'" in "'.$table.'"');
-								return false;
+								return FALSE;
 							}
 							break;
 						default:
 							$this->error($fullquery, 'near "'.$prevword.'": syntax error');
-							return false;
+							return FALSE;
 					}
-					
+
 					$prevword = $defparts[sizeof($defparts)-1];
 				}
-			
-			
+
+
 				// This block of code generates a test table simply to verify that the columns specifed are valid in an sql statement
 				// This ensures that no reserved words are used as columns, for example
 				$this->query($createtesttableSQL);
-				
+
 				$droptempsql = 'DROP TABLE '.$tmpname;
-				if($this->query($droptempsql, 0) === false)
+				if($this->query($droptempsql, 0) === FALSE)
 				{
-					return false;
+					return FALSE;
 				}
 				// End block
-				
-				
+
+
 				$createnewtableSQL = 'CREATE '.substr(trim(preg_replace("'{$tmpname}'", $table, $createtesttableSQL, 1)), 17);
 				$newcolumns = '';
 				$oldcolumns = '';
 				reset($newcols);
-				
+
 				foreach($newcols as $key => $val)
 				{
 					$newcolumns .= ($newcolumns ? ', ' : '').$val;
 					$oldcolumns .= ($oldcolumns ? ', ' : '').$key;
 				}
-				
+
 				$copytonewsql = 'INSERT INTO '.$table.'('.$newcolumns.') SELECT '.$oldcolumns.' FROM '.$tmpname;
-				
-				
+
+
 				$this->query($createtemptableSQL); // Create temp table
 				$this->query($copytotempsql); // Copy to table
 				$this->query($dropoldsql); // Drop old table
-				
+
 				$this->query($createnewtableSQL); // Recreate original table
 				$this->query($copytonewsql); // Copy back to original table
 				$this->query($droptempsql); // Drop temp table
@@ -1203,12 +1203,12 @@ class DB_SQLite
 			else
 			{
 				$this->error($fullquery, 'no such table: '.$table);
-				return false;
+				return FALSE;
 			}
-			return true;
+			return TRUE;
 		}
 	}
-	
+
 	/**
 	 * Drops a column
 	 *
@@ -1219,7 +1219,7 @@ class DB_SQLite
 	{
 		return $this->write_query("ALTER TABLE {$this->table_prefix}{$table} DROP {$column}");
 	}
-	
+
 	/**
 	 * Adds a column
 	 *
@@ -1231,7 +1231,7 @@ class DB_SQLite
 	{
 		return $this->write_query("ALTER TABLE {$this->table_prefix}{$table} ADD {$column} {$definition}");
 	}
-	
+
 	/**
 	 * Modifies a column
 	 *
@@ -1244,7 +1244,7 @@ class DB_SQLite
 		// Yes, $column is repeated twice for a reason. It simulates a rename sql query, which SQLite supports.
 		return $this->write_query("ALTER TABLE {$this->table_prefix}{$table} CHANGE {$column} {$column} {$new_definition}");
 	}
-	
+
 	/**
 	 * Renames a column
 	 *
@@ -1261,22 +1261,22 @@ class DB_SQLite
 	/**
 	 * Fetch a list of database character sets this DBMS supports
 	 *
-	 * @return array Array of supported character sets with array key being the name, array value being display name. False if unsupported
+	 * @return array Array of supported character sets with array key being the name, array value being display name. FALSE if unsupported
 	 */
 	function fetch_db_charsets()
 	{
-		return false;
+		return FALSE;
 	}
 
 	/**
 	 * Fetch a database collation for a particular database character set
 	 *
 	 * @param string The database character set
-	 * @return string The matching database collation, false if unsupported
+	 * @return string The matching database collation, FALSE if unsupported
 	 */
 	function fetch_charset_collation($charset)
 	{
-		return false;
+		return FALSE;
 	}
 
 	/**
@@ -1298,7 +1298,7 @@ class DB_SQLite
 	{
 		static $time_start;
 
-		$time = microtime(true);
+		$time = microtime(TRUE);
 
 
 		// Just starting timer, init and return

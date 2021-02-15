@@ -1437,17 +1437,17 @@ ul.thread_tools li.subscription_remove {
 {$footer}
 <script type="text/javascript">
 <!--
-	var checked = false;
+	var checked = FALSE;
 	function selectReportedPosts()
 	{
-		if(checked == false)
+		if(checked == FALSE)
 		{
-			checked = true;
+			checked = TRUE;
 			$$('input[type="checkbox"]').invoke('writeAttribute', 'checked', 'checked');
 		}
 		else
 		{
-			checked = false;
+			checked = FALSE;
 			$$('input[type="checkbox"]').invoke('writeAttribute', 'checked', '');
 		}
 	}
@@ -2685,11 +2685,11 @@ body {
 		<hr class="hidden" />
 			<div id="copyright">
 				<div id="debug"><debugstuff></div>
-				<!-- MyBB is free software developed and maintained by a volunteer community. 
-					 It would be much appreciated by the MyBB Group if you left the full copyright and "powered by" notice intact, 
-					 to show your support for MyBB.  If you choose to remove or modify the copyright below, 
+				<!-- MyBB is free software developed and maintained by a volunteer community.
+					 It would be much appreciated by the MyBB Group if you left the full copyright and "powered by" notice intact,
+					 to show your support for MyBB.  If you choose to remove or modify the copyright below,
 					 you may be refused support on the MyBB Community Forums.
-					 
+
 					 This is free software, support us and we'll support you. -->
 {$lang->powered_by} <a href="http://mybb.com/" target="_blank">MyBB{$mybbversion}</a>, &copy; 2002-{$copy_year} <a href="http://mybb.com/" target="_blank">MyBB Group</a>.<br />
 				<!-- End powered by -->
@@ -3399,7 +3399,7 @@ body {
 // -->
 </script>
 <span style="float: right;">{$lang->welcome_current_time}</span>
-		<span id="quick_login">{$lang->welcome_guest} (<a href="{$mybb->settings['bburl']}/member.php?action=login" onclick="MyBB.quickLogin(); return false;">{$lang->welcome_login}</a> &mdash; <a href="{$mybb->settings['bburl']}/member.php?action=register">{$lang->welcome_register}</a>)</span>]]></template>
+		<span id="quick_login">{$lang->welcome_guest} (<a href="{$mybb->settings['bburl']}/member.php?action=login" onclick="MyBB.quickLogin(); return FALSE;">{$lang->welcome_login}</a> &mdash; <a href="{$mybb->settings['bburl']}/member.php?action=register">{$lang->welcome_register}</a>)</span>]]></template>
 		<template name="header" version="1600"><![CDATA[	<div id="container">
 		<a name="top" id="top"></a>
 		<div id="header">
@@ -3634,7 +3634,7 @@ body {
 <td class="trow1" valign="top" width="200"><strong>{$lang->compose_to}</strong>
 	<script type="text/javascript">
 	<!--
-		document.write('(<a href="#" onclick="showBcc(); return false;" title="{$lang->compose_bcc_show_title}">{$lang->compose_bcc_show}<\/a>)');
+		document.write('(<a href="#" onclick="showBcc(); return FALSE;" title="{$lang->compose_bcc_show_title}">{$lang->compose_bcc_show}<\/a>)');
 	// -->
 	</script>
 	<br /><span class="smalltext">{$lang->separate_names}{$buddy_select_to}</span></td>
@@ -3807,7 +3807,7 @@ body {
 		<template name="postbit_email" version="120"><![CDATA[<a href="member.php?action=emailuser&amp;uid={$post['uid']}"><img src="{$theme['imglangdir']}/postbit_email.gif" alt="{$lang->postbit_email}" title="{$lang->postbit_email}" /></a>]]></template>
 		<template name="postbit_find" version="120"><![CDATA[<a href="search.php?action=finduser&amp;uid={$post['uid']}"><img src="{$theme['imglangdir']}/postbit_find.gif" alt="{$lang->postbit_find}" title="{$lang->postbit_find}" /></a>]]></template>
 		<template name="postbit_pm" version="120"><![CDATA[<a href="private.php?action=send&amp;uid={$post['uid']}"><img src="{$theme['imglangdir']}/postbit_pm.gif" alt="{$lang->postbit_pm}" title="{$lang->postbit_pm}" /></a>]]></template>
-		<template name="postbit_quickdelete" version="1400"><![CDATA[<a href="editpost.php?pid={$post['pid']}" onclick="Thread.deletePost({$post['pid']}); return false;" style="display: none;" id="quick_delete_{$post['pid']}"><img src="{$theme['imglangdir']}/postbit_delete.gif" alt="{$lang->postbit_qdelete}" title="{$lang->postbit_qdelete}" /></a>
+		<template name="postbit_quickdelete" version="1400"><![CDATA[<a href="editpost.php?pid={$post['pid']}" onclick="Thread.deletePost({$post['pid']}); return FALSE;" style="display: none;" id="quick_delete_{$post['pid']}"><img src="{$theme['imglangdir']}/postbit_delete.gif" alt="{$lang->postbit_qdelete}" title="{$lang->postbit_qdelete}" /></a>
 <script type="text/javascript">
 // <!--
 	$('quick_delete_{$post['pid']}').style.display = '';
@@ -4816,7 +4816,7 @@ body {
 	</tr>
 	<tr>
 		<td class="trow1" width="20%"><strong><label for="sort">{$lang->sort_by}</label></strong></td>
-	
+
 		<td class="trow1">
 			<select name="sort" id="sort">
 				<option value="subject">{$lang->sort_by_subject}</option>
@@ -5138,7 +5138,7 @@ body {
 </body>
 </html>]]></template>
 		<template name="announcement_edit" version="1600"><![CDATA[<a href="modcp.php?action=edit_announcement&amp;aid={$post['aid']}&amp;fid={$fid}"><img src="{$theme['imglangdir']}/postbit_edit.gif" alt="{$lang->announcement_edit}" title="{$lang->announcement_edit}" /></a>]]></template>
-		<template name="announcement_quickdelete" version="1600"><![CDATA[<a href="modcp.php?action=delete_announcement&amp;aid={$post['aid']}&amp;my_post_key={$mybb->post_code}" onclick="if(confirm(&quot;{$lang->announcement_quickdelete_confirm}&quot;))window.location=this.href.replace('action=delete_announcement','action=do_delete_announcement');return false;"><img src="{$theme['imglangdir']}/postbit_delete.gif" alt="{$lang->announcement_qdelete}" title="{$lang->announcement_qdelete}" /></a>]]></template>
+		<template name="announcement_quickdelete" version="1600"><![CDATA[<a href="modcp.php?action=delete_announcement&amp;aid={$post['aid']}&amp;my_post_key={$mybb->post_code}" onclick="if(confirm(&quot;{$lang->announcement_quickdelete_confirm}&quot;))window.location=this.href.replace('action=delete_announcement','action=do_delete_announcement');return FALSE;"><img src="{$theme['imglangdir']}/postbit_delete.gif" alt="{$lang->announcement_qdelete}" title="{$lang->announcement_qdelete}" /></a>]]></template>
 		<template name="member_emailuser" version="1400"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->email_user}</title>
@@ -6555,7 +6555,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 	{
 		if(editor)
 		{
-			editor.performInsert(code, "", true, false);
+			editor.performInsert(code, "", TRUE, FALSE);
 		}
 	}
 // -->
@@ -6627,7 +6627,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <td class="trow2">
 	<a href="modcp.php?action=ipsearch&amp;ipaddress={$post['ipaddress']}&amp;search_users=1">{$lang->search_ip_users}</a><br />
 	<a href="modcp.php?action=ipsearch&amp;ipaddress={$post['ipaddress']}&amp;search_posts=1">{$lang->search_ip_posts}</a><br />
-	<a href="modcp.php?action=iplookup&ipaddress={$post['ipaddress']}" onclick="MyBB.popupWindow('{$mybb->settings['bburl']}/modcp.php?action=iplookup&ipaddress={$post['ipaddress']}', 'iplookup', 500, 250); return false;">{$lang->info_on_ip}</a>
+	<a href="modcp.php?action=iplookup&ipaddress={$post['ipaddress']}" onclick="MyBB.popupWindow('{$mybb->settings['bburl']}/modcp.php?action=iplookup&ipaddress={$post['ipaddress']}', 'iplookup', 500, 250); return FALSE;">{$lang->info_on_ip}</a>
 </td>
 </tr>]]></template>
 		<template name="postbit_iplogged_hiden" version="1400"><![CDATA[<p class="smalltext">{$lang->postbit_ipaddress} <a href="moderation.php?action=getip&amp;pid={$post['pid']}">{$lang->postbit_ipaddress_logged}</a></p>]]></template>
@@ -7346,7 +7346,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </table>
 </div>
 ]]></template>
-		<template name="misc_buddypopup_user_sendpm" version="1400"><![CDATA[<a href="private.php?action=send&amp;uid={$buddy['uid']}" target="_blank" onclick="window.opener.location.href=this.href; return false;">{$lang->pm_buddy}</a>]]></template>
+		<template name="misc_buddypopup_user_sendpm" version="1400"><![CDATA[<a href="private.php?action=send&amp;uid={$buddy['uid']}" target="_blank" onclick="window.opener.location.href=this.href; return FALSE;">{$lang->pm_buddy}</a>]]></template>
 		<template name="usercp_editlists" version="1400"><![CDATA[<html>
 <head>
 	<title>{$mybb->settings['bbname']} - {$lang->edit_lists}</title>
@@ -7894,12 +7894,12 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 	{
 		if($('type_merge'))
 		{
-			if($('type_movecopythread').checked == true)
+			if($('type_movecopythread').checked == TRUE)
 			{
 				Element.hide('type_merge_expanded');
 				Element.show('type_movecopythread_expanded');
 			}
-			else if($('type_merge').checked == true)
+			else if($('type_merge').checked == TRUE)
 			{
 				Element.hide('type_movecopythread_expanded');
 				Element.show('type_merge_expanded');
@@ -7912,7 +7912,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 		}
 		else
 		{
-			if($('type_movecopythread').checked == true)
+			if($('type_movecopythread').checked == TRUE)
 			{
 				Element.show('type_movecopythread_expanded');
 			}
@@ -8016,7 +8016,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <body>
 {$header}
 <br />
-<form action="member.php" method="post" id="registration_form"><input type="text" style="visibility: hidden;" value="" name="regcheck1" /><input type="text" style="visibility: hidden;" value="true" name="regcheck2" />
+<form action="member.php" method="post" id="registration_form"><input type="text" style="visibility: hidden;" value="" name="regcheck1" /><input type="text" style="visibility: hidden;" value="TRUE" name="regcheck2" />
 {$regerrors}
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
@@ -8381,7 +8381,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 		<strong><span class="largetext">{$post['profilelink']}</span></strong>
 	</td>
 	<td class="{$altbg}" width="85%" style="vertical-align: middle;">
-		<div style="float: right; width: auto; vertical-align: top; display: none;" id="show_ignored_link_{$post['pid']}"><span class="smalltext"><a href="#" onclick="Thread.showIgnoredPost({$post['pid']}); return false;">{$lang->postbit_show_ignored_post}</a></span></div>
+		<div style="float: right; width: auto; vertical-align: top; display: none;" id="show_ignored_link_{$post['pid']}"><span class="smalltext"><a href="#" onclick="Thread.showIgnoredPost({$post['pid']}); return FALSE;">{$lang->postbit_show_ignored_post}</a></span></div>
 <script type="text/javascript">
 <!--
 	$('show_ignored_link_{$post['pid']}').show();
@@ -8614,7 +8614,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 				<!--
 					function toggleType()
 					{
-						if($('type_single').checked == true)
+						if($('type_single').checked == TRUE)
 						{
 							Element.hide('ranged_selects');
 							Element.show('single_selects');
@@ -8768,19 +8768,19 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 										<div class="smalltext"><label>
 											<input type="radio" name="repeats_4_type" id="repeats_4_type_1" value="1" style="vertical-align: middle;" {$repeats_4_type[1]} />
 											{$lang->repeats_on_day}</label>
-											<input type="text" class="textbox" name="repeats_4_day" value="{$repeats_4_day}" onfocus="$('repeats_4_type_1').checked=true;" size="2" /> {$lang->of_every} <input type="text" class="textbox" name="repeats_4_months" value="{$repeats_4_months}" size="2" onfocus="$('repeats_4_type_1').checked=true;" /> {$lang->month_or_months}
+											<input type="text" class="textbox" name="repeats_4_day" value="{$repeats_4_day}" onfocus="$('repeats_4_type_1').checked=TRUE;" size="2" /> {$lang->of_every} <input type="text" class="textbox" name="repeats_4_months" value="{$repeats_4_months}" size="2" onfocus="$('repeats_4_type_1').checked=TRUE;" /> {$lang->month_or_months}
 										</div>
 										<div class="smalltext" style="margin-top: 5px;"><label>
 											<input type="radio" name="repeats_4_type" id="repeats_4_type_2" value="2" style="vertical-align: middle;" {$repeats_4_type[2]} />
 											{$lang->repeats_on_the}</label>
-											<select name="repeats_4_occurance" onfocus="$('repeats_4_type_2').checked=true;">
+											<select name="repeats_4_occurance" onfocus="$('repeats_4_type_2').checked=TRUE;">
 												<option value="1"{$repeats_4_occurance[1]}>{$lang->first}</option>
 												<option value="2"{$repeats_4_occurance[2]}>{$lang->second}</option>
 												<option value="3"{$repeats_4_occurance[3]}>{$lang->third}</option>
 												<option value="4"{$repeats_4_occurance[4]}>{$lang->fourth}</option>
 												<option value="last"{$repeats_4_occurance['last']}>{$lang->last}</option>
 											</select>
-											<select name="repeats_4_weekday" onfocus="$('repeats_4_type_2').checked=true;">
+											<select name="repeats_4_weekday" onfocus="$('repeats_4_type_2').checked=TRUE;">
 												<option value="0"{$repeats_4_weekday[0]}>{$lang->sunday}</option>
 												<option value="1"{$repeats_4_weekday[1]}>{$lang->monday}</option>
 												<option value="2"{$repeats_4_weekday[2]}>{$lang->tuesday}</option>
@@ -8790,15 +8790,15 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 												<option value="6"{$repeats_4_weekday[6]}>{$lang->saturday}</option>
 											</select>
 											{$lang->of_every}
-											<input type="text" class="textbox" name="repeats_4_months2" value="{$repeats_4_months2}" size="2" onfocus="$('repeats_4_type_2').checked=true;" /> {$lang->month_or_months}
+											<input type="text" class="textbox" name="repeats_4_months2" value="{$repeats_4_months2}" size="2" onfocus="$('repeats_4_type_2').checked=TRUE;" /> {$lang->month_or_months}
 										</div>
 									</div>
 									<div class="repeats_type" id="repeats_type_5" style="padding: 4px;">
 										<div class="smalltext"><label>
 											<input type="radio" name="repeats_5_type" value="1" id="repeats_5_type_1" style="vertical-align: middle;" {$repeats_5_type[1]} />
 											{$lang->repeats_on}</label>
-											<input type="text" class="textbox" name="repeats_5_day" onfocus="$('repeats_5_type_1').checked=true;" value="{$repeats_5_day}" size="2" />
-											<select name="repeats_5_month" onfocus="$('repeats_5_type_1').checked=true;" >
+											<input type="text" class="textbox" name="repeats_5_day" onfocus="$('repeats_5_type_1').checked=TRUE;" value="{$repeats_5_day}" size="2" />
+											<select name="repeats_5_month" onfocus="$('repeats_5_type_1').checked=TRUE;" >
 												<option value="1"{$repeats_5_month['1']}>{$lang->month_1}</option>
 												<option value="2"{$repeats_5_month['2']}>{$lang->month_2}</option>
 												<option value="3"{$repeats_5_month['3']}>{$lang->month_3}</option>
@@ -8813,19 +8813,19 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 												<option value="12"{$repeats_5_month['12']}>{$lang->month_12}</option>
 											</select>
 											{$lang->every}
-											<input type="text" class="textbox" name="repeats_5_years" value="{$repeats_5_years}" onfocus="$('repeats_5_type_1').checked=true;" size="2" /> {$lang->year_or_years}
+											<input type="text" class="textbox" name="repeats_5_years" value="{$repeats_5_years}" onfocus="$('repeats_5_type_1').checked=TRUE;" size="2" /> {$lang->year_or_years}
 										</div>
 										<div class="smalltext" style="margin-top: 5px;"><label>
 											<input type="radio" name="repeats_5_type" value="2" id="repeats_5_type_2" style="vertical-align: middle;" {$repeats_5_type[2]} />
 											{$lang->repeats_on_the}</label>
-											<select name="repeats_5_occurance" onfocus="$('repeats_5_type_2').checked=true;" >
+											<select name="repeats_5_occurance" onfocus="$('repeats_5_type_2').checked=TRUE;" >
 												<option value="1"{$repeats_5_occurance[1]}>{$lang->first}</option>
 												<option value="2"{$repeats_5_occurance[2]}>{$lang->second}</option>
 												<option value="3"{$repeats_5_occurance[3]}>{$lang->third}</option>
 												<option value="4"{$repeats_5_occurance[4]}>{$lang->fourth}</option>
 												<option value="last"{$repeats_4_occurance['last']}>{$lang->last}</option>
 											</select>
-											<select name="repeats_5_weekday" onfocus="$('repeats_5_type_2').checked=true;" >
+											<select name="repeats_5_weekday" onfocus="$('repeats_5_type_2').checked=TRUE;" >
 												<option value="0"{$repeats_5_weekday[0]}>{$lang->sunday}</option>
 												<option value="1"{$repeats_5_weekday[1]}>{$lang->monday}</option>
 												<option value="2"{$repeats_5_weekday[2]}>{$lang->tuesday}</option>
@@ -8835,7 +8835,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 												<option value="6"{$repeats_5_weekday[6]}>{$lang->saturday}</option>
 											</select>
 											{$lang->of}
-											<select name="repeats_5_month2" onfocus="$('repeats_5_type_2').checked=true;" >
+											<select name="repeats_5_month2" onfocus="$('repeats_5_type_2').checked=TRUE;" >
 												<option value="1"{$repeats_5_month2['1']}>{$lang->month_1}</option>
 												<option value="2"{$repeats_5_month2['2']}>{$lang->month_2}</option>
 												<option value="3"{$repeats_5_month2['3']}>{$lang->month_3}</option>
@@ -8850,7 +8850,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 												<option value="12"{$repeats_5_month2['12']}>{$lang->month_12}</option>
 											</select>
 											{$lang->every}
-											<input type="text" class="textbox" name="repeats_5_years2" value="{$repeats_5_years}" size="2" onfocus="$('repeats_5_type_2').checked=true;" /> {$lang->year_or_years}
+											<input type="text" class="textbox" name="repeats_5_years2" value="{$repeats_5_years}" size="2" onfocus="$('repeats_5_type_2').checked=TRUE;" /> {$lang->year_or_years}
 										</div>
 									</div>
 								</td>
@@ -9042,7 +9042,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 				<!--
 					function toggleType()
 					{
-						if($('type_single').checked == true)
+						if($('type_single').checked == TRUE)
 						{
 							Element.hide('ranged_selects');
 							Element.show('single_selects');
@@ -9196,19 +9196,19 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 										<div class="smalltext"><label>
 											<input type="radio" name="repeats_4_type" id="repeats_4_type_1" value="1" style="vertical-align: middle;" {$repeats_4_type[1]} />
 											{$lang->repeats_on_day}</label>
-											<input type="text" class="textbox" name="repeats_4_day" value="{$repeats_4_day}" onfocus="$('repeats_4_type_1').checked=true;" size="2" /> {$lang->of_every} <input type="text" class="textbox" name="repeats_4_months" value="{$repeats_4_months}" size="2" onfocus="$('repeats_4_type_1').checked=true;" /> {$lang->month_or_months}
+											<input type="text" class="textbox" name="repeats_4_day" value="{$repeats_4_day}" onfocus="$('repeats_4_type_1').checked=TRUE;" size="2" /> {$lang->of_every} <input type="text" class="textbox" name="repeats_4_months" value="{$repeats_4_months}" size="2" onfocus="$('repeats_4_type_1').checked=TRUE;" /> {$lang->month_or_months}
 										</div>
 										<div class="smalltext" style="margin-top: 5px;"><label>
 											<input type="radio" name="repeats_4_type" id="repeats_4_type_2" value="2" style="vertical-align: middle;" {$repeats_4_type[2]} />
 											{$lang->repeats_on_the}</label>
-											<select name="repeats_4_occurance" onfocus="$('repeats_4_type_2').checked=true;">
+											<select name="repeats_4_occurance" onfocus="$('repeats_4_type_2').checked=TRUE;">
 												<option value="1"{$repeats_4_occurance[1]}>{$lang->first}</option>
 												<option value="2"{$repeats_4_occurance[2]}>{$lang->second}</option>
 												<option value="3"{$repeats_4_occurance[3]}>{$lang->third}</option>
 												<option value="4"{$repeats_4_occurance[4]}>{$lang->fourth}</option>
 												<option value="last"{$repeats_4_occurance['last']}>{$lang->last}</option>
 											</select>
-											<select name="repeats_4_weekday" onfocus="$('repeats_4_type_2').checked=true;">
+											<select name="repeats_4_weekday" onfocus="$('repeats_4_type_2').checked=TRUE;">
 												<option value="0"{$repeats_4_weekday[0]}>{$lang->sunday}</option>
 												<option value="1"{$repeats_4_weekday[1]}>{$lang->monday}</option>
 												<option value="2"{$repeats_4_weekday[2]}>{$lang->tuesday}</option>
@@ -9218,15 +9218,15 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 												<option value="6"{$repeats_4_weekday[6]}>{$lang->saturday}</option>
 											</select>
 											{$lang->of_every}
-											<input type="text" class="textbox" name="repeats_4_months2" value="{$repeats_4_months2}" size="2" onfocus="$('repeats_4_type_2').checked=true;" /> {$lang->month_or_months}
+											<input type="text" class="textbox" name="repeats_4_months2" value="{$repeats_4_months2}" size="2" onfocus="$('repeats_4_type_2').checked=TRUE;" /> {$lang->month_or_months}
 										</div>
 									</div>
 									<div class="repeats_type" id="repeats_type_5" style="padding: 4px;">
 										<div class="smalltext"><label>
 											<input type="radio" name="repeats_5_type" value="1" id="repeats_5_type_1" style="vertical-align: middle;" {$repeats_5_type[1]} />
 											{$lang->repeats_on}</label>
-											<input type="text" class="textbox" name="repeats_5_day" onfocus="$('repeats_5_type_1').checked=true;" value="{$repeats_5_day}" size="2" />
-											<select name="repeats_5_month" onfocus="$('repeats_5_type_1').checked=true;" >
+											<input type="text" class="textbox" name="repeats_5_day" onfocus="$('repeats_5_type_1').checked=TRUE;" value="{$repeats_5_day}" size="2" />
+											<select name="repeats_5_month" onfocus="$('repeats_5_type_1').checked=TRUE;" >
 												<option value="1"{$repeats_5_month['1']}>{$lang->month_1}</option>
 												<option value="2"{$repeats_5_month['2']}>{$lang->month_2}</option>
 												<option value="3"{$repeats_5_month['3']}>{$lang->month_3}</option>
@@ -9241,19 +9241,19 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 												<option value="12"{$repeats_5_month['12']}>{$lang->month_12}</option>
 											</select>
 											{$lang->every}
-											<input type="text" class="textbox" name="repeats_5_years" value="{$repeats_5_years}" onfocus="$('repeats_5_type_1').checked=true;" size="2" /> {$lang->year_or_years}
+											<input type="text" class="textbox" name="repeats_5_years" value="{$repeats_5_years}" onfocus="$('repeats_5_type_1').checked=TRUE;" size="2" /> {$lang->year_or_years}
 										</div>
 										<div class="smalltext" style="margin-top: 5px;"><label>
 											<input type="radio" name="repeats_5_type" value="2" id="repeats_5_type_2" style="vertical-align: middle;" {$repeats_5_type[2]} />
 											{$lang->repeats_on_the}</label>
-											<select name="repeats_5_occurance" onfocus="$('repeats_5_type_2').checked=true;" >
+											<select name="repeats_5_occurance" onfocus="$('repeats_5_type_2').checked=TRUE;" >
 												<option value="1"{$repeats_5_occurance[1]}>{$lang->first}</option>
 												<option value="2"{$repeats_5_occurance[2]}>{$lang->second}</option>
 												<option value="3"{$repeats_5_occurance[3]}>{$lang->third}</option>
 												<option value="4"{$repeats_5_occurance[4]}>{$lang->fourth}</option>
 												<option value="last"{$repeats_4_occurance['last']}>{$lang->last}</option>
 											</select>
-											<select name="repeats_5_weekday" onfocus="$('repeats_5_type_2').checked=true;" >
+											<select name="repeats_5_weekday" onfocus="$('repeats_5_type_2').checked=TRUE;" >
 												<option value="0"{$repeats_5_weekday[0]}>{$lang->sunday}</option>
 												<option value="1"{$repeats_5_weekday[1]}>{$lang->monday}</option>
 												<option value="2"{$repeats_5_weekday[2]}>{$lang->tuesday}</option>
@@ -9263,7 +9263,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 												<option value="6"{$repeats_5_weekday[6]}>{$lang->saturday}</option>
 											</select>
 											{$lang->of}
-											<select name="repeats_5_month2" onfocus="$('repeats_5_type_2').checked=true;" >
+											<select name="repeats_5_month2" onfocus="$('repeats_5_type_2').checked=TRUE;" >
 												<option value="1"{$repeats_5_month2['1']}>{$lang->month_1}</option>
 												<option value="2"{$repeats_5_month2['2']}>{$lang->month_2}</option>
 												<option value="3"{$repeats_5_month2['3']}>{$lang->month_3}</option>
@@ -9278,7 +9278,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 												<option value="12"{$repeats_5_month2['12']}>{$lang->month_12}</option>
 											</select>
 											{$lang->every}
-											<input type="text" class="textbox" name="repeats_5_years2" value="{$repeats_5_years}" size="2" onfocus="$('repeats_5_type_2').checked=true;" /> {$lang->year_or_years}
+											<input type="text" class="textbox" name="repeats_5_years2" value="{$repeats_5_years}" size="2" onfocus="$('repeats_5_type_2').checked=TRUE;" /> {$lang->year_or_years}
 										</div>
 									</div>
 								</td>
@@ -9648,7 +9648,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 						var checked = '';
 						$$('.types_check').each(function(e)
 						{
-							if(e.checked == true)
+							if(e.checked == TRUE)
 							{
 								checked = e.value;
 							}
@@ -9729,17 +9729,17 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 			<td class="trow1">
 				<script type="text/javascript">
 				// <!--
-					var mybb_editor_disabled = true;
+					var mybb_editor_disabled = TRUE;
 					var clickableEditor = '';
 					function togglePM()
 					{
-						if($('send_pm').checked == true)
+						if($('send_pm').checked == TRUE)
 						{
 							$('pm_input').show();
 							$('pm_smilie_insert').show();
-							if(mybb_editor_disabled == true && editor_language)
+							if(mybb_editor_disabled == TRUE && editor_language)
 							{
-								mybb_editor_disabled = false;
+								mybb_editor_disabled = FALSE;
 								clickableEditor = new messageEditor("message", {lang: editor_language, rtl: {$lang->settings['rtl']}, theme: "{$theme['editortheme']}"});
 								if(clickableEditor)
 								{
@@ -9922,7 +9922,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 	<thead>
 		<tr>
 			<td class="thead">
-				<div class="float_right" style="margin-top: 3px;"><span class="smalltext"><a href="#" onclick="UserCP.closeBuddySelect(true); return false;">{$lang->close}</a></span></div>
+				<div class="float_right" style="margin-top: 3px;"><span class="smalltext"><a href="#" onclick="UserCP.closeBuddySelect(TRUE); return FALSE;">{$lang->close}</a></span></div>
 				<div><strong>{$lang->select_buddies}</strong></div>
 			</td>
 		</tr>
@@ -9945,7 +9945,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 			<td class="trow1">
 				<div class="smalltext"><strong>{$lang->selected_recipients}</strong></div>
 				<div id="buddyselect_buddies" class="smalltext" style="padding-left: 10px; height: 50px; overflow: auto;"></div>
-				<div style="text-align: right;"><input type="button" class="button" value="{$lang->ok}" onclick="UserCP.closeBuddySelect();" /> <input type="button" class="button" value="{$lang->cancel}" onclick="UserCP.closeBuddySelect(true);" /></div>
+				<div style="text-align: right;"><input type="button" class="button" value="{$lang->ok}" onclick="UserCP.closeBuddySelect();" /> <input type="button" class="button" value="{$lang->cancel}" onclick="UserCP.closeBuddySelect(TRUE);" /></div>
 			</td>
 		</tr>
 	</tbody>
@@ -10544,16 +10544,16 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 		if(action == "modposts")
 		{
 			$('susposts_action').hide();
-			$('suspost').checked = false;
+			$('suspost').checked = FALSE;
 
-			if($("modpost").checked == false)
+			if($("modpost").checked == FALSE)
 			{
-				$("modpost").checked = false;
+				$("modpost").checked = FALSE;
 				$("modposts_action").hide();
 			}
 			else
 			{
-				$("modpost").checked = true;
+				$("modpost").checked = TRUE;
 				$("modposts_action").show();
 			}
 		}
@@ -10561,16 +10561,16 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 		if(action == "susposts")
 		{
 			$('modposts_action').hide();
-			$('modpost').checked = false;
+			$('modpost').checked = FALSE;
 
-			if($("suspost").checked == false)
+			if($("suspost").checked == FALSE)
 			{
-				$("suspost").checked = false;
+				$("suspost").checked = FALSE;
 				$("susposts_action").hide();
 			}
 			else
 			{
-				$("suspost").checked = true;
+				$("suspost").checked = TRUE;
 				$("susposts_action").show();
 			}
 		}
@@ -10587,7 +10587,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 
 	function toggleAction()
 	{
-		if($("suspend_action").visible() == true)
+		if($("suspend_action").visible() == TRUE)
 		{
 			$("suspend_action").hide();
 		}
@@ -10843,9 +10843,9 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 </body>
 </html>]]></template>
 	<template name="modcp_modqueue_masscontrols" version="1400"><![CDATA[<ul class="modqueue_mass">
-	<li><a href="#" class="mass_ignore" onclick="$$('input.radio_ignore').each(function(e) { e.checked = true; }); return false;">{$lang->mark_all_ignored}</a></li>
-	<li><a href="#" class="mass_delete" onclick="$$('input.radio_delete').each(function(e) { e.checked = true; }); return false;">{$lang->mark_all_deletion}</a></li>
-	<li><a href="#" class="mass_approve" onclick="$$('input.radio_approve').each(function(e) { e.checked = true; }); return false;">{$lang->mark_all_approved}</a></li>
+	<li><a href="#" class="mass_ignore" onclick="$$('input.radio_ignore').each(function(e) { e.checked = TRUE; }); return FALSE;">{$lang->mark_all_ignored}</a></li>
+	<li><a href="#" class="mass_delete" onclick="$$('input.radio_delete').each(function(e) { e.checked = TRUE; }); return FALSE;">{$lang->mark_all_deletion}</a></li>
+	<li><a href="#" class="mass_approve" onclick="$$('input.radio_approve').each(function(e) { e.checked = TRUE; }); return FALSE;">{$lang->mark_all_approved}</a></li>
 </ul>]]></template>
 	<template name="modcp_modqueue_threads_empty" version="1400"><![CDATA[<tr>
 		<td class="trow1" align="center" colspan="3">{$lang->mod_queue_threads_empty}</td>
@@ -11307,11 +11307,11 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 // -->
 </script>
 <br />]]></template>
-	<template name="video_metacafe_embed" version="1600"><![CDATA[<embed src="http://www.metacafe.com/fplayer/{$id}/{$title}.swf" width="400" height="345" wmode="transparent" allowFullScreen="true" allowScriptAccess="always" name="Metacafe_{$id}" pluginspage="http://www.macromedia.com/go/getflashplayer" type="application/x-shockwave-flash"></embed>]]></template>
-	<template name="video_dailymotion_embed" version="1600"><![CDATA[<div><object width="420" height="339"><param name="movie" value="http://www.dailymotion.com/swf/{$id}" /><param name="allowFullScreen" value="true" /><param name="allowScriptAccess" value="always" /><embed src="http://www.dailymotion.com/swf/{$id}" type="application/x-shockwave-flash" width="420" height="339" allowFullScreen="true" allowScriptAccess="always"></embed></object></div>]]></template>
-	<template name="video_myspacetv_embed" version="1600"><![CDATA[<object width="425px" height="360px"><param name="allowFullScreen" value="true"/><param name="wmode" value="transparent"/><param name="movie" value="http://mediaservices.myspace.com/services/media/embed.aspx/m={$id},t=1,mt=video"/><embed src="http://mediaservices.myspace.com/services/media/embed.aspx/m={$id},t=1,mt=video" width="425" height="360" allowFullScreen="true" type="application/x-shockwave-flash" wmode="transparent"></embed></object>]]></template>
+	<template name="video_metacafe_embed" version="1600"><![CDATA[<embed src="http://www.metacafe.com/fplayer/{$id}/{$title}.swf" width="400" height="345" wmode="transparent" allowFullScreen="TRUE" allowScriptAccess="always" name="Metacafe_{$id}" pluginspage="http://www.macromedia.com/go/getflashplayer" type="application/x-shockwave-flash"></embed>]]></template>
+	<template name="video_dailymotion_embed" version="1600"><![CDATA[<div><object width="420" height="339"><param name="movie" value="http://www.dailymotion.com/swf/{$id}" /><param name="allowFullScreen" value="TRUE" /><param name="allowScriptAccess" value="always" /><embed src="http://www.dailymotion.com/swf/{$id}" type="application/x-shockwave-flash" width="420" height="339" allowFullScreen="TRUE" allowScriptAccess="always"></embed></object></div>]]></template>
+	<template name="video_myspacetv_embed" version="1600"><![CDATA[<object width="425px" height="360px"><param name="allowFullScreen" value="TRUE"/><param name="wmode" value="transparent"/><param name="movie" value="http://mediaservices.myspace.com/services/media/embed.aspx/m={$id},t=1,mt=video"/><embed src="http://mediaservices.myspace.com/services/media/embed.aspx/m={$id},t=1,mt=video" width="425" height="360" allowFullScreen="TRUE" type="application/x-shockwave-flash" wmode="transparent"></embed></object>]]></template>
 	<template name="video_youtube_embed" version="1600"><![CDATA[<object type="application/x-shockwave-flash" class="video_embed" style="width: 450px; height: 366px;" data="http://www.youtube.com/v/{$id}"><param name="movie" value="http://www.youtube.com/v/{$id}" /></object>]]></template>
-	<template name="video_vimeo_embed" version="1600"><![CDATA[<object width="400" height="230"><param name="allowfullscreen" value="true" /><param name="allowscriptaccess" value="always" /><param name="movie" value="http://vimeo.com/moogaloop.swf?clip_id={$id}&amp;server=vimeo.com&amp;show_title=1&amp;show_byline=1&amp;show_portrait=0&amp;color=&amp;fullscreen=1" /><embed src="http://vimeo.com/moogaloop.swf?clip_id={$id}&amp;server=vimeo.com&amp;show_title=1&amp;show_byline=1&amp;show_portrait=0&amp;color=&amp;fullscreen=1" type="application/x-shockwave-flash" allowfullscreen="true" allowscriptaccess="always" width="400" height="230"></embed></object>]]></template>
-	<template name="video_yahoo_embed" version="1600"><![CDATA[<div><object width="512" height="322"><param name="movie" value="http://d.yimg.com/static.video.yahoo.com/yep/YV_YEP.swf?ver=2.2.40" /><param name="allowFullScreen" value="true" /><param name="AllowScriptAccess" VALUE="always" /><param name="bgcolor" value="#000000" /><param name="flashVars" value="id={$id}&vid={$vid}&lang=en-us&intl=us&embed=1" /><embed src="http://d.yimg.com/static.video.yahoo.com/yep/YV_YEP.swf?ver=2.2.40" type="application/x-shockwave-flash" width="512" height="322" allowFullScreen="true" AllowScriptAccess="always" bgcolor="#000000" flashVars="id={$id}&vid={$vid}&lang=en-us&intl=us&embed=1"></embed></object></div>]]></template>
+	<template name="video_vimeo_embed" version="1600"><![CDATA[<object width="400" height="230"><param name="allowfullscreen" value="TRUE" /><param name="allowscriptaccess" value="always" /><param name="movie" value="http://vimeo.com/moogaloop.swf?clip_id={$id}&amp;server=vimeo.com&amp;show_title=1&amp;show_byline=1&amp;show_portrait=0&amp;color=&amp;fullscreen=1" /><embed src="http://vimeo.com/moogaloop.swf?clip_id={$id}&amp;server=vimeo.com&amp;show_title=1&amp;show_byline=1&amp;show_portrait=0&amp;color=&amp;fullscreen=1" type="application/x-shockwave-flash" allowfullscreen="TRUE" allowscriptaccess="always" width="400" height="230"></embed></object>]]></template>
+	<template name="video_yahoo_embed" version="1600"><![CDATA[<div><object width="512" height="322"><param name="movie" value="http://d.yimg.com/static.video.yahoo.com/yep/YV_YEP.swf?ver=2.2.40" /><param name="allowFullScreen" value="TRUE" /><param name="AllowScriptAccess" VALUE="always" /><param name="bgcolor" value="#000000" /><param name="flashVars" value="id={$id}&vid={$vid}&lang=en-us&intl=us&embed=1" /><embed src="http://d.yimg.com/static.video.yahoo.com/yep/YV_YEP.swf?ver=2.2.40" type="application/x-shockwave-flash" width="512" height="322" allowFullScreen="TRUE" AllowScriptAccess="always" bgcolor="#000000" flashVars="id={$id}&vid={$vid}&lang=en-us&intl=us&embed=1"></embed></object></div>]]></template>
 	</templates>
 </theme>

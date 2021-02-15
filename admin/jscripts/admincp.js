@@ -5,11 +5,11 @@ var AdminCP = {
 
 	deleteConfirmation: function(element, message)
 	{
-		if(!element) { return false;
+		if(!element) { return FALSE;
 		}
 
 		confirmReturn = confirm(message);
-		if(confirmReturn == true) {
+		if(confirmReturn == TRUE) {
 			form = document.createElement("form");
 			form.setAttribute("method", "post");
 			form.setAttribute("action", element.href);
@@ -18,7 +18,7 @@ var AdminCP = {
 			form.submit();
 		}
 
-		return false;
+		return FALSE;
 	}
 };
 

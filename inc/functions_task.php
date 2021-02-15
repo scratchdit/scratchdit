@@ -13,7 +13,7 @@
  * Execute a scheduled task.
  *
  * @param int The task ID. If none specified, the next task due to be ran is executed
- * @return boolean True if successful, false on failure
+ * @return boolean TRUE if successful, FALSE on failure
  */
 function run_task($tid=0)
 {
@@ -37,14 +37,14 @@ function run_task($tid=0)
 	if(!$task['tid'])
 	{
 		$cache->update_tasks();
-		return false;
+		return FALSE;
 	}
 
 	// Is this task still running and locked less than 5 minutes ago? Well don't run it now - clearly it isn't broken!
 	if($task['locked'] != 0 && $task['locked'] > TIME_NOW-300)
 	{
 		$cache->update_tasks();
-		return false;
+		return FALSE;
 	}
 	// Lock it! It' mine, all mine!
 	else
@@ -60,7 +60,7 @@ function run_task($tid=0)
 			add_task_log($task, $lang->missing_task);
 		}
 		$cache->update_tasks();
-		return false;
+		return FALSE;
 	}
 	// Run the task
 	else
@@ -68,7 +68,7 @@ function run_task($tid=0)
 		// Update the nextrun time now, so if the task causes a fatal error, it doesn't get stuck first in the queue
 		$nextrun = fetch_next_run($task);
 		$db->update_query("tasks", array("nextrun" => $nextrun), "tid='{$task['tid']}'");
-		
+
 		include_once MYBB_ROOT."inc/tasks/{$task['file']}.php";
 		$function = "task_{$task['file']}";
 		if(function_exists($function))
@@ -85,7 +85,7 @@ function run_task($tid=0)
 
 	$cache->update_tasks();
 
-	return true;
+	return TRUE;
 }
 
 /**
@@ -97,12 +97,12 @@ function run_task($tid=0)
 function add_task_log($task, $message)
 {
 	global $db;
-	
+
 	if(!$task['logging'])
 	{
-		return;	
+		return;
 	}
-	
+
 	$log_entry = array(
 		"tid" => intval($task['tid']),
 		"dateline" => TIME_NOW,
@@ -138,7 +138,7 @@ function fetch_next_run($task)
 	}
 	else
 	{
-		if(build_next_run_bit($task['minute'], $current_minute) != false)
+		if(build_next_run_bit($task['minute'], $current_minute) != FALSE)
 		{
 			$next_minute = build_next_run_bit($task['minute'], $current_minute);
 		}
@@ -165,7 +165,7 @@ function fetch_next_run($task)
 		}
 		else
 		{
-			if(build_next_run_bit($task['hour'], $current_hour) != false)
+			if(build_next_run_bit($task['hour'], $current_hour) != FALSE)
 			{
 				$next_hour = build_next_run_bit($task['hour'], $current_hour);
 			}
@@ -197,7 +197,7 @@ function fetch_next_run($task)
 			}
 			else
 			{
-				if(build_next_run_bit($task['day'], $current_day) != false)
+				if(build_next_run_bit($task['day'], $current_day) != FALSE)
 				{
 					$next_day = build_next_run_bit($task['day'], $current_day);
 				}
@@ -214,7 +214,7 @@ function fetch_next_run($task)
 		}
 		else
 		{
-			if(build_next_run_bit($task['weekday'], $current_weekday) != false)
+			if(build_next_run_bit($task['weekday'], $current_weekday) != FALSE)
 			{
 				$next_weekday = build_next_run_bit($task['weekday'], $current_weekday);
 			}
@@ -254,7 +254,7 @@ function fetch_next_run($task)
 		}
 		else
 		{
-			if(build_next_run_bit($task['month'], $current_month) != false)
+			if(build_next_run_bit($task['month'], $current_month) != FALSE)
 			{
 				$next_month = build_next_run_bit($task['month'], $current_month);
 			}
@@ -335,7 +335,7 @@ function build_next_run_bit($data, $bit)
 			return $thing;
 		}
 	}
-	return false;
+	return FALSE;
 }
 
 /**
@@ -356,16 +356,16 @@ function fetch_first_run_time($data)
  *
  * @param string A string containing the run times for this particular item
  * @param int The bit we're checking for
- * @return boolean True if it exists, false if it does not
+ * @return boolean TRUE if it exists, FALSE if it does not
  */
 function run_time_exists($data, $bit)
 {
-	if($data == "*") return true;
+	if($data == "*") return TRUE;
 	$data = explode(",", $data);
 	if(in_array($bit, $data))
 	{
-		return true;
+		return TRUE;
 	}
-	return false;
+	return FALSE;
 }
 ?>

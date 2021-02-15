@@ -50,7 +50,7 @@ class Text_Diff_Engine_native {
             if ($from_lines[$skip] !== $to_lines[$skip]) {
                 break;
             }
-            $this->xchanged[$skip] = $this->ychanged[$skip] = false;
+            $this->xchanged[$skip] = $this->ychanged[$skip] = FALSE;
         }
 
         // Skip trailing common lines.
@@ -59,7 +59,7 @@ class Text_Diff_Engine_native {
             if ($from_lines[$xi] !== $to_lines[$yi]) {
                 break;
             }
-            $this->xchanged[$xi] = $this->ychanged[$yi] = false;
+            $this->xchanged[$xi] = $this->ychanged[$yi] = FALSE;
         }
 
         // Ignore lines which do not exist in both files.
@@ -150,12 +150,12 @@ class Text_Diff_Engine_native {
      */
     function _diag ($xoff, $xlim, $yoff, $ylim, $nchunks)
     {
-        $flip = false;
+        $flip = FALSE;
 
         if ($xlim - $xoff > $ylim - $yoff) {
             /* Things seems faster (I'm not sure I understand why) when the
              * shortest sequence is in X. */
-            $flip = true;
+            $flip = TRUE;
             list ($xoff, $xlim, $yoff, $ylim)
                 = array($yoff, $ylim, $xoff, $xlim);
         }
@@ -205,7 +205,7 @@ class Text_Diff_Engine_native {
                         assert($y <= $this->seq[$k]);
                         /* Optimization: this is a common case: next match is
                          * just replacing previous match. */
-                        $this->in_seq[$this->seq[$k]] = false;
+                        $this->in_seq[$this->seq[$k]] = FALSE;
                         $this->seq[$k] = $y;
                         $this->in_seq[$y] = 1;
                     } elseif (empty($this->in_seq[$y])) {
@@ -250,7 +250,7 @@ class Text_Diff_Engine_native {
 
         assert($ypos != $this->seq[$end]);
 
-        $this->in_seq[$this->seq[$end]] = false;
+        $this->in_seq[$this->seq[$end]] = FALSE;
         $this->seq[$end] = $ypos;
         $this->in_seq[$ypos] = 1;
         return $end;
@@ -347,7 +347,7 @@ class Text_Diff_Engine_native {
              * lines).
              *
              * Furthermore, $j is always kept so that $j == $other_len or
-             * $other_changed[$j] == false. */
+             * $other_changed[$j] == FALSE. */
             while ($j < $other_len && $other_changed[$j]) {
                 $j++;
             }
@@ -381,7 +381,7 @@ class Text_Diff_Engine_native {
                  * with previous changed regions. */
                 while ($start > 0 && $lines[$start - 1] == $lines[$i - 1]) {
                     $changed[--$start] = 1;
-                    $changed[--$i] = false;
+                    $changed[--$i] = FALSE;
                     while ($start > 0 && $changed[$start - 1]) {
                         $start--;
                     }
@@ -404,7 +404,7 @@ class Text_Diff_Engine_native {
                  * that if there are no merges, the changed region is moved
                  * forward as far as possible. */
                 while ($i < $len && $lines[$start] == $lines[$i]) {
-                    $changed[$start++] = false;
+                    $changed[$start++] = FALSE;
                     $changed[$i++] = 1;
                     while ($i < $len && $changed[$i]) {
                         $i++;

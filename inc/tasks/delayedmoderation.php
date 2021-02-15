@@ -26,7 +26,7 @@ function task_delayedmoderation($task)
 		$tids = explode(',', $delayedmoderation['tids']);
 		$input = unserialize($delayedmoderation['inputs']);
 
-		if(my_strpos($delayedmoderation['type'], "modtool") !== false)
+		if(my_strpos($delayedmoderation['type'], "modtool") !== FALSE)
 		{
 			list(, $custom_id) = explode('_', $delayedmoderation['type'], 2);
 			$custommod->execute($custom_id, $tids);

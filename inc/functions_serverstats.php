@@ -81,7 +81,7 @@ function build_server_stats($is_install=1, $prev_version='', $current_version=''
 	$sapi_type = php_sapi_name();
 
 	$info['cgimode'] = 0;
-	if(strpos($sapi_type, 'cgi') !== false)
+	if(strpos($sapi_type, 'cgi') !== FALSE)
 	{
 		$info['cgimode'] = 1;
 	}
@@ -199,7 +199,7 @@ function build_server_stats($is_install=1, $prev_version='', $current_version=''
 	}
 
 	// Check the hosting company
-	if(strpos($_SERVER['HTTP_HOST'], ".") !== false)
+	if(strpos($_SERVER['HTTP_HOST'], ".") !== FALSE)
 	{
 		$host_url = "http://www.whoishostingthis.com/".str_replace(array('http://', 'www.'), '', $_SERVER['HTTP_HOST']);
 
@@ -210,11 +210,11 @@ function build_server_stats($is_install=1, $prev_version='', $current_version=''
 			preg_match('#We believe \<a href\="http:\/\/www.whoishostingthis.com\/linkout\/\?t\=[0-9]&url\=?([^"]*)" (title="([^"]*)" )target\=\_blank\>([^<]*)\<\/a\>#ism', $hosting, $matches);
 
 			$info['hosturl'] = "unknown/no-url";
-			if(isset($matches[1]) && strlen(trim($matches[1])) != 0 && strpos($matches[1], '.') !== false)
+			if(isset($matches[1]) && strlen(trim($matches[1])) != 0 && strpos($matches[1], '.') !== FALSE)
 			{
 				$info['hosturl'] = strtolower($matches[1]);
 			}
-			else if(isset($matches[3]) && strlen(trim($matches[3])) != 0 && strpos($matches[3], '.') !== false)
+			else if(isset($matches[3]) && strlen(trim($matches[3])) != 0 && strpos($matches[3], '.') !== FALSE)
 			{
 				$info['hosturl'] = strtolower($matches[3]);
 			}
@@ -277,8 +277,8 @@ function build_server_stats($is_install=1, $prev_version='', $current_version=''
 	$server_stats_url = 'http://www.mybb.com/stats.php?'.$string;
 
 	$return = array();
-	$return['info_sent_success'] = false;
-	if(fetch_remote_file($url) !== false)
+	$return['info_sent_success'] = FALSE;
+	if(fetch_remote_file($url) !== FALSE)
 	{
 		$return['info_sent_success'] = TRUE;
 	}

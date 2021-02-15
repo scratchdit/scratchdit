@@ -144,7 +144,7 @@ covered by this License; they are outside its scope.  The act of
 running a program using the Library is not restricted, and output from
 such a program is covered only if its contents constitute a work based
 on the Library (independent of the use of the Library in a tool for
-writing it).  Whether that is true depends on what the Library does
+writing it).  Whether that is TRUE depends on what the Library does
 and what the program that uses the Library does.
 
   1. You may copy and distribute verbatim copies of the Library's
@@ -252,9 +252,9 @@ Section 6 states terms for distribution of such executables.
   When a "work that uses the Library" uses material from a header file
 that is part of the Library, the object code for the work may be a
 derivative work of the Library even though the source code is not.
-Whether this is true is especially significant if the work can be
+Whether this is TRUE is especially significant if the work can be
 linked without the Library, or if the work is itself a library.  The
-threshold for this to be true is not precisely defined by law.
+threshold for this to be TRUE is not precisely defined by law.
 
   If such an object file uses only numerical parameters, data
 structure layouts and accessors, and small macros and small inline

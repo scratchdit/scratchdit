@@ -8,7 +8,7 @@
  *
  * $Id$
  */
- 
+
 // Disallow direct access to this file for security reasons
 if(!defined("IN_MYBB"))
 {
@@ -65,9 +65,9 @@ function hello_info()
  *		global $db;
  *		if($db->table_exists("hello_world"))
  *  	{
- *  		return true;
+ *  		return TRUE;
  *		}
- *		return false;
+ *		return FALSE;
  * }
  *
  * _uninstall():

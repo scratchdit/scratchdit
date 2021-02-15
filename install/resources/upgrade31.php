@@ -48,7 +48,7 @@ function upgrade31_dbchanges()
 	// Update help documents
 	$query = $db->simple_select('helpdocs', 'document', 'hid=\'3\'');
 	$helpdoc = $db->fetch_array($query);
-	if(my_strpos($helpdoc['document'], ';key={1}') !== false)
+	if(my_strpos($helpdoc['document'], ';key={1}') !== FALSE)
 	{
 		$helpdoc['document'] = str_replace(';key={1}', ';my_post_key={1}', $helpdoc['document']);
 	}

@@ -16,7 +16,7 @@ var Rating = {
 			else
 			{
 				elements.each(function(element) {
-					element.onclick = function() { return false; };
+					element.onclick = function() { return FALSE; };
 					element.style.cursor = 'default';
 					var element_id = element.href.replace(/.*\?(.*)/, "$1").match(/tid=(.*)&(.*)&/)[1];
 					element.title = $('current_rating_'+element_id).innerHTML;
@@ -24,7 +24,7 @@ var Rating = {
 			}
 		});
 	},
-	
+
 	build_forumdisplay: function(tid, options)
 	{
 		if(!$('rating_thread_'+tid))
@@ -33,7 +33,7 @@ var Rating = {
 		}
 		var list = document.getElementById('rating_thread_'+tid);
 		list.className = 'star_rating' + options.extra_class;
-		
+
 		list_classes = new Array();
 		list_classes[1] = 'one_star';
 		list_classes[2] = 'two_stars';
@@ -64,7 +64,7 @@ var Rating = {
 			onComplete: function(request) { Rating.rating_added(request, element_id); }
 		});
 		document.body.style.cursor = 'wait';
-		return false;
+		return FALSE;
 	},
 
 	rating_added: function(request, element_id)
@@ -111,7 +111,7 @@ var Rating = {
 				var elements = Element.getElementsBySelector(rating_element, 'li a');
 				elements.each(function(element) {
 					if(element.id == "rating_thread_" + element_id) {
-						element.onclick = function() { return false; };
+						element.onclick = function() { return FALSE; };
 						element.style.cursor = 'default';
 						element.title = $('current_rating_'+element_id).innerHTML;
 					}

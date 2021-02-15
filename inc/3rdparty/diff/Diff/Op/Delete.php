@@ -24,7 +24,7 @@ class Horde_Text_Diff_Op_Delete extends Horde_Text_Diff_Op_Base
     public function __construct($lines)
     {
         $this->orig = $lines;
-        $this->final = false;
+        $this->final = FALSE;
     }
 
     public function reverse()

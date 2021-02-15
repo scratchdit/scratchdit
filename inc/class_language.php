@@ -47,18 +47,18 @@ class MyLanguage
 	 * Check if a specific language exists.
 	 *
 	 * @param string The language to check for.
-	 * @return boolean True when exists, false when does not exist.
+	 * @return boolean TRUE when exists, FALSE when does not exist.
 	 */
 	function language_exists($language)
 	{
 		$language = preg_replace("#[^a-z0-9\-_]#i", "", $language);
 		if(file_exists($this->path."/".$language.".php"))
 		{
-			return true;
+			return TRUE;
 		}
 		else
 		{
-			return false;
+			return FALSE;
 		}
 	}
 
@@ -71,7 +71,7 @@ class MyLanguage
 	function set_language($language="english", $area="user")
 	{
 		global $mybb;
-		
+
 		$language = preg_replace("#[^a-z0-9\-_]#i", "", $language);
 
 		// Default language is English.
@@ -79,13 +79,13 @@ class MyLanguage
 		{
 			$language = "english";
 		}
-		
+
 		// Check if the language exists.
 		if(!$this->language_exists($language))
 		{
 			die("Language $language ($this->path/$language) is not installed");
 		}
-		
+
 		$this->language = $language;
 		require $this->path."/".$language.".php";
 		$this->settings = $langinfo;
@@ -122,16 +122,16 @@ class MyLanguage
 	 * @param boolean Is this a datahandler?
 	 * @param boolean supress the error if the file doesn't exist?
 	 */
-	function load($section, $isdatahandler=false, $supress_error=false)
+	function load($section, $isdatahandler=FALSE, $supress_error=FALSE)
 	{
 		// Assign language variables.
 		// Datahandlers are never in admin lang directory.
-		if($isdatahandler === true)
+		if($isdatahandler === TRUE)
 		{
 			$this->language = str_replace('/admin', '', $this->language);
 		}
 		$lfile = $this->path."/".$this->language."/".$section.".lang.php";
-		
+
 		if(file_exists($lfile))
 		{
 			require_once $lfile;
@@ -142,15 +142,15 @@ class MyLanguage
 		}
 		else
 		{
-			if($supress_error != true)
+			if($supress_error != TRUE)
 			{
 				die("$lfile does not exist");
 			}
 		}
-		
+
 		// We must unite and protect our language variables!
 		$lang_keys_ignore = array('language', 'path', 'settings');
-		
+
 		if(is_array($l))
 		{
 			foreach($l as $key => $val)
@@ -162,24 +162,24 @@ class MyLanguage
 			}
 		}
 	}
-	
+
 	function sprintf($string)
 	{
 		$arg_list = func_get_args();
 		$num_args = count($arg_list);
-		
+
 		for($i = 1; $i < $num_args; $i++)
 		{
 			$string = str_replace('{'.$i.'}', $arg_list[$i], $string);
 		}
-		
+
 		return $string;
 	}
 
 	/**
 	 * Get the language variables for a section.
 	 *
-	 * @param boolean Admin variables when true, user when false.
+	 * @param boolean Admin variables when TRUE, user when FALSE.
 	 * @return array The language variables.
 	 */
 	function get_languages($admin=0)

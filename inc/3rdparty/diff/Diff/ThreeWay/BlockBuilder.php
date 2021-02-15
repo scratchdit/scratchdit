@@ -51,7 +51,7 @@ class Horde_Text_Diff_ThreeWay_BlockBuilder
     public function finish()
     {
         if ($this->isEmpty()) {
-            return false;
+            return FALSE;
         } else {
             $edit = new Horde_Text_Diff_ThreeWay_Op_Base($this->orig, $this->final1, $this->final2);
             $this->_init();

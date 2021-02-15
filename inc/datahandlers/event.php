@@ -57,7 +57,7 @@ class EventDataHandler extends DataHandler
 	/**
 	 * Verifies if an event name is valid or not and attempts to fix it
 	 *
-	 * @return boolean True if valid, false if invalid.
+	 * @return boolean TRUE if valid, FALSE if invalid.
 	 */
 	function verify_name()
 	{
@@ -66,15 +66,15 @@ class EventDataHandler extends DataHandler
 		if(!$name)
 		{
 			$this->set_error("missing_name");
-			return false;
+			return FALSE;
 		}
-		return true;
+		return TRUE;
 	}
 
 	/**
 	 * Verifies if an event description is valid or not and attempts to fix it
 	 *
-	 * @return boolean True if valid, false if invalid.
+	 * @return boolean TRUE if valid, FALSE if invalid.
 	 */
 	function verify_description()
 	{
@@ -83,15 +83,15 @@ class EventDataHandler extends DataHandler
 		if(!$description)
 		{
 			$this->set_error("missing_description");
-			return false;
+			return FALSE;
 		}
-		return true;
+		return TRUE;
 	}
 
 	/**
 	 * Verifies if an event date is valid or not and attempts to fix it
 	 *
-	 * @return boolean True if valid, false if invalid.
+	 * @return boolean TRUE if valid, FALSE if invalid.
 	 */
 	function verify_date()
 	{
@@ -101,27 +101,27 @@ class EventDataHandler extends DataHandler
 		if(!$event['start_date']['day'] || !$event['start_date']['month'] || !$event['start_date']['year'])
 		{
 			$this->set_error("invalid_start_date");
-			return false;
+			return FALSE;
 		}
 
 		if($event['start_date']['day'] > date("t", mktime(0, 0, 0, $event['start_date']['month'], 1, $event['start_date']['year'])))
 		{
 			$this->set_error("invalid_start_date");
-			return false;
+			return FALSE;
 		}
 
 		// Calendar events can only be within the next 5 years
 		if($event['start_date']['year'] > date("Y") + 5)
 		{
 			$this->set_error("invalid_start_year");
-			return false;
+			return FALSE;
 		}
 
 		//Check to see if the month is within 1 and 12
 		if($event['start_date']['month'] > 12 || $event['start_date']['month'] < 1)
 		{
 			$this->set_error("invalid_start_month");
-			return false;
+			return FALSE;
 		}
 
 		// For ranged events, we check the end date & times too
@@ -130,27 +130,27 @@ class EventDataHandler extends DataHandler
 			if(!$event['end_date']['day'] || !$event['end_date']['month'] || !$event['end_date']['year'])
 			{
 				$this->set_error("invalid_end_date");
-				return false;
+				return FALSE;
 			}
 
 			if($event['end_date']['day'] > date("t", mktime(0, 0, 0, $event['end_date']['month'], 1, $event['end_date']['year'])))
 			{
 				$this->set_error("invalid_end_date");
-				return false;
+				return FALSE;
 			}
 
 			// Calendar events can only be within the next 5 years
 			if($event['end_date']['year'] > date("Y") + 5)
 			{
 				$this->set_error("invalid_end_year");
-				return false;
+				return FALSE;
 			}
 
 			//Check to see if the month is within 1 and 12
 			if($event['end_date']['month'] > 12 || $event['end_date']['month'] < 1)
 			{
 				$this->set_error("invalid_end_month");
-				return false;
+				return FALSE;
 			}
 
 			// Validate time input
@@ -159,7 +159,7 @@ class EventDataHandler extends DataHandler
 				if(($event['start_date']['time'] && !$event['end_date']['time']) || ($event['end_date']['time'] && !$event['start_date']['time']))
 				{
 					$this->set_error("cant_specify_one_time");
-					return false;
+					return FALSE;
 				}
 
 				// Begin start time validation
@@ -167,7 +167,7 @@ class EventDataHandler extends DataHandler
 				if(!is_array($start_time))
 				{
 					$this->set_error("start_time_invalid");
-					return false;
+					return FALSE;
 				}
 
 				// End time validation
@@ -175,7 +175,7 @@ class EventDataHandler extends DataHandler
 				if(!is_array($end_time))
 				{
 					$this->set_error("end_time_invalid");
-					return false;
+					return FALSE;
 				}
 				$event['usingtime'] = 1;
 			}
@@ -193,7 +193,7 @@ class EventDataHandler extends DataHandler
 			if($event['timezone'] > 12 || $event['timezone'] < -12)
 			{
 				$this->set_error("invalid_timezone");
-				return false;
+				return FALSE;
 			}
 			$start_time['hour'] -= $event['timezone'];
 			$end_time['hour'] -= $event['timezone'];
@@ -208,7 +208,7 @@ class EventDataHandler extends DataHandler
 			if($end_timestamp <= $start_timestamp)
 			{
 				$this->set_error("end_in_past");
-				return false;
+				return FALSE;
 			}
 		}
 
@@ -216,7 +216,7 @@ class EventDataHandler extends DataHandler
 		$event['starttime'] = $start_timestamp;
 		$event['endtime'] = $end_timestamp;
 
-		return true;
+		return TRUE;
 	}
 
 	function verify_time($time)
@@ -224,7 +224,7 @@ class EventDataHandler extends DataHandler
 		preg_match('#^(0?[1-9]|1[012])\s?([:\.]?)\s?([0-5][0-9])?(\s?[ap]m)|([01][0-9]|2[0-3])\s?([:\.])\s?([0-5][0-9])$#i', $time, $matches);
 		if(count($matches) == 0)
 		{
-			return false;
+			return FALSE;
 		}
 
 		// 24h time
@@ -258,13 +258,13 @@ class EventDataHandler extends DataHandler
 
 		if(!is_array($event['repeats']) || !$event['repeats']['repeats'])
 		{
-			return true;
+			return TRUE;
 		}
-		
+
 		if(!$event['endtime'])
 		{
 			$this->set_error("only_ranged_events_repeat");
-			return false;
+			return FALSE;
 		}
 
 		switch($event['repeats']['repeats'])
@@ -274,7 +274,7 @@ class EventDataHandler extends DataHandler
 				if($event['repeats']['days'] <= 0)
 				{
 					$this->set_error("invalid_repeat_day_interval");
-					return false;
+					return FALSE;
 				}
 			case 2:
 				break;
@@ -283,12 +283,12 @@ class EventDataHandler extends DataHandler
 				if($event['repeats']['weeks'] <= 0)
 				{
 					$this->set_error("invalid_repeat_week_interval");
-					return false;
+					return FALSE;
 				}
 				if(count($event['repeats']['days']) == 0)
 				{
 					$this->set_error("invalid_repeat_weekly_days");
-					return false;
+					return FALSE;
 				}
 				asort($event['repeats']['days']);
 				break;
@@ -299,7 +299,7 @@ class EventDataHandler extends DataHandler
 					if($event['repeats']['day'] <= 0 || $event['repeats']['day'] > 31)
 					{
 						$this->set_error("invalid_repeat_day_interval");
-						return false;
+						return FALSE;
 					}
 				}
 				else
@@ -314,7 +314,7 @@ class EventDataHandler extends DataHandler
 				if($event['repeats']['months'] <= 0 || $event['repeats']['months'] > 12)
 				{
 					$this->set_error("invalid_repeat_month_interval");
-					return false;
+					return FALSE;
 				}
 				break;
 			case 5:
@@ -324,7 +324,7 @@ class EventDataHandler extends DataHandler
 					if($event['repeats']['day'] <= 0 || $event['repeats']['day'] > 31)
 					{
 						$this->set_error("invalid_repeat_day_interval");
-						return false;
+						return FALSE;
 					}
 				}
 				else
@@ -339,13 +339,13 @@ class EventDataHandler extends DataHandler
 				if($event['repeats']['month'] <= 0 || $event['repeats']['month'] > 12)
 				{
 					$this->set_error("invalid_repeat_month_interval");
-					return false;
+					return FALSE;
 				}
 				$event['repeats']['years'] = intval($event['repeats']['years']);
 				if($event['repeats']['years'] <= 0 || $event['repeats']['years'] > 4)
 				{
 					$this->set_error("invalid_repeat_year_interval");
-					return false;
+					return FALSE;
 				}
 				break;
 			default:
@@ -354,13 +354,13 @@ class EventDataHandler extends DataHandler
 		require_once MYBB_ROOT."inc/functions_calendar.php";
 		$event['starttime_user'] = $event['starttime'];
 		$event['endtime_user'] = $event['endtime'];
-		$next_occurance = fetch_next_occurance($event, array('start' => $event['starttime'], 'end' => $event['endtime']), $event['starttime'], true);
+		$next_occurance = fetch_next_occurance($event, array('start' => $event['starttime'], 'end' => $event['endtime']), $event['starttime'], TRUE);
 		if($next_occurance > $event['endtime'])
 		{
 			$this->set_error("event_wont_occur");
-			return false;
+			return FALSE;
 		}
-		return true;
+		return TRUE;
 	}
 
 	/**
@@ -393,18 +393,18 @@ class EventDataHandler extends DataHandler
 		{
 			$this->verify_repeats();
 		}
-		
+
 		$plugins->run_hooks("datahandler_event_validate", $this);
 
 		// We are done validating, return.
-		$this->set_validated(true);
+		$this->set_validated(TRUE);
 		if(count($this->get_errors()) > 0)
 		{
-			return false;
+			return FALSE;
 		}
 		else
 		{
-			return true;
+			return TRUE;
 		}
 	}
 
@@ -423,7 +423,7 @@ class EventDataHandler extends DataHandler
 		{
 			die("The event needs to be validated before inserting it into the DB.");
 		}
-		
+
 		if(count($this->get_errors()) > 0)
 		{
 			die("The event is not valid.");
@@ -449,7 +449,7 @@ class EventDataHandler extends DataHandler
 		{
 			$visible = 1;
 		}
-			
+
 		// Prepare an array for insertion into the database.
 		$this->event_insert_data = array(
 			'cid' => intval($event['cid']),
@@ -493,7 +493,7 @@ class EventDataHandler extends DataHandler
 		{
 			die("The event needs to be validated before inserting it into the DB.");
 		}
-		
+
 		if(count($this->get_errors()) > 0)
 		{
 			die("The event is not valid.");
@@ -548,11 +548,11 @@ class EventDataHandler extends DataHandler
 		{
 			$this->event_update_data['timezone'] = $db->escape_string(floatval($event['timezone']));
 		}
-		
+
 		if(isset($event['ignoretimezone']))
 		{
 			$this->event_update_data['ignoretimezone'] = intval($event['ignoretimezone']);
-		}		
+		}
 
 		if(isset($event['private']))
 		{

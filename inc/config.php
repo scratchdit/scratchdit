@@ -74,7 +74,7 @@ $config['memcache']['port'] = 11211;
  *  of your redis server below. If you want
  *  to connect via unix sockets, use the full
  *  path to the unix socket as host and leave
- *  the port setting unconfigured or false.
+ *  the port setting unconfigured or FALSE.
  */
 $config['redis']['host'] = 'localhost';
 $config['redis']['port'] = 6379;

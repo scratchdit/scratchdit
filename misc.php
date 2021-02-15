@@ -49,7 +49,7 @@ if($mybb->input['action'] == "dstswitch" && $mybb->request_method == "post" && $
 }
 if($mybb->input['action'] == "markread")
 {
-	if($mybb->user['uid'] && verify_post_check($mybb->input['my_post_key'], true) !== true)
+	if($mybb->user['uid'] && verify_post_check($mybb->input['my_post_key'], TRUE) !== TRUE)
 	{
 		// Protect our user's unread forums from CSRF
 		error($lang->invalid_post_code);
@@ -197,7 +197,7 @@ elseif($mybb->input['action'] == "help")
 				if($lang->$langdocvar)
 				{
 					$helpdoc['document'] = $lang->$langdocvar;
-					
+
 					if($langdocvar == "d3_document")
 					{
 						$helpdoc['document'] = $lang->sprintf($helpdoc['document'], $mybb->user['logoutkey']);
@@ -337,7 +337,7 @@ elseif($mybb->input['action'] == "buddypopup")
 		while($buddy = $db->fetch_array($query))
 		{
 			$buddy_name = format_name($buddy['username'], $buddy['usergroup'], $buddy['displaygroup']);
-			$profile_link = build_profile_link($buddy_name, $buddy['uid'], '_blank', 'if(window.opener) { window.opener.location = this.href; return false; }');
+			$profile_link = build_profile_link($buddy_name, $buddy['uid'], '_blank', 'if(window.opener) { window.opener.location = this.href; return FALSE; }');
 
 			if($mybb->user['receivepms'] != 0 && $buddy['receivepms'] != 0 && $groupscache[$buddy['usergroup']]['canusepms'] != 0)
 			{
@@ -410,20 +410,20 @@ elseif($mybb->input['action'] == "whoposted")
 	$whoposted = '';
 	$tid = intval($mybb->input['tid']);
 	$thread = get_thread($tid);
-	
+
 	if(is_moderator($thread['fid']))
 	{
-		$ismod = true;
+		$ismod = TRUE;
 		$show_posts = "(p.visible = '1' OR p.visible = '0')";
 	}
 	else
 	{
-		$ismod = false;
+		$ismod = FALSE;
 		$show_posts = "p.visible = '1'";
 	}
-	
+
 	// Make sure we are looking at a real thread here.
-	if(!$thread['tid'] || ($thread['visible'] == 0 && $ismod == false) || ($thread['visible'] > 1 && $ismod == true))
+	if(!$thread['tid'] || ($thread['visible'] == 0 && $ismod == FALSE) || ($thread['visible'] > 1 && $ismod == TRUE))
 	{
 		error($lang->error_invalidthread);
 	}
@@ -433,18 +433,18 @@ elseif($mybb->input['action'] == "whoposted")
 	{
 		error($lang->error_invalidforum);
 	}
-	
+
 	// Does the user have permission to view this thread?
 	$forumpermissions = forum_permissions($forum['fid']);
-	
+
 	if($forumpermissions['canview'] != 1 || $forumpermissions['canviewthreads'] != 1)
 	{
 		error_no_permission();
 	}
-	
+
 	// Check if this forum is password protected and we have a valid password
 	check_forum_password($forum['fid']);
-	
+
 	if($mybb->input['sort'] != 'username')
 	{
 		$sortsql = ' ORDER BY posts DESC';
@@ -470,7 +470,7 @@ elseif($mybb->input['action'] == "whoposted")
 		$poster_name = format_name($poster['username'], $poster['usergroup'], $poster['displaygroup']);
 		if($poster['uid'])
 		{
-			$onclick = "opener.location.href='".get_profile_link($poster['uid'])."'; return false;";
+			$onclick = "opener.location.href='".get_profile_link($poster['uid'])."'; return FALSE;";
 		}
 		$profile_link = build_profile_link($poster_name, $poster['uid'], '_blank', $onclick);
 		$numposts += $poster['posts'];
@@ -566,7 +566,7 @@ elseif($mybb->input['action'] == "imcenter")
 	$lang->msn_address_is = $lang->sprintf($lang->msn_address_is, $user['username']);
 	$lang->send_y_message = $lang->sprintf($lang->send_y_message, $user['username']);
 	$lang->view_y_profile = $lang->sprintf($lang->view_y_profile, $user['username']);
-	
+
 	$imtemplate = "misc_imcenter_".$mybb->input['imtype'];
 	eval("\$imcenter = \"".$templates->get($imtemplate)."\";");
 	output_page($imcenter);
@@ -680,7 +680,7 @@ elseif($mybb->input['action'] == "syndication")
 if($mybb->input['action'] == "clearcookies")
 {
 	$plugins->run_hooks("misc_clearcookies");
-	
+
 	if($mybb->input['key'] != $mybb->user['logoutkey'])
 	{
 		error($lang->error_invalidkey);

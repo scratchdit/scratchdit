@@ -55,7 +55,7 @@ class MyBBXMLParser {
 		xml_parser_set_option($parser,XML_OPTION_CASE_FOLDING,0);
 		if(!xml_parse_into_struct($parser, $this->data, $vals, $index))
 		{
-			return false;
+			return FALSE;
 		}
 
 		$i = -1;

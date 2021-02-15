@@ -53,14 +53,14 @@ class pluginSystem
 	 * @param string The function of this hook.
 	 * @param int The priority this hook has.
 	 * @param string The optional file belonging to this hook.
-	 * @return boolean Always true.
+	 * @return boolean Always TRUE.
 	 */
 	function add_hook($hook, $function, $priority=10, $file="")
 	{
 		// Check to see if we already have this hook running at this priority
 		if(!empty($this->hooks[$hook][$priority][$function]) && is_array($this->hooks[$hook][$priority][$function]))
 		{
-			return true;
+			return TRUE;
 		}
 
 		// Add the hook
@@ -68,7 +68,7 @@ class pluginSystem
 			"function" => $function,
 			"file" => $file
 		);
-		return true;
+		return TRUE;
 	}
 
 	/**
@@ -96,11 +96,11 @@ class pluginSystem
 					{
 						require_once $hook['file'];
 					}
-					
+
 					$func = $hook['function'];
 					$returnargs = $func($arguments);
-					
-					
+
+
 					if($returnargs)
 					{
 						$arguments = $returnargs;
@@ -111,7 +111,7 @@ class pluginSystem
 		$this->current_hook = '';
 		return $arguments;
 	}
-	
+
 	/**
 	 * Run hooks by ref
 	 * Wrapper for run hooks to maintain backwards compatibility
@@ -134,7 +134,7 @@ class pluginSystem
 		// Check to see if we don't already have this hook running at this priority
 		if(!isset($this->hooks[$hook][$priority][$function]))
 		{
-			return true;
+			return TRUE;
 		}
 		unset($this->hooks[$hook][$priority][$function]);
 	}
@@ -152,7 +152,7 @@ class pluginSystem
 		// Ignore potentially missing plugins.
 		if(!file_exists(MYBB_ROOT."inc/plugins/".$plugin.".php"))
 		{
-			return true;
+			return TRUE;
 		}
 
 		require_once MYBB_ROOT."inc/plugins/".$plugin.".php";
@@ -160,14 +160,14 @@ class pluginSystem
 		$info_func = "{$plugin}_info";
 		if(!function_exists($info_func))
 		{
-			return false;
+			return FALSE;
 		}
 		$plugin_info = $info_func();
-		
+
 		// No compatibility set or compatibility = * - assume compatible
 		if(!$plugin_info['compatibility'] || $plugin_info['compatibility'] == "*")
 		{
-			return true;
+			return TRUE;
 		}
 		$compatibility = explode(",", $plugin_info['compatibility']);
 		foreach($compatibility as $version)
@@ -177,12 +177,12 @@ class pluginSystem
 			$version = str_replace("\.+", ".+", $version);
 			if(preg_match("#{$version}#i", $mybb->version_code))
 			{
-				return true;
+				return TRUE;
 			}
 		}
 
 		// Nothing matches
-		return false;
+		return FALSE;
 	}
 }
 ?>

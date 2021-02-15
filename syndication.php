@@ -167,7 +167,7 @@ if(!empty($firstposts))
 			$attachment['filesize'] = get_friendly_size($attachment['filesize']);
 			$attachment['icon'] = get_attachment_icon($ext);
 			eval("\$attbit = \"".$templates->get("postbit_attachments_attachment")."\";");
-			if(stripos($parsed_message, "[attachment=".$attachment['aid']."]") !== false)
+			if(stripos($parsed_message, "[attachment=".$attachment['aid']."]") !== FALSE)
 			{
 				$parsed_message = preg_replace("#\[attachment=".$attachment['aid']."]#si", $attbit, $parsed_message);
 			}

@@ -39,7 +39,7 @@ class Page extends DefaultPage
 	{
 		if(!is_array($this->breadcrumb_trail))
 		{
-			return false;
+			return FALSE;
 		}
 		$trail = "";
 		foreach($this->breadcrumb_trail as $key => $crumb)
@@ -83,7 +83,7 @@ class Page extends DefaultPage
 				}
 				if($first) $class .= " first";
 				echo "\t\t<li class=\"{$class}\"><a href=\"{$tab['link']}\"{$target}>{$tab['title']}</a></li>\n";
-				$first = false;
+				$first = FALSE;
 				$target = '';
 			}
 			echo "\t</ul>\n";

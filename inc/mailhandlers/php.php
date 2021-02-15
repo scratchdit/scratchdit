@@ -30,8 +30,8 @@ class PhpMail extends MailHandler
 	/**
 	 * Sends the email.
 	 *
-	 * @return true/false whether or not the email got sent or not.
-	 */	
+	 * @return TRUE/FALSE whether or not the email got sent or not.
+	 */
 	function send()
 	{
 		global $lang, $mybb;
@@ -44,7 +44,7 @@ class PhpMail extends MailHandler
 			$this->message = str_replace("\r\n", "\n", $this->message);
 			$this->delimiter = "\n";
 		}
-		
+
 		// Some mail providers ignore email's with incorrect return-to path's so try and fix that here
 		$this->sendmail_from = @ini_get('sendmail_from');
 		if($this->sendmail_from != $mybb->settings['adminemail'])
@@ -66,10 +66,10 @@ class PhpMail extends MailHandler
 		if(!$sent)
 		{
 			$this->fatal_error("MyBB was unable to send the email using the PHP {$function_used} function.");
-			return false;
+			return FALSE;
 		}
 
-		return true;
+		return TRUE;
 	}
 }
 ?>

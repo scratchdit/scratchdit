@@ -72,7 +72,7 @@ class Text_Diff_Renderer {
     function render($diff)
     {
         $xi = $yi = 1;
-        $block = false;
+        $block = FALSE;
         $context = array();
 
         $nlead = $this->_leading_context_lines;
@@ -106,7 +106,7 @@ class Text_Diff_Renderer {
                         $output .= $this->_block($x0, $ntrail + $xi - $x0,
                                                  $y0, $ntrail + $yi - $y0,
                                                  $block);
-                        $block = false;
+                        $block = FALSE;
                     }
                 }
                 /* Keep the copy block as the context for the next block. */

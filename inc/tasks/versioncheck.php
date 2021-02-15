@@ -24,7 +24,7 @@ function task_versioncheck($task)
 	if(!$contents)
 	{
 		add_task_log($task, $lang->task_versioncheck_ran_errors);
-		return false;
+		return FALSE;
 	}
 
 	$contents = trim($contents);

@@ -34,7 +34,7 @@ class PMDataHandler extends DataHandler
 	* @var string
 	*/
 	public $language_prefix = 'pmdata';
-	
+
 	/**
 	 * Array of data inserted in to a private message.
 	 *
@@ -48,16 +48,16 @@ class PMDataHandler extends DataHandler
 	 * @var array
 	 */
 	public $pm_update_data = array();
-	
+
 	/**
 	 * PM ID currently being manipulated by the datahandlers.
 	 */
-	public $pmid = 0;	
+	public $pmid = 0;
 
 	/**
 	 * Verifies a private message subject.
 	 *
-	 * @return boolean True when valid, false when invalid.
+	 * @return boolean TRUE when valid, FALSE when invalid.
 	 */
 	function verify_subject()
 	{
@@ -67,21 +67,21 @@ class PMDataHandler extends DataHandler
 		if(my_strlen($subject) > 85)
 		{
 			$this->set_error("too_long_subject");
-			return false;
+			return FALSE;
 		}
 		// No subject, apply the default [no subject]
 		if(!trim_blank_chrs($subject))
 		{
 			$this->set_error("missing_subject");
-			return false;
+			return FALSE;
 		}
-		return true;
+		return TRUE;
 	}
 
 	/**
 	 * Verifies if a message for a PM is valid.
 	 *
-	 * @return boolean True when valid, false when invalid.
+	 * @return boolean TRUE when valid, FALSE when invalid.
 	 */
 	function verify_message()
 	{
@@ -91,15 +91,15 @@ class PMDataHandler extends DataHandler
 		if(trim_blank_chrs($message) == '')
 		{
 			$this->set_error("missing_message");
-			return false;
+			return FALSE;
 		}
-		return true;
+		return TRUE;
 	}
 
 	/**
 	 * Verifies if the specified sender is valid or not.
 	 *
-	 * @return boolean True when valid, false when invalid.
+	 * @return boolean TRUE when valid, FALSE when invalid.
 	 */
 	function verify_sender()
 	{
@@ -108,7 +108,7 @@ class PMDataHandler extends DataHandler
 		$pm = &$this->data;
 
 		// Return if we've already validated
-		if($pm['sender']) return true;
+		if($pm['sender']) return TRUE;
 
 		// Fetch the senders profile data.
 		$sender = get_user($pm['fromid']);
@@ -119,7 +119,7 @@ class PMDataHandler extends DataHandler
 		// Check if the sender is over their quota or not - if they are, disable draft sending
 		if($pm['options']['savecopy'] != 0 && !$pm['saveasdraft'])
 		{
-			if($sender_permissions['pmquota'] != "0" && $sender['totalpms'] >= $sender_permissions['pmquota'] && $this->admin_override != true)
+			if($sender_permissions['pmquota'] != "0" && $sender['totalpms'] >= $sender_permissions['pmquota'] && $this->admin_override != TRUE)
 			{
 				$pm['options']['savecopy'] = 0;
 			}
@@ -131,13 +131,13 @@ class PMDataHandler extends DataHandler
 			"username" => $sender['username']
 		);
 
-		return true;
+		return TRUE;
 	}
 
 	/**
 	 * Verifies if an array of recipients for a private message are valid
 	 *
-	 * @return boolean True when valid, false when invalid.
+	 * @return boolean TRUE when valid, FALSE when invalid.
 	 */
 	function verify_recipient()
 	{
@@ -154,7 +154,7 @@ class PMDataHandler extends DataHandler
 			if((count($pm['to']) <= 0 || trim(implode("", $pm['to'])) == "") && !$pm['saveasdraft'])
 			{
 				$this->set_error("no_recipients");
-				return false;
+				return FALSE;
 			}
 
 			foreach(array("to", "bcc") as $recipient_type)
@@ -196,7 +196,7 @@ class PMDataHandler extends DataHandler
 				if(count($pm['toid']) <= 0)
 				{
 					$this->set_error("no_recipients");
-					return false;
+					return FALSE;
 				}
 				if(is_array($pm[$recipient_type]))
 				{
@@ -227,13 +227,13 @@ class PMDataHandler extends DataHandler
 		{
 			$invalid_recipients = implode(", ", array_map("htmlspecialchars_uni", $invalid_recipients));
 			$this->set_error("invalid_recipients", array($invalid_recipients));
-			return false;
+			return FALSE;
 		}
 
 		$sender_permissions = user_permissions($pm['fromid']);
 
 		// Are we trying to send this message to more users than the permissions allow?
-		if($sender_permissions['maxpmrecipients'] > 0 && count($recipients) > $sender_permissions['maxpmrecipients'] && $this->admin_override != true)
+		if($sender_permissions['maxpmrecipients'] > 0 && count($recipients) > $sender_permissions['maxpmrecipients'] && $this->admin_override != TRUE)
 		{
 			$this->set_error("too_many_recipients", array($sender_permissions['maxpmrecipients']));
 		}
@@ -243,18 +243,18 @@ class PMDataHandler extends DataHandler
 		{
 			// Collect group permissions for this recipient.
 			$recipient_permissions = user_permissions($user['uid']);
-	
+
 			// See if the sender is on the recipients ignore list and that either
 			// - admin_override is set or
 			// - sender is an administrator
-			if(($this->admin_override != true && $sender_permissions['cancp'] != 1) && $sender_permissions['canoverridepm'] != 1)
+			if(($this->admin_override != TRUE && $sender_permissions['cancp'] != 1) && $sender_permissions['canoverridepm'] != 1)
 			{
 				$ignorelist = explode(",", $user['ignorelist']);
 				if(!empty($ignorelist) && in_array($pm['fromid'], $ignorelist))
 				{
 					$this->set_error("recipient_is_ignoring", array($user['username']));
 				}
-				
+
 				// Is the recipient only allowing private messages from their buddy list?
 				if($mybb->settings['allowbuddyonly'] == 1 && $user['receivefrombuddy'] == 1)
 				{
@@ -264,15 +264,15 @@ class PMDataHandler extends DataHandler
 						$this->set_error("recipient_has_buddy_only", array(htmlspecialchars_uni($user['username'])));
 					}
 				}
-				
+
 				// Can the recipient actually receive private messages based on their permissions or user setting?
 				if(($user['receivepms'] == 0 || $recipient_permissions['canusepms'] == 0) && !$pm['saveasdraft'])
 				{
 					$this->set_error("recipient_pms_disabled", array($user['username']));
-					return false;
+					return FALSE;
 				}
 			}
-	
+
 			// Check to see if the user has reached their private message quota - if they have, email them.
 			if($recipient_permissions['pmquota'] != "0" && $user['totalpms'] >= $recipient_permissions['pmquota'] && $recipient_permissions['cancp'] != 1 && $sender_permissions['cancp'] != 1 && !$pm['saveasdraft'] && !$this->admin_override)
 			{
@@ -315,13 +315,13 @@ class PMDataHandler extends DataHandler
 
 				$db->insert_query("mailqueue", $new_email);
 				$cache->update_mailqueue();
-	
-				if($this->admin_override != true)
+
+				if($this->admin_override != TRUE)
 				{
 					$this->set_error("recipient_reached_quota", array($user['username']));
 				}
 			}
-	
+
 			// Everything looks good, assign some specifics about the recipient
 			$pm['recipients'][$user['uid']] = array(
 				"uid" => $user['uid'],
@@ -332,33 +332,33 @@ class PMDataHandler extends DataHandler
 				"pmnotify" => $user['pmnotify'],
 				"language" => $user['language']
 			);
-			
+
 			// If this recipient is defined as a BCC recipient, save it
 			if($user['bcc'] == 1)
 			{
 				$pm['recipients'][$user['uid']]['bcc'] = 1;
 			}
 		}
-		return true;
+		return TRUE;
 	}
-	
+
 	/**
 	* Verify that the user is not flooding the system.
 	*
-	* @return boolean True
+	* @return boolean TRUE
 	*/
 	function verify_pm_flooding()
 	{
 		global $mybb, $db;
 
 		$pm = &$this->data;
-		
+
 		// Check if post flooding is enabled within MyBB or if the admin override option is specified.
-		if($mybb->settings['pmfloodsecs'] > 0 && $pm['fromid'] != 0 && $this->admin_override == false)
+		if($mybb->settings['pmfloodsecs'] > 0 && $pm['fromid'] != 0 && $this->admin_override == FALSE)
 		{
 			// Fetch the senders profile data.
 			$sender = get_user($pm['fromid']);
-			
+
 			// Calculate last post
 			$query = $db->simple_select("privatemessages", "dateline", "fromid='".$db->escape_string($pm['fromid'])."' AND toid != '0'", array('order_by' => 'dateline', 'order_dir' => 'desc', 'limit' => 1));
 			$sender['lastpm'] = $db->fetch_field($query, "dateline");
@@ -376,17 +376,17 @@ class PMDataHandler extends DataHandler
 				{
 					$this->set_error("pm_flooding", array($time_to_wait));
 				}
-				return false;
+				return FALSE;
 			}
 		}
-		// All is well that ends well - return true.
-		return true;
+		// All is well that ends well - return TRUE.
+		return TRUE;
 	}
 
 	/**
 	 * Verifies if the various 'options' for sending PMs are valid.
 	 *
-	 * @return boolean True when valid, false when invalid.
+	 * @return boolean TRUE when valid, FALSE when invalid.
 	 */
 	function verify_options()
 	{
@@ -405,20 +405,20 @@ class PMDataHandler extends DataHandler
 		{
 			$options['readreceipt'] = 0;
 		}
-		return true;
+		return TRUE;
 	}
 
 	/**
 	 * Validate an entire private message.
 	 *
-	 * @return boolean True when valid, false when invalid.
+	 * @return boolean TRUE when valid, FALSE when invalid.
 	 */
 	function validate_pm()
 	{
 		global $plugins;
 
 		$pm = &$this->data;
-		
+
 		if(!$pm['savedraft'])
 		{
 			$this->verify_pm_flooding();
@@ -430,7 +430,7 @@ class PMDataHandler extends DataHandler
 		$this->verify_sender();
 
 		$this->verify_recipient();
-		
+
 		$this->verify_message();
 
 		$this->verify_options();
@@ -448,14 +448,14 @@ class PMDataHandler extends DataHandler
 		}
 
 		// We are done validating, return.
-		$this->set_validated(true);
+		$this->set_validated(TRUE);
 		if(count($this->get_errors()) > 0)
 		{
-			return false;
+			return FALSE;
 		}
 		else
 		{
-			return true;
+			return TRUE;
 		}
 	}
 
@@ -599,15 +599,15 @@ class PMDataHandler extends DataHandler
 					$emailsubject = $userlang->emailsubject_newpm;
 					$emailmessage = $userlang->email_newpm;
 				}
-				
+
 				if(!$pm['sender']['username'])
 				{
 					$pm['sender']['username'] = $lang->mybb_engine;
 				}
-				
+
 				$emailmessage = $lang->sprintf($emailmessage, $recipient['username'], $pm['sender']['username'], $mybb->settings['bbname'], $mybb->settings['bburl']);
 				$emailsubject = $lang->sprintf($emailsubject, $mybb->settings['bbname']);
-				
+
 				$new_email = array(
 					"mailto" => $db->escape_string($recipient['email']),
 					"mailfrom" => '',

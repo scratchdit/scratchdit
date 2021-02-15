@@ -10,35 +10,35 @@
  */
 
 class timer {
-	
+
 	/**
 	 * The timer name.
 	 *
 	 * @var string
 	 */
 	public $name;
-	
+
 	/**
 	 * The start time of this timer.
 	 *
 	 * @var int
 	 */
 	public $start;
-	
+
 	/**
 	 * The end time of this timer.
 	 *
 	 * @var int
 	 */
 	public $end;
-	
+
 	/**
 	 * The total time this timer has run.
 	 *
 	 * @var int
 	 */
 	public $totaltime;
-	
+
 	/**
 	 * The formatted total time this timer has run.
 	 *
@@ -54,23 +54,23 @@ class timer {
 	{
 		$this->add();
 	}
-	
+
 	/**
 	 * Starts the timer.
 	 *
 	 */
 	function add()
 	{
-		if(!$this->start) 
+		if(!$this->start)
 		{
-			$this->start = microtime(true);
+			$this->start = microtime(TRUE);
 		}
 	}
 
 	/**
 	 * Gets the time for which the timer has run up until this point.
 	 *
-	 * @return string|boolean The formatted time up until now or false when timer is no longer running.
+	 * @return string|boolean The formatted time up until now or FALSE when timer is no longer running.
 	 */
 	function getTime()
 	{
@@ -80,16 +80,16 @@ class timer {
 		}
 		elseif($this->start && !$this->end) // timer is still going
 		{
-			$currenttime = microtime(true);
+			$currenttime = microtime(TRUE);
 			$totaltime = $currenttime - $this->start;
 			return $this->format($totaltime);
 		}
 		else
 		{
-			return false;
+			return FALSE;
 		}
 	}
-	
+
 	/**
 	 * Stops the timer.
 	 *
@@ -99,14 +99,14 @@ class timer {
 	{
 		if($this->start)
 		{
-			$this->end = microtime(true);
+			$this->end = microtime(TRUE);
 			$totaltime = $this->end - $this->start;
 			$this->totaltime = $totaltime;
 			$this->formatted = $this->format($totaltime);
 			return $this->formatted;
 		}
 	}
-	
+
 	/**
 	 * Removes the timer.
 	 *
@@ -119,7 +119,7 @@ class timer {
 		$this->totaltime = "";
 		$this->formatted = "";
 	}
-	
+
 	/**
 	 * Formats the timer time in a pretty way.
 	 *

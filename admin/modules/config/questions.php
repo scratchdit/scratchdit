@@ -187,10 +187,10 @@ if($mybb->input['action'] == "edit")
 
 	$form = new Form("index.php?module=config-questions&amp;action=edit&amp;qid={$question['qid']}", "post", "add");
 
-	$show_preview = false;
+	$show_preview = FALSE;
 	if(isset($mybb->input['preview_list']))
 	{
-		$show_preview = true;
+		$show_preview = TRUE;
 	}
 
 	if($errors)
@@ -205,7 +205,7 @@ if($mybb->input['action'] == "edit")
 		}
 	}
 
-	if((isset($mybb->input['preview']) || $show_preview === true) && !$errors)
+	if((isset($mybb->input['preview']) || $show_preview === TRUE) && !$errors)
 	{
 		$table = new Table();
 

@@ -41,7 +41,7 @@ $plugins->run_hooks("admin_forum_moderation_queue_begin");
 if($mybb->request_method == "post")
 {
 	$plugins->run_hooks("admin_forum_moderation_queue_commit");
-	
+
 	require_once MYBB_ROOT."inc/functions_upload.php";
 	require_once MYBB_ROOT."inc/class_moderation.php";
 	$moderation = new Moderation;
@@ -66,7 +66,7 @@ if($mybb->request_method == "post")
 		{
 			$moderation->approve_threads($threads_to_approve);
 		}
-		
+
 		$plugins->run_hooks("admin_forum_moderation_queue_threads_commit");
 
 		// Log admin action
@@ -95,7 +95,7 @@ if($mybb->request_method == "post")
 		{
 			$moderation->approve_posts($posts_to_approve);
 		}
-		
+
 		$plugins->run_hooks("admin_forum_moderation_queue_posts_commit");
 
 		// Log admin action
@@ -120,7 +120,7 @@ if($mybb->request_method == "post")
 				remove_attachment($attachment['pid'], '', $attachment['aid']);
 			}
 		}
-		
+
 		$plugins->run_hooks("admin_forum_moderation_queue_attachments_commit");
 
 		// Log admin action
@@ -132,16 +132,16 @@ if($mybb->request_method == "post")
 }
 
 $all_options = "<ul class=\"modqueue_mass\">\n";
-$all_options .= "<li><a href=\"#\" class=\"mass_ignore\" onclick=\"$$('input.radio_ignore').each(function(e) { e.checked = true; }); return false;\">{$lang->mark_as_ignored}</a></li>\n";
-$all_options .= "<li><a href=\"#\" class=\"mass_delete\" onclick=\"$$('input.radio_delete').each(function(e) { e.checked = true; }); return false;\">{$lang->mark_as_deleted}</a></li>\n";
-$all_options .= "<li><a href=\"#\" class=\"mass_approve\" onclick=\"$$('input.radio_approve').each(function(e) { e.checked = true; }); return false;\">{$lang->mark_as_approved}</a></li>\n";
+$all_options .= "<li><a href=\"#\" class=\"mass_ignore\" onclick=\"$$('input.radio_ignore').each(function(e) { e.checked = TRUE; }); return FALSE;\">{$lang->mark_as_ignored}</a></li>\n";
+$all_options .= "<li><a href=\"#\" class=\"mass_delete\" onclick=\"$$('input.radio_delete').each(function(e) { e.checked = TRUE; }); return FALSE;\">{$lang->mark_as_deleted}</a></li>\n";
+$all_options .= "<li><a href=\"#\" class=\"mass_approve\" onclick=\"$$('input.radio_approve').each(function(e) { e.checked = TRUE; }); return FALSE;\">{$lang->mark_as_approved}</a></li>\n";
 $all_options .= "</ul>\n";
 
 // Threads awaiting moderation
 if($mybb->input['type'] == "threads" || !$mybb->input['type'])
 {
 	$plugins->run_hooks("admin_forum_moderation_queue_threads");
-	
+
 	$forum_cache = $cache->read("forums");
 
 	$query = $db->simple_select("threads", "COUNT(tid) AS unapprovedthreads", "visible=0");
@@ -208,9 +208,9 @@ if($mybb->input['type'] == "threads" || !$mybb->input['type'])
 			$table->construct_row();
 
 			$controls = "<div class=\"modqueue_controls\">\n";
-			$controls .= $form->generate_radio_button("threads[{$thread['tid']}]", "ignore", $lang->ignore, array('class' => 'radio_ignore', 'checked' => true))." ";
-			$controls .= $form->generate_radio_button("threads[{$thread['tid']}]", "delete", $lang->delete, array('class' => 'radio_delete', 'checked' => false))." ";
-			$controls .= $form->generate_radio_button("threads[{$thread['tid']}]", "approve", $lang->approve, array('class' => 'radio_approve', 'checked' => false));
+			$controls .= $form->generate_radio_button("threads[{$thread['tid']}]", "ignore", $lang->ignore, array('class' => 'radio_ignore', 'checked' => TRUE))." ";
+			$controls .= $form->generate_radio_button("threads[{$thread['tid']}]", "delete", $lang->delete, array('class' => 'radio_delete', 'checked' => FALSE))." ";
+			$controls .= $form->generate_radio_button("threads[{$thread['tid']}]", "approve", $lang->approve, array('class' => 'radio_approve', 'checked' => FALSE));
 			$controls .= "</div>";
 
 			$forum = "<strong>{$lang->forum} <a href=\"../{$thread['forumlink']}\" target=\"_blank\">{$forum_name}</a></strong><br />";
@@ -234,7 +234,7 @@ if($mybb->input['type'] == "threads" || !$mybb->input['type'])
 if($mybb->input['type'] == "posts" || $mybb->input['type'] == "")
 {
 	$plugins->run_hooks("admin_forum_moderation_queue_posts");
-	
+
 	$forum_cache = $cache->read("forums");
 
 	$query = $db->query("
@@ -295,7 +295,7 @@ if($mybb->input['type'] == "posts" || $mybb->input['type'] == "")
 			$altbg = alt_trow();
 			$post['threadsubject'] = htmlspecialchars_uni($post['threadsubject']);
 			$post['subject'] = htmlspecialchars_uni($post['subject']);
-			
+
 			if(!$post['subject'])
 			{
 				$post['subject'] = $lang->re." ".$post['threadsubject'];
@@ -316,9 +316,9 @@ if($mybb->input['type'] == "posts" || $mybb->input['type'] == "")
 			$table->construct_row();
 
 			$controls = "<div class=\"modqueue_controls\">\n";
-			$controls .= $form->generate_radio_button("posts[{$post['pid']}]", "ignore", $lang->ignore, array('class' => 'radio_ignore', 'checked' => true))." ";
-			$controls .= $form->generate_radio_button("posts[{$post['pid']}]", "delete",$lang->delete, array('class' => 'radio_delete', 'checked' => false))." ";
-			$controls .= $form->generate_radio_button("posts[{$post['pid']}]", "approve", $lang->approve, array('class' => 'radio_approve', 'checked' => false));
+			$controls .= $form->generate_radio_button("posts[{$post['pid']}]", "ignore", $lang->ignore, array('class' => 'radio_ignore', 'checked' => TRUE))." ";
+			$controls .= $form->generate_radio_button("posts[{$post['pid']}]", "delete",$lang->delete, array('class' => 'radio_delete', 'checked' => FALSE))." ";
+			$controls .= $form->generate_radio_button("posts[{$post['pid']}]", "approve", $lang->approve, array('class' => 'radio_approve', 'checked' => FALSE));
 			$controls .= "</div>";
 
 			$thread = "<strong>{$lang->thread} <a href=\"../{$post['threadlink']}\" target=\"_blank\">{$post['threadsubject']}</a></strong>";
@@ -350,7 +350,7 @@ if($mybb->input['type'] == "posts" || $mybb->input['type'] == "")
 if($mybb->input['type'] == "attachments" || $mybb->input['type'] == "")
 {
 	$plugins->run_hooks("admin_forum_moderation_queue_attachments");
-	
+
 	$query = $db->query("
 		SELECT COUNT(aid) AS unapprovedattachments
 		FROM  ".TABLE_PREFIX."attachments a
@@ -426,9 +426,9 @@ if($mybb->input['type'] == "attachments" || $mybb->input['type'] == "")
 			$table->construct_cell($profile_link, array("class" => "align_center"));
 			$table->construct_cell("{$attachdate}, {$attachtime}", array("class" => "align_center"));
 
-			$table->construct_cell($form->generate_radio_button("attachments[{$attachment['aid']}]", "ignore", $lang->ignore, array('class' => 'radio_ignore', 'checked' => true)), array("class" => "align_center"));
-			$table->construct_cell($form->generate_radio_button("attachments[{$attachment['aid']}]", "delete", $lang->delete, array('class' => 'radio_delete', 'checked' => false)), array("class" => "align_center"));
-			$table->construct_cell($form->generate_radio_button("attachments[{$attachment['aid']}]", "approve", $lang->approve, array('class' => 'radio_approve', 'checked' => false)), array("class" => "align_center"));
+			$table->construct_cell($form->generate_radio_button("attachments[{$attachment['aid']}]", "ignore", $lang->ignore, array('class' => 'radio_ignore', 'checked' => TRUE)), array("class" => "align_center"));
+			$table->construct_cell($form->generate_radio_button("attachments[{$attachment['aid']}]", "delete", $lang->delete, array('class' => 'radio_delete', 'checked' => FALSE)), array("class" => "align_center"));
+			$table->construct_cell($form->generate_radio_button("attachments[{$attachment['aid']}]", "approve", $lang->approve, array('class' => 'radio_approve', 'checked' => FALSE)), array("class" => "align_center"));
 			$table->construct_row();
 		}
 		$table->output($lang->attachments_awaiting_moderation);

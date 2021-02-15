@@ -5,7 +5,7 @@ inlineEditor.prototype = {
 	{
 		if(use_xmlhttprequest != 1)
 		{
-			return false;
+			return FALSE;
 		}
 
 		this.url = url;
@@ -16,7 +16,7 @@ inlineEditor.prototype = {
 		if(!options.className)
 		{
 			alert('You need to specify a className in the options.');
-			return false;
+			return FALSE;
 		}
 
 		this.className = options.className;
@@ -35,7 +35,7 @@ inlineEditor.prototype = {
 				}
 			}.bind(this));
 		}
-		return true;
+		return TRUE;
 	},
 
 	makeEditable: function(element)
@@ -52,7 +52,7 @@ inlineEditor.prototype = {
 
 		element.title = element.title+this.options.lang_click_edit;
 		element.onmousedown = this.onMouseDown.bindAsEventListener(this);
-		return true;
+		return TRUE;
 	},
 
 	onMouseDown: function(e)
@@ -62,7 +62,7 @@ inlineEditor.prototype = {
 
 		if(this.currentElement != '')
 		{
-			return false;
+			return FALSE;
 		}
 
 		// Fix for konqueror which likes to set event element as the text not the link
@@ -74,14 +74,14 @@ inlineEditor.prototype = {
 		this.currentElement = element.id;
 		this.timeout = setTimeout(this.showTextbox.bind(this), 1200);
 		document.onmouseup = this.onMouseUp.bindAsEventListener(this);
-		return false;
+		return FALSE;
 	},
 
 	onMouseUp: function(e)
 	{
 		clearTimeout(this.timeout);
-		Event.stop(e);	
-		return false;
+		Event.stop(e);
+		return FALSE;
 	},
 
 	onButtonClick: function(id)
@@ -91,7 +91,7 @@ inlineEditor.prototype = {
 			this.currentElement = id;
 			this.showTextbox();
 		}
-		return false;
+		return FALSE;
 	},
 
 	showTextbox: function()
@@ -100,7 +100,7 @@ inlineEditor.prototype = {
 
 		if(typeof(this.element.parentNode) == "undefined" || typeof(this.element.id) == "undefined")
 		{
-			return false;
+			return FALSE;
 		}
 
 		this.oldValue = this.element.innerHTML;
@@ -108,7 +108,7 @@ inlineEditor.prototype = {
 
 		if(!this.testNode)
 		{
-			return false;
+			return FALSE;
 		}
 
 		this.cache = this.testNode.innerHTML;
@@ -129,13 +129,13 @@ inlineEditor.prototype = {
 		this.testNode.innerHTML = '';
 		this.testNode.appendChild(this.textbox);
 		this.textbox.focus();
-		return true;
+		return TRUE;
 	},
 
 	onBlur: function(e)
 	{
 		this.hideTextbox();
-		return true;
+		return TRUE;
 	},
 
 	onKeyUp: function(e)
@@ -148,13 +148,13 @@ inlineEditor.prototype = {
 		{
 			this.cancelEdit();
 		}
-		return true;
+		return TRUE;
 	},
 
 	onSubmit: function(e)
 	{
 		this.hideTextbox();
-		return true;
+		return TRUE;
 	},
 
 	hideTextbox: function()
@@ -167,13 +167,13 @@ inlineEditor.prototype = {
 		if(typeof(newValue) != "undefined" && newValue != '' && MyBB.HTMLchars(newValue) != this.oldValue)
 		{
 			this.testNode.innerHTML = this.cache;
-			
+
 			this.element = $(this.currentElement);
 			this.element.innerHTML = MyBB.HTMLchars(newValue);
 			this.element.onmousedown = this.onMouseDown.bindAsEventListener(this);
 			this.lastElement = this.currentElement;
 			postData = "value="+encodeURIComponent(newValue);
-			
+
 			if(this.spinnerImage)
 			{
 				this.showSpinner();
@@ -194,7 +194,7 @@ inlineEditor.prototype = {
 			this.element.onmousedown = this.onMouseDown.bindAsEventListener(this);
 		}
 		this.currentElement = '';
-		return true;
+		return TRUE;
 	},
 
 	cancelEdit: function()
@@ -217,7 +217,7 @@ inlineEditor.prototype = {
 			{
 				message[1] = "An unknown error occurred.";
 			}
-			
+
 			if(this.spinnerImage)
 			{
 				this.hideSpinner();
@@ -235,14 +235,14 @@ inlineEditor.prototype = {
 			this.hideSpinner();
 		}
 		this.currentIndex = -1;
-		return true;
+		return TRUE;
 	},
 
 	showSpinner: function()
 	{
 		if(!this.spinnerImage)
 		{
-			return false;
+			return FALSE;
 		}
 
 		if(!this.spinner)
@@ -263,17 +263,17 @@ inlineEditor.prototype = {
 			this.spinner.style.paddingRight = "3px";
 		}
 		this.testNode.insertBefore(this.spinner, this.testNode.firstChild);
-		return true;
+		return TRUE;
 	},
 
 	hideSpinner: function()
 	{
 		if(!this.spinnerImage)
 		{
-			return false;
+			return FALSE;
 		}
 
 		Element.remove(this.spinner);
-		return true;
+		return TRUE;
 	}
 };

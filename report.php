@@ -57,9 +57,9 @@ if($mybb->input['action'] == "report")
 {
 	$plugins->run_hooks("report_start");
 	$pid = $mybb->input['pid'];
-	
+
 	$plugins->run_hooks("report_end");
-	
+
 	eval("\$report = \"".$templates->get("report")."\";");
 	output_page($report);
 }
@@ -108,12 +108,12 @@ elseif($mybb->input['action'] == "do_report" && $mybb->request_method == "post")
 					");
 			}
 		}
-		
+
 		while($mod = $db->fetch_array($query))
 		{
 			$emailsubject = $lang->sprintf($lang->emailsubject_reportpost, $mybb->settings['bbname']);
 			$emailmessage = $lang->sprintf($lang->email_reportpost, $mybb->user['username'], $mybb->settings['bbname'], $post['subject'], $mybb->settings['bburl'], str_replace('&amp;', '&', get_post_link($post['pid'], $thread['tid'])."#pid".$post['pid']), $thread['subject'], $mybb->input['reason']);
-			
+
 			if($mybb->settings['reportmethod'] == "pms" && $mod['receivepms'] != 0 && $mybb->settings['enablepms'] != 0)
 			{
 				$pm_recipients[] = $mod['uid'];
@@ -140,14 +140,14 @@ elseif($mybb->input['action'] == "do_report" && $mybb->request_method == "post")
 				"toid" => $pm_recipients
 			);
 
-			$pmhandler->admin_override = true;
+			$pmhandler->admin_override = TRUE;
 			$pmhandler->set_data($pm);
 
 			// Now let the pm handler do all the hard work.
 			if(!$pmhandler->validate_pm())
 			{
 				// Force it to valid to just get it out of here
-				$pmhandler->is_validated = true;
+				$pmhandler->is_validated = TRUE;
 				$pmhandler->errors = array();
 			}
 			$pminfo = $pmhandler->insert_pm();
@@ -167,9 +167,9 @@ elseif($mybb->input['action'] == "do_report" && $mybb->request_method == "post")
 		$db->insert_query("reportedposts", $reportedpost);
 		$cache->update_reportedposts();
 	}
-	
+
 	$plugins->run_hooks("report_do_report_end");
-	
+
 	eval("\$report = \"".$templates->get("report_thanks")."\";");
 	output_page($report);
 }

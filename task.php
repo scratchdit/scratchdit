@@ -8,8 +8,8 @@
  *
  * $Id$
  */
- 
-ignore_user_abort(true);
+
+ignore_user_abort(TRUE);
 @set_time_limit(0);
 
 define("IN_MYBB", 1);
@@ -51,15 +51,15 @@ if(PHP_SAPI == "cli")
 		run_task();
 	}
 }
-// Otherwise false GIF image, only supports running next available task
+// Otherwise FALSE GIF image, only supports running next available task
 else
 {
 	// Send our fake gif image (clear 1x1 transparent image)
 	header("Content-type: image/gif");
 	echo base64_decode("R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==");
-	
+
 	// If the use shutdown functionality is turned off, run any shutdown related items now.
-	if($mybb->use_shutdown == true)
+	if($mybb->use_shutdown == TRUE)
 	{
 		add_shutdown("run_task");
 	}

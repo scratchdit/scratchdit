@@ -5,14 +5,14 @@ autoComplete.prototype = {
 	{
 		if(!$(textbox))
 		{
-			return false;
+			return FALSE;
 		}
 
 		this.cache = new Object();
 		this.lastValue = '';
 		this.lastKeycode = 0;
 		this.textbox = $(textbox);
-		this.formSubmit = false;
+		this.formSubmit = FALSE;
 		this.url = url;
 
 		this.currentIndex = -1;
@@ -32,8 +32,8 @@ autoComplete.prototype = {
 		{
 			this.delimChar = options.delimChar;
 		}
-		this.menuOpen = false;
-		this.timeout = false;
+		this.menuOpen = FALSE;
+		this.timeout = FALSE;
 
 		Event.observe(document, "dom:loaded", this.init.bindAsEventListener(this));
 	},
@@ -49,7 +49,7 @@ autoComplete.prototype = {
 		if(this.textbox.form)
 		{
 			Event.observe(this.textbox.form, "submit", this.onFormSubmit.bindAsEventListener(this));
-			this.formSubmit = true;
+			this.formSubmit = TRUE;
 		}
 
 		this.textbox.onsubmit = this.onFormSubmit.bindAsEventListener(this);
@@ -66,17 +66,17 @@ autoComplete.prototype = {
 
 	onFormSubmit: function(e)
 	{
-		if(this.lastKeycode == Event.KEY_RETURN && this.menuOpen == true)
+		if(this.lastKeycode == Event.KEY_RETURN && this.menuOpen == TRUE)
 		{
 			setTimeout(function() { this.textbox.focus() }.bind(this), 10);
-			this.menuOpen = false;
+			this.menuOpen = FALSE;
 			this.hidePopup();
 			Event.stop(e);
-			return false;
+			return FALSE;
 		}
 		else
 		{
-			return true;
+			return TRUE;
 		}
 		//this.textbox.setAttribute("autocomplete", "on");
 	},
@@ -90,7 +90,7 @@ autoComplete.prototype = {
 	{
 		this.lastKeycode = e.keyCode;
 	},
-	
+
 	onKeyPress: function(e)
 	{
 		if(this.timeout)
@@ -135,16 +135,16 @@ autoComplete.prototype = {
 					this.updateValue(this.popup.childNodes[this.currentIndex]);
 					this.hidePopup();
 					this.currentIndex = -1;
-					
+
 					if(this.delimChar)
 					{
 						Event.stop(e);
 					}
-					return false;
+					return FALSE;
 				}
 				break;
 			case Event.KEY_RETURN:
-				if(this.menuOpen == true)
+				if(this.menuOpen == TRUE)
 				{
 					Event.stop(e);
 				}
@@ -155,7 +155,7 @@ autoComplete.prototype = {
 					this.currentIndex = -1;
 					this.clearSelection();
 				}
-				//return false;
+				//return FALSE;
 				break;
 			case Event.KEY_ESC:
 				this.hidePopup();
@@ -165,7 +165,7 @@ autoComplete.prototype = {
 				this.timeout = setTimeout("$('"+this.textbox.id+"').autocompletejs.doRequest();", 500);
 				break;
 		}
-		return true;
+		return TRUE;
 	},
 
 	buildURL: function(value)
@@ -181,14 +181,14 @@ autoComplete.prototype = {
 			separator = "&";
 		}
 
-		return this.url+separator+this.urlParam+"="+encodeURIComponent(value);		
+		return this.url+separator+this.urlParam+"="+encodeURIComponent(value);
 	},
 
 	doRequest: function()
 	{
 		if(this.lastValue == this.textbox.value)
 		{
-			return false;
+			return FALSE;
 		}
 
 		this.lastValue = this.textbox.value;
@@ -243,7 +243,7 @@ autoComplete.prototype = {
 				{
 					this.hidePopup();
 				}
-				return false;
+				return FALSE;
 			}
 
 			cacheValue = this.textbox.length+this.textbox.value;
@@ -254,12 +254,12 @@ autoComplete.prototype = {
 		this.currentIndex = -1;
 		if(this.popup.childNodes.length < 1)
 		{
-			return false;
+			return FALSE;
 		}
 
 		$A(this.popup.childNodes).each(function(node)
 		{
-			if (node.nodeType == 3 && !/\S/.test(node.nodeValue))	
+			if (node.nodeType == 3 && !/\S/.test(node.nodeValue))
 			{
 				this.popup.removeChild(node);
 			}
@@ -271,7 +271,7 @@ autoComplete.prototype = {
 			{
 				this.hidePopup();
 			}
-			return false;
+			return FALSE;
 		}
 
 		$A(this.popup.childNodes).each(function(item, i)
@@ -285,7 +285,7 @@ autoComplete.prototype = {
 		}.bind(this));
 
 		// Clone to get offset height (not possible when display=none)
-		var clone = this.popup.cloneNode(true);
+		var clone = this.popup.cloneNode(TRUE);
 		document.body.appendChild(clone);
 		clone.style.top = "-1000px";
 		clone.style.display = "block";
@@ -338,7 +338,7 @@ autoComplete.prototype = {
 		Event.observe(this.popup, "mouseover", this.popupOver.bindAsEventListener(this));
 		Event.observe(this.popup, "mouseout", this.popupOut.bindAsEventListener(this));
 		this.popup.style.display = '';
-		this.menuOpen = true;
+		this.menuOpen = TRUE;
 		this.overPopup = 0;
 
 		if(this.currentKeyCode != 8 && this.currentKeyCode != 46)
@@ -351,7 +351,7 @@ autoComplete.prototype = {
 	hidePopup: function()
 	{
 		this.popup.hide();
-		this.menuOpen = false;
+		this.menuOpen = FALSE;
 		Event.stopObserving(this.textbox, "blur", this.hidePopup.bindAsEventListener(this));
 		Event.stopObserving(this.popup, "mouseover", this.popupOver.bindAsEventListener(this));
 		Event.stopObserving(this.popup, "mouseout", this.popupOut.bindAsEventListener(this));
@@ -448,7 +448,7 @@ autoComplete.prototype = {
 
 		if(!newItem)
 		{
-			return false;
+			return FALSE;
 		}
 
 		if(newItem.offsetTop+newItem.offsetHeight > this.popup.scrollTop+this.popup.offsetHeight)
@@ -475,7 +475,7 @@ autoComplete.prototype = {
 
 		if(!selectedItem || (!this.textbox.setSelectionRange && !this.textbox.createTextRange))
 		{
-			return false;
+			return FALSE;
 		}
 
 		if(selectChanges)

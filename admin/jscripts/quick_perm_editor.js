@@ -11,8 +11,8 @@ var QuickPermEditor = {
 			return;
 		}
 
-		Sortable.create("fields_enabled_"+id, {dropOnEmpty: true, containment:["fields_enabled_"+id,"fields_disabled_"+id], constraint: false, onUpdate: function() { QuickPermEditor.buildFieldsList(id)}});
-		Sortable.create("fields_disabled_"+id, {dropOnEmpty: true, containment:["fields_enabled_"+id,"fields_disabled_"+id], constraint: false, onUpdate: function() { QuickPermEditor.buildFieldsList(id)}});
+		Sortable.create("fields_enabled_"+id, {dropOnEmpty: TRUE, containment:["fields_enabled_"+id,"fields_disabled_"+id], constraint: FALSE, onUpdate: function() { QuickPermEditor.buildFieldsList(id)}});
+		Sortable.create("fields_disabled_"+id, {dropOnEmpty: TRUE, containment:["fields_enabled_"+id,"fields_disabled_"+id], constraint: FALSE, onUpdate: function() { QuickPermEditor.buildFieldsList(id)}});
 	},
 
 	buildFieldsList: function(id)
@@ -24,7 +24,7 @@ var QuickPermEditor = {
 			if($('fields_enabled_'+id).childNodes[i] && $('fields_enabled_'+id).childNodes[i].id)
 			{
 				var split_id = $('fields_enabled_'+id).childNodes[i].id.split("-");
-				
+
 				if(split_id[1])
 				{
 					if(new_input)
@@ -39,7 +39,7 @@ var QuickPermEditor = {
 		{
 			if($('default_permissions_'+id))
 			{
-				$('default_permissions_'+id).checked = false;
+				$('default_permissions_'+id).checked = FALSE;
 			}
 		}
 		$('fields_'+id).value = new_input;

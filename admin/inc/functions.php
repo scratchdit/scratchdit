@@ -558,8 +558,8 @@ function change_admin_permission($tab, $page="", $default=1)
  * Checks if we have had too many attempts at logging into the ACP
  *
  * @param  integer The uid of the admin to check
- * @param  boolean Return an array of the number of attempts and expiry time? (default false)
- * @return mixed Return an array if the second parameter is true, boolean otherwise.
+ * @param  boolean Return an array of the number of attempts and expiry time? (default FALSE)
+ * @return mixed Return an array if the second parameter is TRUE, boolean otherwise.
  */
 function login_attempt_check_acp($uid=0, $return_num=FALSE)
 {
@@ -600,7 +600,7 @@ function login_attempt_check_acp($uid=0, $return_num=FALSE)
  * Checks whether there are any 'security' issues in templates via complex syntax
  *
  * @param  string The template to be scanned
- * @return boolean A true/false depending on if an issue was detected
+ * @return boolean A TRUE/FALSE depending on if an issue was detected
  */
 function check_template($template)
 {

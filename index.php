@@ -36,7 +36,7 @@ else
 {
 	//Checks to make sure the user can login; they haven't had too many tries at logging in.
 	//Function call is not fatal
-	if(login_attempt_check(false) !== false)
+	if(login_attempt_check(FALSE) !== FALSE)
 	{
 		switch($mybb->settings['username_method'])
 		{
@@ -120,7 +120,7 @@ if($mybb->settings['showwol'] != 0 && $mybb->usergroup['canviewonline'] != 0)
 				$doneusers[$user['uid']] = $user['time'];
 			}
 		}
-		elseif(my_strpos($user['sid'], "bot=") !== false && $spiders[$botkey])
+		elseif(my_strpos($user['sid'], "bot=") !== FALSE && $spiders[$botkey])
 		{
 			// The user is a search bot.
 			$onlinemembers .= $comma.format_name($spiders[$botkey]['name'], $spiders[$botkey]['usergroup']);
@@ -141,7 +141,7 @@ if($mybb->settings['showwol'] != 0 && $mybb->usergroup['canviewonline'] != 0)
 
 	// Build the who's online bit on the index page.
 	$onlinecount = $membercount + $guestcount + $botcount;
-	
+
 	if($onlinecount != 1)
 	{
 		$onlinebit = $lang->online_online_plural;
@@ -187,15 +187,15 @@ if($mybb->settings['showbirthdays'] != 0)
 	$bdaytime = TIME_NOW;
 	$bdaydate = my_date("j-n", $bdaytime, '', 0);
 	$year = my_date("Y", $bdaytime, '', 0);
-	
+
 	$bdaycache = $cache->read("birthdays");
-	
+
 	if(!is_array($bdaycache))
 	{
 		$cache->update_birthdays();
 		$bdaycache = $cache->read("birthdays");
 	}
-	
+
 	$hiddencount = $bdaycache[$bdaydate]['hiddencount'];
 	$today_bdays = $bdaycache[$bdaydate]['users'];
 
@@ -269,7 +269,7 @@ if($mybb->settings['showbirthdays'] != 0)
 		}
 		$bdays .= "{$hiddencount} {$lang->birthdayhidden}";
 	}
-	
+
 	// If there are one or more birthdays, show them.
 	if($bdaycount > 0 || $hiddencount > 0)
 	{
@@ -344,7 +344,7 @@ if($mybb->user['uid'] == 0)
 		WHERE active != 0
 		ORDER BY pid, disporder
 	");
-	
+
 	$forumsread = my_unserialize($mybb->cookies['mybb']['forumread']);
 }
 else
@@ -374,7 +374,7 @@ $forumpermissions = forum_permissions();
 
 // Get the forum moderators if the setting is enabled.
 if($mybb->settings['modlist'] != "off")
-{	
+{
 	$moderatorcache = $cache->read("moderators");
 }
 

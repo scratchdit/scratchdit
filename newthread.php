@@ -27,7 +27,7 @@ $tid = $pid = "";
 if($mybb->input['action'] == "editdraft" || ($mybb->input['savedraft'] && $mybb->input['tid']) || ($mybb->input['tid'] && $mybb->input['pid']))
 {
 	$thread = get_thread($mybb->input['tid']);
-	
+
 	$query = $db->simple_select("posts", "*", "tid='".intval($mybb->input['tid'])."' AND visible='-2'", array('order_by' => 'dateline', 'limit' => 1));
 	$post = $db->fetch_array($query);
 
@@ -35,7 +35,7 @@ if($mybb->input['action'] == "editdraft" || ($mybb->input['savedraft'] && $mybb-
 	{
 		error($lang->invalidthread);
 	}
-	
+
 	$pid = $post['pid'];
 	$fid = $thread['fid'];
 	$tid = $thread['tid'];
@@ -130,7 +130,7 @@ if(!$mybb->input['attachmentaid'] && ($mybb->input['newattachment'] || $mybb->in
 {
 	// Verify incoming POST request
 	verify_post_check($mybb->input['my_post_key']);
-	
+
 	if($mybb->input['action'] == "editdraft" || ($mybb->input['tid'] && $mybb->input['pid']))
 	{
 		$attachwhere = "pid='{$pid}'";
@@ -141,27 +141,27 @@ if(!$mybb->input['attachmentaid'] && ($mybb->input['newattachment'] || $mybb->in
 	}
 	$query = $db->simple_select("attachments", "COUNT(aid) as numattachs", $attachwhere);
 	$attachcount = $db->fetch_field($query, "numattachs");
-	
+
 	// If there's an attachment, check it and upload it
 	if($_FILES['attachment']['size'] > 0 && $forumpermissions['canpostattachments'] != 0 && ($mybb->settings['maxattachments'] == 0 ||  $attachcount < $mybb->settings['maxattachments']))
 	{
 		require_once MYBB_ROOT."inc/functions_upload.php";
-		
-		$update_attachment = false;
+
+		$update_attachment = FALSE;
 		if($mybb->input['updateattachment'])
 		{
-			$update_attachment = true;
+			$update_attachment = TRUE;
 		}
 		$attachedfile = upload_attachment($_FILES['attachment'], $update_attachment);
 	}
-	
+
 	// Error with attachments - should use new inline errors?
 	if($attachedfile['error'])
 	{
 		$errors[] = $attachedfile['error'];
 		$mybb->input['action'] = "newthread";
 	}
-	
+
 	// If we were dealing with an attachment but didn't click 'Post Thread', force the new thread page again.
 	if(!$mybb->input['submit'])
 	{
@@ -175,7 +175,7 @@ if($mybb->input['attachmentaid'] && $mybb->input['attachmentact'] == "remove" &&
 {
 	// Verify incoming POST request
 	verify_post_check($mybb->input['my_post_key']);
-	
+
 	require_once MYBB_ROOT."inc/functions_upload.php";
 	remove_attachment(0, $mybb->input['posthash'], $mybb->input['attachmentaid']);
 	if(!$mybb->input['submit'])
@@ -185,7 +185,7 @@ if($mybb->input['attachmentaid'] && $mybb->input['attachmentact'] == "remove" &&
 }
 
 $thread_errors = "";
-$hide_captcha = false;
+$hide_captcha = FALSE;
 
 // Check the maximum posts per day for this user
 if($mybb->settings['maxposts'] > 0 && $mybb->usergroup['cancp'] != 1)
@@ -212,7 +212,7 @@ if($mybb->input['action'] == "do_newthread" && $mybb->request_method == "post")
 	if($mybb->user['uid'] == 0)
 	{
 		$username = htmlspecialchars_uni($mybb->input['username']);
-	
+
 		// Check if username exists.
 		if(username_exists($mybb->input['username']))
 		{
@@ -241,7 +241,7 @@ if($mybb->input['action'] == "do_newthread" && $mybb->request_method == "post")
 		$username = $mybb->user['username'];
 		$uid = $mybb->user['uid'];
 	}
-	
+
 	// Attempt to see if this post is a duplicate or not
 	if($uid > 0)
 	{
@@ -260,7 +260,7 @@ if($mybb->input['action'] == "do_newthread" && $mybb->request_method == "post")
 			error($lang->error_post_already_submitted);
 		}
 	}
-	
+
 	// Set up posthandler.
 	require_once MYBB_ROOT."inc/datahandlers/post.php";
 	$posthandler = new PostDataHandler("insert");
@@ -278,7 +278,7 @@ if($mybb->input['action'] == "do_newthread" && $mybb->request_method == "post")
 		"ipaddress" => get_ip(),
 		"posthash" => $mybb->input['posthash']
 	);
-	
+
 	if($pid != '')
 	{
 		$new_thread['pid'] = $pid;
@@ -293,7 +293,7 @@ if($mybb->input['action'] == "do_newthread" && $mybb->request_method == "post")
 	{
 		$new_thread['savedraft'] = 0;
 	}
-	
+
 	// Is this thread already a draft and we're updating it?
 	if(isset($thread['tid']) && $thread['visible'] == -2)
 	{
@@ -306,29 +306,29 @@ if($mybb->input['action'] == "do_newthread" && $mybb->request_method == "post")
 		"subscriptionmethod" => $mybb->input['postoptions']['subscriptionmethod'],
 		"disablesmilies" => $mybb->input['postoptions']['disablesmilies']
 	);
-	
+
 	// Apply moderation options if we have them
 	$new_thread['modoptions'] = $mybb->input['modoptions'];
 
 	$posthandler->set_data($new_thread);
-	
+
 	// Now let the post handler do all the hard work.
 	$valid_thread = $posthandler->validate_thread();
-	
+
 	$post_errors = array();
 	// Fetch friendly error messages if this is an invalid thread
 	if(!$valid_thread)
 	{
 		$post_errors = $posthandler->get_friendly_errors();
 	}
-	
+
 	// Check captcha image
 	if($mybb->settings['captchaimage'] && !$mybb->user['uid'])
 	{
 		require_once MYBB_ROOT.'inc/class_captcha.php';
 		$post_captcha = new captcha;
 
-		if($post_captcha->validate_captcha() == false)
+		if($post_captcha->validate_captcha() == FALSE)
 		{
 			// CAPTCHA validation failed
 			foreach($post_captcha->get_errors() as $error)
@@ -338,7 +338,7 @@ if($mybb->input['action'] == "do_newthread" && $mybb->request_method == "post")
 		}
 		else
 		{
-			$hide_captcha = true;
+			$hide_captcha = TRUE;
 		}
 	}
 
@@ -346,7 +346,7 @@ if($mybb->input['action'] == "do_newthread" && $mybb->request_method == "post")
 	if(count($post_errors) > 0)
 	{
 		$thread_errors = inline_error($post_errors);
-		$mybb->input['action'] = "newthread";		
+		$mybb->input['action'] = "newthread";
 	}
 	// No errors were found, it is safe to insert the thread.
 	else
@@ -358,21 +358,21 @@ if($mybb->input['action'] == "do_newthread" && $mybb->request_method == "post")
 		// Mark thread as read
 		require_once MYBB_ROOT."inc/functions_indicators.php";
 		mark_thread_read($tid, $fid);
-		
+
 		// We were updating a draft thread, send them back to the draft listing.
 		if($new_thread['savedraft'] == 1)
 		{
 			$lang->redirect_newthread = $lang->draft_saved;
 			$url = "usercp.php?action=drafts";
 		}
-		
+
 		// A poll was being posted with this thread, throw them to poll posting page.
 		else if($mybb->input['postpoll'] && $forumpermissions['canpostpolls'])
 		{
 			$url = "polls.php?action=newpoll&tid=$tid&polloptions=".intval($mybb->input['numpolloptions']);
 			$lang->redirect_newthread .= $lang->redirect_newthread_poll;
 		}
-		
+
 		// This thread is stuck in the moderation queue, send them back to the forum.
 		else if(!$visible)
 		{
@@ -388,7 +388,7 @@ if($mybb->input['action'] == "do_newthread" && $mybb->request_method == "post")
 			$lang->redirect_newthread .= $lang->redirect_newthread_thread;
 			$url = get_thread_link($tid);
 		}
-		
+
 		// Mark any quoted posts so they're no longer selected - attempts to maintain those which weren't selected
 		if($mybb->input['quoted_ids'] && $mybb->cookies['multiquote'] && $mybb->settings['multiquote'] != 0)
 		{
@@ -400,7 +400,7 @@ if($mybb->input['action'] == "do_newthread" && $mybb->request_method == "post")
 		}
 
 		$plugins->run_hooks("newthread_do_newthread_end");
-		
+
 		// Hop to it! Send them to the next page.
 		if(!$mybb->input['postpoll'])
 		{
@@ -414,7 +414,7 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 {
 
 	$plugins->run_hooks("newthread_start");
-	
+
 	$quote_ids = '';
 	// If this isn't a preview and we're not editing a draft, then handle quoted posts
 	if(!$mybb->input['previewpost'] && !$thread_errors && $mybb->input['action'] != "editdraft")
@@ -441,7 +441,7 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 			{
 				$unviewable_forums = "AND t.fid NOT IN ({$unviewable_forums})";
 			}
-			
+
 			if(is_moderator($fid))
 			{
 				$visible_where = "AND p.visible != 2";
@@ -450,7 +450,7 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 			{
 				$visible_where = "AND p.visible > 0";
 			}
-			
+
 			if(intval($mybb->input['load_all_quotes']) == 1)
 			{
 				$query = $db->query("
@@ -514,7 +514,7 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 	// b -> removing an attachment
 	// c -> adding a new attachment
 	// d -> have errors from posting
-	
+
 	if($mybb->input['previewpost'] || $mybb->input['attachmentaid'] || $mybb->input['newattachment'] || $mybb->input['updateattachment'] || $thread_errors)
 	{
 		$postoptions = $mybb->input['postoptions'];
@@ -544,7 +544,7 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 		}
 		$numpolloptions = intval($mybb->input['numpolloptions']);
 	}
-	
+
 	// Editing a draft thread
 	else if($mybb->input['action'] == "editdraft" && $mybb->user['uid'])
 	{
@@ -576,7 +576,7 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 			$postoptions_subscriptionmethod_dont = "checked=\"checked\"";
 		}
 	}
-	
+
 	// Otherwise, this is our initial visit to this page.
 	else
 	{
@@ -598,7 +598,7 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 		}
 		$numpolloptions = "2";
 	}
-	
+
 	// If we're preving a post then generate the preview.
 	if($mybb->input['previewpost'])
 	{
@@ -606,7 +606,7 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 		require_once MYBB_ROOT."inc/datahandlers/post.php";
 		$posthandler = new PostDataHandler("insert");
 		$posthandler->action = "thread";
-	
+
 		// Set the thread data that came from the input to the $thread array.
 		$new_thread = array(
 			"fid" => $forum['fid'],
@@ -619,32 +619,32 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 			"ipaddress" => get_ip(),
 			"posthash" => $mybb->input['posthash']
 		);
-		
+
 		if($pid != '')
 		{
 			$new_thread['pid'] = $pid;
 		}
-		
+
 		$posthandler->set_data($new_thread);
 
 		// Now let the post handler do all the hard work.
 		$valid_thread = $posthandler->verify_message();
 		$valid_subject = $posthandler->verify_subject();
-	
+
 		$post_errors = array();
 		// Fetch friendly error messages if this is an invalid post
 		if(!$valid_thread || !$valid_subject)
 		{
 			$post_errors = $posthandler->get_friendly_errors();
 		}
-		
+
 		// One or more errors returned, fetch error list and throw to newreply page
 		if(count($post_errors) > 0)
 		{
 			$thread_errors = inline_error($post_errors);
 		}
 		else
-		{		
+		{
 			if(!$mybb->input['username'])
 			{
 				$mybb->input['username'] = $lang->guest;
@@ -676,7 +676,7 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 			{
 				$post['includesig'] = 0;
 			}
-			
+
 			// Fetch attachments assigned to this post
 			if($mybb->input['pid'])
 			{
@@ -686,22 +686,22 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 			{
 				$attachwhere = "posthash='".$db->escape_string($mybb->input['posthash'])."'";
 			}
-	
+
 			$query = $db->simple_select("attachments", "*", $attachwhere);
-			while($attachment = $db->fetch_array($query)) 
+			while($attachment = $db->fetch_array($query))
 			{
 				$attachcache[0][$attachment['aid']] = $attachment;
 			}
-	
+
 			$postbit = build_postbit($post, 1);
 			eval("\$preview = \"".$templates->get("previewpost")."\";");
 		}
 		$message = htmlspecialchars_uni($mybb->input['message']);
 		$subject = htmlspecialchars_uni($mybb->input['subject']);
 	}
-	
+
 	// Removing an attachment or adding a new one, or showting thread errors.
-	else if($mybb->input['attachmentaid'] || $mybb->input['newattachment'] || $mybb->input['updateattachment'] || $thread_errors) 
+	else if($mybb->input['attachmentaid'] || $mybb->input['newattachment'] || $mybb->input['updateattachment'] || $thread_errors)
 	{
 		$message = htmlspecialchars_uni($mybb->input['message']);
 		$subject = htmlspecialchars_uni($mybb->input['subject']);
@@ -718,7 +718,7 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 	{
 		$mybb->input['threadprefix'] = 0;
 	}
-	
+
 	$prefixselect = build_prefix_select($forum['fid'], $mybb->input['threadprefix']);
 
 	// Setup a unique posthash for attachment management
@@ -846,21 +846,21 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 	{
 		eval("\$savedraftbutton = \"".$templates->get("post_savedraftbutton", 1, 0)."\";");
 	}
-	
+
 	// Show captcha image for guests if enabled
 	if($mybb->settings['captchaimage'] && !$mybb->user['uid'])
 	{
-		$correct = false;
+		$correct = FALSE;
 		require_once MYBB_ROOT.'inc/class_captcha.php';
-		$post_captcha = new captcha(false, "post_captcha");
+		$post_captcha = new captcha(FALSE, "post_captcha");
 
-		if($mybb->input['previewpost'] || $hide_captcha == true && $post_captcha->type == 1)
+		if($mybb->input['previewpost'] || $hide_captcha == TRUE && $post_captcha->type == 1)
 		{
 			// If previewing a post - check their current captcha input - if correct, hide the captcha input area
 			// ... but only if it's a default one, reCAPTCHAs must be filled in every time due to draconian limits
-			if($post_captcha->validate_captcha() == true)
+			if($post_captcha->validate_captcha() == TRUE)
 			{
-				$correct = true;
+				$correct = TRUE;
 
 				// Generate a hidden list of items for our captcha
 				$captcha = $post_captcha->build_hidden_captcha();
@@ -884,7 +884,7 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 			}
 		}
 	}
-	
+
 	if($forumpermissions['canpostpolls'] != 0)
 	{
 		$lang->max_options = $lang->sprintf($lang->max_options, $mybb->settings['maxpolloptions']);
@@ -927,10 +927,10 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 	}
 
 	$plugins->run_hooks("newthread_end");
-	
+
 	$forum['name'] = strip_tags($forum['name']);
 	$lang->newthread_in = $lang->sprintf($lang->newthread_in, $forum['name']);
-	
+
 	eval("\$newthread = \"".$templates->get("newthread")."\";");
 	output_page($newthread);
 

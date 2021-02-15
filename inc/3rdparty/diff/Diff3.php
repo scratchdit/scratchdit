@@ -12,7 +12,7 @@
  * @package Text_Diff
  * @since   0.3.0
  */
- 
+
 // Disallow direct access to this file for security reasons
 if(!defined("IN_MYBB"))
 {
@@ -58,7 +58,7 @@ class Text_Diff3 extends Text_Diff {
 
     /**
      */
-    function mergedOutput($label1 = false, $label2 = false)
+    function mergedOutput($label1 = FALSE, $label2 = FALSE)
     {
         $lines = array();
         foreach ($this->_edits as $edit) {
@@ -161,7 +161,7 @@ class Text_Diff3 extends Text_Diff {
  */
 class Text_Diff3_Op {
 
-    function Text_Diff3_Op($orig = false, $final1 = false, $final2 = false)
+    function Text_Diff3_Op($orig = FALSE, $final1 = FALSE, $final2 = FALSE)
     {
         $this->orig = $orig ? $orig : array();
         $this->final1 = $final1 ? $final1 : array();
@@ -178,7 +178,7 @@ class Text_Diff3_Op {
             } elseif ($this->final2 === $this->orig) {
                 $this->_merged = &$this->final1;
             } else {
-                $this->_merged = false;
+                $this->_merged = FALSE;
             }
         }
 
@@ -187,7 +187,7 @@ class Text_Diff3_Op {
 
     function isConflict()
     {
-        return $this->merged() === false;
+        return $this->merged() === FALSE;
     }
 
 }
@@ -200,7 +200,7 @@ class Text_Diff3_Op {
  */
 class Text_Diff3_Op_copy extends Text_Diff3_Op {
 
-    function Text_Diff3_Op_Copy($lines = false)
+    function Text_Diff3_Op_Copy($lines = FALSE)
     {
         $this->orig = $lines ? $lines : array();
         $this->final1 = &$this->orig;
@@ -214,7 +214,7 @@ class Text_Diff3_Op_copy extends Text_Diff3_Op {
 
     function isConflict()
     {
-        return false;
+        return FALSE;
     }
 
 }
@@ -261,7 +261,7 @@ class Text_Diff3_BlockBuilder {
     function finish()
     {
         if ($this->isEmpty()) {
-            return false;
+            return FALSE;
         } else {
             $edit = new Text_Diff3_Op($this->orig, $this->final1, $this->final2);
             $this->_init();

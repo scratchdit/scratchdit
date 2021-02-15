@@ -7,7 +7,7 @@ var captcha = {
 			method: 'get',
 			onComplete: function(request) { captcha.refresh_complete(request); }
 		});
-		return false;
+		return FALSE;
 	},
 
 	refresh_complete: function(request)

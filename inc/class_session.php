@@ -15,7 +15,7 @@ class session
 	public $uid = 0;
 	public $ipaddress = '';
 	public $useragent = '';
-	public $is_spider = false;
+	public $is_spider = FALSE;
 	public $logins = 1;
 	public $failedlogin = 0;
 
@@ -35,7 +35,7 @@ class session
 		{
 			$this->useragent = my_substr($this->useragent, 0, 100);
 		}
-		
+
 		// Attempt to find a session id in the cookies.
 		if(isset($mybb->cookies['sid']))
 		{
@@ -84,7 +84,7 @@ class session
 				{
 					foreach($spiders as $spider)
 					{
-						if(my_strpos(my_strtolower($this->useragent), my_strtolower($spider['useragent'])) !== false)
+						if(my_strpos(my_strtolower($this->useragent), my_strtolower($spider['useragent'])) !== FALSE)
 						{
 							$this->load_spider($spider['sid']);
 						}
@@ -101,9 +101,9 @@ class session
 
 
 		// As a token of our appreciation for getting this far (and they aren't a spider), give the user a cookie
-		if($this->sid && ($mybb->cookies['sid'] != $this->sid) && $this->is_spider != true)
+		if($this->sid && ($mybb->cookies['sid'] != $this->sid) && $this->is_spider != TRUE)
 		{
-			my_setcookie("sid", $this->sid, -1, true);
+			my_setcookie("sid", $this->sid, -1, TRUE);
 		}
 	}
 
@@ -116,30 +116,30 @@ class session
 	function load_user($uid, $password='')
 	{
 		global $mybb, $db, $time, $lang, $mybbgroups, $session, $cache;
-		
+
 		// Read the banned cache
-		$bannedcache = $cache->read("banned");	
-		
+		$bannedcache = $cache->read("banned");
+
 		// If the banned cache doesn't exist, update it and re-read it
 		if(!is_array($bannedcache))
 		{
 			$cache->update_banned();
 			$bannedcache = $cache->read("banned");
 		}
-		
+
 		$uid = intval($uid);
 		$query = $db->query("
 			SELECT u.*, f.*
-			FROM ".TABLE_PREFIX."users u 
-			LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid) 
+			FROM ".TABLE_PREFIX."users u
+			LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid)
 			WHERE u.uid='$uid'
 			LIMIT 1
 		");
 		$mybb->user = $db->fetch_array($query);
-		
+
 		$this->logins = $mybb->user['loginattempts'];
 		$this->failedlogin = $mybb->user['failedlogin'];
-		
+
 		if($bannedcache[$uid])
 		{
 			$banned_user = $bannedcache[$uid];
@@ -155,7 +155,7 @@ class session
 		{
 			unset($mybb->user);
 			$this->uid = 0;
-			return false;
+			return FALSE;
 		}
 		$this->uid = $mybb->user['uid'];
 
@@ -240,7 +240,7 @@ class session
 		{
 			$mybb->settings['postsperpage'] = $mybb->user['ppp'];
 		}
-		
+
 		// Does this user prefer posts in classic mode?
 		if($mybb->user['classicpostbit'])
 		{
@@ -294,7 +294,7 @@ class session
 		{
 			$mybb->usergroup = array_merge($mybb->usergroup, $mydisplaygroup);
 		}
-		
+
 		if(!$mybb->user['usertitle'])
 		{
 			$mybb->user['usertitle'] = $mybb->usergroup['usertitle'];
@@ -312,7 +312,7 @@ class session
 				$this->create_session($mybb->user['uid']);
 			}
 		}
-		return true;
+		return TRUE;
 	}
 
 	/**
@@ -367,7 +367,7 @@ class session
 		// Gather a full permission set for this guest
 		$mybb->usergroup = usergroup_permissions($mybbgroups);
 		$mydisplaygroup = usergroup_displaygroup($mybb->user['displaygroup']);
-		
+
 		$mybb->usergroup = array_merge($mybb->usergroup, $mydisplaygroup);
 
 		// Update the online data.
@@ -399,7 +399,7 @@ class session
 
 		// Set up some defaults
 		$time = TIME_NOW;
-		$this->is_spider = true;
+		$this->is_spider = TRUE;
 		if($spider['usergroup'])
 		{
 			$mybb->user['usergroup'] = $spider['usergroup'];
@@ -495,7 +495,7 @@ class session
 			$onlinedata['uid'] = $uid;
 		}
 		// Is a spider - delete all other spider references
-		else if($this->is_spider == true)
+		else if($this->is_spider == TRUE)
 		{
 			$db->delete_query("sessions", "sid='{$this->sid}'");
 		}
@@ -507,13 +507,13 @@ class session
 		}
 
 		// If the user is a search enginge spider, ...
-		if($this->is_spider == true)
+		if($this->is_spider == TRUE)
 		{
 			$onlinedata['sid'] = $this->sid;
 		}
 		else
 		{
-			$onlinedata['sid'] = md5(uniqid(microtime(true)));
+			$onlinedata['sid'] = md5(uniqid(microtime(TRUE)));
 		}
 		$onlinedata['time'] = TIME_NOW;
 		$onlinedata['ip'] = $db->escape_string($this->ipaddress);
@@ -522,7 +522,7 @@ class session
 		$onlinedata['location1'] = intval($speciallocs['1']);
 		$onlinedata['location2'] = intval($speciallocs['2']);
 		$onlinedata['nopermission'] = 0;
-		$db->replace_query("sessions", $onlinedata, "sid", false);
+		$db->replace_query("sessions", $onlinedata, "sid", FALSE);
 		$this->sid = $onlinedata['sid'];
 		$this->uid = $onlinedata['uid'];
 	}

@@ -11,8 +11,8 @@ var ViewManager = {
 			return;
 		}
 
-		Sortable.create("fields_enabled", {dropOnEmpty: true, containment:["fields_enabled","fields_disabled"], constraint: false, onChange: ViewManager.buildFieldsList});
-		Sortable.create("fields_disabled", {dropOnEmpty: true, containment:["fields_enabled","fields_disabled"], constraint: false, onChange: ViewManager.buildFieldsList});
+		Sortable.create("fields_enabled", {dropOnEmpty: TRUE, containment:["fields_enabled","fields_disabled"], constraint: FALSE, onChange: ViewManager.buildFieldsList});
+		Sortable.create("fields_disabled", {dropOnEmpty: TRUE, containment:["fields_enabled","fields_disabled"], constraint: FALSE, onChange: ViewManager.buildFieldsList});
 	},
 
 	buildFieldsList: function()
@@ -23,7 +23,7 @@ var ViewManager = {
 			if($('fields_enabled').childNodes[i] && $('fields_enabled').childNodes[i].id)
 			{
 				id = $('fields_enabled').childNodes[i].id.split("-");
-				
+
 				if(id[1])
 				{
 					if(new_input)

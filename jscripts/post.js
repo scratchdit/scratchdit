@@ -10,11 +10,11 @@ var Post = {
 			tid = document.input.tid.value;
 			this.spinner = new ActivityIndicator("body", {image: imagepath + "/spinner_big.gif"});
 			new Ajax.Request('xmlhttp.php?action=get_multiquoted&tid='+tid, {method: 'get', onComplete: function(request) { Post.multiQuotedLoaded(request); }});
-			return false;
+			return FALSE;
 		}
 		else
 		{
-			return true;
+			return TRUE;
 		}
 	},
 
@@ -24,11 +24,11 @@ var Post = {
 		{
 			this.spinner = new ActivityIndicator("body", {image: imagepath + "/spinner_big.gif"});
 			new Ajax.Request('xmlhttp.php?action=get_multiquoted&load_all=1', {method: 'get', onComplete: function(request) { Post.multiQuotedLoaded(request); }});
-			return false;
+			return FALSE;
 		}
 		else
 		{
-			return true;
+			return TRUE;
 		}
 	},
 
@@ -79,7 +79,7 @@ var Post = {
 
 	removeAttachment: function(aid)
 	{
-		if(confirm(removeattach_confirm) == true)
+		if(confirm(removeattach_confirm) == TRUE)
 		{
 			document.input.attachmentaid.value = aid;
 			document.input.attachmentact.value = "remove";
@@ -88,7 +88,7 @@ var Post = {
 		{
 			document.input.attachmentaid.value = 0;
 			document.input.attachmentact.value = "";
-			return false;
+			return FALSE;
 		}
 	},
 

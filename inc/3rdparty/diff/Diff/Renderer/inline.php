@@ -101,15 +101,15 @@ class Text_Diff_Renderer_inline extends Text_Diff_Renderer {
         array_walk($lines, array(&$this, '_encode'));
         $lines[0] = $this->_ins_prefix . $lines[0];
         $lines[count($lines) - 1] .= $this->_ins_suffix;
-        return $this->_lines($lines, ' ', false);
+        return $this->_lines($lines, ' ', FALSE);
     }
 
-    function _deleted($lines, $words = false)
+    function _deleted($lines, $words = FALSE)
     {
         array_walk($lines, array(&$this, '_encode'));
         $lines[0] = $this->_del_prefix . $lines[0];
         $lines[count($lines) - 1] .= $this->_del_suffix;
-        return $this->_lines($lines, ' ', false);
+        return $this->_lines($lines, ' ', FALSE);
     }
 
     function _changed($orig, $final)
@@ -118,7 +118,7 @@ class Text_Diff_Renderer_inline extends Text_Diff_Renderer {
          * display. */
         if ($this->_split_level == 'words') {
             $prefix = '';
-            while ($orig[0] !== false && $final[0] !== false &&
+            while ($orig[0] !== FALSE && $final[0] !== FALSE &&
                    substr($orig[0], 0, 1) == ' ' &&
                    substr($final[0], 0, 1) == ' ') {
                 $prefix .= substr($orig[0], 0, 1);

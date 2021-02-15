@@ -12,13 +12,13 @@
  *
  * $Horde: framework/Text_Diff/Diff/Engine/string.php,v 1.5.2.5 2008/09/10 08:31:58 jan Exp $
  *
- * Copyright 2005 Örjan Persson <o@42mm.org>
+ * Copyright 2005 ï¿½rjan Persson <o@42mm.org>
  * Copyright 2005-2008 The Horde Project (http://www.horde.org/)
  *
  * See the enclosed file COPYING for license information (LGPL). If you did
  * not receive this file, see http://opensource.org/licenses/lgpl-license.php.
  *
- * @author  Örjan Persson <o@42mm.org>
+ * @author  ï¿½rjan Persson <o@42mm.org>
  * @package Text_Diff
  * @since   0.2.0
  */
@@ -48,8 +48,8 @@ class Text_Diff_Engine_string {
             $unified = strpos($diff, '---');
             if ($context === $unified) {
                 return PEAR::raiseError('Type of diff could not be detected');
-            } elseif ($context === false || $unified === false) {
-                $mode = $context !== false ? 'context' : 'unified';
+            } elseif ($context === FALSE || $unified === FALSE) {
+                $mode = $context !== FALSE ? 'context' : 'unified';
             } else {
                 $mode = $context < $unified ? 'context' : 'unified';
             }

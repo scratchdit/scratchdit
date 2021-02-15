@@ -111,7 +111,7 @@ if($announcementarray['startdate'] > $mybb->user['lastvisit'])
 
 		if(isset($cookie[$announcementarray['aid']]))
 		{
-			$setcookie = false;
+			$setcookie = FALSE;
 		}
 	}
 

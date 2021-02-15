@@ -50,7 +50,7 @@ if($mybb->usergroup['issupermod'] != 1)
 	while($forum = $db->fetch_array($query))
 	{
 		$flist .= ",'{$forum['fid']}'";
-		
+
 		$children = get_child_list($forum['fid']);
 		if(!empty($children))
 		{
@@ -113,9 +113,9 @@ if($mybb->input['action'] == "do_reports")
 
 	$db->update_query("reportedposts", array('reportstatus' => 1), "{$sql}{$flist}");
 	$cache->update_reportedposts();
-	
+
 	$page = intval($mybb->input['page']);
-	
+
 	redirect("modcp.php?action=reports&page={$page}", $lang->redirect_reportsmarked);
 }
 
@@ -189,7 +189,7 @@ if($mybb->input['action'] == "reports")
 	{
 		$forums[$forum['fid']] = $forum['name'];
 	}
-	
+
 	$plugins->run_hooks("modcp_reports_start");
 
 	$reports = '';
@@ -300,7 +300,7 @@ if($mybb->input['action'] == "allreports")
 	{
 		eval("\$allreportspages = \"".$templates->get("modcp_reports_multipage")."\";");
 	}
-	
+
 	$plugins->run_hooks("modcp_allreports_start");
 
 	$query = $db->query("
@@ -339,7 +339,7 @@ if($mybb->input['action'] == "allreports")
 			{
 				$trow = "trow_shaded";
 			}
-	
+
 			if($report['threadsubject'])
 			{
 				$report['threadsubject'] = htmlspecialchars_uni($parser->parse_badwords($report['threadsubject']));
@@ -400,7 +400,7 @@ if($mybb->input['action'] == "modlogs")
 	{
 		$order = "desc";
 	}
-	
+
 	$plugins->run_hooks("modcp_modlogs_start");
 
 	$query = $db->query("
@@ -497,7 +497,7 @@ if($mybb->input['action'] == "modlogs")
 	{
 		eval("\$results = \"".$templates->get("modcp_modlogs_noresults")."\";");
 	}
-	
+
 	$plugins->run_hooks("modcp_modlogs_filter");
 
 	// Fetch filter options
@@ -516,7 +516,7 @@ if($mybb->input['action'] == "modlogs")
 		{
 			$user['username'] = $lang->na_deleted;
 		}
-		
+
 		$selected = '';
 		if($mybb->input['uid'] == $user['uid'])
 		{
@@ -525,7 +525,7 @@ if($mybb->input['action'] == "modlogs")
 		$user_options .= "<option value=\"{$user['uid']}\"{$selected}>".htmlspecialchars_uni($user['username'])."</option>\n";
 	}
 
-	$forum_select = build_forum_jump("", $mybb->input['fid'], 1, '', 0, true, '', "fid");
+	$forum_select = build_forum_jump("", $mybb->input['fid'], 1, '', 0, TRUE, '', "fid");
 
 	eval("\$modlogs = \"".$templates->get("modcp_modlogs")."\";");
 	output_page($modlogs);
@@ -547,7 +547,7 @@ if($mybb->input['action'] == "do_delete_announcement")
 	{
 		error_no_permission();
 	}
-	
+
 	$plugins->run_hooks("modcp_do_delete_announcement");
 
 	$db->delete_query("announcements", "aid='{$aid}'");
@@ -573,7 +573,7 @@ if($mybb->input['action'] == "delete_announcement")
 	{
 		error_no_permission();
 	}
-	
+
 	$plugins->run_hooks("modcp_delete_announcement");
 
 	eval("\$announcements = \"".$templates->get("modcp_announcements_delete")."\";");
@@ -627,16 +627,16 @@ if($mybb->input['action'] == "do_new_announcement")
 			$enddate[0] = "00";
 		}
 	}
-	
-	$months = array('01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12');			
+
+	$months = array('01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12');
 	if(!in_array($mybb->input['starttime_month'], $months))
 	{
 		$mybb->input['starttime_month'] = 1;
 	}
 
 	$startdate = gmmktime(intval($startdate[0]), intval($startdate[1]), 0, (int)$mybb->input['starttime_month'], intval($mybb->input['starttime_day']), intval($mybb->input['starttime_year']));
-	
-	if($startdate < 0 || $startdate == false)
+
+	if($startdate < 0 || $startdate == FALSE)
 	{
 		$errors[] = $lang->error_invalid_start_date;
 	}
@@ -652,7 +652,7 @@ if($mybb->input['action'] == "do_new_announcement")
 			$mybb->input['endtime_month'] = 1;
 		}
 		$enddate = gmmktime(intval($enddate[0]), intval($enddate[1]), 0, (int)$mybb->input['endtime_month'], intval($mybb->input['endtime_day']), intval($mybb->input['endtime_year']));
-		if($enddate < 0 || $enddate == false)
+		if($enddate < 0 || $enddate == FALSE)
 		{
 			$errors[] = $lang->error_invalid_end_date;
 		}
@@ -661,7 +661,7 @@ if($mybb->input['action'] == "do_new_announcement")
 			$errors[] = $lang->error_end_before_start;
 		}
 	}
-	
+
 	$plugins->run_hooks("modcp_do_new_announcement_start");
 
 	if(!$errors)
@@ -679,9 +679,9 @@ if($mybb->input['action'] == "do_new_announcement")
 		);
 
 		$aid = $db->insert_query("announcements", $insert_announcement);
-		
+
 		$plugins->run_hooks("modcp_do_new_announcement_end");
-		
+
 		$cache->update_forumsdisplay();
 		redirect("modcp.php?action=announcements", $lang->redirect_add_announcement);
 	}
@@ -707,25 +707,25 @@ if($mybb->input['action'] == "new_announcement")
 	if(is_array($errors))
 	{
 		$errors = inline_error($errors);
-		
+
 		// Set $announcement to input stuff
 		$announcement['subject'] = $mybb->input['title'];
 		$announcement['message'] = $mybb->input['message'];
 		$announcement['allowhtml'] = $mybb->input['allowhtml'];
 		$announcement['allowmycode'] = $mybb->input['allowmycode'];
 		$announcement['allowsmilies'] = $mybb->input['allowsmilies'];
-		
-		$months = array('01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12');			
+
+		$months = array('01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12');
 		if(!in_array($mybb->input['starttime_month'], $months))
 		{
 			$mybb->input['starttime_month'] = 1;
 		}
-		
+
 		if(!in_array($mybb->input['endtime_month'], $months))
 		{
 			$mybb->input['endtime_month'] = 1;
 		}
-		
+
 		$startmonth = $mybb->input['starttime_month'];
 		$startdateyear = htmlspecialchars_uni($mybb->input['starttime_year']);
 		$startday = intval($mybb->input['starttime_day']);
@@ -841,7 +841,7 @@ if($mybb->input['action'] == "new_announcement")
 	// MyCode editor
 	$codebuttons = build_mycode_inserter();
 	$smilieinserter = build_clickable_smilies();
-	
+
 	$plugins->run_hooks("modcp_new_announcement");
 
 	eval("\$announcements = \"".$templates->get("modcp_announcements_new")."\";");
@@ -908,14 +908,14 @@ if($mybb->input['action'] == "do_edit_announcement")
 		}
 	}
 
-	$months = array('01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12');			
+	$months = array('01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12');
 	if(!in_array($mybb->input['starttime_month'], $months))
 	{
 		$mybb->input['starttime_month'] = 1;
 	}
 
 	$startdate = gmmktime(intval($startdate[0]), intval($startdate[1]), 0, (int)$mybb->input['starttime_month'], intval($mybb->input['starttime_day']), intval($mybb->input['starttime_year']));
-	if($startdate < 0 || $startdate == false)
+	if($startdate < 0 || $startdate == FALSE)
 	{
 		$errors[] = $lang->error_invalid_start_date;
 	}
@@ -925,13 +925,13 @@ if($mybb->input['action'] == "do_edit_announcement")
 		$enddate = '0';
 	}
 	else
-	{		
+	{
 		if(!in_array($mybb->input['endtime_month'], $months))
 		{
 			$mybb->input['endtime_month'] = 1;
 		}
 		$enddate = gmmktime(intval($enddate[0]), intval($enddate[1]), 0, (int)$mybb->input['endtime_month'], intval($mybb->input['endtime_day']), intval($mybb->input['endtime_year']));
-		if($enddate < 0 || $enddate == false)
+		if($enddate < 0 || $enddate == FALSE)
 		{
 			$errors[] = $lang->error_invalid_end_date;
 		}
@@ -940,7 +940,7 @@ if($mybb->input['action'] == "do_edit_announcement")
 			$errors[] = $lang->error_end_before_start;
 		}
 	}
-	
+
 	$plugins->run_hooks("modcp_do_edit_announcement_start");
 
 	// Proceed to update if no errors
@@ -958,9 +958,9 @@ if($mybb->input['action'] == "do_edit_announcement")
 		);
 
 		$db->update_query("announcements", $update_announcement, "aid='{$aid}'");
-		
+
 		$plugins->run_hooks("modcp_do_edit_announcement_end");
-		
+
 		$cache->update_forumsdisplay();
 		redirect("modcp.php?action=announcements", $lang->redirect_edit_announcement);
 	}
@@ -997,10 +997,10 @@ if($mybb->input['action'] == "edit_announcement")
 		$announcement['startdate'] = TIME_NOW;
 	}
 
-	$makeshift_end = false;
+	$makeshift_end = FALSE;
 	if(!$announcement['enddate'])
 	{
-		$makeshift_end = true;
+		$makeshift_end = TRUE;
 		$makeshift_time = TIME_NOW;
 		if($announcement['startdate'])
 		{
@@ -1022,18 +1022,18 @@ if($mybb->input['action'] == "edit_announcement")
 		$announcement['allowhtml'] = $mybb->input['allowhtml'];
 		$announcement['allowmycode'] = $mybb->input['allowmycode'];
 		$announcement['allowsmilies'] = $mybb->input['allowsmilies'];
-		
-		$months = array('01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12');			
+
+		$months = array('01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12');
 		if(!in_array($mybb->input['starttime_month'], $months))
 		{
 			$mybb->input['starttime_month'] = 1;
 		}
-		
+
 		if(!in_array($mybb->input['endtime_month'], $months))
 		{
 			$mybb->input['endtime_month'] = 1;
 		}
-		
+
 		$startmonth = $mybb->input['starttime_month'];
 		$startdateyear = htmlspecialchars_uni($mybb->input['starttime_year']);
 		$startday = intval($mybb->input['starttime_day']);
@@ -1043,7 +1043,7 @@ if($mybb->input['action'] == "edit_announcement")
 		$endday = intval($mybb->input['endtime_day']);
 		$endtime_time = htmlspecialchars($mybb->input['endtime_time']);
 
-		$errored = true;
+		$errored = TRUE;
 	}
 	else
 	{
@@ -1060,7 +1060,7 @@ if($mybb->input['action'] == "edit_announcement")
 		$startdateyear = gmdate('Y', $announcement['startdate']);
 		$enddateyear = gmdate('Y', $announcement['enddate']);
 
-		$errored = false;
+		$errored = FALSE;
 	}
 
 	// Generate form elements
@@ -1145,7 +1145,7 @@ if($mybb->input['action'] == "edit_announcement")
 		$smilies_sel['no'] = ' checked="checked"';
 	}
 
-	if(($errored && $mybb->input['endtime_type'] == 2) || (!$errored && intval($announcement['enddate']) == 0) || $makeshift_end == true)
+	if(($errored && $mybb->input['endtime_type'] == 2) || (!$errored && intval($announcement['enddate']) == 0) || $makeshift_end == TRUE)
 	{
 		$end_type_sel['infinite'] = ' checked="checked"';
 	}
@@ -1157,7 +1157,7 @@ if($mybb->input['action'] == "edit_announcement")
 	// MyCode editor
 	$codebuttons = build_mycode_inserter();
 	$smilieinserter = build_clickable_smilies();
-	
+
 	$plugins->run_hooks("modcp_edit_announcement");
 
 	eval("\$announcements = \"".$templates->get("modcp_announcements_edit")."\";");
@@ -1221,9 +1221,9 @@ if($mybb->input['action'] == "announcements")
 	{
 		eval("\$announcements_forum = \"".$templates->get("modcp_no_announcements_forum")."\";");
 	}
-	
+
 	$plugins->run_hooks("modcp_announcements");
-	
+
 	eval("\$announcements = \"".$templates->get("modcp_announcements")."\";");
 	output_page($announcements);
 }
@@ -1235,7 +1235,7 @@ if($mybb->input['action'] == "do_modqueue")
 
 	// Verify incoming POST request
 	verify_post_check($mybb->input['my_post_key']);
-	
+
 	$plugins->run_hooks("modcp_do_modqueue_start");
 
 	if(is_array($mybb->input['threads']))
@@ -1267,9 +1267,9 @@ if($mybb->input['action'] == "do_modqueue")
 			}
 			log_moderator_action(array('tids' => $threads_to_delete), $lang->multi_delete_threads);
 		}
-		
+
 		$plugins->run_hooks("modcp_do_modqueue_end");
-		
+
 		redirect("modcp.php?action=modqueue", $lang->redirect_threadsmoderated);
 	}
 	else if(is_array($mybb->input['posts']))
@@ -1293,9 +1293,9 @@ if($mybb->input['action'] == "do_modqueue")
 			$moderation->approve_posts($posts_to_approve);
 		}
 		log_moderator_action(array('pids' => $posts_to_approve), $lang->multi_approve_posts);
-		
+
 		$plugins->run_hooks("modcp_do_modqueue_end");
-		
+
 		redirect("modcp.php?action=modqueue&type=posts", $lang->redirect_postsmoderated);
 	}
 	else if(is_array($mybb->input['attachments']))
@@ -1319,9 +1319,9 @@ if($mybb->input['action'] == "do_modqueue")
 				remove_attachment($attachment['pid'], '', $attachment['aid']);
 			}
 		}
-		
+
 		$plugins->run_hooks("modcp_do_modqueue_end");
-		
+
 		redirect("modcp.php?action=modqueue&type=attachments", $lang->redirect_attachmentsmoderated);
 	}
 }
@@ -1399,9 +1399,9 @@ if($mybb->input['action'] == "modqueue")
 		if($threads)
 		{
 			add_breadcrumb($lang->mcp_nav_modqueue_threads, "modcp.php?action=modqueue&amp;type=threads");
-			
+
 			$plugins->run_hooks("modcp_modqueue_threads_end");
-			
+
 			eval("\$mass_controls = \"".$templates->get("modcp_modqueue_masscontrols")."\";");
 			eval("\$threadqueue = \"".$templates->get("modcp_modqueue_threads")."\";");
 			output_page($threadqueue);
@@ -1487,9 +1487,9 @@ if($mybb->input['action'] == "modqueue")
 		if($posts)
 		{
 			add_breadcrumb($lang->mcp_nav_modqueue_posts, "modcp.php?action=modqueue&amp;type=posts");
-			
+
 			$plugins->run_hooks("modcp_modqueue_posts_end");
-			
+
 			eval("\$mass_controls = \"".$templates->get("modcp_modqueue_masscontrols")."\";");
 			eval("\$postqueue = \"".$templates->get("modcp_modqueue_posts")."\";");
 			output_page($postqueue);
@@ -1557,7 +1557,7 @@ if($mybb->input['action'] == "modqueue")
 			{
 				$attachment['dateuploaded'] = $attachment['dateline'];
 			}
-			
+
 			$attachdate = my_date($mybb->settings['dateformat'], $attachment['dateuploaded']);
 			$attachtime = my_date($mybb->settings['timeformat'], $attachment['dateuploaded']);
 
@@ -1581,9 +1581,9 @@ if($mybb->input['action'] == "modqueue")
 		if($attachments)
 		{
 			add_breadcrumb($lang->mcp_nav_modqueue_attachments, "modcp.php?action=modqueue&amp;type=attachments");
-			
+
 			$plugins->run_hooks("modcp_modqueue_attachments_end");
-			
+
 			eval("\$mass_controls = \"".$templates->get("modcp_modqueue_masscontrols")."\";");
 			eval("\$attachmentqueue = \"".$templates->get("modcp_modqueue_attachments")."\";");
 			output_page($attachmentqueue);
@@ -1594,9 +1594,9 @@ if($mybb->input['action'] == "modqueue")
 	if(!$threadqueue && !$postqueue && !$attachmentqueue)
 	{
 		add_breadcrumb($lang->mcp_nav_modqueue, "modcp.php?action=modqueue");
-		
+
 		$plugins->run_hooks("modcp_modqueue_end");
-		
+
 		eval("\$queue = \"".$templates->get("modcp_modqueue_empty")."\";");
 		output_page($queue);
 	}
@@ -1618,7 +1618,7 @@ if($mybb->input['action'] == "do_editprofile")
 	{
 		error_no_permission();
 	}
-	
+
 	$plugins->run_hooks("modcp_do_editprofile_start");
 
 	// Set up user handler.
@@ -1629,7 +1629,7 @@ if($mybb->input['action'] == "do_editprofile")
 	$updated_user = array(
 		"uid" => $mybb->input['uid'],
 		"profile_fields" => $mybb->input['profile_fields'],
-		"profile_fields_editable" => true,
+		"profile_fields_editable" => TRUE,
 		"website" => $mybb->input['website'],
 		"icq" => $mybb->input['icq'],
 		"aim" => $mybb->input['aim'],
@@ -1688,7 +1688,7 @@ if($mybb->input['action'] == "do_editprofile")
 				"action" => "suspendsignature", // The moderator action we're performing
 				"period" => "action_period", // The time period we've selected from the dropdown box
 				"time" => "action_time", // The time we've entered
-				"update_field" => "suspendsignature", // The field in the database to update if true
+				"update_field" => "suspendsignature", // The field in the database to update if TRUE
 				"update_length" => "suspendsigtime" // The length of suspension field in the database
 			),
 			2 => array(
@@ -1753,7 +1753,7 @@ if($mybb->input['action'] == "do_editprofile")
 					elseif(!$user[$option['update_field']])
 					{
 						// New suspension for this user... bad user!
-						$extra_user_updates[$option['update_field']] = 1;				
+						$extra_user_updates[$option['update_field']] = 1;
 						if($suspend_length == "-1")
 						{
 							$extra_user_updates[$option['update_length']] = 0;
@@ -1781,14 +1781,14 @@ if($mybb->input['action'] == "do_editprofile")
 		else
 		{
 			$plugins->run_hooks("modcp_do_editprofile_update");
-			
+
 			// Continue with the update if there is no errors
 			$user_info = $userhandler->update_user();
 			$db->update_query("users", $extra_user_updates, "uid='{$user['uid']}'");
 			log_moderator_action(array("uid" => $user['uid'], "username" => $user['username']), $lang->edited_user);
-			
+
 			$plugins->run_hooks("modcp_do_editprofile_end");
-			
+
 			redirect("modcp.php?action=finduser", $lang->redirect_user_updated);
 		}
 	}
@@ -1877,7 +1877,7 @@ if($mybb->input['action'] == "editprofile")
 		}
 	}
 	$bdaymonthsel[$mybb->input['birthday_month']] = 'selected="selected"';
-	
+
 	$plugins->run_hooks("modcp_editprofile_start");
 
 	// Fetch profile fields
@@ -2184,7 +2184,7 @@ if($mybb->input['action'] == "editprofile")
 	}
 
 	eval("\$suspend_signature = \"".$templates->get("modcp_editprofile_signature")."\";");
-	
+
 	$plugins->run_hooks("modcp_editprofile_end");
 
 	eval("\$edituser = \"".$templates->get("modcp_editprofile")."\";");
@@ -2194,7 +2194,7 @@ if($mybb->input['action'] == "editprofile")
 if($mybb->input['action'] == "finduser")
 {
 	add_breadcrumb($lang->mcp_nav_users, "modcp.php?action=finduser");
-	
+
 	$perpage = intval($mybb->input['perpage']);
 	if(!$perpage || $perpage <= 0)
 	{
@@ -2272,7 +2272,7 @@ if($mybb->input['action'] == "finduser")
 	$multipage = multipage($user_count, $perpage, $page, $page_url);
 
 	$usergroups_cache = $cache->read("usergroups");
-	
+
 	$plugins->run_hooks("modcp_finduser_start");
 
 	// Fetch out results
@@ -2295,7 +2295,7 @@ if($mybb->input['action'] == "finduser")
 	{
 		eval("\$users = \"".$templates->get("modcp_finduser_noresults")."\";");
 	}
-	
+
 	$plugins->run_hooks("modcp_finduser_end");
 
 	eval("\$finduser = \"".$templates->get("modcp_finduser")."\";");
@@ -2378,7 +2378,7 @@ if($mybb->input['action'] == "warninglogs")
 	{
 		$ordersel['asc'] = ' selected="selected"';
 	}
-	
+
 	$plugins->run_hooks("modcp_warninglogs_start");
 
 	// Pagination stuff
@@ -2475,7 +2475,7 @@ if($mybb->input['action'] == "warninglogs")
 	{
 		eval("\$warning_list = \"".$templates->get("modcp_warninglogs_nologs")."\";");
 	}
-	
+
 	$plugins->run_hooks("modcp_warninglogs_end");
 
 	eval("\$warninglogs = \"".$templates->get("modcp_warninglogs")."\";");
@@ -2499,14 +2499,14 @@ if($mybb->input['action'] == "ipsearch")
 		if($mybb->input['search_posts'])
 		{
 			// IPv6 IP
-			if(strpos($mybb->input['ipaddress'], ":") !== false)
+			if(strpos($mybb->input['ipaddress'], ":") !== FALSE)
 			{
 				$post_ip_sql = "ipaddress LIKE '".$db->escape_string(str_replace("*", "%", $mybb->input['ipaddress']))."'";
 			}
 			else
 			{
 				$ip_range = fetch_longipv4_range($mybb->input['ipaddress']);
-				
+
 				if($ip_range)
 				{
 					if(!is_array($ip_range))
@@ -2538,7 +2538,7 @@ if($mybb->input['action'] == "ipsearch")
 		if($mybb->input['search_users'])
 		{
 			// IPv6 IP
-			if(strpos($mybb->input['ipaddress'], ":") !== false)
+			if(strpos($mybb->input['ipaddress'], ":") !== FALSE)
 			{
 				$user_ip_sql = "regip LIKE '".$db->escape_string(str_replace("*", "%", $mybb->input['ipaddress']))."' OR lastip LIKE '".$db->escape_string(str_replace("*", "%", $mybb->input['ipaddress']))."'";
 			}
@@ -2636,7 +2636,7 @@ if($mybb->input['action'] == "ipsearch")
 			");
 			while($ipaddress = $db->fetch_array($query))
 			{
-				$result = false;
+				$result = FALSE;
 				$profile_link = build_profile_link($ipaddress['username'], $ipaddress['uid']);
 				$trow = alt_trow();
 				$regexp_ip = str_replace("\*", "(.*)", preg_quote($mybb->input['ipaddress'], "#"));
@@ -2646,7 +2646,7 @@ if($mybb->input['action'] == "ipsearch")
 					$ip = $ipaddress['regip'];
 					$subject = "<strong>{$lang->ipresult_regip}</strong> {$profile_link}";
 					eval("\$results .= \"".$templates->get("modcp_ipsearch_result")."\";");
-					$result = true;
+					$result = TRUE;
 				}
 				// Last known IP matches
 				if(preg_match("#{$regexp_ip}#i", $ipaddress['lastip']))
@@ -2654,7 +2654,7 @@ if($mybb->input['action'] == "ipsearch")
 					$ip = $ipaddress['lastip'];
 					$subject = "<strong>{$lang->ipresult_lastip}</strong> {$profile_link}";
 					eval("\$results .= \"".$templates->get("modcp_ipsearch_result")."\";");
-					$result = true;
+					$result = TRUE;
 				}
 
 				if($result)
@@ -2688,7 +2688,7 @@ if($mybb->input['action'] == "ipsearch")
 				$uids[$ipaddress['uid']] = $ipaddress['pid'];
 				$ipaddresses[$ipaddress['pid']] = $ipaddress;
 			}
-			
+
 			if(!empty($ipaddresses))
 			{
 				$query = $db->simple_select("threads", "subject, tid", "tid IN(".implode(',', array_keys($tids)).")");
@@ -2697,14 +2697,14 @@ if($mybb->input['action'] == "ipsearch")
 					$ipaddresses[$tids[$thread['tid']]]['threadsubject'] = $thread['subject'];
 				}
 				unset($tids);
-				
+
 				$query = $db->simple_select("users", "username, uid", "uid IN(".implode(',', array_keys($uids)).")");
 				while($user = $db->fetch_array($query))
 				{
 					$ipaddresses[$uids[$user['uid']]]['username'] = $user['username'];
 				}
 				unset($uids);
-				
+
 				foreach($ipaddresses as $ipaddress)
 				{
 					$ip = $ipaddress['ipaddress'];
@@ -2733,10 +2733,10 @@ if($mybb->input['action'] == "ipsearch")
 		{
 			$lang->ipsearch_results = $lang->ipsearch;
 		}
-		
+
 		if(!strstr($mybb->input['ipaddress'], "*") && !strstr($mybb->input['ipaddress'], ":"))
 		{
-			$misc_info_link = "<div class=\"float_right\">(<a href=\"modcp.php?action=iplookup&ipaddress=".htmlspecialchars_uni($mybb->input['ipaddress'])."\" onclick=\"MyBB.popupWindow('{$mybb->settings['bburl']}/modcp.php?action=iplookup&ipaddress=".urlencode($mybb->input['ipaddress'])."', 'iplookup', 500, 250); return false;\">{$lang->info_on_ip}</a>)</div>";
+			$misc_info_link = "<div class=\"float_right\">(<a href=\"modcp.php?action=iplookup&ipaddress=".htmlspecialchars_uni($mybb->input['ipaddress'])."\" onclick=\"MyBB.popupWindow('{$mybb->settings['bburl']}/modcp.php?action=iplookup&ipaddress=".urlencode($mybb->input['ipaddress'])."', 'iplookup', 500, 250); return FALSE;\">{$lang->info_on_ip}</a>)</div>";
 		}
 
 		eval("\$ipsearch_results = \"".$templates->get("modcp_ipsearch_results")."\";");
@@ -2756,7 +2756,7 @@ if($mybb->input['action'] == "ipsearch")
 	{
 		$usersearchselect = "checked=\"checked\"";
 	}
-	
+
 	$plugins->run_hooks("modcp_ipsearch_end");
 
 	eval("\$ipsearch = \"".$templates->get("modcp_ipsearch")."\";");
@@ -2784,18 +2784,18 @@ if($mybb->input['action'] == "iplookup")
 				}
 			}
 		}
-		
+
 		$ipaddress_host_name = htmlspecialchars_uni(@gethostbyaddr($mybb->input['ipaddress']));
-		
+
 		// gethostbyaddr returns the same ip on failure
 		if($ipaddress_host_name == $mybb->input['ipaddress'])
 		{
 			$ipaddress_host_name = $lang->na;
 		}
 	}
-	
+
 	$plugins->run_hooks("modcp_iplookup_end");
-	
+
 	eval("\$iplookup = \"".$templates->get('modcp_ipsearch_misc_info')."\";");
 	output_page($iplookup);
 }
@@ -2849,7 +2849,7 @@ if($mybb->input['action'] == "banning")
 	{
 		eval("\$allbannedpages = \"".$templates->get("modcp_banning_multipage")."\";");
 	}
-	
+
 	$plugins->run_hooks("modcp_banning_start");
 
 	$query = $db->query("
@@ -2896,7 +2896,7 @@ if($mybb->input['action'] == "banning")
 			$banlength = $bantimes[$banned['bantime']];
 			$remaining = $banned['lifted']-TIME_NOW;
 
-			$timeremaining = nice_time($remaining, array('short' => 1, 'seconds' => false))."";
+			$timeremaining = nice_time($remaining, array('short' => 1, 'seconds' => FALSE))."";
 
 			if($remaining < 3600)
 			{
@@ -2948,7 +2948,7 @@ if($mybb->input['action'] == "liftban")
 	{
 		error_no_permission();
 	}
-	
+
 	$plugins->run_hooks("modcp_liftban_start");
 
 	$query = $db->simple_select("users", "username", "uid = '{$ban['uid']}'");
@@ -2965,7 +2965,7 @@ if($mybb->input['action'] == "liftban")
 	$cache->update_banned();
 	$cache->update_moderators();
 	log_moderator_action(array("uid" => $ban['uid'], "username" => $username), $lang->lifted_ban);
-	
+
 	$plugins->run_hooks("modcp_liftban_end");
 
 	redirect("modcp.php?action=banning", $lang->redirect_banlifted);
@@ -3043,7 +3043,7 @@ if($mybb->input['action'] == "do_banuser" && $mybb->request_method == "post")
 			$errors[] = $lang->error_useralreadybanned;
 		}
 	}
-	
+
 	$plugins->run_hooks("modcp_do_banuser_start");
 
 	// Still no errors? Ban the user
@@ -3100,7 +3100,7 @@ if($mybb->input['action'] == "do_banuser" && $mybb->request_method == "post")
 
 		$cache->update_banned();
 		log_moderator_action(array("uid" => $user['uid'], "username" => $user['username']), $lang->banned_user);
-		
+
 		$plugins->run_hooks("modcp_do_banuser_end");
 
 		if($mybb->input['uid'])
@@ -3131,7 +3131,7 @@ if($mybb->input['action'] == "banuser")
 	{
 		add_breadcrumb($lang->mcp_nav_editing_ban);
 	}
-	
+
 	$plugins->run_hooks("modcp_banuser_start");
 
 	// If incoming user ID, we are editing a ban
@@ -3154,7 +3154,7 @@ if($mybb->input['action'] == "banuser")
 			eval("\$banuser_username = \"".$templates->get("modcp_banuser_editusername")."\";");
 		}
 	}
-	
+
 	// New ban!
 	if(!$banuser_username)
 	{
@@ -3200,7 +3200,7 @@ if($mybb->input['action'] == "banuser")
 			$liftlist .= ">{$title} ({$thatime})</option>\n";
 		}
 	}
-	
+
 	$bangroups = '';
 	$query = $db->simple_select("usergroups", "gid, title", "isbannedgroup=1");
 	while($item = $db->fetch_array($query))
@@ -3212,11 +3212,11 @@ if($mybb->input['action'] == "banuser")
 		}
 		$bangroups .= "<option value=\"{$item['gid']}\"{$selected}>".htmlspecialchars_uni($item['title'])."</option>\n";
 	}
-	
+
 	$lift_link = "<div class=\"float_right\"><a href=\"modcp.php?action=liftban&amp;uid={$user['uid']}&amp;my_post_key={$mybb->post_code}\">{$lang->lift_ban}</a></div>";
-	
+
 	$plugins->run_hooks("modcp_banuser_end");
-	
+
 	eval("\$banuser = \"".$templates->get("modcp_banuser")."\";");
 	output_page($banuser);
 }
@@ -3225,17 +3225,17 @@ if($mybb->input['action'] == "do_modnotes")
 {
 	// Verify incoming POST request
 	verify_post_check($mybb->input['my_post_key']);
-	
+
 	$plugins->run_hooks("modcp_do_modnotes_start");
-	
+
 	// Update Moderator Notes cache
 	$update_cache = array(
 		"modmessage" => $mybb->input['modnotes']
 	);
 	$cache->update("modnotes", $update_cache);
-	
+
 	$plugins->run_hooks("modcp_do_modnotes_end");
-	
+
 	redirect("modcp.php", $lang->redirect_modnotes);
 }
 
@@ -3378,7 +3378,7 @@ if(!$mybb->input['action'])
 		{
 			$information .= "<strong>{$lang->post}</strong> <a href=\"".get_post_link($logitem['pid'])."#pid{$logitem['pid']}\">".htmlspecialchars_uni($logitem['psubject'])."</a>";
 		}
-		
+
 		// Edited a user?
 		if(!$logitem['tsubject'] || !$logitem['fname'] || !$logitem['psubject'])
 		{
@@ -3442,7 +3442,7 @@ if(!$mybb->input['action'])
 			$banlength = $bantimes[$banned['bantime']];
 			$remaining = $banned['remaining'];
 
-			$timeremaining = nice_time($remaining, array('short' => 1, 'seconds' => false))."";
+			$timeremaining = nice_time($remaining, array('short' => 1, 'seconds' => FALSE))."";
 
 			if($remaining <= 0)
 			{
@@ -3476,7 +3476,7 @@ if(!$mybb->input['action'])
 
 	$modnotes = $cache->read("modnotes");
 	$modnotes = htmlspecialchars_uni($modnotes['modmessage']);
-	
+
 	$plugins->run_hooks("modcp_end");
 
 	eval("\$modcp = \"".$templates->get("modcp")."\";");

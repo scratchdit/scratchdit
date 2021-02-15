@@ -13,20 +13,20 @@
  * Checks if a user with uid $uid exists in the database.
  *
  * @param int The uid to check for.
- * @return boolean True when exists, false when not.
+ * @return boolean TRUE when exists, FALSE when not.
  */
 function user_exists($uid)
 {
 	global $db;
-	
+
 	$query = $db->simple_select("users", "COUNT(*) as user", "uid='".intval($uid)."'", array('limit' => 1));
 	if($db->fetch_field($query, 'user') == 1)
 	{
-		return true;
+		return TRUE;
 	}
 	else
 	{
-		return false;
+		return FALSE;
 	}
 }
 
@@ -34,7 +34,7 @@ function user_exists($uid)
  * Checks if $username already exists in the database.
  *
  * @param string The username for check for.
- * @return boolean True when exists, false when not.
+ * @return boolean TRUE when exists, FALSE when not.
  */
 function username_exists($username)
 {
@@ -45,11 +45,11 @@ function username_exists($username)
 
 	if($db->fetch_field($query, 'user') == 1)
 	{
-		return true;
+		return TRUE;
 	}
 	else
 	{
-		return false;
+		return FALSE;
 	}
 }
 
@@ -58,7 +58,7 @@ function username_exists($username)
  *
  * @param string The username of the user.
  * @param string The plain-text password.
- * @return boolean|array False when no match, array with user info when match.
+ * @return boolean|array FALSE when no match, array with user info when match.
  */
 function validate_password_from_username($username, $password)
 {
@@ -84,7 +84,7 @@ function validate_password_from_username($username, $password)
 	$user = $db->fetch_array($query);
 	if(!$user['uid'])
 	{
-		return false;
+		return FALSE;
 	}
 	else
 	{
@@ -98,7 +98,7 @@ function validate_password_from_username($username, $password)
  * @param int The user id.
  * @param string The plain-text password.
  * @param string An optional user data array.
- * @return boolean|array False when not valid, user data array when valid.
+ * @return boolean|array FALSE when not valid, user data array when valid.
  */
 function validate_password_from_uid($uid, $password, $user = array())
 {
@@ -138,7 +138,7 @@ function validate_password_from_uid($uid, $password, $user = array())
 	}
 	else
 	{
-		return false;
+		return FALSE;
 	}
 }
 
@@ -229,13 +229,13 @@ function generate_loginkey()
 function update_salt($uid)
 {
 	global $db;
-	
+
 	$salt = generate_salt();
 	$sql_array = array(
 		"salt" => $salt
 	);
 	$db->update_query("users", $sql_array, "uid='{$uid}'", 1);
-	
+
 	return $salt;
 }
 
@@ -248,13 +248,13 @@ function update_salt($uid)
 function update_loginkey($uid)
 {
 	global $db;
-	
+
 	$loginkey = generate_loginkey();
 	$sql_array = array(
 		"loginkey" => $loginkey
 	);
 	$db->update_query("users", $sql_array, "uid='{$uid}'", 1);
-	
+
 	return $loginkey;
 
 }
@@ -266,22 +266,22 @@ function update_loginkey($uid)
  * @param int The tid of the thread to add to the list.
  * @param int (Optional) The type of notification to receive for replies (0=none, 1=instant)
  * @param int (Optional) The uid of the user who's list to update.
- * @return boolean True when success, false when otherwise.
+ * @return boolean TRUE when success, FALSE when otherwise.
  */
 function add_subscribed_thread($tid, $notification=1, $uid="")
 {
 	global $mybb, $db;
-	
+
 	if(!$uid)
 	{
 		$uid = $mybb->user['uid'];
 	}
-	
+
 	if(!$uid)
 	{
 		return;
 	}
-	
+
 	$query = $db->simple_select("threadsubscriptions", "*", "tid='".intval($tid)."' AND uid='".intval($uid)."'", array('limit' => 1));
 	$subscription = $db->fetch_array($query);
 	if(!$subscription['tid'])
@@ -304,7 +304,7 @@ function add_subscribed_thread($tid, $notification=1, $uid="")
 		);
 		$db->update_query("threadsubscriptions", $update_array, "uid='{$uid}' AND tid='{$tid}'");
 	}
-	return true;
+	return TRUE;
 }
 
 /**
@@ -313,24 +313,24 @@ function add_subscribed_thread($tid, $notification=1, $uid="")
  *
  * @param int The tid of the thread to remove from the list.
  * @param int (Optional) The uid of the user who's list to update.
- * @return boolean True when success, false when otherwise.
+ * @return boolean TRUE when success, FALSE when otherwise.
  */
 function remove_subscribed_thread($tid, $uid="")
 {
 	global $mybb, $db;
-	
+
 	if(!$uid)
 	{
 		$uid = $mybb->user['uid'];
 	}
-	
+
 	if(!$uid)
 	{
 		return;
 	}
 	$db->delete_query("threadsubscriptions", "tid='".$tid."' AND uid='{$uid}'");
-	
-	return true;
+
+	return TRUE;
 }
 
 /**
@@ -339,25 +339,25 @@ function remove_subscribed_thread($tid, $uid="")
  *
  * @param int The fid of the forum to add to the list.
  * @param int (Optional) The uid of the user who's list to update.
- * @return boolean True when success, false when otherwise.
+ * @return boolean TRUE when success, FALSE when otherwise.
  */
 function add_subscribed_forum($fid, $uid="")
 {
 	global $mybb, $db;
-	
+
 	if(!$uid)
 	{
 		$uid = $mybb->user['uid'];
 	}
-	
+
 	if(!$uid)
 	{
 		return;
 	}
-	
+
 	$fid = intval($fid);
 	$uid = intval($uid);
-	
+
 	$query = $db->simple_select("forumsubscriptions", "*", "fid='".$fid."' AND uid='{$uid}'", array('limit' => 1));
 	$fsubscription = $db->fetch_array($query);
 	if(!$fsubscription['fid'])
@@ -368,8 +368,8 @@ function add_subscribed_forum($fid, $uid="")
 		);
 		$db->insert_query("forumsubscriptions", $insert_array);
 	}
-	
-	return true;
+
+	return TRUE;
 }
 
 /**
@@ -378,24 +378,24 @@ function add_subscribed_forum($fid, $uid="")
  *
  * @param int The fid of the forum to remove from the list.
  * @param int (Optional) The uid of the user who's list to update.
- * @return boolean True when success, false when otherwise.
+ * @return boolean TRUE when success, FALSE when otherwise.
  */
 function remove_subscribed_forum($fid, $uid="")
 {
 	global $mybb, $db;
-	
+
 	if(!$uid)
 	{
 		$uid = $mybb->user['uid'];
 	}
-	
+
 	if(!$uid)
 	{
 		return;
 	}
 	$db->delete_query("forumsubscriptions", "fid='".$fid."' AND uid='{$uid}'");
-	
-	return true;
+
+	return TRUE;
 }
 
 /**
@@ -413,7 +413,7 @@ function usercp_menu()
 	{
 		$plugins->add_hook("usercp_menu", "usercp_menu_messenger", 10);
 	}
-	
+
 	$plugins->add_hook("usercp_menu", "usercp_menu_profile", 20);
 	$plugins->add_hook("usercp_menu", "usercp_menu_misc", 30);
 
@@ -454,7 +454,7 @@ function usercp_menu_messenger()
 
 		$folderlinks .= "<div><a href=\"private.php?fid=$folderinfo[0]\" class=\"usercp_nav_item {$class}\">$folderinfo[1]</a></div>\n";
 	}
-	
+
 	eval("\$usercpmenu .= \"".$templates->get("usercp_nav_messenger")."\";");
 }
 
@@ -491,7 +491,7 @@ function usercp_menu_misc()
 	global $db, $mybb, $templates, $theme, $usercpmenu, $lang, $collapsed, $collapsedimg;
 
 	$query = $db->simple_select("posts", "COUNT(*) AS draftcount", "visible='-2' AND uid='".$mybb->user['uid']."'");
-	$count = $db->fetch_array($query);	
+	$count = $db->fetch_array($query);
 
 	if($count['draftcount'] > 0)
 	{
@@ -513,7 +513,7 @@ function usercp_menu_misc()
 function get_usertitle($uid="")
 {
 	global $db, $mybb;
-	
+
 	if($mybb->user['uid'] == $uid)
 	{
 		$user = $mybb->user;
@@ -523,7 +523,7 @@ function get_usertitle($uid="")
 		$query = $db->simple_select("users", "usertitle,postnum", "uid='$uid'", array('limit' => 1));
 		$user = $db->fetch_array($query);
 	}
-	
+
 	if($user['usertitle'])
 	{
 		return $user['usertitle'];
@@ -532,7 +532,7 @@ function get_usertitle($uid="")
 	{
 		$query = $db->simple_select("usertitles", "title", "posts<='".$user['postnum']."'", array('order_by' => 'posts', 'order_dir' => 'desc'));
 		$usertitle = $db->fetch_array($query);
-		
+
 		return $usertitle['title'];
 	}
 }
@@ -562,15 +562,15 @@ function update_pm_count($uid=0, $count_to_update=7)
 		$total = $db->fetch_array($query);
 		$pmcount['totalpms'] = $total['pms_total'];
 	}
-	
+
 	// Update number of unread messages.
-	if($count_to_update & 2 && $db->field_exists("unreadpms", "users") == true)
+	if($count_to_update & 2 && $db->field_exists("unreadpms", "users") == TRUE)
 	{
 		$query = $db->simple_select("privatemessages", "COUNT(pmid) AS pms_unread", "uid='".$uid."' AND status='0' AND folder='1'");
 		$unread = $db->fetch_array($query);
 		$pmcount['unreadpms'] = $unread['pms_unread'];
 	}
-	
+
 	if(is_array($pmcount))
 	{
 		$db->update_query("users", $pmcount, "uid='".intval($uid)."'");

@@ -61,7 +61,7 @@ $mybb->user['ismoderator'] = is_moderator("", "", $mybb->user['uid']);
 $mybb->post_code = generate_post_check();
 
 // Set and load the language
-if($mybb->input['language'] && $lang->language_exists($mybb->input['language']) && verify_post_check($mybb->input['my_post_key'], true))
+if($mybb->input['language'] && $lang->language_exists($mybb->input['language']) && verify_post_check($mybb->input['my_post_key'], TRUE))
 {
 	$mybb->settings['bblanguage'] = $mybb->input['language'];
 	// If user is logged in, update their language selection with the new one
@@ -116,7 +116,7 @@ if(isset($mybb->user['style']) && intval($mybb->user['style']) != 0)
 }
 
 $valid = array(
-	"showthread.php", 
+	"showthread.php",
 	"forumdisplay.php",
 	"newthread.php",
 	"newreply.php",
@@ -223,7 +223,7 @@ foreach($stylesheet_scripts as $stylesheet_script)
 		{
 			continue;
 		}
-		
+
 		if($theme['stylesheets'][$stylesheet_script][$stylesheet_action])
 		{
 			// Actually add the stylesheets to the list
@@ -305,7 +305,7 @@ $templatelist .= ",global_pending_joinrequests,nav,nav_sep,nav_bit,nav_sep_activ
 $templates->cache($db->escape_string($templatelist));
 
 // Set the current date and time now
-$datenow = my_date($mybb->settings['dateformat'], TIME_NOW, '', false);
+$datenow = my_date($mybb->settings['dateformat'], TIME_NOW, '', FALSE);
 $timenow = my_date($mybb->settings['timeformat'], TIME_NOW);
 $lang->welcome_current_time = $lang->sprintf($lang->welcome_current_time, $datenow.', '.$timenow);
 
@@ -340,12 +340,12 @@ if($mybb->user['uid'] != 0)
 		$admin_dir = $config['admin_dir'];
 		eval("\$admincplink = \"".$templates->get("header_welcomeblock_member_admin")."\";");
 	}
-	
+
 	if($mybb->usergroup['canmodcp'] == 1)
 	{
 		eval("\$modcplink = \"".$templates->get("header_welcomeblock_member_moderator")."\";");
 	}
-	
+
 	// Format the welcome back message
 	$lang->welcome_back = $lang->sprintf($lang->welcome_back, build_profile_link($mybb->user['username'], $mybb->user['uid']), $lastvisit);
 
@@ -381,7 +381,7 @@ $groupleaders = $cache->read("groupleaders");
 if($mybb->user['uid'] != 0 && is_array($groupleaders) && array_key_exists($mybb->user['uid'], $groupleaders))
 {
 	$groupleader = $groupleaders[$mybb->user['uid']];
-	
+
 	$gids = "";
 	foreach($groupleader as $user)
 	{
@@ -389,13 +389,13 @@ if($mybb->user['uid'] != 0 && is_array($groupleaders) && array_key_exists($mybb-
 		{
 			continue;
 		}
-		
+
 		$gids .= ",{$user['gid']}";
 	}
-	
+
 	$query = $db->simple_select("joinrequests", "COUNT(uid) as total", "gid IN (0{$gids})");
 	$total_joinrequests = $db->fetch_field($query, "total");
-	
+
 	$pending_joinrequests = "";
 	if($total_joinrequests > 0)
 	{
@@ -458,7 +458,7 @@ if($mybb->usergroup['isbannedgroup'] == 1)
 		{
 			$banlift = my_date($mybb->settings['dateformat'], $ban['lifted']) . ", " . my_date($mybb->settings['timeformat'], $ban['lifted']);
 		}
-		else 
+		else
 		{
 			$banlift = $lang->banned_lifted_never;
 		}
@@ -498,7 +498,7 @@ if($mybb->user['pmnotice'] == 2 && $mybb->user['pms_unread'] > 0 && $mybb->setti
 
 	$pm = $db->fetch_array($query);
 	$pm['subject'] = $parser->parse_badwords($pm['subject']);
-	
+
 	if($pm['fromuid'] == 0)
 	{
 		$pm['fromusername'] = $lang->mybb_engine;
@@ -571,9 +571,9 @@ if($mybb->settings['showlanguageselect'] != 0)
 			$lang_options .= "<option value=\"{$key}\">&nbsp;&nbsp;&nbsp;{$language}</option>\n";
 		}
 	}
-	
-	$lang_redirect_url = get_current_location(true, 'language');
-	
+
+	$lang_redirect_url = get_current_location(TRUE, 'language');
+
 	eval("\$lang_select = \"".$templates->get("footer_languageselect")."\";");
 }
 
@@ -594,7 +594,7 @@ $navbits[0]['url'] = $mybb->settings['bburl']."/index.php";
 $archive_url = $mybb->settings['bburl']."/archive/index.php";
 
 // Check banned ip addresses
-if(is_banned_ip($session->ipaddress, true))
+if(is_banned_ip($session->ipaddress, TRUE))
 {
 	if ($mybb->user['uid'])
     {
@@ -659,12 +659,12 @@ if($mybb->usergroup['canview'] != 1)
 		if(is_string(ALLOWABLE_PAGE))
 		{
 			$allowable_actions = explode(',', ALLOWABLE_PAGE);
-			
+
 			if(!in_array($mybb->input['action'], $allowable_actions))
 			{
 				error_no_permission();
 			}
-			
+
 			unset($allowable_actions);
 		}
 		else if(ALLOWABLE_PAGE !== 1)

@@ -36,7 +36,7 @@ class FeedParser
 	 * Parses a feed with the specified filename (or URL)
 	 *
 	 * @param string The path or URL of the feed
-	 * @return boolean True if parsing was a success, false if failure
+	 * @return boolean TRUE if parsing was a success, FALSE if failure
 	 */
 	function parse_feed($feed)
 	{
@@ -62,7 +62,7 @@ class FeedParser
 		if(!$contents)
 		{
 			$this->error = "invalid_file";
-			return false;
+			return FALSE;
 		}
 
 		// Parse the feed and get the tree
@@ -70,10 +70,10 @@ class FeedParser
 		$tree = $parser->get_tree();
 
 		// If the feed is invalid, throw back an error
-		if($tree == false)
+		if($tree == FALSE)
 		{
 			$this->error = "invalid_feed_xml";
-			return false;
+			return FALSE;
 		}
 
 		// Change array key names to lower case
@@ -89,7 +89,7 @@ class FeedParser
 		else
 		{
 			$this->error = "unknown_feed_type";
-			return false;
+			return FALSE;
 		}
 	}
 
@@ -97,7 +97,7 @@ class FeedParser
 	 * Parses an XML structure in the format of an RSS feed
 	 *
 	 * @param array PHP XML parser structure
-	 * @return boolean true
+	 * @return boolean TRUE
 	 */
 	function parse_rss($feed_contents)
 	{
@@ -183,7 +183,7 @@ class FeedParser
 			// Assign the item to our list of items
 			$this->items[] = $item;
 		}
-		return true;
+		return TRUE;
 	}
 
 	/**

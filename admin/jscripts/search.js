@@ -1,14 +1,14 @@
 var SettingSearch = {
 
 	error_unknown : "",
-	
+
 	init: function(settings_search, error_unknown)
 	{
 		this.error_unknown = error_unknown;
-		
+
 		$('#settings_search').on("submit", this.onSubmit);
 		$('#search_results').css('display', 'none');
-		
+
 		$('#search').focusin(function() {
 			if($('#search').val() == settings_search)
 			{
@@ -16,7 +16,7 @@ var SettingSearch = {
 				$('#search').val('');
 			}
 		});
-		
+
 		$('#search').focusout(function() {
 			if($('#search').val() == "")
 			{
@@ -54,7 +54,7 @@ var SettingSearch = {
 								{
 									$.jGrowl(lang.search_error + ' ' + message, {theme:'jgrowl_error'});
 								});
-								return false;
+								return FALSE;
 							}
 						}
 					}
@@ -64,7 +64,7 @@ var SettingSearch = {
 						$('#group_list').css('display', 'none');
 						$('#search_results').html(request.responseText);
 						$.jGrowl(lang.search_done, {theme:'jgrowl_success'});
-						return false;
+						return FALSE;
 					}
 				}
 			});

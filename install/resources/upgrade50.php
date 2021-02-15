@@ -122,7 +122,7 @@ function upgrade50_verify_email()
 		<td class="alt_col last" width="70%">
 			<input type="radio" name="usepresetemail" value="current_user"'.$checked['current_user'].' />Use current user email: '.htmlspecialchars_uni($mybb->user['email']).'<br />';
 
-		if($mybb->settings['mail_handler'] == 'smtp' && !empty($mybb->settings['smtp_user']) && filter_var($mybb->settings['smtp_user'], FILTER_VALIDATE_EMAIL) !== false)
+		if($mybb->settings['mail_handler'] == 'smtp' && !empty($mybb->settings['smtp_user']) && filter_var($mybb->settings['smtp_user'], FILTER_VALIDATE_EMAIL) !== FALSE)
 		{
 			echo '
 			<input type="radio" name="usepresetemail" value="smtp"'.$checked['smtp'].' />Use SMTP username: '.htmlspecialchars_uni($mybb->settings['smtp_user']).'<br />';
@@ -196,7 +196,7 @@ function upgrade50_submit_email()
 		$mybb->input['usepresetemail'] => ' checked="checked"'
 	);
 
-	if(empty($errors) && filter_var($email, FILTER_VALIDATE_EMAIL) === false)
+	if(empty($errors) && filter_var($email, FILTER_VALIDATE_EMAIL) === FALSE)
 	{
 		$errors[] = "The email address given was invalid. Please enter a valid email address.";
 	}
