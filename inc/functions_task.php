@@ -18,8 +18,8 @@
  * @return boolean TRUE if successful, FALSE on failure
  */
 
- 
-function run_task($tid = 0)
+
+function run_task($tid=0)
 {
 	global $db, $mybb, $cache, $plugins, $task, $lang;
 
