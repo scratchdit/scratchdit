@@ -7,7 +7,7 @@
  * https://docs.mybb.com/
  */
 
-$config['database']['read'] = array(
+$config['database']/*['read']*/ = array(
 'type' => 'pgsql',
 'database' => 'd8rjlipok0f83m',
 'table_prefix' => 'mybb_',
@@ -16,7 +16,7 @@ $config['database']['read'] = array(
 'password' => '459aca8d4ee638bbae583732c67b0fff3c015d37ede47f71098ca573446bd8db',
 'pconnect' => 0,
 'port' => 5432);
-$config['database']['write'] = $config['database']['read'];
+#$config['database']['write'] = $config['database']['read'];
 
 /**
  * Admin CP directory
