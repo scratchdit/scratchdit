@@ -5189,8 +5189,12 @@ function rebuildsettings()
  */
 function rebuild_settings()
 {
-	global $db, $mybb;
+	global $db, $mybb, $settings;
 
+	if(!isset($settings)){
+		$settings = "";
+	}
+	
 	if(!file_exists(MYBB_ROOT."inc/settings.php"))
 	{
 		$mode = "x";

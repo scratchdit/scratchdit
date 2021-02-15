@@ -154,7 +154,7 @@ if(file_exists(MYBB_ROOT."inc/settings.php"))
 	require_once MYBB_ROOT."inc/settings.php";
 }
 
-if(!file_exists(MYBB_ROOT."inc/settings.php") || !$settings)
+if(!file_exists(MYBB_ROOT."inc/settings.php") || !isset($settings))
 {
 	if(function_exists('rebuild_settings'))
 	{
