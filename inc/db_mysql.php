@@ -1057,8 +1057,7 @@ class DB_MySQL
 	 */
 	function create_fulltext_index($table, $column, $name="")
 	{
-		$this->write_query("ALTERTABLE {$this->table_prefix}$table
-			ADD FULLTEXT $name ($column)");
+		$this->write_query("ALTER TABLE {$this->table_prefix}$table ADD FULLTEXT $name ($column)");
 	}
 
 
