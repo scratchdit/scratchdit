@@ -6,14 +6,23 @@
  * database configuration for larger installations
  * https://docs.mybb.com/
  */
+function setup_db() { # enclosed in fuction to avoid polutting global scope
+$db['type'] = 'pgsql';
+$db['database'] = 'd8rjlipok0f83m';
+$db['table_prefix'] = 'mybb_';
 
-$config['database']['type'] = 'pgsql';
-$config['database']['database'] = 'd8rjlipok0f83m';
-$config['database']['table_prefix'] = 'mybb_';
+$db['hostname'] = 'ec2-54-90-13-87.compute-1.amazonaws.com';
+$db['username'] = 'mknzigyrzqkxrw';
+$db['password'] = '459aca8d4ee638bbae583732c67b0fff3c015d37ede47f71098ca573446bd8db';
+	
+$config['database']['pconnect'] = 0;
+$config['database']['port'] = 5432;
+	retun $db;
+}
 
-$config['database']['hostname'] = 'ec2-54-90-13-87.compute-1.amazonaws.com';
-$config['database']['username'] = 'mknzigyrzqkxrw';
-$config['database']['password'] = '459aca8d4ee638bbae583732c67b0fff3c015d37ede47f71098ca573446bd8db';
+
+$config['database']['read'] = setup_db();
+$config['database']['write'] = setup_db();
 
 /**
  * Admin CP directory
