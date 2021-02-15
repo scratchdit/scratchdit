@@ -5,7 +5,6 @@
  *
  * Website: //www.mybb.com
  * License: //www.mybb.com/about/license
- *
  */
 
 /**
@@ -13,45 +12,52 @@
  */
 class StopForumSpamChecker
 {
-	/**
+	/*
 	 * The base URL format to the stop forum spam API.
 	 *
 	 * @var string
 	 */
-	const STOP_FORUM_SPAM_API_URL_FORMAT = '//api.stopforumspam.org/api?username=%s&email=%s&ip=%s&f=json&confidence';
-	/**
+	private const STOP_FORUM_SPAM_API_URL_FORMAT = '//api.stopforumspam.org/api?username=%s&email=%s&ip=%s&f=json&confidence';
+
+	/*
 	 * @var PluginSystem
 	 */
 	private $plugins = NULL;
+
 	/**
 	 * The minimum weighting before a user is considered to be a spammer.
 	 *
 	 * @var double
 	 */
 	private $min_weighting_before_spam = NULL;
+
 	/**
 	 * Whether to check usernames against StopForumSPam. If set to FALSE, the username weighting won't be used.
 	 *
-	 * @var bool
+	 * @var boolean
 	 */
 	private $check_usernames = FALSE;
+
 	/**
 	 * Whether to check email addresses against StopForumSPam. If set to FALSE, the username weighting won't be used.
 	 *
-	 * @var bool
+	 * @var boolean
 	 */
 	private $check_emails = TRUE;
+
 	/**
 	 * Whether to check IP addresses against StopForumSPam. If set to FALSE, the username weighting won't be used.
 	 *
-	 * @var bool
+	 * @var boolean
 	 */
+
 	private $check_ips = TRUE;
 	/**
 	 * Whether to log whenever a user is found to be a spammer.
 	 *
-	 * @var bool
+	 * @var boolean
 	 */
+
 	private $log_blocks;
 
 	/**
@@ -76,35 +82,32 @@ class StopForumSpamChecker
 	/**
 	 * Check a user against the 3rd party service to determine whether they are a spammer.
 	 *
-	 * @param string $username   The username of the user to check.
-	 * @param string $email      The email address of the user to check.
-	 * @param string $ip_address The IP address sof the user to check.
+	 * @param  string $username   The username of the user to check.
+	 * @param  string $email      The email address of the user to check.
+	 * @param  string $ip_address The IP address sof the user to check.
 	 * @return bool Whether the user is considered a spammer or not.
 	 * @throws Exception Thrown when there's an error fetching from the StopForumSpam API or when the data cannot be decoded.
 	 */
 	public function is_user_a_spammer($username = '', $email = '', $ip_address = '')
 	{
 		$is_spammer = FALSE;
-		$checknum = $confidence = 0;
+		$checknum   = $confidence = 0;
 
-		if (!filter_var($email, FILTER_VALIDATE_EMAIL))
-		{
+		if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
 			throw new Exception("stopforumspam_invalid_email");
 		}
 
-		if (!filter_var($ip_address, FILTER_VALIDATE_IP))
-		{
+		if (!filter_var($ip_address, FILTER_VALIDATE_IP)) {
 			throw new Exception('stopforumspam_invalid_ip_address');
 		}
 
 		$is_internal_ip = !filter_var(
 			$ip_address,
 			FILTER_VALIDATE_IP,
-			FILTER_FLAG_NO_PRIV_RANGE |  FILTER_FLAG_NO_RES_RANGE
+			FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE
 		);
 
-		if ($is_internal_ip)
-		{
+		if ($is_internal_ip) {
 			return FALSE;
 		}
 
@@ -115,37 +118,30 @@ class StopForumSpamChecker
 
 		$result = fetch_remote_file($check_url);
 
-		if ($result !== FALSE)
-		{
+		if ($result !== FALSE) {
 			$result_json = @json_decode($result);
 
-			if ($result_json != NULL && !isset($result_json->error))
-			{
-				if ($this->check_usernames && $result_json->username->appears)
-				{
+			if ($result_json != NULL && !isset($result_json->error)) {
+				if ($this->check_usernames && $result_json->username->appears) {
 					$checknum++;
 					$confidence += $result_json->username->confidence;
 				}
 
-				if ($this->check_emails && $result_json->email->appears)
-				{
+				if ($this->check_emails && $result_json->email->appears) {
 					$checknum++;
 					$confidence += $result_json->email->confidence;
 				}
 
-				if ($this->check_ips && $result_json->ip->appears)
-				{
+				if ($this->check_ips && $result_json->ip->appears) {
 					$checknum++;
 					$confidence += $result_json->ip->confidence;
 				}
 
-				if ($checknum > 0 && $confidence)
-				{
+				if ($checknum > 0 && $confidence) {
 					$confidence = $confidence / $checknum;
 				}
 
-				if ($confidence > $this->min_weighting_before_spam)
-				{
+				if ($confidence > $this->min_weighting_before_spam) {
 					$is_spammer = TRUE;
 				}
 			}
@@ -159,8 +155,7 @@ class StopForumSpamChecker
 			throw new Exception('stopforumspam_error_retrieving');
 		}
 
-		if ($this->plugins)
-		{
+		if ($this->plugins) {
 			$params = array(
 				'username'   => &$username,
 				'email'      => &$email,
@@ -172,8 +167,7 @@ class StopForumSpamChecker
 			$this->plugins->run_hooks('stopforumspam_check_spammer_pre_return', $params);
 		}
 
-		if ($this->log_blocks && $is_spammer)
-		{
+		if ($this->log_blocks && $is_spammer) {
 			log_spam_block(
 				$username, $email, $ip_address, array(
 					'confidence' => (double)$confidence,
@@ -195,29 +189,25 @@ class StopForumSpamChecker
 
 		foreach($sfsSettingsEnabled as $setting)
 		{
-			if ($setting == 'stopforumspam_check_usernames' && $mybb->settings[$setting])
-			{
+			if ($setting == 'stopforumspam_check_usernames' && $mybb->settings[$setting]) {
 				$settingsenabled[] = $lang->sfs_error_username;
 				continue;
 			}
 
-			if ($setting == 'stopforumspam_check_emails' && $mybb->settings[$setting])
-			{
+			if ($setting == 'stopforumspam_check_emails' && $mybb->settings[$setting]) {
 				$settingsenabled[] = $lang->sfs_error_email;
 				continue;
 			}
 
-			if ($setting = 'stopforumspam_check_ips' && $mybb->settings[$setting])
-			{
+			if ($setting = 'stopforumspam_check_ips' && $mybb->settings[$setting]) {
 				$settingsenabled[] = $lang->sfs_error_ip;
 				continue;
 			}
 		}
 
-		if (sizeof($settingsenabled) > 1)
-		{
-			$lastsetting = $settingsenabled[sizeof($settingsenabled)-1];
-			unset($settingsenabled[sizeof($settingsenabled)-1]);
+		if (sizeof($settingsenabled) > 1) {
+			$lastsetting = $settingsenabled[sizeof($settingsenabled) - 1];
+			unset($settingsenabled[sizeof($settingsenabled) - 1]);
 
 			$stopforumspamerror = implode($lang->comma, $settingsenabled) . " {$lang->sfs_error_or} " . $lastsetting;
 		}
@@ -225,6 +215,7 @@ class StopForumSpamChecker
 		{
 			$stopforumspamerror = $settingsenabled[0];
 		}
+
 		return $stopforumspamerror;
 	}
 }

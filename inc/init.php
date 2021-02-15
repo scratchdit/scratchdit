@@ -129,7 +129,7 @@ require_once MYBB_ROOT."inc/class_datacache.php";
 $cache = new datacache;
 
 require_once MYBB_ROOT."inc/class_plugins.php";
-$plugins = PluginSystem;
+$plugins = new PluginSystem;
 
 // Include our base data handler class
 require_once MYBB_ROOT."inc/datahandler.php";
