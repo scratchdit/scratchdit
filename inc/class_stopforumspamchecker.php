@@ -20,7 +20,7 @@ class StopForumSpamChecker
 	 */
 	const STOP_FORUM_SPAM_API_URL_FORMAT = '//api.stopforumspam.org/api?username=%s&email=%s&ip=%s&f=json&confidence';
 	/**
-	 * @var pluginSystem
+	 * @var PluginSystem
 	 */
 	private $plugins = NULL;
 	/**
@@ -57,7 +57,7 @@ class StopForumSpamChecker
 	/**
 	 * Create a new instance of the StopForumSpam.com checker.
 	 *
-	 * @param pluginSystem $plugins                   An instance of the plugin system.
+	 * @param PluginSystem $plugins                   An instance of the plugin system.
 	 * @param double       $min_weighting_before_spam The minimum confidence rating before a user is considered definitely spam.
 	 * @param bool         $check_usernames           Whether to check usernames against StopForumSpam.
 	 * @param bool         $check_emails              Whether to check email address against StopForumSpam.
