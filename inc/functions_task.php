@@ -44,9 +44,8 @@ function run_task($tid=0)
 	if ($task['locked'] != 0 && $task['locked'] > TIME_NOW - 300) {
 		$cache->update_tasks();
 		return FALSE;
-	}
-	// Lock it! It' mine, all mine!
-	else {
+	} else {
+		// Lock it! It' mine, all mine!
 		$db->update_query("tasks", array("locked" => TIME_NOW), "tid='{$task['tid']}'");
 	}
 
