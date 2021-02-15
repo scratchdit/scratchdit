@@ -208,25 +208,19 @@ class errorHandler {
 			// PHP Error
 			else
 			{
-				if($mybb->settings['errortypemedium'] == "none" || $mybb->settings['errortypemedium'] == "error")
+				global $templates;
+
+				$warning = "<strong>{$this->error_types[$type]}</strong> [$type] $message - Line: $line - File: $file PHP ".PHP_VERSION." (".PHP_OS.")<br />\n";
+				if(is_object($templates) && method_exists($templates, "get") && !defined("IN_ADMINCP"))
 				{
-					echo "<div class=\"php_warning\">MyBB Internal: One or more warnings occured. Please contact your administrator for assistance.</div>";
+					$this->warnings .= $warning;
+					$this->warnings .= $this->generate_backtrace();
 				}
 				else
 				{
-					global $templates;
-
-					$warning = "<strong>{$this->error_types[$type]}</strong> [$type] $message - Line: $line - File: $file PHP ".PHP_VERSION." (".PHP_OS.")<br />\n";
-					if(is_object($templates) && method_exists($templates, "get") && !defined("IN_ADMINCP"))
-					{
-						$this->warnings .= $warning;
-						$this->warnings .= $this->generate_backtrace();
-					}
-					else
-					{
-						echo "<div class=\"php_warning\">{$warning}".$this->generate_backtrace()."</div>";
-					}
+					echo "<div class=\"php_warning\">{$warning}".$this->generate_backtrace()."</div>";
 				}
+
 			}
 		}
 
