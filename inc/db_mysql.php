@@ -11,20 +11,21 @@
 
 class DB_MySQL
 {
+
 	/**
 	 * The title of this layer.
 	 *
 	 * @var string
 	 */
 	public $title = "MySQL";
-	
+
 	/**
 	 * The short title of this layer.
 	 *
 	 * @var string
 	 */
 	public $short_title = "MySQL";
-	
+
 	/**
 	 * The type of db software being used.
 	 *
@@ -35,7 +36,7 @@ class DB_MySQL
 	/**
 	 * A count of the number of queries.
 	 *
-	 * @var int
+	 * @var integer
 	 */
 	public $query_count = 0;
 
@@ -59,14 +60,14 @@ class DB_MySQL
 	 * @var resource
 	 */
 	public $read_link;
-	
+
 	/**
 	 * The write database connection resource
 	 *
 	 * @var resource
 	 */
 	public $write_link;
-	
+
 	/**
 	 * Reference to the last database connection resource used.
 	 *
@@ -101,20 +102,20 @@ class DB_MySQL
 	 * @var string
 	 */
 	public $table_prefix;
-	
+
 	/**
 	 * The extension used to run the SQL database
 	 *
 	 * @var string
 	 */
 	public $engine = "mysql";
-	
+
 	/**
 	 * Weather or not this engine can use the search functionality
 	 *
 	 * @var boolean
 	 */
-	public $can_search = true;
+	public $can_search = TRUE;
 
 	/**
 	 * The database encoding currently in use (if supported)
@@ -129,29 +130,29 @@ class DB_MySQL
 	 * @var float
 	 */
 	public $query_time = 0;
-	
+
+
 	/**
 	 * Connect to the database server.
 	 *
-	 * @param array Array of DBMS connection details.
+	 * @param  array Array of DBMS connection details.
 	 * @return resource The DB connection resource. Returns false on fail or -1 on a db connect failure.
 	 */
 	function connect($config)
 	{
 		// Simple connection to one server
-		if(array_key_exists('hostname', $config))
-		{
+		if(array_key_exists('hostname', $config)) {
 			$connections['read'][] = $config;
 		}
 		// Connecting to more than one server
 		else
 		{
 			// Specified multiple servers, but no specific read/write servers
-			if(!array_key_exists('read', $config))
-			{
+			if(!array_key_exists('read', $config)) {
 				foreach($config as $key => $settings)
 				{
-					if(is_int($key)) $connections['read'][] = $settings;
+					if(is_int($key)) { $connections['read'][] = $settings;
+					}
 				}
 			}
 			// Specified both read & write servers
@@ -166,13 +167,11 @@ class DB_MySQL
 		// Actually connect to the specified servers
 		foreach(array('read', 'write') as $type)
 		{
-			if(!is_array($connections[$type]))
-			{
+			if(!is_array($connections[$type])) {
 				break;
 			}
-			
-			if(array_key_exists('hostname', $connections[$type]))
-			{
+
+			if(array_key_exists('hostname', $connections[$type])) {
 				$details = $connections[$type];
 				unset($connections);
 				$connections[$type][] = $details;
@@ -185,23 +184,21 @@ class DB_MySQL
 			foreach($connections[$type] as $single_connection)
 			{
 				$connect_function = "mysql_connect";
-				if($single_connection['pconnect'])
-				{
+				if($single_connection['pconnect']) {
 					$connect_function = "mysql_pconnect";
 				}
-				
+
 				$link = $type."_link";
 
 				$this->get_execution_time();
 
 				$this->$link = @$connect_function($single_connection['hostname'], $single_connection['username'], $single_connection['password'], 1);
 
-				$time_spent = $this->get_execution_time();
+				$time_spent        = $this->get_execution_time();
 				$this->query_time += $time_spent;
 
 				// Successful connection? break down brother!
-				if($this->$link)
-				{
+				if($this->$link) {
 					$this->connections[] = "[".strtoupper($type)."] {$single_connection['username']}@{$single_connection['hostname']} (Connected in ".number_format($time_spent, 0)."s)";
 					break;
 				}
@@ -213,27 +210,23 @@ class DB_MySQL
 		}
 
 		// No write server was specified (simple connection or just multiple servers) - mirror write link
-		if(!array_key_exists('write', $connections))
-		{
+		if(!array_key_exists('write', $connections)) {
 			$this->write_link = &$this->read_link;
 		}
 
 		// Have no read connection?
-		if(!$this->read_link)
-		{
+		if(!$this->read_link) {
 			$this->error("[READ] Unable to connect to MySQL server");
-			return false;
+			return FALSE;
 		}
 		// No write?
-		else if(!$this->write_link)
-		{
+		else if(!$this->write_link) {
 			$this->error("[WRITE] Unable to connect to MySQL server");
-			return false;
+			return FALSE;
 		}
 
 		// Select databases
-		if(!$this->select_db($config['database']))
-		{
+		if(!$this->select_db($config['database'])) {
 			return -1;
 		}
 
@@ -241,46 +234,46 @@ class DB_MySQL
 		return $this->read_link;
 	}
 
+
 	/**
 	 * Selects the database to use.
 	 *
-	 * @param string The database name.
+	 * @param  string The database name.
 	 * @return boolean True when successfully connected, false if not.
 	 */
 	function select_db($database)
 	{
 		global $mybb;
-		
+
 		$this->current_link = &$this->read_link;
-		$read_success = @mysql_select_db($database, $this->read_link) or $this->error("[READ] Unable to select database", $this->read_link);
-		if($this->write_link)
-		{
+		$read_success       = @mysql_select_db($database, $this->read_link) or $this->error("[READ] Unable to select database", $this->read_link);
+		if($this->write_link) {
 			$this->current_link = &$this->write_link;
-			$write_success = @mysql_select_db($database, $this->write_link) or $this->error("[WRITE] Unable to select database", $this->write_link);
-			$success = ($read_success && $write_success ? true : false);
+			$write_success      = @mysql_select_db($database, $this->write_link) or $this->error("[WRITE] Unable to select database", $this->write_link);
+			$success            = ($read_success && $write_success ? TRUE : FALSE);
 		}
 		else
 		{
 			$success = $read_success;
 		}
-		
-		if($success && $this->db_encoding)
-		{
+
+		if($success && $this->db_encoding) {
 			$this->query("SET NAMES '{$this->db_encoding}'");
-			if($write_success && count($this->connections) > 1)
-			{
+			if($write_success && count($this->connections) > 1) {
 				$this->write_query("SET NAMES '{$this->db_encoding}'");
 			}
 		}
+
 		return $success;
 	}
-	
+
+
 	/**
 	 * Query the database.
 	 *
-	 * @param string The query SQL.
-	 * @param integer 1 if hide errors, 0 if not.
-	 * @param integer 1 if executes on slave database, 0 if not.
+	 * @param  string The query SQL.
+	 * @param  integer 1 if hide errors, 0 if not.
+	 * @param  integer 1 if executes on slave database, 0 if not.
 	 * @return resource The query data.
 	 */
 	function query($string, $hide_errors=0, $write_query=0)
@@ -288,48 +281,47 @@ class DB_MySQL
 		global $pagestarttime, $db, $mybb;
 
 		$this->get_execution_time();
-		
+
 		// Only execute write queries on slave database
-		if($write_query && $this->write_link)
-		{
+		if($write_query && $this->write_link) {
 			$this->current_link = &$this->write_link;
-			$query = @mysql_query($string, $this->write_link);
+			$query              = @mysql_query($string, $this->write_link);
 		}
 		else
 		{
 			$this->current_link = &$this->read_link;
-			$query = @mysql_query($string, $this->read_link);
+			$query              = @mysql_query($string, $this->read_link);
 		}
 
-		if($this->error_number() && !$hide_errors)
-		{
+		if($this->error_number() && !$hide_errors) {
 			 $this->error($string);
 			 exit;
 		}
 
-		$query_time = $this->get_execution_time();
+		$query_time        = $this->get_execution_time();
 		$this->query_time += $query_time;
 		$this->query_count++;
-		
-		if($mybb->debug_mode)
-		{
+
+		if($mybb->debug_mode) {
 			$this->explain_query($string, $query_time);
 		}
-		
+
 		return $query;
 	}
+
 
 	/**
 	 * Execute a write query on the slave database
 	 *
-	 * @param string The query SQL.
-	 * @param boolean 1 if hide errors, 0 if not.
+	 * @param  string The query SQL.
+	 * @param  boolean 1 if hide errors, 0 if not.
 	 * @return resource The query data.
 	 */
 	function write_query($query, $hide_errors=0)
 	{
 		return $this->query($query, $hide_errors, 1);
 	}
+
 
 	/**
 	 * Explain a query on the database.
@@ -340,13 +332,12 @@ class DB_MySQL
 	function explain_query($string, $qtime)
 	{
 		global $plugins;
-		if($plugins->current_hook)
-		{
+		if($plugins->current_hook) {
 			$debug_extra = "<div style=\"float_right\">(Plugin Hook: {$plugins->current_hook})</div>";
 		}
-		if(preg_match("#^\s*select#i", $string))
-		{
-			$query = mysql_query("EXPLAIN $string", $this->current_link);
+
+		if(preg_match("#^\s*select#i", $string)) {
+			$query          = mysql_query("EXPLAIN $string", $this->current_link);
 			$this->explain .= "<table style=\"background-color: #666;\" width=\"95%\" cellpadding=\"4\" cellspacing=\"1\" align=\"center\">\n".
 				"<tr>\n".
 				"<td colspan=\"8\" style=\"background-color: #ccc;\">{$debug_extra}<div><strong>#".$this->query_count." - Select Query</strong></div></td>\n".
@@ -367,8 +358,7 @@ class DB_MySQL
 
 			while($table = mysql_fetch_array($query))
 			{
-				$this->explain .=
-					"<tr bgcolor=\"#ffffff\">\n".
+				$this->explain .= "<tr bgcolor=\"#ffffff\">\n".
 					"<td>".$table['table']."</td>\n".
 					"<td>".$table['type']."</td>\n".
 					"<td>".$table['possible_keys']."</td>\n".
@@ -379,8 +369,8 @@ class DB_MySQL
 					"<td>".$table['Extra']."</td>\n".
 					"</tr>\n";
 			}
-			$this->explain .=
-				"<tr>\n".
+
+			$this->explain .= "<tr>\n".
 				"<td colspan=\"8\" style=\"background-color: #fff;\">Query Time: ".$qtime."</td>\n".
 				"</tr>\n".
 				"</table>\n".
@@ -403,15 +393,15 @@ class DB_MySQL
 		}
 
 		$this->querylist[$this->query_count]['query'] = $string;
-		$this->querylist[$this->query_count]['time'] = $qtime;
+		$this->querylist[$this->query_count]['time']  = $qtime;
 	}
 
 
 	/**
 	 * Return a result array for a query.
 	 *
-	 * @param resource The query ID.
-	 * @param constant The type of array to return.
+	 * @param  resource The query ID.
+	 * @param  constant The type of array to return.
 	 * @return array The array of results.
 	 */
 	function fetch_array($query)
@@ -420,6 +410,7 @@ class DB_MySQL
 		return $array;
 	}
 
+
 	/**
 	 * Return a specific field from a query.
 	 *
@@ -427,10 +418,9 @@ class DB_MySQL
 	 * @param string The name of the field to return.
 	 * @param int The number of the row to fetch it from.
 	 */
-	function fetch_field($query, $field, $row=false)
+	function fetch_field($query, $field, $row=FALSE)
 	{
-		if($row === false)
-		{
+		if($row === FALSE) {
 			$array = $this->fetch_array($query);
 			return $array[$field];
 		}
@@ -439,6 +429,7 @@ class DB_MySQL
 			return mysql_result($query, $row, $field);
 		}
 	}
+
 
 	/**
 	 * Moves internal row pointer to the next row
@@ -451,16 +442,18 @@ class DB_MySQL
 		return mysql_data_seek($query, $row);
 	}
 
+
 	/**
 	 * Return the number of rows resulting from a query.
 	 *
-	 * @param resource The query ID.
+	 * @param  resource The query ID.
 	 * @return int The number of rows in the result.
 	 */
 	function num_rows($query)
 	{
 		return mysql_num_rows($query);
 	}
+
 
 	/**
 	 * Return the last id number of inserted data.
@@ -472,18 +465,18 @@ class DB_MySQL
 		return mysql_insert_id($this->current_link);
 	}
 
+
 	/**
 	 * Close the connection with the DBMS.
-	 *
 	 */
 	function close()
 	{
 		@mysql_close($this->read_link);
-		if($this->write_link)
-		{
+		if($this->write_link) {
 			@mysql_close($this->write_link);
 		}
 	}
+
 
 	/**
 	 * Return an error number.
@@ -492,8 +485,7 @@ class DB_MySQL
 	 */
 	function error_number()
 	{
-		if($this->current_link)
-		{
+		if($this->current_link) {
 			return @mysql_errno($this->current_link);
 		}
 		else
@@ -502,6 +494,7 @@ class DB_MySQL
 		}
 	}
 
+
 	/**
 	 * Return an error string.
 	 *
@@ -509,8 +502,7 @@ class DB_MySQL
 	 */
 	function error_string()
 	{
-		if($this->current_link)
-		{
+		if($this->current_link) {
 			return @mysql_error($this->current_link);
 		}
 		else
@@ -519,6 +511,7 @@ class DB_MySQL
 		}
 	}
 
+
 	/**
 	 * Output a database error.
 	 *
@@ -526,18 +519,15 @@ class DB_MySQL
 	 */
 	function error($string="")
 	{
-		if($this->error_reporting)
-		{
-			if(class_exists("errorHandler"))
-			{
+		if($this->error_reporting) {
+			if(class_exists("errorHandler")) {
 				global $error_handler;
-				
-				if(!is_object($error_handler))
-				{
-					require_once MYBB_ROOT."inc/class_error.php";
+
+				if(!is_object($error_handler)) {
+					include_once MYBB_ROOT."inc/class_error.php";
 					$error_handler = new errorHandler();
 				}
-				
+
 				$error = array(
 					"error_no" => $this->error_number(),
 					"error" => $this->error_string(),
@@ -552,7 +542,7 @@ class DB_MySQL
 		}
 		else
 		{
-			return false;
+			return FALSE;
 		}
 	}
 
@@ -567,10 +557,11 @@ class DB_MySQL
 		return mysql_affected_rows($this->current_link);
 	}
 
+
 	/**
 	 * Return the number of fields.
 	 *
-	 * @param resource The query ID.
+	 * @param  resource The query ID.
 	 * @return int The number of fields.
 	 */
 	function num_fields($query)
@@ -578,80 +569,81 @@ class DB_MySQL
 		return mysql_num_fields($query);
 	}
 
+
 	/**
 	 * Lists all functions in the database.
 	 *
-	 * @param string The database name.
-	 * @param string Prefix of the table (optional)
+	 * @param  string The database name.
+	 * @param  string Prefix of the table (optional)
 	 * @return array The table list.
 	 */
 	function list_tables($database, $prefix='')
 	{
-		if($prefix)
-		{
+		if($prefix) {
 			$query = $this->query("SHOW TABLES FROM `$database` LIKE '".$this->escape_string($prefix)."%'");
 		}
 		else
 		{
 			$query = $this->query("SHOW TABLES FROM `$database`");
 		}
-		
+
 		while(list($table) = mysql_fetch_array($query))
 		{
 			$tables[] = $table;
 		}
-		
+
 		return $tables;
 	}
+
 
 	/**
 	 * Check if a table exists in a database.
 	 *
-	 * @param string The table name.
+	 * @param  string The table name.
 	 * @return boolean True when exists, false if not.
 	 */
 	function table_exists($table)
 	{
 		// Execute on master server to ensure if we've just created a table that we get the correct result
-		$query = $this->write_query("
-			SHOW TABLES 
+		$query  = $this->write_query("
+			SHOW TABLES
 			LIKE '{$this->table_prefix}$table'
 		");
 		$exists = $this->num_rows($query);
-		if($exists > 0)
-		{
-			return true;
+		if($exists > 0) {
+			return TRUE;
 		}
 		else
 		{
-			return false;
+			return FALSE;
 		}
 	}
+
 
 	/**
 	 * Check if a field exists in a database.
 	 *
-	 * @param string The field name.
-	 * @param string The table name.
+	 * @param  string The field name.
+	 * @param  string The table name.
 	 * @return boolean True when exists, false if not.
 	 */
 	function field_exists($field, $table)
 	{
-		$query = $this->write_query("
-			SHOW COLUMNS 
-			FROM {$this->table_prefix}$table 
+		$query  = $this->write_query("
+			SHOW COLUMNS
+			FROM {$this->table_prefix}$table
 			LIKE '$field'
 		");
 		$exists = $this->num_rows($query);
-		if($exists > 0)
-		{
-			return true;
+		if($exists > 0) {
+			return TRUE;
 		}
 		else
 		{
-			return false;
+			return FALSE;
 		}
 	}
+
 
 	/**
 	 * Add a shutdown query.
@@ -662,8 +654,7 @@ class DB_MySQL
 	function shutdown_query($query, $name=0)
 	{
 		global $shutdown_queries;
-		if($name)
-		{
+		if($name) {
 			$shutdown_queries[$name] = $query;
 		}
 		else
@@ -671,77 +662,79 @@ class DB_MySQL
 			$shutdown_queries[] = $query;
 		}
 	}
+
+
 	/**
 	 * Performs a simple select query.
 	 *
-	 * @param string The table name to be queried.
-	 * @param string Comma delimetered list of fields to be selected.
-	 * @param string SQL formatted list of conditions to be matched.
-	 * @param array List of options, order by, order direction, limit, limit start.
+	 * @param  string The table name to be queried.
+	 * @param  string Comma delimetered list of fields to be selected.
+	 * @param  string SQL formatted list of conditions to be matched.
+	 * @param  array List of options, order by, order direction, limit, limit start.
 	 * @return resource The query data.
 	 */
 	function simple_select($table, $fields="*", $conditions="", $options=array())
 	{
 		$query = "SELECT ".$fields." FROM {$this->table_prefix}{$table}";
-		if($conditions != "")
-		{
+		if($conditions != "") {
 			$query .= " WHERE ".$conditions;
 		}
-		if(isset($options['order_by']))
-		{
+
+		if(isset($options['order_by'])) {
 			$query .= " ORDER BY ".$options['order_by'];
-			if(isset($options['order_dir']))
-			{
+			if(isset($options['order_dir'])) {
 				$query .= " ".my_strtoupper($options['order_dir']);
 			}
 		}
-		if(isset($options['limit_start']) && isset($options['limit']))
-		{
+
+		if(isset($options['limit_start']) && isset($options['limit'])) {
 			$query .= " LIMIT ".$options['limit_start'].", ".$options['limit'];
 		}
-		elseif(isset($options['limit']))
-		{
+		else if(isset($options['limit'])) {
 			$query .= " LIMIT ".$options['limit'];
 		}
+
 		return $this->query($query);
 	}
-	
+
+
 	/**
 	 * Build an insert query from an array.
 	 *
-	 * @param string The table name to perform the query on.
-	 * @param array An array of fields and their values.
+	 * @param  string The table name to perform the query on.
+	 * @param  array An array of fields and their values.
 	 * @return int The insert ID if available
 	 */
 	function insert_query($table, $array)
 	{
-		if(!is_array($array))
-		{
-			return false;
+		if(!is_array($array)) {
+			return FALSE;
 		}
+
 		$fields = "`".implode("`,`", array_keys($array))."`";
 		$values = implode("','", $array);
 		$this->write_query("
-			INSERT 
-			INTO {$this->table_prefix}{$table} (".$fields.") 
+			INSERT
+			INTO {$this->table_prefix}{$table} (".$fields.")
 			VALUES ('".$values."')
 		");
 		return $this->insert_id();
 	}
-	
+
+
 	/**
 	 * Build one query for multiple inserts from a multidimensional array.
 	 *
-	 * @param string The table name to perform the query on.
-	 * @param array An array of inserts.
+	 * @param  string The table name to perform the query on.
+	 * @param  array An array of inserts.
 	 * @return int The insert ID if available
 	 */
 	function insert_query_multiple($table, $array)
 	{
-		if(!is_array($array))
-		{
-			return false;
+		if(!is_array($array)) {
+			return FALSE;
 		}
+
 		// Field names
 		$fields = array_keys($array[0]);
 		$fields = "`".implode("`,`", $fields)."`";
@@ -751,115 +744,113 @@ class DB_MySQL
 		{
 			$insert_rows[] = "('".implode("','", $values)."')";
 		}
+
 		$insert_rows = implode(", ", $insert_rows);
 
 		$this->write_query("
-			INSERT 
-			INTO {$this->table_prefix}{$table} ({$fields}) 
+			INSERT
+			INTO {$this->table_prefix}{$table} ({$fields})
 			VALUES {$insert_rows}
 		");
 	}
 
+
 	/**
 	 * Build an update query from an array.
 	 *
-	 * @param string The table name to perform the query on.
-	 * @param array An array of fields and their values.
-	 * @param string An optional where clause for the query.
-	 * @param string An optional limit clause for the query.
-	 * @param boolean An option to quote incoming values of the array.
+	 * @param  string The table name to perform the query on.
+	 * @param  array An array of fields and their values.
+	 * @param  string An optional where clause for the query.
+	 * @param  string An optional limit clause for the query.
+	 * @param  boolean An option to quote incoming values of the array.
 	 * @return resource The query data.
 	 */
-	function update_query($table, $array, $where="", $limit="", $no_quote=false)
+	function update_query($table, $array, $where="", $limit="", $no_quote=FALSE)
 	{
-		if(!is_array($array))
-		{
-			return false;
+		if(!is_array($array)) {
+			return FALSE;
 		}
-		
+
 		$comma = "";
 		$query = "";
 		$quote = "'";
-		
-		if($no_quote == true)
-		{
+
+		if($no_quote == TRUE) {
 			$quote = "";
 		}
-		
+
 		foreach($array as $field => $value)
 		{
 			$query .= $comma."`".$field."`={$quote}{$value}{$quote}";
-			$comma = ', ';
+			$comma  = ', ';
 		}
-		
-		if(!empty($where))
-		{
+
+		if(!empty($where)) {
 			$query .= " WHERE $where";
 		}
-		
-		if(!empty($limit))
-		{
+
+		if(!empty($limit)) {
 			$query .= " LIMIT $limit";
 		}
-		
+
 		return $this->write_query("
-			UPDATE {$this->table_prefix}$table 
+			UPDATE {$this->table_prefix}$table
 			SET $query
 		");
 	}
 
+
 	/**
 	 * Build a delete query.
 	 *
-	 * @param string The table name to perform the query on.
-	 * @param string An optional where clause for the query.
-	 * @param string An optional limit clause for the query.
+	 * @param  string The table name to perform the query on.
+	 * @param  string An optional where clause for the query.
+	 * @param  string An optional limit clause for the query.
 	 * @return resource The query data.
 	 */
 	function delete_query($table, $where="", $limit="")
 	{
 		$query = "";
-		if(!empty($where))
-		{
+		if(!empty($where)) {
 			$query .= " WHERE $where";
 		}
-		
-		if(!empty($limit))
-		{
+
+		if(!empty($limit)) {
 			$query .= " LIMIT $limit";
 		}
-		
+
 		return $this->write_query("
-			DELETE 
-			FROM {$this->table_prefix}$table 
+			DELETE
+			FROM {$this->table_prefix}$table
 			$query
 		");
 	}
 
-	/**
 
+	/**
 	 * Escape a string according to the MySQL escape format.
 	 *
-	 * @param string The string to be escaped.
+	 * @param  string The string to be escaped.
 	 * @return string The escaped string.
 	 */
 	function escape_string($string)
 	{
-		if(function_exists("mysql_real_escape_string") && $this->read_link)
-		{
+		if(function_exists("mysql_real_escape_string") && $this->read_link) {
 			$string = mysql_real_escape_string($string, $this->read_link);
 		}
 		else
 		{
 			$string = addslashes($string);
 		}
+
 		return $string;
 	}
-	
+
+
 	/**
 	 * Frees the resources of a MySQLi query.
 	 *
-	 * @param object The query to destroy.
+	 * @param  object The query to destroy.
 	 * @return boolean Returns true on success, false on faliure
 	 */
 	function free_result($query)
@@ -867,16 +858,18 @@ class DB_MySQL
 		return mysql_free_result($query);
 	}
 
+
 	/**
 	 * Escape a string used within a like command.
 	 *
-	 * @param string The string to be escaped.
+	 * @param  string The string to be escaped.
 	 * @return string The escaped string.
 	 */
 	function escape_string_like($string)
 	{
-		return $this->escape_string(str_replace(array('%', '_') , array('\\%' , '\\_') , $string));
+		return $this->escape_string(str_replace(array('%', '_'), array('\\%' , '\\_'), $string));
 	}
+
 
 	/**
 	 * Gets the current version of MySQL.
@@ -885,19 +878,20 @@ class DB_MySQL
 	 */
 	function get_version()
 	{
-		if($this->version)
-		{
+		if($this->version) {
 			return $this->version;
 		}
+
 		$query = $this->query("SELECT VERSION() as version");
-		$ver = $this->fetch_array($query);
-		if($ver['version'])
-		{
-			$version = explode(".", $ver['version'], 3);
+		$ver   = $this->fetch_array($query);
+		if($ver['version']) {
+			$version       = explode(".", $ver['version'], 3);
 			$this->version = intval($version[0]).".".intval($version[1]).".".intval($version[2]);
 		}
+
 		return $this->version;
 	}
+
 
 	/**
 	 * Optimizes a specific table.
@@ -908,7 +902,8 @@ class DB_MySQL
 	{
 		$this->write_query("OPTIMIZE TABLE {$this->table_prefix}{$table}");
 	}
-	
+
+
 	/**
 	 * Analyzes a specific table.
 	 *
@@ -919,23 +914,25 @@ class DB_MySQL
 		$this->write_query("ANALYZE TABLE {$this->table_prefix}{$table}");
 	}
 
+
 	/**
 	 * Show the "create table" command for a specific table.
 	 *
-	 * @param string The name of the table.
+	 * @param  string The name of the table.
 	 * @return string The MySQL command to create the specified table.
 	 */
 	function show_create_table($table)
 	{
-		$query = $this->write_query("SHOW CREATE TABLE {$this->table_prefix}{$table}");
+		$query     = $this->write_query("SHOW CREATE TABLE {$this->table_prefix}{$table}");
 		$structure = $this->fetch_array($query);
 		return $structure['Create Table'];
 	}
 
+
 	/**
 	 * Show the "show fields from" command for a specific table.
 	 *
-	 * @param string The name of the table.
+	 * @param  string The name of the table.
 	 * @return string Field info for that table
 	 */
 	function show_fields_from($table)
@@ -945,64 +942,68 @@ class DB_MySQL
 		{
 			$field_info[] = $field;
 		}
+
 		return $field_info;
 	}
+
 
 	/**
 	 * Returns whether or not the table contains a fulltext index.
 	 *
-	 * @param string The name of the table.
-	 * @param string Optionally specify the name of the index.
+	 * @param  string The name of the table.
+	 * @param  string Optionally specify the name of the index.
 	 * @return boolean True or false if the table has a fulltext index or not.
 	 */
 	function is_fulltext($table, $index="")
 	{
 		$structure = $this->show_create_table($table);
-		if($index != "")
-		{
-			if(preg_match("#FULLTEXT KEY (`?)$index(`?)#i", $structure))
-			{
-				return true;
+		if($index != "") {
+			if(preg_match("#FULLTEXT KEY (`?)$index(`?)#i", $structure)) {
+				return TRUE;
 			}
 			else
 			{
-				return false;
+				return FALSE;
 			}
 		}
-		if(preg_match('#FULLTEXT KEY#i', $structure))
-		{
-			return true;
+
+		if(preg_match('#FULLTEXT KEY#i', $structure)) {
+			return TRUE;
 		}
-		return false;
+
+		return FALSE;
 	}
+
 
 	/**
 	 * Returns whether or not this database engine supports fulltext indexing.
 	 *
-	 * @param string The table to be checked.
+	 * @param  string The table to be checked.
 	 * @return boolean True or false if supported or not.
 	 */
+
 
 	function supports_fulltext($table)
 	{
 		$version = $this->get_version();
-		$query = $this->write_query("SHOW TABLE STATUS LIKE '{$this->table_prefix}$table'");
-		$status = $this->fetch_array($query);
-		if($status['Engine'])
-		{
+		$query   = $this->write_query("SHOW TABLE STATUS LIKE '{$this->table_prefix}$table'");
+		$status  = $this->fetch_array($query);
+		if($status['Engine']) {
 			$table_type = my_strtoupper($status['Engine']);
 		}
 		else
 		{
 			$table_type = my_strtoupper($status['Type']);
 		}
-		if($version >= '3.23.23' && $table_type == 'MYISAM')
-		{
-			return true;
+
+		if($version >= '3.23.23' && $table_type == 'MYISAM') {
+			return TRUE;
 		}
-		return false;
+
+		return FALSE;
 	}
-	
+
+
 	/**
 	 * Checks to see if an index exists on a specified table
 	 *
@@ -1011,41 +1012,41 @@ class DB_MySQL
 	 */
 	function index_exists($table, $index)
 	{
-		$index_exists = false;
-		$query = $this->write_query("SHOW INDEX FROM {$this->table_prefix}{$table}");
+		$index_exists = FALSE;
+		$query        = $this->write_query("SHOW INDEX FROM {$this->table_prefix}{$table}");
 		while($ukey = $this->fetch_array($query))
 		{
-			if($ukey['Key_name'] == $index)
-			{
-				$index_exists = true;
+			if($ukey['Key_name'] == $index) {
+				$index_exists = TRUE;
 				break;
 			}
 		}
-		
-		if($index_exists)
-		{
-			return true;
+
+		if($index_exists) {
+			return TRUE;
 		}
-		
-		return false;
+
+		return FALSE;
 	}
+
 
 	/**
 	 * Returns whether or not this database engine supports boolean fulltext matching.
 	 *
-	 * @param string The table to be checked.
+	 * @param  string The table to be checked.
 	 * @return boolean True or false if supported or not.
 	 */
 	function supports_fulltext_boolean($table)
 	{
-		$version = $this->get_version();
+		$version           = $this->get_version();
 		$supports_fulltext = $this->supports_fulltext($table);
-		if($version >= '4.0.1' && $supports_fulltext == true)
-		{
-			return true;
+		if($version >= '4.0.1' && $supports_fulltext == TRUE) {
+			return TRUE;
 		}
-		return false;
+
+		return FALSE;
 	}
+
 
 	/**
 	 * Creates a fulltext index on the specified column in the specified table with optional index name.
@@ -1057,10 +1058,11 @@ class DB_MySQL
 	function create_fulltext_index($table, $column, $name="")
 	{
 		$this->write_query("
-			ALTER TABLE {$this->table_prefix}$table 
+			ALTER TABLE {$this->table_prefix}$table
 			ADD FULLTEXT $name ($column)
 		");
 	}
+
 
 	/**
 	 * Drop an index with the specified name from the specified table
@@ -1071,30 +1073,29 @@ class DB_MySQL
 	function drop_index($table, $name)
 	{
 		$this->write_query("
-			ALTER TABLE {$this->table_prefix}$table 
+			ALTER TABLE {$this->table_prefix}$table
 			DROP INDEX $name
 		");
 	}
-	
+
+
 	/**
 	 * Drop an table with the specified table
 	 *
 	 * @param boolean hard drop - no checking
 	 * @param boolean use table prefix
 	 */
-	function drop_table($table, $hard=false, $table_prefix=true)
+	function drop_table($table, $hard=FALSE, $table_prefix=TRUE)
 	{
-		if($table_prefix == false)
-		{
+		if($table_prefix == FALSE) {
 			$table_prefix = "";
 		}
 		else
 		{
 			$table_prefix = $this->table_prefix;
 		}
-		
-		if($hard == false)
-		{
+
+		if($hard == FALSE) {
 			$this->write_query('DROP TABLE IF EXISTS '.$table_prefix.$table);
 		}
 		else
@@ -1102,7 +1103,8 @@ class DB_MySQL
 			$this->write_query('DROP TABLE '.$table_prefix.$table);
 		}
 	}
-	
+
+
 	/**
 	 * Replace contents of table with values
 	 *
@@ -1112,22 +1114,22 @@ class DB_MySQL
 	function replace_query($table, $replacements=array())
 	{
 		$values = '';
-		$comma = '';
+		$comma  = '';
 		foreach($replacements as $column => $value)
 		{
 			$values .= $comma."`".$column."`='".$value."'";
-			
+
 			$comma = ',';
 		}
-		
-		if(empty($replacements))
-		{
-			 return false;
+
+		if(empty($replacements)) {
+			 return FALSE;
 		}
-		
+
 		return $this->write_query("REPLACE INTO {$this->table_prefix}{$table} SET {$values}");
 	}
-	
+
+
 	/**
 	 * Drops a column
 	 *
@@ -1138,7 +1140,8 @@ class DB_MySQL
 	{
 		return $this->write_query("ALTER TABLE {$this->table_prefix}{$table} DROP {$column}");
 	}
-	
+
+
 	/**
 	 * Adds a column
 	 *
@@ -1150,7 +1153,8 @@ class DB_MySQL
 	{
 		return $this->write_query("ALTER TABLE {$this->table_prefix}{$table} ADD {$column} {$definition}");
 	}
-	
+
+
 	/**
 	 * Modifies a column
 	 *
@@ -1162,7 +1166,8 @@ class DB_MySQL
 	{
 		return $this->write_query("ALTER TABLE {$this->table_prefix}{$table} MODIFY {$column} {$new_definition}");
 	}
-	
+
+
 	/**
 	 * Renames a column
 	 *
@@ -1175,7 +1180,8 @@ class DB_MySQL
 	{
 		return $this->write_query("ALTER TABLE {$this->table_prefix}{$table} CHANGE {$old_column} {$new_column} {$new_definition}");
 	}
-	
+
+
 	/**
 	 * Sets the table prefix used by the simple select, insert, update and delete functions
 	 *
@@ -1185,30 +1191,33 @@ class DB_MySQL
 	{
 		$this->table_prefix = $prefix;
 	}
-	
+
+
 	/**
 	 * Fetched the total size of all mysql tables or a specific table
 	 *
-	 * @param string The table (optional)
+	 * @param  string The table (optional)
 	 * @return integer the total size of all mysql tables or a specific table
 	 */
 	function fetch_size($table='')
 	{
-		if($table != '')
-		{
+		if($table != '') {
 			$query = $this->query("SHOW TABLE STATUS LIKE '".$this->table_prefix.$table."'");
 		}
 		else
 		{
 			$query = $this->query("SHOW TABLE STATUS");
 		}
+
 		$total = 0;
 		while($table = $this->fetch_array($query))
 		{
-			$total += $table['Data_length']+$table['Index_length'];
+			$total += $table['Data_length'] + $table['Index_length'];
 		}
+
 		return $total;
 	}
+
 
 	/**
 	 * Fetch a list of database character sets this DBMS supports
@@ -1217,10 +1226,10 @@ class DB_MySQL
 	 */
 	function fetch_db_charsets()
 	{
-		if($this->link && version_compare($this->get_version(), "4.1", "<"))
-		{
-			return false;
+		if($this->link && version_compare($this->get_version(), "4.1", "<")) {
+			return FALSE;
 		}
+
 		return array(
 			'big5' => 'Big5 Traditional Chinese',
 			'dec8' => 'DEC West European',
@@ -1261,10 +1270,11 @@ class DB_MySQL
 		);
 	}
 
+
 	/**
 	 * Fetch a database collation for a particular database character set
 	 *
-	 * @param string The database character set
+	 * @param  string The database character set
 	 * @return string The matching database collation, false if unsupported
 	 */
 	function fetch_charset_collation($charset)
@@ -1307,12 +1317,13 @@ class DB_MySQL
 			'cp932' => 'cp932_japanese_ci',
 			'eucjpms' => 'eucjpms_japanese_ci',
 		);
-		if($collations[$charset])
-		{
+		if($collations[$charset]) {
 			return $collations[$charset];
 		}
-		return false;
+
+		return FALSE;
 	}
+
 
 	/**
 	 * Fetch a character set/collation string for use with CREATE TABLE statements. Uses current DB encoding
@@ -1321,18 +1332,18 @@ class DB_MySQL
 	 */
 	function build_create_table_collation()
 	{
-		if(!$this->db_encoding)
-		{
+		if(!$this->db_encoding) {
 			return '';
 		}
 
 		$collation = $this->fetch_charset_collation($this->db_encoding);
-		if(!$collation)
-		{
+		if(!$collation) {
 			return '';
 		}
+
 		return " CHARACTER SET {$this->db_encoding} COLLATE {$collation}";
 	}
+
 
 	/**
 	 * Time how long it takes for a particular piece of code to run. Place calls above & below the block of code.
@@ -1343,24 +1354,26 @@ class DB_MySQL
 	{
 		static $time_start;
 
-		$time = microtime(true);
-
+		$time = microtime(TRUE);
 
 		// Just starting timer, init and return
-		if(!$time_start)
-		{
+		if(!$time_start) {
 			$time_start = $time;
 			return;
 		}
 		// Timer has run, return execution time
 		else
 		{
-			$total = $time-$time_start;
+			$total      = $time - $time_start;
 			$time_start = 0;
-			if($total < 0) $total = 0;
+			if($total < 0) { $total = 0;
+			}
+
 			return $total;
 		}
 	}
+
+
 }
 
-?>
+
