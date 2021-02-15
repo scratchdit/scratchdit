@@ -38,7 +38,7 @@ class DefaultForm
 	 * @param boolean Should this form be returned instead of output to the browser?
 	 * @param boolean The onsubmit action of the form
 	 */
-	function __construct($script = '', $method = '', $id = "", $allow_uploads = 0, $name = "", $return = FALSE, $onsubmit = "")
+	function __construct($script='', $method='', $id="", $allow_uploads=0, $name="", $return=FALSE, $onsubmit="")
 	{
 		global $mybb;
 		$form = "<form action=\"{$script}\" method=\"{$method}\"";
@@ -78,7 +78,7 @@ class DefaultForm
 	 *
 	 * @return string The generated hidden
 	 */
-	function generate_hidden_field($name, $value, $options = array())
+	function generate_hidden_field($name, $value, $options=array())
 	{
 		$input = "<input type=\"hidden\" name=\"{$name}\" value=\"" . htmlspecialchars($value) . "\"";
 		if (isset($options['id'])) {
@@ -98,7 +98,7 @@ class DefaultForm
 	 * @param  array Array of options for the text box (class, style, id)
 	 * @return string The generated text box.
 	 */
-	function generate_text_box($name, $value = "", $options = array())
+	function generate_text_box($name, $value="", $options=array())
 	{
 		$input = "<input type=\"text\" name=\"" . $name . "\" value=\"" . htmlspecialchars($value) . "\"";
 		if (isset($options['class'])) {
@@ -128,7 +128,7 @@ class DefaultForm
 	 * @param  array Array of options for the password box (class, id)
 	 * @return string The generated password input box.
 	 */
-	function generate_password_box($name, $value = "", $options = array())
+	function generate_password_box($name, $value="", $options=array())
 	{
 		$input = "<input type=\"password\" name=\"" . $name . "\" value=\"" . htmlspecialchars($value) . "\"";
 		if (isset($options['class'])) {
@@ -157,7 +157,7 @@ class DefaultForm
 	 * @param  array Array of options for the file upload field (class, id)
 	 * @return string The generated file upload field.
 	 */
-	function generate_file_upload_box($name, $options = array())
+	function generate_file_upload_box($name, $options=array())
 	{
 		$input = "<input type=\"file\" name=\"" . $name . "\"";
 		if (isset($options['class'])) {
@@ -187,7 +187,7 @@ class DefaultForm
 	 * @param  array Array of options for text area (class, id, rows, cols, style, disabled)
 	 * @return string The generated text area field.
 	 */
-	function generate_text_area($name, $value = "", $options = array())
+	function generate_text_area($name, $value="", $options=array())
 	{
 		$textarea = "<textarea";
 		if (!empty($name)) {
@@ -234,7 +234,7 @@ class DefaultForm
 	 * @param  array Array of options for the radio button (id, class, checked)
 	 * @return string The generated radio button.
 	 */
-	function generate_radio_button($name, $value = "", $label = "", $options = array())
+	function generate_radio_button($name, $value="", $label="", $options=array())
 	{
 		$input = "<label";
 		if (isset($options['id'])) {
@@ -279,7 +279,7 @@ class DefaultForm
 	 * @param  array Array of options for the check box (id, class, checked)
 	 * @return string The generated check box.
 	 */
-	function generate_check_box($name, $value = "", $label = "", $options = array())
+	function generate_check_box($name, $value="", $label="", $options=array())
 	{
 		$input = "<label";
 		if (isset($options['id'])) {
@@ -328,7 +328,7 @@ class DefaultForm
 	 * @param  array Array of options for the select box (multiple, class, id, size)
 	 * @return string The select box.
 	 */
-	function generate_select_box($name, $option_list, $selected = array(), $options = array())
+	function generate_select_box($name, $option_list, $selected=array(), $options=array())
 	{
 		if (!isset($options['multiple'])) {
 			$select = "<select name=\"{$name}\"";
@@ -354,7 +354,7 @@ class DefaultForm
 		$select .= ">\n";
 		foreach ($option_list as $value => $option) {
 			$select_add = '';
-			if (!empty($selected) && ((string)$value == (string)$selected || (is_array($selected) && in_array((string)$value, $selected)))) {
+			if (!empty($selected) && ((string)$value == (string)$selected || (is_array($selected) && in_array( (string)$value, $selected)))) {
 				$select_add = " selected=\"selected\"";
 			}
 
@@ -375,7 +375,7 @@ class DefaultForm
 	 * @param  boolean Is this our first iteration of this function?
 	 * @return string The built select box.
 	 */
-	function generate_forum_select($name, $selected, $options = array(), $is_first = 1)
+	function generate_forum_select($name, $selected, $options=array(), $is_first=1)
 	{
 		global $fselectcache, $forum_cache, $selectoptions;
 
@@ -481,7 +481,7 @@ class DefaultForm
 	 * @param  array Array of options (class, id, multiple)
 	 * @return string The built select box.
 	 */
-	function generate_group_select($name, $selected = array(), $options = array())
+	function generate_group_select($name, $selected=array(), $options=array())
 	{
 		global $cache;
 
@@ -530,7 +530,7 @@ class DefaultForm
 	 * @param  array Array of options for the submit button (class, id, name, dsiabled, onclick)
 	 * @return string The generated submit button.
 	 */
-	function generate_submit_button($value, $options = array())
+	function generate_submit_button($value, $options=array())
 	{
 		$input = "<input type=\"submit\" value=\"" . htmlspecialchars($value) . "\"";
 
@@ -568,7 +568,7 @@ class DefaultForm
 	 * @param  array Array of options for the reset button (class, id, name)
 	 * @return string The generated reset button.
 	 */
-	function generate_reset_button($value, $options = array())
+	function generate_reset_button($value, $options=array())
 	{
 		$input = "<input type=\"reset\" value=\"" . htmlspecialchars($value) . "\"";
 
@@ -601,7 +601,7 @@ class DefaultForm
 	 * @param  array Array of options for the no checkbox (@see generate_radio_button)
 	 * @return string The generated yes/no radio button.
 	 */
-	function generate_yes_no_radio($name, $value = 1, $int = TRUE, $yes_options = array(), $no_options = array())
+	function generate_yes_no_radio($name, $value=1, $int=TRUE, $yes_options=array(), $no_options=array())
 	{
 		global $lang;
 
@@ -645,7 +645,7 @@ class DefaultForm
 	 * @param  array Array of options for the off checkbox (@see generate_radio_button)
 	 * @return string The generated on/off radio button.
 	 */
-	function generate_on_off_radio($name, $value = 1, $int = TRUE, $on_options = array(), $off_options = array())
+	function generate_on_off_radio($name, $value=1, $int=TRUE, $on_options=array(), $off_options=array())
 	{
 		global $lang;
 
@@ -679,7 +679,7 @@ class DefaultForm
 	}
 
 
-	function generate_date_select($name, $day = "", $month = "", $year = "")
+	function generate_date_select($name, $day="", $month="", $year="")
 	{
 		global $lang;
 
@@ -762,6 +762,8 @@ class DefaultForm
 			return "</form>";
 		}
 	}
+
+
 }
 
 /**
@@ -781,7 +783,7 @@ class DefaultFormContainer
 	 * @param string The title of the forum container
 	 * @param string An additional class to apply if we have one.
 	 */
-	function __construct($title = '', $extra_class = '')
+	function __construct($title='', $extra_class='')
 	{
 		$this->_container  = new Table();
 		$this->extra_class = $extra_class;
@@ -795,7 +797,7 @@ class DefaultFormContainer
 	 * @param string The header row label.
 	 * @param array TODO
 	 */
-	function output_row_header($title, $extra = array())
+	function output_row_header($title, $extra=array())
 	{
 		$this->_container->construct_header($title, $extra);
 	}
@@ -811,7 +813,7 @@ class DefaultFormContainer
 	 * @param array Array of options for the row cell.
 	 * @param array Array of options for the row container.
 	 */
-	function output_row($title, $description = "", $content = "", $label_for = "", $options = array(), $row_options = array())
+	function output_row($title, $description="", $content="", $label_for="", $options=array(), $row_options=array())
 	{
 		global $plugins;
 		$pluginargs = array(
@@ -856,7 +858,7 @@ class DefaultFormContainer
 	 * @param string The data to show in the cell.
 	 * @param array Array of options for the cell (optional).
 	 */
-	function output_cell($data, $options = array())
+	function output_cell($data, $options=array())
 	{
 		$this->_container->construct_cell($data, $options);
 	}
@@ -867,7 +869,7 @@ class DefaultFormContainer
 	 *
 	 * @param array Array of extra options for the cell (optional).
 	 */
-	function construct_row($extra = array())
+	function construct_row($extra=array())
 	{
 		$this->_container->construct_row($extra);
 	}
@@ -880,7 +882,7 @@ class DefaultFormContainer
 	 * @param  boolean Whether or not to return or echo the resultant contents.
 	 * @return string The output of the row cells (optional).
 	 */
-	function output_row_cells($row_id, $return = FALSE)
+	function output_row_cells($row_id, $return=FALSE)
 	{
 		if (!$return) {
 			echo $this->_container->output_row_cells($row_id, $return);
@@ -907,7 +909,7 @@ class DefaultFormContainer
 	 * @param  boolean Whether or not to return or echo the resultant contents.
 	 * @return string The output of the form container (optional).
 	 */
-	function end($return = FALSE)
+	function end($return=FALSE)
 	{
 		global $plugins;
 
@@ -923,4 +925,6 @@ class DefaultFormContainer
 			echo $this->_container->output($this->_title, 1, "general form_container {$this->extra_class}", FALSE);
 		}
 	}
+
+
 }

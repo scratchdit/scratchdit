@@ -62,7 +62,7 @@ class DefaultPage
 	 *
 	 * @param string The title of the page.
 	 */
-	function output_header($title = "")
+	function output_header($title="")
 	{
 		global $mybb, $admin_session, $lang, $plugins;
 
@@ -148,7 +148,7 @@ var imagepath = '../images';
 	/**
 	 * Output the page footer.
 	 */
-	function output_footer($quit = TRUE)
+	function output_footer($quit=TRUE)
 	{
 		global $mybb, $maintimer, $db, $lang, $plugins;
 
@@ -187,7 +187,7 @@ var imagepath = '../images';
 	 * @param string The name of the item to add.
 	 * @param string The URL to the item we're adding (if there is one)
 	 */
-	function add_breadcrumb_item($name, $url = "")
+	function add_breadcrumb_item($name, $url="")
 	{
 		$this->_breadcrumb_trail[] = array("name" => $name, "url" => $url);
 	}
@@ -235,7 +235,7 @@ var imagepath = '../images';
 	 * @param string The message to output.
 	 * @param string The ID of the alert/warning (optional)
 	 */
-	function output_alert($message, $id = "")
+	function output_alert($message, $id="")
 	{
 		if ($id) {
 			$id = " id=\"{$id}\"";
@@ -300,7 +300,7 @@ var imagepath = '../images';
 	 * @param string The any message to output on the page if there is one.
 	 * @param string The class name of the message (defaults to success)
 	 */
-	function show_login($message = "", $class = "success")
+	function show_login($message="", $class="success")
 	{
 		global $lang, $cp_style, $mybb;
 
@@ -311,8 +311,8 @@ var imagepath = '../images';
 
 		// If the language string for "Username" is too cramped then use this to define how much larger you want the gap to be (in px)
 		if ($lang->login_field_width) {
-			$login_label_width = " style=\"width: " . (intval($lang->login_field_width) + 100) . "px;\"";
-			$login_container_width   = " style=\"width: " . (410 + (intval($lang->login_field_width))) . "px;\"";
+			$login_label_width     = " style=\"width: " . (intval($lang->login_field_width) + 100) . "px;\"";
+			$login_container_width = " style=\"width: " . (410 + (intval($lang->login_field_width))) . "px;\"";
 		}
 
 		print <<<EOF
@@ -525,7 +525,7 @@ EOF;
 	 * @param int The display order of the menu item. Lower display order means closer to start of the menu.
 	 * @param array Array of sub menu items if there are any.
 	 */
-	function add_menu_item($title, $id, $link, $order = 10, $submenu = array())
+	function add_menu_item($title, $id, $link, $order=10, $submenu=array())
 	{
 		$this->_menu[$order][] = array(
 			"title" => $title,
@@ -609,7 +609,7 @@ EOF;
 	 * @param boolean Whether or not to run the event onload or instantly
 	 * @param string The ID to use for the tabs for if you run multiple instances of the tabbing control in one html page
 	 */
-	function output_tab_control($tabs = array(), $observe_onload = TRUE, $id = "tabs")
+	function output_tab_control($tabs=array(), $observe_onload=TRUE, $id="tabs")
 	{
 		global $plugins;
 		$tabs = $plugins->run_hooks("admin_page_output_tab_control_start", $tabs);
@@ -655,7 +655,7 @@ EOF;
 	 * @param array Nested array of tabs containing possible keys of align, link_target, link, title.
 	 * @param string The name of the active tab. Corresponds with the key of each tab item.
 	 */
-	function output_nav_tabs($tabs = array(), $active = '')
+	function output_nav_tabs($tabs=array(), $active='')
 	{
 		global $plugins;
 		$tabs = $plugins->run_hooks("admin_page_output_nav_tabs_start", $tabs);
@@ -697,7 +697,7 @@ EOF;
 	 * @param string The confirmation message to output.
 	 * @param string The title to use in the output header
 	 */
-	function output_confirm_action($url, $message = "", $title = "")
+	function output_confirm_action($url, $message="", $title="")
 	{
 		global $lang;
 
@@ -743,6 +743,8 @@ EOF;
 			"//]]>" .
 			"</script>";
 	}
+
+
 }
 
 /**
@@ -767,7 +769,7 @@ class DefaultSidebarItem
 	 *
 	 * @param string The title of the side bar block.
 	 */
-	function __construct($title = "")
+	function __construct($title="")
 	{
 		$this->_title = $title;
 	}
@@ -827,6 +829,8 @@ class DefaultSidebarItem
 		$markup .= "</div>\n";
 		return $markup;
 	}
+
+
 }
 
 /**
@@ -857,7 +861,7 @@ class DefaultPopupMenu
 	 * @var string The ID of the popup menu.
 	 * @var string The title of the popup menu.
 	 */
-	function __construct($id, $title = '')
+	function __construct($id, $title='')
 	{
 		$this->_id    = $id;
 		$this->_title = $title;
@@ -871,7 +875,7 @@ class DefaultPopupMenu
 	 * @param string The page this item should link to.
 	 * @param string The onclick event handler if we have one.
 	 */
-	function add_item($text, $link, $onclick = '')
+	function add_item($text, $link, $onclick='')
 	{
 		if ($onclick) {
 			$onclick = " onclick=\"{$onclick}\"";
@@ -907,4 +911,6 @@ class DefaultPopupMenu
 	{
 		echo $this->fetch();
 	}
+
+
 }
