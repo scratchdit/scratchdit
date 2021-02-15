@@ -10,7 +10,7 @@
  * $Id$
  */
 
-class session
+class Session
 {
 	public $sid         = 0;
 	public $uid         = 0;
@@ -123,7 +123,7 @@ class session
 		$mybb->user = $db->fetch_array($query);
 
 		$this->logins      = $mybb->user['loginattempts'];
-		$this->failedlogin = $mybb->user['failedlogin'];
+		$this->failedlogin = array_key_exists('failedlogin', $mybb->user) ? $mybb->user['failedlogin'] : 0;
 
 		if ($bannedcache[$uid]) {
 			$banned_user                          = $bannedcache[$uid];
@@ -147,11 +147,10 @@ class session
 		$mybb->user['logoutkey'] = md5($mybb->user['loginkey']);
 
 		// Sort out the private message count for this user.
-		if (($mybb->user['totalpms'] == -1 || $mybb->user['unreadpms'] == -1) && $mybb->settings['enablepms'] != 0) // Forced recount
-		{
+		if (($mybb->user['totalpms'] == -1 || $mybb->user['unreadpms'] == -1) && $mybb->settings['enablepms'] != 0) { // Forced recount
 			$update = 0;
 			if ($mybb->user['totalpms'] == -1) {
-				$update += 1;
+				++$update;
 			}
 
 			if ($mybb->user['unreadpms'] == -1) {
@@ -222,8 +221,7 @@ class session
 		}
 
 		// Check if this user is currently banned and if we have to lift it.
-		if (!empty($mybb->user['bandate']) && (isset($mybb->user['banlifted']) && !empty($mybb->user['banlifted'])) && $mybb->user['banlifted'] < $time)  // hmmm...bad user... how did you get banned =/
-		{
+		if (!empty($mybb->user['bandate']) && (isset($mybb->user['banlifted']) && !empty($mybb->user['banlifted'])) && $mybb->user['banlifted'] < $time) { // hmmm...bad user... how did you get banned =/
 			// must have been good.. bans up :D
 			$db->shutdown_query("UPDATE " . TABLE_PREFIX . "users SET usergroup='" . intval($mybb->user['banoldgroup']) . "', additionalgroups='" . $mybb->user['oldadditionalgroups'] . "', displaygroup='" . intval($mybb->user['olddisplaygroup']) . "' WHERE uid='" . $mybb->user['uid'] . "' LIMIT 1");
 			$db->shutdown_query("DELETE FROM " . TABLE_PREFIX . "banned WHERE uid='" . $mybb->user['uid'] . "'");
@@ -303,10 +301,7 @@ class session
 			} else {
 				$mybb->user['lastvisit'] = intval($mybb->cookies['mybb']['lastactive']);
 			}
-		}
-
-		// No last visit cookie, create one.
-		else {
+		} else { // No last visit cookie, create one.
 			my_setcookie("mybb[lastvisit]", $time);
 			$mybb->user['lastvisit'] = $time;
 		}
@@ -416,7 +411,7 @@ class session
 	}
 
 	/**
-	 * Create a new session.
+	 * Create a new Session.
 	 *
 	 * @param int The user id to bind the session to.
 	 */
@@ -429,13 +424,9 @@ class session
 		if ($uid > 0) {
 			$db->delete_query("sessions", "uid='{$uid}'");
 			$onlinedata['uid'] = $uid;
-		}
-		// Is a spider - delete all other spider references
-		else if ($this->is_spider == TRUE) {
+		} else if ($this->is_spider == TRUE) { // Is a spider - delete all other spider references
 			$db->delete_query("sessions", "sid='{$this->sid}'");
-		}
-		// Else delete by ip.
-		else {
+		} else {// Else delete by ip.
 			$db->delete_query("sessions", "ip='" . $db->escape_string($this->ipaddress) . "'");
 			$onlinedata['uid'] = 0;
 		}
@@ -472,7 +463,6 @@ class session
 			$array[1] = intval($mybb->input['fid']);
 			$array[2] = '';
 		} else if (preg_match("#showthread.php#", $_SERVER['PHP_SELF']) && intval($mybb->input['tid']) > 0) {
-			global $db;
 			$array[2] = intval($mybb->input['tid']);
 			$thread   = get_thread(intval($array[2]));
 			$array[1] = $thread['fid'];

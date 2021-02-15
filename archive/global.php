@@ -146,7 +146,7 @@ else
 }
 
 // Initialise session
-$session = new session;
+$session = new Session;
 $session->init();
 
 if (!$mybb->settings['bblanguage'])

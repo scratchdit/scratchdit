@@ -144,7 +144,7 @@ $cache->cache();
 $mybb->cache = &$cache;
 
 require_once MYBB_ROOT."inc/class_session.php";
-$session = new session;
+$session = new Session;
 $session->init();
 $mybb->session = &$session;
 

@@ -48,7 +48,7 @@ header("Pragma: no-cache");
 
 // Create the session
 require_once MYBB_ROOT."inc/class_session.php";
-$session = new session;
+$session = new Session;
 $session->init();
 
 // Load the language we'll be using
