@@ -15,9 +15,9 @@ $db['hostname'] = 'ec2-54-90-13-87.compute-1.amazonaws.com';
 $db['username'] = 'mknzigyrzqkxrw';
 $db['password'] = '459aca8d4ee638bbae583732c67b0fff3c015d37ede47f71098ca573446bd8db';
 	
-$config['database']['pconnect'] = 0;
-$config['database']['port'] = 5432;
-	retun $db;
+$db['pconnect'] = 0;
+$db['port'] = 5432;
+	return $db;
 }
 
 
