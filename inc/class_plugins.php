@@ -81,7 +81,7 @@ class PluginSystem
 	 */
 	function run_hooks($hook, &$arguments = "")
 	{
-		if (!array_key_exists($hook, $this->hooks) || !is_array($this->hooks[$hook])) {
+		if (!is_array($this->hooks[$hook]) || !array_key_exists($hook, $this->hooks)) {
 			return $arguments;
 		}
 
