@@ -10,9 +10,9 @@ Language.syntax = [
 	{ input : /&lt;([^!]*?)&gt;/g, output : '<b>&lt;<a>$1</a>&gt;</b>'	}, // all tags
 	{ input : /([a-zA-Z]+)=(".*?")/g, output : '<i>$1=</i><s>$2</s>' }, // atributes double quote
 	{ input : /=('.*?')/g, output : '=<s>$1</s>' }, // atributes single quote
-	{ input : /(&lt;!--.*?--&gt.)/g, output : '<ins>$1</ins>' }, // comments 
+	{ input : /(&lt;!--.*?--&gt.)/g, output : '<ins>$1</ins>' }, // comments
 	{ input : /([^:]|^)\/\/(.*?)(<br|<\/P)/g, output : '$1<a>//$2</a>$3' }, // comments //
-	{ input : /\b(alert|window|document|break|continue|do|for|new|this|void|case|default|else|function|return|typeof|while|if|label|switch|var|with|catch|boolean|int|try|false|throws|null|true|goto)\b/g, output : '<i>$1</i>' }, // script reserved words 
+	{ input : /\b(alert|window|document|break|continue|do|for|new|this|void|case|default|else|function|return|typeof|while|if|label|switch|var|with|catch|boolean|int|try|false|throws|null|TRUE|goto)\b/g, output : '<i>$1</i>' }, // script reserved words
 	{ input: /(\{\$[a-zA-Z0-9_\[\]'"]+)\-&gt;([a-zA-Z0-9_\-\$\[\]'"]+\}?)/g, output: '<cite>$1<s>-&gt;</s>$2</cite>'}, // class based variables
 	{ input: /(\{?\$[a-zA-Z0-9_\-\$\[\]'"]+\}?)/g, output: '<cite>$1</cite>'}, // variables in templates
 	{ input: /&amp;(amp|gt|lt|raquo|laquo);/g, output: '<small>&amp;$1;</small>'}
@@ -32,9 +32,9 @@ Language.snippets = [
 	{ input : 'input', output : '<input name="$0" id="" type="" value="" />' },
 	{ input : 'label', output : '<label for="$0"></label>' },
 	{ input : 'legend', output : '<legend>\n\t$0\n</legend>' },
-	{ input : 'link', output : '<link rel="stylesheet" href="$0" type="text/css" media="screen" charset="utf-8" />' },		
-	{ input : 'base', output : '<base href="$0" />' }, 
-	{ input : 'body', output : '<body>\n\t$0\n</body>' }, 
+	{ input : 'link', output : '<link rel="stylesheet" href="$0" type="text/css" media="screen" charset="utf-8" />' },
+	{ input : 'base', output : '<base href="$0" />' },
+	{ input : 'body', output : '<body>\n\t$0\n</body>' },
 	{ input : 'css', output : '<link rel="stylesheet" href="$0" type="text/css" media="screen" charset="utf-8" />' },
 	{ input : 'div', output : '<div>\n\t$0\n</div>' },
 	{ input : 'divid', output : '<div id="$0">\n\t\n</div>' },
@@ -49,13 +49,13 @@ Language.snippets = [
 	{ input : 'table', output : '<table border="$0" cellspacing="" cellpadding="">\n\t<tr><th></th></tr>\n\t<tr><td></td></tr>\n</table>' },
 	{ input : 'style', output : '<style type="text/css" media="screen">\n\t$0\n</style>' }
 ]
-	
+
 Language.complete = [
 	{ input : '\'',output : '\'$0\'' },
 	{ input : '"', output : '"$0"' },
 	{ input : '(', output : '\($0\)' },
 	{ input : '[', output : '\[$0\]' },
-	{ input : '{', output : '{$0}' }		
+	{ input : '{', output : '{$0}' }
 ]
 
 Language.shortcuts = []

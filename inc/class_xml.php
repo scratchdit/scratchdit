@@ -16,7 +16,7 @@
  */
 
 class XMLParser {
-	
+
 	public $data;
 	public $vals;
 	public $collapse_dups = 1;
@@ -42,7 +42,7 @@ class XMLParser {
 		xml_parser_set_option($parser,XML_OPTION_CASE_FOLDING,0);
 		if(!xml_parse_into_struct($parser, $this->data, $vals, $index))
 		{
-			return false;
+			return FALSE;
 		}
 
 		$i = -1;
@@ -76,7 +76,7 @@ class XMLParser {
 		}
 		return $tag;
 	}
-	
+
 	/**
 	 * Fetch the children for from a specific node array
 	 *

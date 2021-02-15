@@ -61,7 +61,7 @@ if($mybb->input['action'] == "do_add" && $mybb->request_method == "post")
 			join_usergroup($user['uid'], $gid);
 			redirect("managegroup.php?gid=".$gid, $lang->user_added);
 		}
-		else 
+		else
 		{
 			error($lang->error_alreadyingroup);
 		}
@@ -263,11 +263,11 @@ else
 		$regdate = my_date($mybb->settings['dateformat'].", ".$mybb->settings['timeformat'], $user['regdate']);
 		$post = $user;
 		$sendpm = $email = '';
-		if($mybb->settings['enablepms'] == 1 && $post['receivepms'] != 0 && $mybb->usergroup['cansendpms'] == 1 && my_strpos(",".$post['ignorelist'].",", ",".$mybb->user['uid'].",") === false)
+		if($mybb->settings['enablepms'] == 1 && $post['receivepms'] != 0 && $mybb->usergroup['cansendpms'] == 1 && my_strpos(",".$post['ignorelist'].",", ",".$mybb->user['uid'].",") === FALSE)
 		{
 			eval("\$sendpm = \"".$templates->get("postbit_pm")."\";");
 		}
-		
+
 		if($user['hideemail'] != 1)
 		{
 			eval("\$email = \"".$templates->get("postbit_email")."\";");

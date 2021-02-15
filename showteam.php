@@ -54,7 +54,7 @@ if($usergroups[6]['gid'])
 	while($moderator = $db->fetch_array($query))
 	{
 		$moderators[$moderator['id']][] = $moderator;
-	} 
+	}
 }
 
 // Now query the users of those specific groups
@@ -88,12 +88,12 @@ while($user = $db->fetch_array($query))
 		$forumlist = '';
 		$usergroups[6]['user_list'][$user['uid']] = $user;
 	}
-	
+
 	if($user['displaygroup'] == '6' || $user['usergroup'] == '6')
 	{
 		$usergroups[6]['user_list'][$user['uid']] = $user;
 	}
-	
+
 	// Are they also in another group which is being shown on the list?
 	if($user['displaygroup'] != 0)
 	{
@@ -103,7 +103,7 @@ while($user = $db->fetch_array($query))
 	{
 		$group = $user['usergroup'];
 	}
-	
+
 	if($usergroups[$group] && $group != 6)
 	{
 		$usergroups[$group]['user_list'][$user['uid']] = $user;
@@ -133,12 +133,12 @@ foreach($usergroups as $usergroup)
 		{
 			eval("\$emailcode = \"".$templates->get("postbit_email")."\";");
 		}
-		
-		if($user['receivepms'] != 0 && $mybb->settings['enablepms'] != 0 && my_strpos(",".$user['ignorelist'].",", ",".$mybb->user['uid'].",") === false)
+
+		if($user['receivepms'] != 0 && $mybb->settings['enablepms'] != 0 && my_strpos(",".$user['ignorelist'].",", ",".$mybb->user['uid'].",") === FALSE)
 		{
 			eval("\$pmcode = \"".$templates->get("postbit_pm")."\";");
 		}
-		
+
 		$bgcolor = alt_trow();
 
 		// If the current group is a moderator group
@@ -150,9 +150,9 @@ foreach($usergroups as $usergroup)
 		else
 		{
 			eval("\$usergrouprows .= \"".$templates->get("showteam_usergroup_user")."\";");
-		}	
+		}
 	}
-	
+
 	if($modrows && $usergroup['gid'] == 6)
 	{
 		eval("\$grouplist .= \"".$templates->get("showteam_moderators")."\";");

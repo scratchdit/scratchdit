@@ -7,12 +7,12 @@
 
 var Peeker = Class.create();
 Peeker.prototype = {
-	
+
     controller: null,
     domain: null,
     match: null,
     is_nodelist: null,
-	
+
     /**
      * Checks the controller and shows/hide
      */
@@ -39,13 +39,13 @@ Peeker.prototype = {
     		this.domain.style.display = (type.match(this.match)) ? '' : 'none';
 		}
 	},
-	
+
 	/**
 	 * Constructor
 	 * @param string ID of the controlling select menu
 	 * @param string ID of the thing to show/hide
 	 * @param regexp If this regexp matches value of the select menu, then the 'thing' will be shown
-	 * @param boolean Should be set to true for radio/checkboxes
+	 * @param boolean Should be set to TRUE for radio/checkboxes
 	 */
 	initialize: function(controller, domain, match, is_nodelist)
 	{
@@ -58,7 +58,7 @@ Peeker.prototype = {
                 this.domain = domain;
                 this.match = match;
                 this.is_nodelist = is_nodelist;
-                
+
                 for(i = 0; i < controller.length; i++)
                 {
            			if(controller[i].getAttribute("id") != null)
@@ -76,7 +76,7 @@ Peeker.prototype = {
             this.domain = domain;
             this.match = match;
             this.is_nodelist = is_nodelist;
-            
+
             Event.observe(controller, "change", this.check.bindAsEventListener(this));
             this.check();
 		}

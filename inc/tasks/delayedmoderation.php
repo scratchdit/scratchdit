@@ -12,10 +12,10 @@
 function task_delayedmoderation($task)
 {
 	global $db, $lang;
-	
+
 	require_once MYBB_ROOT."inc/class_moderation.php";
 	$moderation = new Moderation;
-	
+
 	require_once MYBB_ROOT."inc/class_custommoderation.php";
 	$custommod = new CustomModeration;
 
@@ -25,7 +25,7 @@ function task_delayedmoderation($task)
 	{
 		$tids = explode(',', $delayedmoderation['tids']);
 		$input = unserialize($delayedmoderation['inputs']);
-		
+
 		if(my_strpos($delayedmoderation['type'], "modtool") !== false)
 		{
 			list(, $custom_id) = explode('_', $delayedmoderation['type'], 2);
@@ -49,12 +49,12 @@ function task_delayedmoderation($task)
 							$open_tids[] = $thread['tid'];
 						}
 					}
-					
+
 					if(!empty($closed_tids))
 					{
 						$moderation->open_threads($closed_tids);
 					}
-					
+
 					if(!empty($open_tids))
 					{
 						$moderation->close_threads($open_tids);
@@ -86,12 +86,12 @@ function task_delayedmoderation($task)
 							$unstuck_tids[] = $thread['tid'];
 						}
 					}
-					
+
 					if(!empty($stuck_tids))
 					{
 						$moderation->unstick_threads($stuck_tids);
 					}
-					
+
 					if(!empty($unstuck_tids))
 					{
 						$moderation->stick_threads($unstuck_tids);
@@ -102,23 +102,23 @@ function task_delayedmoderation($task)
 					{
 						continue;
 					}
-					
+
 					// explode at # sign in a url (indicates a name reference) and reassign to the url
 					$realurl = explode("#", $input['threadurl']);
 					$input['threadurl'] = $realurl[0];
-					
+
 					// Are we using an SEO URL?
 					if(substr($input['threadurl'], -4) == "html")
 					{
 						// Get thread to merge's tid the SEO way
 						preg_match("#thread-([0-9]+)?#i", $input['threadurl'], $threadmatch);
 						preg_match("#post-([0-9]+)?#i", $input['threadurl'], $postmatch);
-						
+
 						if($threadmatch[1])
 						{
 							$parameters['tid'] = $threadmatch[1];
 						}
-						
+
 						if($postmatch[1])
 						{
 							$parameters['pid'] = $postmatch[1];
@@ -144,7 +144,7 @@ function task_delayedmoderation($task)
 							$parameters[$temp2[0]] = $temp2[1];
 						}
 					}
-					
+
 					if($parameters['pid'] && !$parameters['tid'])
 					{
 						$query = $db->simple_select("posts", "*", "pid='".intval($parameters['pid'])."'");
@@ -155,23 +155,23 @@ function task_delayedmoderation($task)
 					{
 						$mergetid = $parameters['tid'];
 					}
-					
+
 					$mergetid = intval($mergetid);
-					
+
 					$query = $db->simple_select("threads", "*", "tid='".intval($mergetid)."'");
 					$mergethread = $db->fetch_array($query);
-					
+
 					if(!$mergethread['tid'])
 					{
 						continue;
 					}
-					
+
 					if($mergetid == $delayedmoderation['tid'])
 					{
 						// sanity check
 						continue;
 					}
-					
+
 					if($input['subject'])
 					{
 						$subject = $input['subject'];
@@ -191,7 +191,7 @@ function task_delayedmoderation($task)
 					}
 					break;
 				case "removesubscriptions":
-					$moderation->remove_thread_subscriptions($tids, true);
+					$moderation->remove_thread_subscriptions($tids, TRUE);
 					break;
 				case "approveunapprovethread":
 					$approved_tids = $unapproved_tids = array();
@@ -207,12 +207,12 @@ function task_delayedmoderation($task)
 							$unapproved_tids[] = $thread['tid'];
 						}
 					}
-					
+
 					if(!empty($approved_tids))
 					{
 						$moderation->unapprove_threads($approved_tids);
 					}
-					
+
 					if(!empty($unapproved_tids))
 					{
 						$moderation->approve_threads($unapproved_tids);
@@ -220,10 +220,10 @@ function task_delayedmoderation($task)
 					break;
 			}
 		}
-		
+
 		$db->delete_query("delayedmoderation", "did='{$delayedmoderation['did']}'");
 	}
-	
+
 	add_task_log($task, $lang->task_delayedmoderation_ran);
 }
 ?>

@@ -31,7 +31,7 @@
 if(!defined("IN_MYBB"))
 {
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
-} 
+}
 
 class Page extends DefaultPage
 {
@@ -67,7 +67,7 @@ class Page extends DefaultPage
 		$tabs = $plugins->run_hooks("admin_page_output_nav_tabs_start", $tabs);
 		if(count($tabs) > 1)
 		{
-			$first = true;
+			$first = TRUE;
 			echo "<div class=\"nav_tabs\">";
 			echo "\t<ul>\n";
 			foreach($tabs as $id => $tab)

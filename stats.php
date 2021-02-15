@@ -49,7 +49,7 @@ $threadsperday = my_number_format(round(($stats['numthreads'] / $days), 2));
 $membersperday = my_number_format(round(($stats['numusers'] / $days), 2));
 
 // Get forum permissions
-$unviewableforums = get_unviewable_forums(true);
+$unviewableforums = get_unviewable_forums(TRUE);
 $fidnot = '1=1';
 $unviewableforumsarray = array();
 if($unviewableforums)
@@ -64,7 +64,7 @@ $most_replied = $cache->read("most_replied_threads");
 if(!$most_replied)
 {
 	$cache->update_most_replied_threads();
-	$most_replied = $cache->read("most_replied_threads", true);
+	$most_replied = $cache->read("most_replied_threads", TRUE);
 }
 
 if(!empty($most_replied))
@@ -88,7 +88,7 @@ $most_viewed = $cache->read("most_viewed_threads");
 if(!$most_viewed)
 {
 	$cache->update_most_viewed_threads();
-	$most_viewed = $cache->read("most_viewed_threads", true);
+	$most_viewed = $cache->read("most_viewed_threads", TRUE);
 }
 
 if(!empty($most_viewed))

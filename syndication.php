@@ -50,7 +50,7 @@ else
 }
 
 // Get the forums the user is not allowed to see.
-$unviewableforums = get_unviewable_forums(true);
+$unviewableforums = get_unviewable_forums(TRUE);
 $inactiveforums = get_inactive_forums();
 
 $unviewable = '';
@@ -135,7 +135,7 @@ while($thread = $db->fetch_array($query))
 {
 	$items[$thread['tid']] = array(
 		"title" => $parser->parse_badwords($thread['subject']),
-		"link" => $channel['link'].get_thread_link($thread['tid']),        
+		"link" => $channel['link'].get_thread_link($thread['tid']),
 		"date" => $thread['dateline'],
 	);
 
@@ -145,7 +145,7 @@ while($thread = $db->fetch_array($query))
 if(!empty($firstposts))
 {
 	$firstpostlist = "pid IN(".$db->escape_string(implode(',', $firstposts)).")";
-	$query = $db->simple_select("posts", "message, edittime, tid, fid, pid", $firstpostlist, array('order_by' => 'dateline', 'order_dir' => 'desc'));    
+	$query = $db->simple_select("posts", "message, edittime, tid, fid, pid", $firstpostlist, array('order_by' => 'dateline', 'order_dir' => 'desc'));
 	while($post = $db->fetch_array($query))
 	{
 		$parser_options = array(
@@ -156,9 +156,9 @@ if(!empty($firstposts))
 			"allow_videocode" => $forumcache[$post['fid']]['allowvideocode'],
 			"filter_badwords" => 1
 		);
-		
+
 		$parsed_message = $parser->parse_message($post['message'], $parser_options);
-		
+
 		$query2 = $db->simple_select("attachments", "*", "pid=".$post['pid']);
 		while($attachment = $db->fetch_array($query2))
 		{
@@ -176,7 +176,7 @@ if(!empty($firstposts))
 				$parsed_message .= "<br />".$attbit;
 			}
 		}
-		
+
 		$items[$post['tid']]['description'] = $parsed_message;
 		$items[$post['tid']]['updated'] = $post['edittime'];
 		$feedgenerator->add_item($items[$post['tid']]);

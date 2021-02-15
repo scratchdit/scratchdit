@@ -136,7 +136,7 @@ class DB_MySQL
 	 * Connect to the database server.
 	 *
 	 * @param  array Array of DBMS connection details.
-	 * @return resource The DB connection resource. Returns false on fail or -1 on a db connect failure.
+	 * @return resource The DB connection resource. Returns FALSE on fail or -1 on a db connect failure.
 	 */
 	function connect($config)
 	{
@@ -239,7 +239,7 @@ class DB_MySQL
 	 * Selects the database to use.
 	 *
 	 * @param  string The database name.
-	 * @return boolean True when successfully connected, false if not.
+	 * @return boolean TRUE when successfully connected, FALSE if not.
 	 */
 	function select_db($database)
 	{
@@ -600,7 +600,7 @@ class DB_MySQL
 	 * Check if a table exists in a database.
 	 *
 	 * @param  string The table name.
-	 * @return boolean True when exists, false if not.
+	 * @return boolean TRUE when exists, FALSE if not.
 	 */
 	function table_exists($table)
 	{
@@ -625,7 +625,7 @@ class DB_MySQL
 	 *
 	 * @param  string The field name.
 	 * @param  string The table name.
-	 * @return boolean True when exists, false if not.
+	 * @return boolean TRUE when exists, FALSE if not.
 	 */
 	function field_exists($field, $table)
 	{
@@ -851,7 +851,7 @@ class DB_MySQL
 	 * Frees the resources of a MySQLi query.
 	 *
 	 * @param  object The query to destroy.
-	 * @return boolean Returns true on success, false on faliure
+	 * @return boolean Returns TRUE on success, FALSE on faliure
 	 */
 	function free_result($query)
 	{
@@ -952,7 +952,7 @@ class DB_MySQL
 	 *
 	 * @param  string The name of the table.
 	 * @param  string Optionally specify the name of the index.
-	 * @return boolean True or false if the table has a fulltext index or not.
+	 * @return boolean TRUE or FALSE if the table has a fulltext index or not.
 	 */
 	function is_fulltext($table, $index="")
 	{
@@ -979,7 +979,7 @@ class DB_MySQL
 	 * Returns whether or not this database engine supports fulltext indexing.
 	 *
 	 * @param  string The table to be checked.
-	 * @return boolean True or false if supported or not.
+	 * @return boolean TRUE or FALSE if supported or not.
 	 */
 
 
@@ -1034,7 +1034,7 @@ class DB_MySQL
 	 * Returns whether or not this database engine supports boolean fulltext matching.
 	 *
 	 * @param  string The table to be checked.
-	 * @return boolean True or false if supported or not.
+	 * @return boolean TRUE or FALSE if supported or not.
 	 */
 	function supports_fulltext_boolean($table)
 	{
@@ -1057,10 +1057,8 @@ class DB_MySQL
 	 */
 	function create_fulltext_index($table, $column, $name="")
 	{
-		$this->write_query("
-			ALTER TABLE {$this->table_prefix}$table
-			ADD FULLTEXT $name ($column)
-		");
+		$this->write_query("ALTERTABLE {$this->table_prefix}$table
+			ADD FULLTEXT $name ($column)");
 	}
 
 
@@ -1222,7 +1220,7 @@ class DB_MySQL
 	/**
 	 * Fetch a list of database character sets this DBMS supports
 	 *
-	 * @return array Array of supported character sets with array key being the name, array value being display name. False if unsupported
+	 * @return array Array of supported character sets with array key being the name, array value being display name. FALSE if unsupported
 	 */
 	function fetch_db_charsets()
 	{
@@ -1275,7 +1273,7 @@ class DB_MySQL
 	 * Fetch a database collation for a particular database character set
 	 *
 	 * @param  string The database character set
-	 * @return string The matching database collation, false if unsupported
+	 * @return string The matching database collation, FALSE if unsupported
 	 */
 	function fetch_charset_collation($charset)
 	{

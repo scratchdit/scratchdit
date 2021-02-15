@@ -18,7 +18,7 @@ if(!defined("IN_MYBB"))
 {
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
- 
+
 /** Text_Diff_Renderer */
 require_once MYBB_ROOT.'inc/3rdparty/diff/Diff/Renderer.php';
 
@@ -83,7 +83,7 @@ class Text_Diff_Renderer_inline extends Text_Diff_Renderer {
         return $header;
     }
 
-    function _lines($lines, $prefix = ' ', $encode = true)
+    function _lines($lines, $prefix = ' ', $encode = TRUE)
     {
         if ($encode) {
             array_walk($lines, array(&$this, '_encode'));

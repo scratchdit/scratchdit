@@ -166,7 +166,7 @@ if(!file_exists(MYBB_ROOT."inc/settings.php") || !$settings)
 			"order_by" => "title",
 			"order_dir" => "ASC"
 		);
-		
+
 		$query = $db->simple_select("settings", "value, name", "", $options);
 		while($setting = $db->fetch_array($query))
 		{
@@ -200,7 +200,7 @@ $mybb->settings = &$settings;
 $mybb->parse_cookies();
 $mybb->cache = &$cache;
 
-if($mybb->use_shutdown == true)
+if($mybb->use_shutdown == TRUE)
 {
 	register_shutdown_function('run_shutdown');
 }

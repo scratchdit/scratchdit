@@ -65,9 +65,9 @@ function build_mass_mail_query($conditions)
 		{
 			$conditions['usergroup'] = array($conditions['usergroup']);
 		}
-		
+
 		$conditions['usergroup'] = array_map('intval', $conditions['usergroup']);
-		
+
 		foreach($conditions['usergroup'] as $usergroup)
 		{
 			switch($db->type)
@@ -173,7 +173,7 @@ function make_pretty_links($message_html)
 		$replaced_link = $contents." ({$link}) ";
 
 		$message_html = substr_replace($message_html, $replaced_link, $start, ($end-$start));
-	} while(true);
+	} while(TRUE);
 	return $message_html;
 }
 

@@ -12,7 +12,7 @@
 function task_threadviews($task)
 {
 	global $mybb, $db, $lang;
-	
+
 	$threadviews = array();
 
 	if($mybb->settings['delayedthreadviews'] != 1)
@@ -28,11 +28,11 @@ function task_threadviews($task)
 	");
 	while($threadview = $db->fetch_array($query))
 	{
-		$db->update_query("threads", array('views' => "views+{$threadview['views']}"), "tid='{$threadview['tid']}'", 1, true);
+		$db->update_query("threads", array('views' => "views+{$threadview['views']}"), "tid='{$threadview['tid']}'", 1, TRUE);
 	}
-	
+
 	$db->write_query("TRUNCATE TABLE ".TABLE_PREFIX."threadviews");
-	
+
 	add_task_log($task, $lang->task_threadviews_ran);
 }
 ?>
