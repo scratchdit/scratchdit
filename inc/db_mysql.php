@@ -145,20 +145,20 @@ class DB_MySQL
 		if(array_key_exists('hostname', $config)) {
 			$connections['read'][] = $config;
 		}
-		// Connecting to more than one server
+
 		else
-		{
-			// Specified multiple servers, but no specific read/write servers
-			if(!array_key_exists('read', $config)) {
+		{// Connecting to more than one server
+
+			if(!array_key_exists('read', $config)) {// Specified multiple servers, but no specific read/write servers
 				foreach($config as $key => $settings)
 				{
 					if(is_int($key)) { $connections['read'][] = $settings;
 					}
 				}
 			}
-			// Specified both read & write servers
+
 			else
-			{
+			{// Specified both read & write servers
 				$connections = $config;
 			}
 		}
@@ -239,7 +239,8 @@ class DB_MySQL
 	/**
 	 * Selects the database to use.
 	 *
-	 * @param  string The database name.
+	 * @param string The database name.
+	 *
 	 * @return boolean TRUE when successfully connected, FALSE if not.
 	 */
 	function select_db($database)
