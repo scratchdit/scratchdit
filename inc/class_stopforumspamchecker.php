@@ -22,31 +22,31 @@ class StopForumSpamChecker
 	/**
 	 * @var pluginSystem
 	 */
-	private $plugins = null;
+	private $plugins = NULL;
 	/**
 	 * The minimum weighting before a user is considered to be a spammer.
 	 *
 	 * @var double
 	 */
-	private $min_weighting_before_spam = null;
+	private $min_weighting_before_spam = NULL;
 	/**
-	 * Whether to check usernames against StopForumSPam. If set to false, the username weighting won't be used.
+	 * Whether to check usernames against StopForumSPam. If set to FALSE, the username weighting won't be used.
 	 *
 	 * @var bool
 	 */
-	private $check_usernames = false;
+	private $check_usernames = FALSE;
 	/**
-	 * Whether to check email addresses against StopForumSPam. If set to false, the username weighting won't be used.
+	 * Whether to check email addresses against StopForumSPam. If set to FALSE, the username weighting won't be used.
 	 *
 	 * @var bool
 	 */
-	private $check_emails = true;
+	private $check_emails = TRUE;
 	/**
-	 * Whether to check IP addresses against StopForumSPam. If set to false, the username weighting won't be used.
+	 * Whether to check IP addresses against StopForumSPam. If set to FALSE, the username weighting won't be used.
 	 *
 	 * @var bool
 	 */
-	private $check_ips = true;
+	private $check_ips = TRUE;
 	/**
 	 * Whether to log whenever a user is found to be a spammer.
 	 *
@@ -63,7 +63,7 @@ class StopForumSpamChecker
 	 * @param bool         $check_emails              Whether to check email address against StopForumSpam.
 	 * @param bool         $check_ips                 Whether to check IP addresses against StopForumSpam.
 	 */
-	public function __construct(&$plugins, $min_weighting_before_spam = 50.00, $check_usernames = false, $check_emails = true, $check_ips = true, $log_blocks = true)
+	public function __construct(&$plugins, $min_weighting_before_spam = 50.00, $check_usernames = FALSE, $check_emails = TRUE, $check_ips = TRUE, $log_blocks = TRUE)
 	{
 		$this->plugins                   = $plugins;
 		$this->min_weighting_before_spam = (double)$min_weighting_before_spam;
@@ -84,7 +84,7 @@ class StopForumSpamChecker
 	 */
 	public function is_user_a_spammer($username = '', $email = '', $ip_address = '')
 	{
-		$is_spammer = false;
+		$is_spammer = FALSE;
 		$checknum = $confidence = 0;
 
 		if(!filter_var($email, FILTER_VALIDATE_EMAIL))
@@ -105,7 +105,7 @@ class StopForumSpamChecker
 
 		if($is_internal_ip)
 		{
-			return false;
+			return FALSE;
 		}
 
 		$username_encoded = urlencode($username);
@@ -115,11 +115,11 @@ class StopForumSpamChecker
 
 		$result = fetch_remote_file($check_url);
 
-		if($result !== false)
+		if($result !== FALSE)
 		{
 			$result_json = @json_decode($result);
 
-			if($result_json != null && !isset($result_json->error))
+			if($result_json != NULL && !isset($result_json->error))
 			{
 				if($this->check_usernames && $result_json->username->appears)
 				{
@@ -146,7 +146,7 @@ class StopForumSpamChecker
 
 				if($confidence > $this->min_weighting_before_spam)
 				{
-					$is_spammer = true;
+					$is_spammer = TRUE;
 				}
 			}
 			else

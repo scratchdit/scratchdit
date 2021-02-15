@@ -7,7 +7,7 @@
 // will style strings that match the selection throughout the
 // document.
 //
-// The option can be set to true to simply enable it, or to a
+// The option can be set to TRUE to simply enable it, or to a
 // {minChars, style, wordsOnly, showToken, delay} object to explicitly
 // configure it. minChars is the minimum amount of characters that should be
 // selected for the behavior to occur, and style is the token style to
@@ -37,28 +37,28 @@
     style: "matchhighlight",
     minChars: 2,
     delay: 100,
-    wordsOnly: false,
-    annotateScrollbar: false,
-    showToken: false,
-    trim: true
+    wordsOnly: FALSE,
+    annotateScrollbar: FALSE,
+    showToken: FALSE,
+    trim: TRUE
   }
 
   function State(options) {
     this.options = {}
     for (var name in defaults) {
       this.options[name] = (options && options.hasOwnProperty(name) ? options : defaults)[name]
-    this.overlay         = this.timeout = null;
+    this.overlay         = this.timeout = NULL;
     }
 
-    this.matchesonscroll = null;
-    this.active          = false;
+    this.matchesonscroll = NULL;
+    this.active          = FALSE;
   }
 
-  CodeMirror.defineOption("highlightSelectionMatches", false, function(cm, val, old) {
+  CodeMirror.defineOption("highlightSelectionMatches", FALSE, function(cm, val, old) {
     if (old && old != CodeMirror.Init) {
       removeOverlay(cm);
       clearTimeout(cm.state.matchHighlighter.timeout);
-      cm.state.matchHighlighter = null;
+      cm.state.matchHighlighter = NULL;
       cm.off("cursorActivity", cursorActivity);
       cm.off("focus", onFocus)
     }
@@ -66,7 +66,7 @@
     if (val) {
       var state = cm.state.matchHighlighter = new State(val);
       if (cm.hasFocus()) {
-        state.active = true
+        state.active = TRUE
         highlightMatches(cm)
       } else {
         cm.on("focus", onFocus)
@@ -85,7 +85,7 @@
   function onFocus(cm) {
     var state = cm.state.matchHighlighter
     if (!state.active) {
-      state.active = true
+      state.active = TRUE
       scheduleHighlight(cm, state)
     }
   }
@@ -100,7 +100,7 @@
     cm.addOverlay(state.overlay = makeOverlay(query, hasBoundary, style));
     if (state.options.annotateScrollbar && cm.showMatchesOnScrollbar) {
       var searchFor         = hasBoundary ? new RegExp("\\b" + query + "\\b") : query;
-      state.matchesonscroll = cm.showMatchesOnScrollbar(searchFor, false,
+      state.matchesonscroll = cm.showMatchesOnScrollbar(searchFor, FALSE,
         {className: "CodeMirror-selection-highlight-scrollbar"});
     }
   }
@@ -109,10 +109,10 @@
     var state = cm.state.matchHighlighter;
     if (state.overlay) {
       cm.removeOverlay(state.overlay);
-      state.overlay = null;
+      state.overlay = NULL;
       if (state.matchesonscroll) {
         state.matchesonscroll.clear();
-        state.matchesonscroll = null;
+        state.matchesonscroll = NULL;
       }
     }
   }
@@ -122,7 +122,7 @@
       var state = cm.state.matchHighlighter;
       removeOverlay(cm);
       if (!cm.somethingSelected() && state.options.showToken) {
-        var re  = state.options.showToken === true ? /[\w$]/ : state.options.showToken;
+        var re  = state.options.showToken === TRUE ? /[\w$]/ : state.options.showToken;
         var cur = cm.getCursor(), line = cm.getLine(cur.line), start = cur.ch, end = start;
         while (start && re.test(line.charAt(start - 1))) { --start;
         }
@@ -147,7 +147,7 @@
       var selection = cm.getRange(from, to)
       if (state.options.trim) { selection = selection.replace(/^\s+|\s+$/g, "")
       if (selection.length >= state.options.minChars) {
-        addOverlay(cm, selection, false, state.options.style);
+        addOverlay(cm, selection, FALSE, state.options.style);
       }
       }
     });
@@ -155,23 +155,23 @@
 
   function isWord(cm, from, to) {
     var str = cm.getRange(from, to);
-    if (str.match(/^\w+$/) !== null) {
+    if (str.match(/^\w+$/) !== NULL) {
         if (from.ch > 0) {
             var pos = {line: from.line, ch: from.ch - 1};
             var chr = cm.getRange(pos, from);
-            if (chr.match(/\W/) === null) { return false;
+            if (chr.match(/\W/) === NULL) { return FALSE;
             }
         }
 
         if (to.ch < cm.getLine(from.line).length) {
             var pos = {line: to.line, ch: to.ch + 1};
             var chr = cm.getRange(to, pos);
-            if (chr.match(/\W/) === null) { return false;
+            if (chr.match(/\W/) === NULL) { return FALSE;
             }
         }
 
-        return true;
-    } else { return false;
+        return TRUE;
+    } else { return FALSE;
     }
   }
 

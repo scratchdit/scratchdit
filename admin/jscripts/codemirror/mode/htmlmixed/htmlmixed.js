@@ -16,13 +16,13 @@
       ["lang", /(javascript|babel)/i, "javascript"],
       ["type", /^(?:text|application)\/(?:x-)?(?:java|ecma)script$|^module$|^$/i, "javascript"],
       ["type", /./, "text/plain"],
-      [null, null, "javascript"]
+      [NULL, NULL, "javascript"]
     ],
     style:  [
       ["lang", /^css$/i, "css"],
       ["type", /^(text\/)?(x-)?(stylesheet|css)$/i, "css"],
       ["type", /./, "text/plain"],
-      [null, null, "css"]
+      [NULL, NULL, "css"]
     ]
   };
 
@@ -32,7 +32,7 @@
       stream.backUp(cur.length - close);
     } else if (cur.match(/<\/?$/)) {
       stream.backUp(cur.length);
-      if (!stream.match(pat, false)) stream.match(cur);
+      if (!stream.match(pat, FALSE)) stream.match(cur);
     }
     return style;
   }
@@ -72,7 +72,7 @@
   CodeMirror.defineMode("htmlmixed", function (config, parserConfig) {
     var htmlMode = CodeMirror.getMode(config, {
       name: "xml",
-      htmlMode: true,
+      htmlMode: TRUE,
       multilineTagIndentFactor: parserConfig.multilineTagIndentFactor,
       multilineTagIndentPastTag: parserConfig.multilineTagIndentPastTag
     });
@@ -92,15 +92,15 @@
         state.inTag = tagName + " "
       } else if (state.inTag && tag && />$/.test(stream.current())) {
         var inTag = /^([\S]+) (.*)/.exec(state.inTag)
-        state.inTag = null
+        state.inTag = NULL
         var modeSpec = stream.current() == ">" && findMatchingMode(tags[inTag[1]], inTag[2])
         var mode = CodeMirror.getMode(config, modeSpec)
-        var endTagA = getTagRegexp(inTag[1], true), endTag = getTagRegexp(inTag[1], false);
+        var endTagA = getTagRegexp(inTag[1], TRUE), endTag = getTagRegexp(inTag[1], FALSE);
         state.token = function (stream, state) {
-          if (stream.match(endTagA, false)) {
+          if (stream.match(endTagA, FALSE)) {
             state.token = html;
-            state.localState = state.localMode = null;
-            return null;
+            state.localState = state.localMode = NULL;
+            return NULL;
           }
           return maybeBackup(stream, endTag, state.localMode.token(stream, state.localState));
         };
@@ -116,7 +116,7 @@
     return {
       startState: function () {
         var state = CodeMirror.startState(htmlMode);
-        return {token: html, inTag: null, localMode: null, localState: null, htmlState: state};
+        return {token: html, inTag: NULL, localMode: NULL, localState: NULL, htmlState: state};
       },
 
       copyState: function (state) {

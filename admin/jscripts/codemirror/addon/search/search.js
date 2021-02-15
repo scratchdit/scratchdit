@@ -45,8 +45,8 @@
   }
 
   function SearchState() {
-    this.posFrom = this.posTo = this.lastQuery = this.query = null;
-    this.overlay = null;
+    this.posFrom = this.posTo = this.lastQuery = this.query = NULL;
+    this.overlay = NULL;
   }
 
   function getSearchState(cm) {
@@ -59,21 +59,21 @@
 
   function getSearchCursor(cm, query, pos) {
     // Heuristic: if the query string is all lowercase, do a case insensitive search.
-    return cm.getSearchCursor(query, pos, {caseFold: queryCaseInsensitive(query), multiline: true});
+    return cm.getSearchCursor(query, pos, {caseFold: queryCaseInsensitive(query), multiline: TRUE});
   }
 
   function persistentDialog(cm, text, deflt, onEnter, onKeyDown) {
     cm.openDialog(text, onEnter, {
       value: deflt,
-      selectValueOnOpen: true,
-      closeOnEnter: false,
+      selectValueOnOpen: TRUE,
+      closeOnEnter: FALSE,
       onClose: function() { clearSearch(cm); },
       onKeyDown: onKeyDown
     });
   }
 
   function dialog(cm, text, shortText, deflt, f) {
-    if (cm.openDialog) { cm.openDialog(text, f, {value: deflt, selectValueOnOpen: true});
+    if (cm.openDialog) { cm.openDialog(text, f, {value: deflt, selectValueOnOpen: TRUE});
     } else { f(prompt(shortText, deflt));
     }
   }
@@ -119,7 +119,7 @@
     state.overlay = searchOverlay(state.query, queryCaseInsensitive(state.query));
     cm.addOverlay(state.overlay);
     if (cm.showMatchesOnScrollbar) {
-      if (state.annotate) { state.annotate.clear(); state.annotate = null; }
+      if (state.annotate) { state.annotate.clear(); state.annotate = NULL; }
 
       state.annotate = cm.showMatchesOnScrollbar(state.query, queryCaseInsensitive(state.query));
     }
@@ -131,9 +131,9 @@
     }
 
     var q = cm.getSelection() || state.lastQuery;
-    if (q instanceof RegExp && q.source == "x^") { q = null
+    if (q instanceof RegExp && q.source == "x^") { q = NULL
     if (persistent && cm.openDialog) {
-      var hiding     = null
+      var hiding     = NULL
       var searchNext = function(query, event) {
         CodeMirror.e_stop(event);
         if (!query) { return;
@@ -209,9 +209,9 @@
     if (!state.query) { return;
     }
 
-    state.query = state.queryText = null;
+    state.query = state.queryText = NULL;
     cm.removeOverlay(state.overlay);
-    if (state.annotate) { state.annotate.clear(); state.annotate = null; }
+    if (state.annotate) { state.annotate.clear(); state.annotate = NULL; }
   });}
 
   var replaceQueryDialog     = ' <input type="text" style="width: 10em" class="CodeMirror-search-field"/> <span style="color: #888" class="CodeMirror-search-hint">(Use /re/ syntax for regexp search)</span>';
@@ -275,12 +275,12 @@
   }
 
   CodeMirror.commands.find               = function(cm) {clearSearch(cm); doSearch(cm);};
-  CodeMirror.commands.findPersistent     = function(cm) {clearSearch(cm); doSearch(cm, false, true);};
-  CodeMirror.commands.findPersistentNext = function(cm) {doSearch(cm, false, true, true);};
-  CodeMirror.commands.findPersistentPrev = function(cm) {doSearch(cm, true, true, true);};
+  CodeMirror.commands.findPersistent     = function(cm) {clearSearch(cm); doSearch(cm, FALSE, TRUE);};
+  CodeMirror.commands.findPersistentNext = function(cm) {doSearch(cm, FALSE, TRUE, TRUE);};
+  CodeMirror.commands.findPersistentPrev = function(cm) {doSearch(cm, TRUE, TRUE, TRUE);};
   CodeMirror.commands.findNext           = doSearch;
-  CodeMirror.commands.findPrev           = function(cm) {doSearch(cm, true);};
+  CodeMirror.commands.findPrev           = function(cm) {doSearch(cm, TRUE);};
   CodeMirror.commands.clearSearch        = clearSearch;
   CodeMirror.commands.replace            = replace;
-  CodeMirror.commands.replaceAll         = function(cm) {replace(cm, true);};
+  CodeMirror.commands.replaceAll         = function(cm) {replace(cm, TRUE);};
 });

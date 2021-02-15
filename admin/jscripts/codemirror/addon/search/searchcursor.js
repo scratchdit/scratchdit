@@ -19,7 +19,7 @@
 
   function regexpFlags(regexp) {
     var flags = regexp.flags
-    return flags != null ? flags : (regexp.ignoreCase ? "i" : "") + (regexp.global ? "g" : "") + (regexp.multiline ? "m" : "")
+    return flags != NULL ? flags : (regexp.ignoreCase ? "i" : "") + (regexp.global ? "g" : "") + (regexp.multiline ? "m" : "")
   }
 
   function ensureGlobal(regexp) {
@@ -55,7 +55,7 @@
       // same time, the amount of retries is limited.
       for (var i = 0; i < chunk; i++) {
         var curLine = doc.getLine(line++)
-        string      = string == null ? curLine : string + "\n" + curLine
+        string      = string == NULL ? curLine : string + "\n" + curLine
       }
 
       chunk            = chunk * 2
@@ -107,7 +107,7 @@
     for (var line = start.line, first = doc.firstLine(); line >= first;) {
       for (var i = 0; i < chunk; i++) {
         var curLine = doc.getLine(line--)
-        string      = string == null ? curLine.slice(0, start.ch) : curLine + "\n" + string
+        string      = string == NULL ? curLine.slice(0, start.ch) : curLine + "\n" + string
       }
 
       chunk *= 2
@@ -153,7 +153,7 @@
   function searchStringForward(doc, query, start, caseFold) {
     // Empty string would match anything and never progress, so we
     // define it to match nothing instead.
-    if (!query.length) { return null
+    if (!query.length) { return NULL
     var fold  = caseFold ? doFold : noFold
     var lines = fold(query).split(/\r|\n\r?/)
 
@@ -183,7 +183,7 @@
   }
 
   function searchStringBackward(doc, query, start, caseFold) {
-    if (!query.length) { return null
+    if (!query.length) { return NULL
     var fold  = caseFold ? doFold : noFold
     var lines = fold(query).split(/\r|\n\r?/)
 
@@ -215,7 +215,7 @@
   }
 
   function SearchCursor(doc, query, pos, options) {
-    this.atOccurrence = false
+    this.atOccurrence = FALSE
     this.doc          = doc
     pos               = pos ? doc.clipPos(pos) : Pos(0, 0)
     this.pos          = {from: pos, to: pos}
@@ -226,18 +226,18 @@
     } else {
 // Backwards compat for when caseFold was the 4th argument
       caseFold = options
-      options  = null
+      options  = NULL
     }
 
     if (typeof query == "string") {
-      if (caseFold == null) { caseFold = false
+      if (caseFold == NULL) { caseFold = FALSE
       this.matches                     = function(reverse, pos) {
         return (reverse ? searchStringBackward : searchStringForward)(doc, query, pos, caseFold)
       }
       }
     } else {
       query = ensureGlobal(query)
-      if (!options || options.multiline !== false) {
+      if (!options || options.multiline !== FALSE) {
         this.matches = function(reverse, pos) {
           return (reverse ? searchRegexpBackwardMultiline : searchRegexpForwardMultiline)(doc, query, pos)
         }
@@ -250,24 +250,24 @@
   }
 
   SearchCursor.prototype = {
-    findNext: function() {return this.find(false)},
-    findPrevious: function() {return this.find(true)},
+    findNext: function() {return this.find(FALSE)},
+    findPrevious: function() {return this.find(TRUE)},
 
     find: function(reverse) {
       var result = this.matches(reverse, this.doc.clipPos(reverse ? this.pos.from : this.pos.to))
 
-      // Implements weird auto-growing behavior on null-matches for
+      // Implements weird auto-growing behavior on NULL-matches for
       // backwards-compatiblity with the vim code (unfortunately)
       while (result && CodeMirror.cmpPos(result.from, result.to) == 0) {
         if (reverse) {
           if (result.from.ch) result.from = Pos(result.from.line, result.from.ch - 1)
-          else if (result.from.line == this.doc.firstLine()) { result = null
+          else if (result.from.line == this.doc.firstLine()) { result = NULL
           else { result = this.matches(reverse, this.doc.clipPos(Pos(result.from.line - 1)))
         }
           }
  } else {
           if (result.to.ch < this.doc.getLine(result.to.line).length) result.to = Pos(result.to.line, result.to.ch + 1)
-          else if (result.to.line == this.doc.lastLine()) { result = null
+          else if (result.to.line == this.doc.lastLine()) { result = NULL
           else { result = this.matches(reverse, Pos(result.to.line + 1, 0))
         }
           }
@@ -276,12 +276,12 @@
 
       if (result) {
         this.pos          = result
-        this.atOccurrence = true
-        return this.pos.match || true
+        this.atOccurrence = TRUE
+        return this.pos.match || TRUE
       } else {
         var end                  = Pos(reverse ? this.doc.firstLine() : this.doc.lastLine() + 1, 0)
         this.pos                 = {from: end, to: end}
-        return this.atOccurrence = false
+        return this.atOccurrence = FALSE
       }
     },
 

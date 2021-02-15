@@ -14,7 +14,7 @@ interface DB_Base
 	 * Connect to the database server.
 	 *
 	 * @param array $config Array of DBMS connection details.
-	 * @return resource|PDOStatement|mysqli_result The DB connection resource. Returns false on fail or -1 on a db connect failure.
+	 * @return resource|PDOStatement|mysqli_result The DB connection resource. Returns FALSE on fail or -1 on a db connect failure.
 	 */
 	function connect($config);
 
@@ -62,7 +62,7 @@ interface DB_Base
 	 * @param string $field The name of the field to return.
 	 * @param int|boolean $row The number of the row to fetch it from.
 	 */
-	function fetch_field($query, $field, $row=false);
+	function fetch_field($query, $field, $row=FALSE);
 
 	/**
 	 * Moves internal row pointer to the next row
@@ -142,7 +142,7 @@ interface DB_Base
 	 * Check if a table exists in a database.
 	 *
 	 * @param string $table The table name.
-	 * @return boolean TRUE when exists, false if not.
+	 * @return boolean TRUE when exists, FALSE if not.
 	 */
 	function table_exists($table);
 
@@ -151,7 +151,7 @@ interface DB_Base
 	 *
 	 * @param string $field The field name.
 	 * @param string $table The table name.
-	 * @return boolean TRUE when exists, false if not.
+	 * @return boolean TRUE when exists, FALSE if not.
 	 */
 	function field_exists($field, $table);
 
@@ -202,7 +202,7 @@ interface DB_Base
 	 * @param boolean $no_quote An option to quote incoming values of the array.
 	 * @return resource|PDOStatement|mysqli_result The query data.
 	 */
-	function update_query($table, $array, $where="", $limit="", $no_quote=false);
+	function update_query($table, $array, $where="", $limit="", $no_quote=FALSE);
 
 	/**
 	 * Build a delete query.
@@ -226,7 +226,7 @@ interface DB_Base
 	 * Frees the resources of a query.
 	 *
 	 * @param resource|PDOStatement|mysqli_result $query The query to destroy.
-	 * @return boolean Returns TRUE on success, false on faliure
+	 * @return boolean Returns TRUE on success, FALSE on faliure
 	 */
 	function free_result($query);
 
@@ -280,7 +280,7 @@ interface DB_Base
 	 *
 	 * @param string $table The name of the table.
 	 * @param string $index Optionally specify the name of the index.
-	 * @return boolean TRUE or false if the table has a fulltext index or not.
+	 * @return boolean TRUE or FALSE if the table has a fulltext index or not.
 	 */
 	function is_fulltext($table, $index="");
 
@@ -288,7 +288,7 @@ interface DB_Base
 	 * Returns whether or not this database engine supports fulltext indexing.
 	 *
 	 * @param string $table The table to be checked.
-	 * @return boolean TRUE or false if supported or not.
+	 * @return boolean TRUE or FALSE if supported or not.
 	 */
 	function supports_fulltext($table);
 
@@ -304,7 +304,7 @@ interface DB_Base
 	 * Returns whether or not this database engine supports boolean fulltext matching.
 	 *
 	 * @param string $table The table to be checked.
-	 * @return boolean TRUE or false if supported or not.
+	 * @return boolean TRUE or FALSE if supported or not.
 	 */
 	function supports_fulltext_boolean($table);
 
@@ -332,7 +332,7 @@ interface DB_Base
 	 * @param boolean $hard Hard drop - no checking
 	 * @param boolean $table_prefix Use table prefix?
 	 */
-	function drop_table($table, $hard=false, $table_prefix=TRUE);
+	function drop_table($table, $hard=FALSE, $table_prefix=TRUE);
 
 	/**
 	 * Renames a table
@@ -376,11 +376,11 @@ interface DB_Base
 	 * @param string $table The table
 	 * @param string $column The column name
 	 * @param string $new_definition the new column definition
-	 * @param boolean|string $new_not_null Whether to "drop" or "set" the NOT NULL attribute (no change if false)
-	 * @param boolean|string $new_default_value The new default value, or false to drop the attribute
-	 * @return bool Returns TRUE if all queries are executed successfully or false if one of them failed
+	 * @param boolean|string $new_not_NULL Whether to "drop" or "set" the NOT NULL attribute (no change if FALSE)
+	 * @param boolean|string $new_default_value The new default value, or FALSE to drop the attribute
+	 * @return bool Returns TRUE if all queries are executed successfully or FALSE if one of them failed
 	 */
-	function modify_column($table, $column, $new_definition, $new_not_null=false, $new_default_value=false);
+	function modify_column($table, $column, $new_definition, $new_not_NULL=FALSE, $new_default_value=FALSE);
 
 	/**
 	 * Renames a column
@@ -389,11 +389,11 @@ interface DB_Base
 	 * @param string $old_column The old column name
 	 * @param string $new_column the new column name
 	 * @param string $new_definition the new column definition
-	 * @param boolean|string $new_not_null Whether to "drop" or "set" the NOT NULL attribute (no change if false)
-	 * @param boolean|string $new_default_value The new default value, or false to drop the attribute
+	 * @param boolean|string $new_not_NULL Whether to "drop" or "set" the NOT NULL attribute (no change if FALSE)
+	 * @param boolean|string $new_default_value The new default value, or FALSE to drop the attribute
 	 * @return bool Returns TRUE if all queries are executed successfully
 	 */
-	function rename_column($table, $old_column, $new_column, $new_definition, $new_not_null=false, $new_default_value=false);
+	function rename_column($table, $old_column, $new_column, $new_definition, $new_not_NULL=FALSE, $new_default_value=FALSE);
 
 	/**
 	 * Sets the table prefix used by the simple select, insert, update and delete functions
@@ -413,7 +413,7 @@ interface DB_Base
 	/**
 	 * Fetch a list of database character sets this DBMS supports
 	 *
-	 * @return array|bool Array of supported character sets with array key being the name, array value being display name. False if unsupported
+	 * @return array|bool Array of supported character sets with array key being the name, array value being display name. FALSE if unsupported
 	 */
 	function fetch_db_charsets();
 
@@ -421,7 +421,7 @@ interface DB_Base
 	 * Fetch a database collation for a particular database character set
 	 *
 	 * @param string $charset The database character set
-	 * @return string|bool The matching database collation, false if unsupported
+	 * @return string|bool The matching database collation, FALSE if unsupported
 	 */
 	function fetch_charset_collation($charset);
 

@@ -69,7 +69,7 @@ class Text_Diff {
     {
         return $this->_edits;
     }
-    
+
     /**
      * returns the number of new (added) lines in a given diff.
      *
@@ -89,7 +89,7 @@ class Text_Diff {
         }
         return $count;
     }
-    
+
     /**
      * Returns the number of deleted (removed) lines in a given diff.
      *
@@ -141,16 +141,16 @@ class Text_Diff {
     /**
      * Checks for an empty diff.
      *
-     * @return boolean  True if two sequences were identical.
+     * @return boolean  TRUE if two sequences were identical.
      */
     function isEmpty()
     {
         foreach ($this->_edits as $edit) {
             if (!is_a($edit, 'Text_Diff_Op_copy')) {
-                return false;
+                return FALSE;
             }
         }
-        return true;
+        return TRUE;
     }
 
     /**
@@ -227,7 +227,7 @@ class Text_Diff {
      * @access protected
      *
      * @return string  A directory name which can be used for temp files.
-     *                 Returns false if one could not be found.
+     *                 Returns FALSE if one could not be found.
      */
     function _getTempDir()
     {
@@ -251,9 +251,9 @@ class Text_Diff {
             }
         }
 
-        /* If it is still empty, we have failed, so return false; otherwise
+        /* If it is still empty, we have failed, so return FALSE; otherwise
          * return the directory determined. */
-        return strlen($tmp) ? $tmp : false;
+        return strlen($tmp) ? $tmp : FALSE;
     }
 
     /**
@@ -278,7 +278,7 @@ class Text_Diff {
             trigger_error("Reversed final doesn't match", E_USER_ERROR);
         }
 
-        $prevtype = null;
+        $prevtype = NULL;
         foreach ($this->_edits as $edit) {
             if ($prevtype == get_class($edit)) {
                 trigger_error("Edit sequence is non-optimal", E_USER_ERROR);
@@ -286,7 +286,7 @@ class Text_Diff {
             $prevtype = get_class($edit);
         }
 
-        return true;
+        return TRUE;
     }
 
 }
@@ -375,7 +375,7 @@ class Text_Diff_Op {
  */
 class Text_Diff_Op_copy extends Text_Diff_Op {
 
-    function Text_Diff_Op_copy($orig, $final = false)
+    function Text_Diff_Op_copy($orig, $final = FALSE)
     {
         if (!is_array($final)) {
             $final = $orig;
@@ -403,7 +403,7 @@ class Text_Diff_Op_delete extends Text_Diff_Op {
     function Text_Diff_Op_delete($lines)
     {
         $this->orig = $lines;
-        $this->final = false;
+        $this->final = FALSE;
     }
 
     function &reverse()
@@ -425,7 +425,7 @@ class Text_Diff_Op_add extends Text_Diff_Op {
     function Text_Diff_Op_add($lines)
     {
         $this->final = $lines;
-        $this->orig = false;
+        $this->orig = FALSE;
     }
 
     function &reverse()

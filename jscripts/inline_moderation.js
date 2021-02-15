@@ -4,7 +4,7 @@ var inlineModeration = {
 		inlineModeration.inlineCount = 0;
 		if(!inlineType || !inlineId)
 		{
-			return false;
+			return FALSE;
 		}
 
 		inlineModeration.cookieName = "inlinemod_"+inlineType+inlineId;
@@ -12,7 +12,7 @@ var inlineModeration = {
 
 		if(!inputs)
 		{
-			return false;
+			return FALSE;
 		}
 
 		inlineCookie = Cookie.get(inlineModeration.cookieName);
@@ -21,7 +21,7 @@ var inlineModeration = {
 		{
 			inlineIds = inlineCookie.split("|");
 		}
-		
+
 		for(var i=0; i < inputs.length; i++)
 		{
 			var element = inputs[i];
@@ -38,27 +38,27 @@ var inlineModeration = {
 				if(inlineIds.indexOf('ALL') != -1)
 				{
 					inlineModeration.clearChecked();
-					inlineCookie = null;
+					inlineCookie = NULL;
 				}
 				else if(inlineIds.indexOf(id) != -1)
 				{
-					element.checked = true;
+					element.checked = TRUE;
 					var tr = element.up('tr');
 					var fieldset = element.up('fieldset');
-					
+
 					if(tr)
 					{
 						tr.addClassName('trow_selected');
 					}
-					
+
 					if(fieldset)
 					{
-						fieldset.addClassName('inline_selected');	
+						fieldset.addClassName('inline_selected');
 					}
 				}
 				else
 				{
-					element.checked = false;
+					element.checked = FALSE;
 					var tr = element.up('tr');
 					if(tr)
 					{
@@ -67,7 +67,7 @@ var inlineModeration = {
 				}
 			}
 		}
-		
+
 		if(inlineCookie)
 		{
 			goButton = $("inline_go");
@@ -81,7 +81,7 @@ var inlineModeration = {
 			}
 			goButton.value = go_text+" ("+(inlineModeration.inlineCount)+")";
 		}
-		return true;
+		return TRUE;
 	},
 
 	checkItem: function(e)
@@ -90,7 +90,7 @@ var inlineModeration = {
 
 		if(!element)
 		{
-			return false;
+			return FALSE;
 		}
 
 		inlineCheck = element.id.split("_");
@@ -98,7 +98,7 @@ var inlineModeration = {
 
 		if(!id)
 		{
-			return false;
+			return FALSE;
 		}
 
 		var newIds = new Array();
@@ -109,7 +109,7 @@ var inlineModeration = {
 		{
 			inlineIds = inlineCookie.split("|");
 			inlineIds.each(function(item) {
-				if(item != "" && item != null)
+				if(item != "" && item != NULL)
 				{
 					if(item != id)
 					{
@@ -119,7 +119,7 @@ var inlineModeration = {
 			});
 		}
 
-		if(element.checked == true)
+		if(element.checked == TRUE)
 		{
 			inlineModeration.inlineCount++;
 			newIds[newIds.length] = id;
@@ -170,7 +170,7 @@ var inlineModeration = {
 
 		goButton.value = go_text+" ("+inlineModeration.inlineCount+")";
 
-		return true;
+		return TRUE;
 	},
 
 	clearChecked: function()
@@ -180,18 +180,18 @@ var inlineModeration = {
 		{
 			selectRow.style.display = "none";
 		}
-		
+
 		var allSelectedRow = document.getElementById("allSelectedrow");
 		if(allSelectedRow)
 		{
 			allSelectedRow.style.display = "none";
 		}
-		
+
 		inputs = document.getElementsByTagName("input");
 
 		if(!inputs)
 		{
-			return false;
+			return FALSE;
 		}
 
 		$H(inputs).each(function(element) {
@@ -199,7 +199,7 @@ var inlineModeration = {
 			if(!element.value) return;
 			if(element.type == "checkbox" && (element.id.split("_")[0] == "inlinemod" || element.name == "allbox"))
 			{
-				element.checked = false;
+				element.checked = FALSE;
 			}
 		});
 
@@ -217,7 +217,7 @@ var inlineModeration = {
 		Cookie.unset(inlineModeration.cookieName);
 		Cookie.unset(inlineModeration.cookieName + '_removed');
 
-		return true;
+		return TRUE;
 	},
 
 	checkAll: function(master)
@@ -226,7 +226,7 @@ var inlineModeration = {
 
 		if(!inputs)
 		{
-			return false;
+			return FALSE;
 		}
 
 		inlineCookie = Cookie.get(inlineModeration.cookieName);
@@ -249,7 +249,7 @@ var inlineModeration = {
 
 				var tr = element.up('tr');
 				var fieldset = element.up('fieldset');
-				if(tr && master.checked == true)
+				if(tr && master.checked == TRUE)
 				{
 					tr.addClassName('trow_selected');
 				}
@@ -257,10 +257,10 @@ var inlineModeration = {
 				{
 					tr.removeClassName('trow_selected');
 				}
-				
+
 				if(typeof(fieldset) != "undefined")
 				{
-					if(master.checked == true)
+					if(master.checked == TRUE)
 					{
 						fieldset.addClassName('inline_selected');
 					}
@@ -269,10 +269,10 @@ var inlineModeration = {
 						fieldset.removeClassName('inline_selected');
 					}
 				}
-				
+
 				if(changed)
 				{
-					if(master.checked == true)
+					if(master.checked == TRUE)
 					{
 						inlineModeration.inlineCount++;
 						newIds[newIds.length] = id;
@@ -292,13 +292,13 @@ var inlineModeration = {
 		{
 			inlineModeration.inlineCount = 0;
 		}
-		
+
 		if(inlineModeration.inlineCount < all_text)
 		{
 			var selectRow = document.getElementById("selectAllrow");
 			if(selectRow)
 			{
-				if(master.checked == true)
+				if(master.checked == TRUE)
 				{
 					selectRow.style.display = "table-row";
 				}
@@ -308,22 +308,22 @@ var inlineModeration = {
 				}
 			}
 		}
-		
+
 		goButton.value = go_text+" ("+inlineModeration.inlineCount+")";
 		Cookie.set(inlineModeration.cookieName, inlineData, 3600000);
 	},
-		
+
 	selectAll: function()
 	{
 		goButton.value = go_text+" ("+all_text+")";
 		Cookie.set(inlineModeration.cookieName, "|ALL|", 3600000);
-		
+
 		var selectRow = document.getElementById("selectAllrow");
 		if(selectRow)
 		{
 			selectRow.style.display = "none";
 		}
-		
+
 		var allSelectedRow = document.getElementById("allSelectedrow");
 		if(allSelectedRow)
 		{

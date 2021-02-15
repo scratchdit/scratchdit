@@ -12,7 +12,7 @@ Language.syntax = [
 	{ input : /=('.*?')/g, output : '=<s>$1</s>' }, // atributes single quote
 	{ input : /(&lt;!--.*?--&gt.)/g, output : '<ins>$1</ins>' }, // comments
 	{ input : /([^:]|^)\/\/(.*?)(<br|<\/P)/g, output : '$1<a>//$2</a>$3' }, // comments //
-	{ input : /\b(alert|window|document|break|continue|do|for|new|this|void|case|default|else|function|return|typeof|while|if|label|switch|var|with|catch|boolean|int|try|false|throws|null|TRUE|goto)\b/g, output : '<i>$1</i>' }, // script reserved words
+	{ input : /\b(alert|window|document|break|continue|do|for|new|this|void|case|default|else|function|return|typeof|while|if|label|switch|var|with|catch|boolean|int|try|FALSE|throws|NULL|TRUE|goto)\b/g, output : '<i>$1</i>' }, // script reserved words
 	{ input: /(\{\$[a-zA-Z0-9_\[\]'"]+)\-&gt;([a-zA-Z0-9_\-\$\[\]'"]+\}?)/g, output: '<cite>$1<s>-&gt;</s>$2</cite>'}, // class based variables
 	{ input: /(\{?\$[a-zA-Z0-9_\-\$\[\]'"]+\}?)/g, output: '<cite>$1</cite>'}, // variables in templates
 	{ input: /&amp;(amp|gt|lt|raquo|laquo);/g, output: '<small>&amp;$1;</small>'}

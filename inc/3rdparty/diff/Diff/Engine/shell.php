@@ -53,7 +53,7 @@ class Text_Diff_Engine_shell {
         unlink($from_file);
         unlink($to_file);
 
-        if (is_null($diff)) {
+        if (is_NULL($diff)) {
             // No changes were made
             return array(new Text_Diff_Op_copy($from_lines));
         }
@@ -72,7 +72,7 @@ class Text_Diff_Engine_shell {
         foreach ($matches as $match) {
             if (!isset($match[5])) {
                 // This paren is not set every time (see regex).
-                $match[5] = false;
+                $match[5] = FALSE;
             }
 
             if ($match[3] == 'a') {
@@ -144,7 +144,7 @@ class Text_Diff_Engine_shell {
      *
      * @return array The chopped lines
      */
-    function _getLines(&$text_lines, &$line_no, $end = false)
+    function _getLines(&$text_lines, &$line_no, $end = FALSE)
     {
         if (!empty($end)) {
             $lines = array();

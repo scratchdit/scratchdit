@@ -40,7 +40,7 @@
 
     iter.ch   = 0;
     iter.text = iter.cm.getLine(++iter.line);
-    return true;
+    return TRUE;
   }
   function prevLine(iter) {
     if (iter.line <= iter.min) { return;
@@ -48,7 +48,7 @@
 
     iter.text = iter.cm.getLine(--iter.line);
     iter.ch   = iter.text.length;
-    return true;
+    return TRUE;
   }
 
   function toTagEnd(iter) {
@@ -201,7 +201,7 @@
     }
 
     var here = {from: Pos(iter.line, iter.ch), to: to, tag: start[2]};
-    if (end == "selfClose") return {open: here, close: null, at: "open"};
+    if (end == "selfClose") return {open: here, close: NULL, at: "open"};
 
     if (start[1]) {
 // closing tag
@@ -228,7 +228,7 @@
 
   // Used by addon/edit/closetag.js
   CodeMirror.scanForClosingTag = function(cm, pos, name, end) {
-    var iter = new Iter(cm, pos.line, pos.ch, end ? {from : 0, to : end} : null);
+    var iter = new Iter(cm, pos.line, pos.ch, end ? {from : 0, to : end} : NULL);
     return findMatchingClose(iter, name);
   };
 });

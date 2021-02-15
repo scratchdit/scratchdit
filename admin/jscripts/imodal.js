@@ -7,24 +7,24 @@ MyModal.prototype = {
 			overlay: 50,
 			overlayCss: {},
 			containerCss: {},
-			close: true,
+			close: TRUE,
 			closeTitle: 'Close',
-			onOpen: null,
-			onShow: null,
-			onClose: null,
-			onBeforeClose: null,
+			onOpen: NULL,
+			onShow: NULL,
+			onClose: NULL,
+			onBeforeClose: NULL,
 			type: 'string',
 			width: '630',
 			buttons: '',
 			title: '',
 			formId: 'modal_form',
 		};
-		
+
 		Object.extend(this.options, options || {});
-		
+
 		this.generateModal();
 	},
-	
+
 	displayModal: function(data)
 	{
 		// handle ACP session timeout and other error
@@ -33,13 +33,13 @@ MyModal.prototype = {
 			window.location = "./index.php";
 			return;
 		}
-		
+
 		this.hideLoader();
 		modalContent = '';
-		
+
 		// Doesn't work in IE6 or below
 		modalContent = '<div id="ModalTopLeftCorner"></div><div id="ModalTopBorder"></div><div id="ModalTopRightCorner"></div><div id="ModalLeftBorder"></div><div id="ModalRightBorder"></div><div id="ModalBottomLeftCorner"></div><div id="ModalBottomRightCorner"></div><div id="ModalBottomBorder"></div>';
-		
+
 		if(data.indexOf('ModalTitle') > 0 && data.indexOf('ModalContent') > 0)
 		{
 			modalContent += '<div id="ModalContentContainer">'+data+'</div>';
@@ -51,7 +51,7 @@ MyModal.prototype = {
 
 		// Doesn't work in IE6 or below
 		cssPosition = 'fixed';
-		
+
 		var container = document.createElement('div');
 		container.id = 'ModalContainer';
 		container.className = 'ModalContainer';
@@ -59,12 +59,12 @@ MyModal.prototype = {
 		container.style.position = cssPosition;
 		container.style.zIndex = 3100;
 		container.style.marginLeft = '-'+(this.options.width/2)+'px';
-		
+
 		var modalData = document.createElement('div');
 		modalData.className = 'modalData';
 		modalData.innerHTML = modalContent;
 		container.appendChild(modalData);
-		
+
 		// Insert into the body
 		owner = document.getElementsByTagName("body").item(0);
 		owner.appendChild(container);
@@ -86,19 +86,19 @@ MyModal.prototype = {
 		{
 			data.evalScripts();
 		}
-		
+
 		$('ModalContainer').show();
 	},
-	
+
 	showLoader: function()
 	{
 		this.loader = document.createElement('div');
 		this.loader.id = 'ModalLoadingIndicator';
-		
+
 		// Insert into the body
 		Element.insert(document.body, { 'after': this.loader });
 	},
-	
+
 	showOverlayLoader: function()
 	{
 		this.overlayLoader = document.createElement('div');
@@ -130,18 +130,18 @@ MyModal.prototype = {
 
 		this.showLoader();
 	},
-	
+
 	hideOverlayLoader: function()
 	{
 		$('ModalLoadingIndicator').remove();
 		$('ModalOverlay').remove();
 	},
-	
+
 	hideLoader: function()
 	{
 		$('ModalLoadingIndicator').remove();
 	},
-	
+
 	generateModal: function()
 	{
 		this.showOverlayLoader();
@@ -164,22 +164,22 @@ MyModal.prototype = {
 	submit: function(e)
 	{
 		Event.stop(e);
-		
+
 		this.showOverlayLoader();
 		var postData = $(this.options.formId).serialize();
-		this.postData = $(this.options.formId).serialize(true);
-		
+		this.postData = $(this.options.formId).serialize(TRUE);
+
 		new Ajax.Request(this.options.url, {
             method: 'post',
             postBody: postData+"&ajax=1&time=" + new Date().getTime(),
             onComplete: this.onComplete.bind(this),
         });
 	},
-	
+
 	onComplete: function(request)
 	{
 		var data = request.responseText;
-		
+
 		if(MyBB.browser == "ie" || MyBB.browser == "opera" || MyBB.browser == "safari" || MyBB.browser == "chrome")
 		{
 			var scripts = data.extractScripts();
@@ -192,11 +192,11 @@ MyModal.prototype = {
 		{
 			data.evalScripts();
 		}
-		
+
 		this.hideOverlayLoader();
 		this.close();
 	},
-	
+
 	closeListener: function(e)
 	{
 		if(e.keyCode == 27)
@@ -204,16 +204,16 @@ MyModal.prototype = {
 			this.close();
 		}
 
-		return false;
+		return FALSE;
 	},
-	
+
 	close: function(e)
 	{
 		if(e)
 		{
 			Event.stop(e);
 		}
-		
+
 		$('ModalContainer').remove();
 		if($('ModalLoadingIndicator'))
 		{

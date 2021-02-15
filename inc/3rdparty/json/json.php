@@ -161,7 +161,7 @@ class Services_JSON
 
         $bytes = (ord($utf16[0]) << 8) | ord($utf16[1]);
 
-        switch(true) {
+        switch(TRUE) {
             case ((0x7F & $bytes) == $bytes):
                 // this case should never be reached, because we are in ASCII range
                 // see: //www.cl.cam.ac.uk/~mgk25/unicode.html#utf-8
@@ -244,10 +244,10 @@ class Services_JSON
     {
         switch (gettype($var)) {
             case 'boolean':
-                return $var ? 'true' : 'false';
+                return $var ? 'TRUE' : 'FALSE';
 
             case 'NULL':
-                return 'null';
+                return 'NULL';
 
             case 'integer':
                 return (int) $var;
@@ -269,7 +269,7 @@ class Services_JSON
 
                     $ord_var_c = ord($var[$c]);
 
-                    switch (true) {
+                    switch (TRUE) {
                         case $ord_var_c == 0x08:
                             $ascii .= '\b';
                             break;
@@ -423,7 +423,7 @@ class Services_JSON
 
             default:
                 return ($this->use & SERVICES_JSON_SUPPRESS_ERRORS)
-                    ? 'null'
+                    ? 'NULL'
                     : new Services_JSON_Error(gettype($var)." can not be encoded as JSON string");
         }
     }
@@ -492,14 +492,14 @@ class Services_JSON
         $str = $this->reduce_string($str);
 
         switch (strtolower($str)) {
-            case 'true':
-                return true;
+            case 'TRUE':
+                return TRUE;
 
-            case 'false':
-                return false;
+            case 'FALSE':
+                return FALSE;
 
-            case 'null':
-                return null;
+            case 'NULL':
+                return NULL;
 
             default:
                 $m = array();
@@ -528,7 +528,7 @@ class Services_JSON
                         $substr_chrs_c_2 = substr($chrs, $c, 2);
                         $ord_chrs_c = ord($chrs[$c]);
 
-                        switch (true) {
+                        switch (TRUE) {
                             case $substr_chrs_c_2 == '\b':
                                 $utf8 .= chr(0x08);
                                 ++$c;
@@ -631,7 +631,7 @@ class Services_JSON
 
                     array_push($stk, array('what'  => SERVICES_JSON_SLICE,
                                            'where' => 0,
-                                           'delim' => false));
+                                           'delim' => FALSE));
 
                     $chrs = substr($str, 1, -1);
                     $chrs = $this->reduce_string($chrs);
@@ -659,7 +659,7 @@ class Services_JSON
                             // found a comma that is not inside a string, array, etc.,
                             // OR we've reached the end of the character list
                             $slice = substr($chrs, $top['where'], ($c - $top['where']));
-                            array_push($stk, array('what' => SERVICES_JSON_SLICE, 'where' => ($c + 1), 'delim' => false));
+                            array_push($stk, array('what' => SERVICES_JSON_SLICE, 'where' => ($c + 1), 'delim' => FALSE));
                             //print("Found split at {$c}: ".substr($chrs, $top['where'], (1 + $c - $top['where']))."\n");
 
                             if (reset($stk) == SERVICES_JSON_IN_ARR) {
@@ -714,7 +714,7 @@ class Services_JSON
                         } elseif (($chrs[$c] == '[') &&
                                  in_array($top['what'], array(SERVICES_JSON_SLICE, SERVICES_JSON_IN_ARR, SERVICES_JSON_IN_OBJ))) {
                             // found a left-bracket, and we are in an array, object, or slice
-                            array_push($stk, array('what' => SERVICES_JSON_IN_ARR, 'where' => $c, 'delim' => false));
+                            array_push($stk, array('what' => SERVICES_JSON_IN_ARR, 'where' => $c, 'delim' => FALSE));
                             //print("Found start of array at {$c}\n");
 
                         } elseif (($chrs[$c] == ']') && ($top['what'] == SERVICES_JSON_IN_ARR)) {
@@ -725,7 +725,7 @@ class Services_JSON
                         } elseif (($chrs[$c] == '{') &&
                                  in_array($top['what'], array(SERVICES_JSON_SLICE, SERVICES_JSON_IN_ARR, SERVICES_JSON_IN_OBJ))) {
                             // found a left-brace, and we are in an array, object, or slice
-                            array_push($stk, array('what' => SERVICES_JSON_IN_OBJ, 'where' => $c, 'delim' => false));
+                            array_push($stk, array('what' => SERVICES_JSON_IN_OBJ, 'where' => $c, 'delim' => FALSE));
                             //print("Found start of object at {$c}\n");
 
                         } elseif (($chrs[$c] == '}') && ($top['what'] == SERVICES_JSON_IN_OBJ)) {
@@ -736,7 +736,7 @@ class Services_JSON
                         } elseif (($substr_chrs_c_2 == '/*') &&
                                  in_array($top['what'], array(SERVICES_JSON_SLICE, SERVICES_JSON_IN_ARR, SERVICES_JSON_IN_OBJ))) {
                             // found a comment start, and we are in an array, object, or slice
-                            array_push($stk, array('what' => SERVICES_JSON_IN_CMT, 'where' => $c, 'delim' => false));
+                            array_push($stk, array('what' => SERVICES_JSON_IN_CMT, 'where' => $c, 'delim' => FALSE));
                             $c++;
                             //print("Found start of comment at {$c}\n");
 
@@ -769,16 +769,16 @@ class Services_JSON
     /**
      * @todo Ultimately, this should just call PEAR::isError()
      */
-    function isError($data, $code = null)
+    function isError($data, $code = NULL)
     {
         if (class_exists('pear')) {
             return PEAR::isError($data, $code);
         } elseif (is_object($data) && (get_class($data) == 'services_json_error' ||
                                  is_subclass_of($data, 'services_json_error'))) {
-            return true;
+            return TRUE;
         }
 
-        return false;
+        return FALSE;
     }
 }
 
@@ -786,8 +786,8 @@ if (class_exists('PEAR_Error')) {
 
     class Services_JSON_Error extends PEAR_Error
     {
-        function Services_JSON_Error($message = 'unknown error', $code = null,
-                                     $mode = null, $options = null, $userinfo = null)
+        function Services_JSON_Error($message = 'unknown error', $code = NULL,
+                                     $mode = NULL, $options = NULL, $userinfo = NULL)
         {
             parent::PEAR_Error($message, $code, $mode, $options, $userinfo);
         }
@@ -800,8 +800,8 @@ if (class_exists('PEAR_Error')) {
      */
     class Services_JSON_Error
     {
-        function Services_JSON_Error($message = 'unknown error', $code = null,
-                                     $mode = null, $options = null, $userinfo = null)
+        function Services_JSON_Error($message = 'unknown error', $code = NULL,
+                                     $mode = NULL, $options = NULL, $userinfo = NULL)
         {
 
         }

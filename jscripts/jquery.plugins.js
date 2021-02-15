@@ -33,7 +33,7 @@
 			return this.each(function() {
 				/** Create a jGrowl Instance on the Container if it does not exist **/
 				if ( $(this).data('jGrowl.instance') === undefined ) {
-					$(this).data('jGrowl.instance', $.extend( new $.fn.jGrowl(), { notifications: [], element: null, interval: null } ));
+					$(this).data('jGrowl.instance', $.extend( new $.fn.jGrowl(), { notifications: [], element: NULL, interval: NULL } ));
 					$(this).data('jGrowl.instance').startup( this );
 				}
 
@@ -54,7 +54,7 @@
 			pool:				0,
 			header:				'',
 			group:				'',
-			sticky:				false,
+			sticky:				FALSE,
 			position:			'top-right',
 			appendTo:			'body',
 			glue:				'after',
@@ -66,7 +66,7 @@
 			closeDuration:		'normal',
 			openDuration:		'normal',
 			easing:				'swing',
-			closer:				true,
+			closer:				TRUE,
 			closeTemplate:		'&times;',
 			closerTemplate:		'<div>[ close all ]</div>',
 			log:				function() {},
@@ -87,10 +87,10 @@
 		notifications: [],
 
 		/** jGrowl Container Node **/
-		element:				null,
+		element:				NULL,
 
 		/** Interval Function **/
-		interval:				null,
+		interval:				NULL,
 
 		/** Create a Notification **/
 		create: function( message , options ) {
@@ -122,22 +122,22 @@
 				.append($('<div/>').addClass('jGrowl-message').html(message))
 				.data("jGrowl", o).addClass(o.theme).children('.jGrowl-close').bind("click.jGrowl", function() {
 					$(this).parent().trigger('jGrowl.beforeClose');
-					return false;
+					return FALSE;
 				})
 				.parent();
 
 
 			/** Notification Actions **/
 			$(notification).bind("mouseover.jGrowl", function() {
-				$('.jGrowl-notification', self.element).data("jGrowl.pause", true);
+				$('.jGrowl-notification', self.element).data("jGrowl.pause", TRUE);
 			}).bind("mouseout.jGrowl", function() {
-				$('.jGrowl-notification', self.element).data("jGrowl.pause", false);
+				$('.jGrowl-notification', self.element).data("jGrowl.pause", FALSE);
 			}).bind('jGrowl.beforeOpen', function() {
-				if ( o.beforeOpen.apply( notification , [notification,message,o,self.element] ) !== false ) {
+				if ( o.beforeOpen.apply( notification , [notification,message,o,self.element] ) !== FALSE ) {
 					$(this).trigger('jGrowl.open');
 				}
 			}).bind('jGrowl.open', function() {
-				if ( o.open.apply( notification , [notification,message,o,self.element] ) !== false ) {
+				if ( o.open.apply( notification , [notification,message,o,self.element] ) !== FALSE ) {
 					if ( o.glue == 'after' ) {
 						$('.jGrowl-notification:last', self.element).after(notification);
 					} else {
@@ -146,10 +146,10 @@
 
 					$(this).animate(o.animateOpen, o.openDuration, o.easing, function() {
 						// Fixes some anti-aliasing issues with IE filters.
-						if ($.support.opacity === false)
+						if ($.support.opacity === FALSE)
 							this.style.removeAttribute('filter');
 
-						if ( $(this).data("jGrowl") !== null && typeof $(this).data("jGrowl") !== 'undefined') // Happens when a notification is closing before it's open.
+						if ( $(this).data("jGrowl") !== NULL && typeof $(this).data("jGrowl") !== 'undefined') // Happens when a notification is closing before it's open.
 							$(this).data("jGrowl").created = new Date();
 
 						$(this).trigger('jGrowl.afterOpen');
@@ -160,14 +160,14 @@
 			}).bind('click', function() {
 				o.click.apply( notification, [notification,message,o,self.element] );
 			}).bind('jGrowl.beforeClose', function() {
-				if ( o.beforeClose.apply( notification , [notification,message,o,self.element] ) !== false )
+				if ( o.beforeClose.apply( notification , [notification,message,o,self.element] ) !== FALSE )
 					$(this).trigger('jGrowl.close');
 			}).bind('jGrowl.close', function() {
 				// Pause the notification, lest during the course of animation another close event gets called.
-				$(this).data('jGrowl.pause', true);
+				$(this).data('jGrowl.pause', TRUE);
 				$(this).animate(o.animateClose, o.closeDuration, o.easing, function() {
 					if ( $.isFunction(o.close) ) {
-						if ( o.close.apply( notification , [notification,message,o,self.element] ) !== false )
+						if ( o.close.apply( notification , [notification,message,o,self.element] ) !== FALSE )
 							$(this).remove();
 					} else {
 						$(this).remove();
@@ -180,7 +180,7 @@
 
 			/** Add a Global Closer if more than one notification exists **/
 			if ($('.jGrowl-notification:parent', self.element).length > 1 &&
-				$('.jGrowl-closer', self.element).length === 0 && this.defaults.closer !== false ) {
+				$('.jGrowl-closer', self.element).length === 0 && this.defaults.closer !== FALSE ) {
 				$(this.defaults.closerTemplate).addClass('jGrowl-closer ' + this.defaults.themeState + ' ui-corner-all').addClass(this.defaults.theme)
 					.appendTo(self.element).animate(this.defaults.animateOpen, this.defaults.speed, this.defaults.easing)
 					.bind("click.jGrowl", function() {
@@ -198,8 +198,8 @@
 			$(this.element).find('.jGrowl-notification:parent').each( function() {
 				if ($(this).data("jGrowl") !== undefined && $(this).data("jGrowl").created !== undefined &&
 					($(this).data("jGrowl").created.getTime() + parseInt($(this).data("jGrowl").life, 10))  < (new Date()).getTime() &&
-					$(this).data("jGrowl").sticky !== true &&
-					($(this).data("jGrowl.pause") === undefined || $(this).data("jGrowl.pause") !== true) ) {
+					$(this).data("jGrowl").sticky !== TRUE &&
+					($(this).data("jGrowl.pause") === undefined || $(this).data("jGrowl.pause") !== TRUE) ) {
 
 					// Pause the notification, lest during the course of animation another close event gets called.
 					$(this).trigger('jGrowl.beforeClose');
@@ -269,15 +269,15 @@
 
   var modals = [],
       getCurrent = function() {
-        return modals.length ? modals[modals.length - 1] : null;
+        return modals.length ? modals[modals.length - 1] : NULL;
       },
       selectCurrent = function() {
         var i,
-            selected = false;
+            selected = FALSE;
         for (i=modals.length-1; i>=0; i--) {
           if (modals[i].$blocker) {
             modals[i].$blocker.toggleClass('current',!selected).toggleClass('behind',selected);
-            selected = true;
+            selected = TRUE;
           }
         }
       };
@@ -287,7 +287,7 @@
     this.$body = $('body');
     this.options = $.extend({}, $.modal.defaults, options);
     this.options.doFade = !isNaN(parseInt(this.options.fadeDuration, 10));
-    this.$blocker = null;
+    this.$blocker = NULL;
     if (this.options.closeExisting)
       while ($.modal.isActive())
         $.modal.close(); // Close any open modals.
@@ -297,7 +297,7 @@
       //Select element by id from href
       if (/^#/.test(target)) {
         this.$elm = $(target);
-        if (this.$elm.length !== 1) return null;
+        if (this.$elm.length !== 1) return NULL;
         this.$body.append(this.$elm);
         this.open();
       //AJAX
@@ -375,11 +375,11 @@
 
     unblock: function(now) {
       if (!now && this.options.doFade)
-        this.$blocker.fadeOut(this.options.fadeDuration, this.unblock.bind(this,true));
+        this.$blocker.fadeOut(this.options.fadeDuration, this.unblock.bind(this,TRUE));
       else {
         this.$blocker.children().appendTo(this.$body);
         this.$blocker.remove();
-        this.$blocker = null;
+        this.$blocker = NULL;
         selectCurrent();
         if (!$.modal.isActive())
           this.$body.css('overflow','');
@@ -451,16 +451,16 @@
   $.modal.getCurrent = getCurrent;
 
   $.modal.defaults = {
-    closeExisting: true,
-    escapeClose: true,
-    clickClose: true,
+    closeExisting: TRUE,
+    escapeClose: TRUE,
+    clickClose: TRUE,
     closeText: 'Close',
     closeClass: '',
     modalClass: "modal",
-    spinnerHtml: null,
-    showSpinner: true,
-    showClose: true,
-    fadeDuration: null,   // Number of milliseconds the fade animation takes.
+    spinnerHtml: NULL,
+    showSpinner: TRUE,
+    showClose: TRUE,
+    fadeDuration: NULL,   // Number of milliseconds the fade animation takes.
     fadeDelay: 1.0        // Point during the overlay's fade-in that the modal begins to fade in (.5 = 50%, 1.5 = 150%, etc.)
   };
 
@@ -504,7 +504,7 @@
 		var popup_menu = $("#" + el.attr('id') + "_popup");
 		if(typeof close_in_popupmenu == 'undefined')
 		{
-			var close_in_popupmenu = true;
+			var close_in_popupmenu = TRUE;
 		}
 		// Opening Popup
 		this.open = function(e)
@@ -575,14 +575,14 @@
  * Released under the MIT license
  */
 ;(function (factory) {
-	var registeredInModuleLoader = false;
+	var registeredInModuleLoader = FALSE;
 	if (typeof define === 'function' && define.amd) {
 		define(factory);
-		registeredInModuleLoader = true;
+		registeredInModuleLoader = TRUE;
 	}
 	if (typeof exports === 'object') {
 		module.exports = factory();
-		registeredInModuleLoader = true;
+		registeredInModuleLoader = TRUE;
 	}
 	if (!registeredInModuleLoader) {
 		var OldCookies = window.Cookies;
@@ -653,7 +653,7 @@
 						continue;
 					}
 					stringifiedAttributes += '; ' + attributeName;
-					if (attributes[attributeName] === true) {
+					if (attributes[attributeName] === TRUE) {
 						continue;
 					}
 					stringifiedAttributes += '=' + attributes[attributeName];
@@ -714,7 +714,7 @@
 		};
 		api.getJSON = function () {
 			return api.apply({
-				json: true
+				json: TRUE
 			}, [].slice.call(arguments));
 		};
 		api.defaults = {};

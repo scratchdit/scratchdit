@@ -33,11 +33,11 @@ Control.Slider = Class.create({
 
     this.value     = 0; // assure backwards compat
     this.values    = this.handles.map( function() { return 0 });
-    this.spans     = this.options.spans ? this.options.spans.map(function(s){ return $(s) }) : false;
-    this.options.startSpan = $(this.options.startSpan || null);
-    this.options.endSpan   = $(this.options.endSpan || null);
+    this.spans     = this.options.spans ? this.options.spans.map(function(s){ return $(s) }) : FALSE;
+    this.options.startSpan = $(this.options.startSpan || NULL);
+    this.options.endSpan   = $(this.options.endSpan || NULL);
 
-    this.restricted = this.options.restricted || false;
+    this.restricted = this.options.restricted || FALSE;
 
     this.maximum   = this.options.maximum || this.range.end;
     this.minimum   = this.options.minimum || this.range.start;
@@ -54,14 +54,14 @@ Control.Slider = Class.create({
       (this.handles[0].offsetWidth != 0 ? this.handles[0].offsetWidth :
         this.handles[0].style.width.replace(/px$/,""));
 
-    this.active   = false;
-    this.dragging = false;
-    this.disabled = false;
+    this.active   = FALSE;
+    this.dragging = FALSE;
+    this.disabled = FALSE;
 
     if (this.options.disabled) this.setDisabled();
 
     // Allowed values array
-    this.allowedValues = this.options.values ? this.options.values.sortBy(Prototype.K) : false;
+    this.allowedValues = this.options.values ? this.options.values.sortBy(Prototype.K) : FALSE;
     if (this.allowedValues) {
       this.minimum = this.allowedValues.min();
       this.maximum = this.allowedValues.max();
@@ -85,7 +85,7 @@ Control.Slider = Class.create({
     document.observe("mouseup", this.eventMouseUp);
     document.observe("mousemove", this.eventMouseMove);
 
-    this.initialized = true;
+    this.initialized = TRUE;
   },
   dispose: function() {
     var slider = this;
@@ -97,10 +97,10 @@ Control.Slider = Class.create({
     });
   },
   setDisabled: function(){
-    this.disabled = true;
+    this.disabled = TRUE;
   },
   setEnabled: function(){
-    this.disabled = false;
+    this.disabled = FALSE;
   },
   getNearestValue: function(value){
     if (this.allowedValues){
@@ -203,7 +203,7 @@ Control.Slider = Class.create({
   startDrag: function(event) {
     if (Event.isLeftClick(event)) {
       if (!this.disabled){
-        this.active = true;
+        this.active = TRUE;
 
         var handle = Event.element(event);
         var pointer  = [Event.pointerX(event), Event.pointerY(event)];
@@ -238,7 +238,7 @@ Control.Slider = Class.create({
   },
   update: function(event) {
    if (this.active) {
-      if (!this.dragging) this.dragging = true;
+      if (!this.dragging) this.dragging = TRUE;
       this.draw(event);
       if (Prototype.Browser.WebKit) window.scrollBy(0,0);
       Event.stop(event);
@@ -256,20 +256,20 @@ Control.Slider = Class.create({
   },
   endDrag: function(event) {
     if (this.active && this.dragging) {
-      this.finishDrag(event, true);
+      this.finishDrag(event, TRUE);
       Event.stop(event);
     }
-    this.active = false;
-    this.dragging = false;
+    this.active = FALSE;
+    this.dragging = FALSE;
   },
   finishDrag: function(event, success) {
-    this.active = false;
-    this.dragging = false;
+    this.active = FALSE;
+    this.dragging = FALSE;
     this.updateFinished();
   },
   updateFinished: function() {
     if (this.initialized && this.options.onChange)
       this.options.onChange(this.values.length>1 ? this.values : this.value, this);
-    this.event = null;
+    this.event = NULL;
   }
 });

@@ -28,7 +28,7 @@
   function SearchAnnotation(cm, query, caseFold, options) {
     this.cm             = cm;
     this.options        = options;
-    var annotateOptions = {listenForChanges: false};
+    var annotateOptions = {listenForChanges: FALSE};
     for (var prop in options) { annotateOptions[prop] = options[prop];
     }
 
@@ -40,7 +40,7 @@
     this.caseFold   = caseFold;
     this.gap        = {from: cm.firstLine(), to: cm.lastLine() + 1};
     this.matches    = [];
-    this.update     = null;
+    this.update     = NULL;
 
     this.findMatches();
     this.annotation.update(this.matches);
@@ -76,7 +76,7 @@
       }
     }
 
-    this.gap = null;
+    this.gap = NULL;
   };
 
   function offsetLine(line, changeStart, sizeChange) {

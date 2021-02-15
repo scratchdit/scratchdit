@@ -8,10 +8,10 @@
  *
  * $Id$
  */
- 
+
 // Set to 1 if recieving a blank page (template failure).
 define("MANUAL_WARNINGS", 0);
- 
+
 // Define Custom MyBB error handler constants with a value not used by php's error handler.
 define("MYBB_SQL", 20);
 define("MYBB_TEMPLATE", 30);
@@ -48,7 +48,7 @@ class errorHandler {
 	 *
 	 * @var array
 	 */
-	public $error_types = array( 
+	public $error_types = array(
 		E_ERROR              => 'Error',
 		E_WARNING            => 'Warning',
 		E_PARSE              => 'Parsing Error',
@@ -63,7 +63,7 @@ class errorHandler {
 		E_USER_NOTICE        => 'User Notice',
 		E_STRICT             => 'Runtime Notice',
 		E_RECOVERABLE_ERROR  => 'Catchable Fatal Error',
-		MYBB_SQL 			 => 'MyBB SQL Error', 
+		MYBB_SQL 			 => 'MyBB SQL Error',
 		MYBB_TEMPLATE		 => 'MyBB Template Error',
 		MYBB_GENERAL		 => 'MyBB Error',
 		MYBB_NOT_INSTALLED	 => 'MyBB Error',
@@ -73,7 +73,7 @@ class errorHandler {
 		MYBB_CACHE_NO_WRITE  => 'MyBB Error',
 		MYBB_CACHEHANDLER_LOAD_ERROR => 'MyBB Error',
 	);
-	
+
 	/**
 	 * Array of MyBB error types
 	 *
@@ -90,7 +90,7 @@ class errorHandler {
 		MYBB_CACHE_NO_WRITE,
 		MYBB_CACHEHANDLER_LOAD_ERROR,
 	);
-	
+
 	/**
 	 * Array of all of the error types to ignore
 	 *
@@ -102,7 +102,7 @@ class errorHandler {
 		E_USER_NOTICE,
 		E_STRICT
 	);
-	
+
 	/**
 	 * String of all the warnings collected
 	 *
@@ -115,8 +115,8 @@ class errorHandler {
 	 *
 	 * @var boolean
 	 */
-	public $has_errors = false;
-	
+	public $has_errors = FALSE;
+
 	/**
 	 * Initializes the error handler
 	 *
@@ -131,7 +131,7 @@ class errorHandler {
 		}
 		set_error_handler(array(&$this, "error"), $error_types);
 	}
- 	
+
 	/**
 	 * Parses a error for processing.
 	 *
@@ -139,48 +139,48 @@ class errorHandler {
 	 * @param string The error message
 	 * @param string The error file
 	 * @param integer The error line
-	 * @return boolean True if parsing was a success, otherwise assume a error
-	 */			
-	function error($type, $message, $file=null, $line=0)
+	 * @return boolean TRUE if parsing was a success, otherwise assume a error
+	 */
+	function error($type, $message, $file=NULL, $line=0)
 	{
 		global $mybb;
 
 		// Error reporting turned off (either globally or by @ before erroring statement)
 		if(error_reporting() == 0)
 		{
-			return true;
+			return TRUE;
 		}
 
 		if(in_array($type, $this->ignore_types))
 		{
-			return true;
+			return TRUE;
 		}
 
 		$file = str_replace(MYBB_ROOT, "", $file);
 
-		$this->has_errors = true;
-		
+		$this->has_errors = TRUE;
+
 		// For some reason in the installer this setting is set to "<"
 		$accepted_error_types = array('both', 'error', 'warning', 'none');
 		if(!in_array($mybb->settings['errortypemedium'], $accepted_error_types))
 		{
 			$mybb->settings['errortypemedium'] = "both";
 		}
-		
+
 		if(defined("IN_TASK"))
 		{
 			global $task;
-			
+
 			require_once MYBB_ROOT."inc/functions_task.php";
-			
+
 			if($file)
 			{
 				$filestr = " - Line: $line - File: $file";
 			}
-			
-			add_task_log($task, "{$this->error_types[$type]} - [$type] ".var_export($message, true)."{$filestr}");
+
+			add_task_log($task, "{$this->error_types[$type]} - [$type] ".var_export($message, TRUE)."{$filestr}");
 		}
-		
+
 		// Saving error to log file.
 		if($mybb->settings['errorlogmedium'] == "log" || $mybb->settings['errorlogmedium'] == "both")
 		{
@@ -192,7 +192,7 @@ class errorHandler {
 		{
 			$this->email_error($type, $message, $file, $line);
 		}
-		
+
 		// SQL Error
 		if($type == MYBB_SQL)
 		{
@@ -201,7 +201,7 @@ class errorHandler {
 		else
 		{
 			// Do we have a PHP error?
-			if(my_strpos(my_strtolower($this->error_types[$type]), 'warning') === false)
+			if(my_strpos(my_strtolower($this->error_types[$type]), 'warning') === FALSE)
 			{
 				$this->output_error($type, $message, $file, $line);
 			}
@@ -210,12 +210,12 @@ class errorHandler {
 			{
 				if($mybb->settings['errortypemedium'] == "none" || $mybb->settings['errortypemedium'] == "error")
 				{
-					echo "<div class=\"php_warning\">MyBB Internal: One or more warnings occured. Please contact your administrator for assistance.</div>"; 
+					echo "<div class=\"php_warning\">MyBB Internal: One or more warnings occured. Please contact your administrator for assistance.</div>";
 				}
 				else
 				{
 					global $templates;
-					
+
 					$warning = "<strong>{$this->error_types[$type]}</strong> [$type] $message - Line: $line - File: $file PHP ".PHP_VERSION." (".PHP_OS.")<br />\n";
 					if(is_object($templates) && method_exists($templates, "get") && !defined("IN_ADMINCP"))
 					{
@@ -229,10 +229,10 @@ class errorHandler {
 				}
 			}
 		}
-		
-		return true;
+
+		return TRUE;
 	}
-	
+
 	/**
 	 * Returns all the warnings
 	 *
@@ -241,12 +241,12 @@ class errorHandler {
 	function show_warnings()
 	{
 		global $lang, $templates;
-		
+
 		if(empty($this->warnings))
 		{
-			return false;
+			return FALSE;
 		}
-		
+
 		// Incase a template fails and we're recieving a blank page.
 		if(MANUAL_WARNINGS)
 		{
@@ -257,40 +257,40 @@ class errorHandler {
 		{
 			$lang->warnings = "The following warnings occured:";
 		}
-	
+
 		if(defined("IN_ADMINCP"))
 		{
 			$warning = makeacpphpwarning($this->warnings);
 		}
 		else
 		{
-			$template_exists = false;
-			
+			$template_exists = FALSE;
+
 			if(!is_object($templates) || !method_exists($templates, 'get'))
 			{
 				if(@file_exists(MYBB_ROOT."inc/class_templates.php"))
 				{
 					@require_once MYBB_ROOT."inc/class_templates.php";
 					$templates = new templates;
-					$template_exists = true;
+					$template_exists = TRUE;
 				}
 			}
 			else
 			{
-				$template_exists = true;
+				$template_exists = TRUE;
 			}
-			
-			if($template_exists == true)
+
+			if($template_exists == TRUE)
 			{
 				eval("\$warning = \"".$templates->get("php_warnings")."\";");
 			}
 		}
-	
+
 		return $warning;
 	}
-	
+
 	/**
-	 * Triggers a user created error 
+	 * Triggers a user created error
 	 * Example: $error_handler->trigger("Some Warning", E_USER_ERROR);
 	 *
 	 * @param string Message
@@ -311,7 +311,7 @@ class errorHandler {
 		}
 		else
 		{
-			trigger_error($message, $type);		
+			trigger_error($message, $type);
 		}
 	}
 
@@ -361,17 +361,17 @@ class errorHandler {
 	function email_error($type, $message, $file, $line)
 	{
 		global $mybb;
-		
+
 		if(!$mybb->settings['adminemail'])
 		{
-			return false;
+			return FALSE;
 		}
 
-		if($type == MYBB_SQL) 
+		if($type == MYBB_SQL)
 		{
 			$message = "SQL Error: {$message['error_no']} - {$message['error']}\nQuery: {$message['query']}";
 		}
-		
+
 		$message = "Your copy of MyBB running on {$mybb->settings['bbname']} ({$mybb->settings['bburl']}) has experienced an error. Details of the error include:\n---\nType: $type\nFile: $file (Line no. $line)\nMessage\n$message";
 
 		@my_mail($mybb->settings['adminemail'], "MyBB error on {$mybb->settings['bbname']}", $message, $mybb->settings['adminemail']);
@@ -387,7 +387,7 @@ class errorHandler {
 		}
 
 		if($type == MYBB_SQL)
-		{		
+		{
 			$title = "MyBB SQL Error";
 			$error_message = "<p>MyBB has experienced an internal SQL error and cannot continue.</p>";
 			if($mybb->settings['errortypemedium'] == "both" || $mybb->settings['errortypemedium'] == "error" || defined("IN_INSTALL") || defined("IN_UPGRADE"))
@@ -416,68 +416,68 @@ class errorHandler {
 					if(!@preg_match('#config\.php|settings\.php#', $file) && @file_exists($file))
 					{
 						$code_pre = @file($file);
-	
+
 						$code = "";
-	
+
 						if(isset($code_pre[$line-4]))
 						{
 							$code .= $line-3 . ". ".$code_pre[$line-4];
 						}
-	
+
 						if(isset($code_pre[$line-3]))
 						{
 							$code .= $line-2 . ". ".$code_pre[$line-3];
 						}
-	
+
 						if(isset($code_pre[$line-2]))
 						{
 							$code .= $line-1 . ". ".$code_pre[$line-2];
 						}
-	
+
 						$code .= $line . ". ".$code_pre[$line-1]; // The actual line.
-	
+
 						if(isset($code_pre[$line]))
 						{
 							$code .= $line+1 . ". ".$code_pre[$line];
 						}
-	
+
 						if(isset($code_pre[$line+1]))
 						{
 							$code .= $line+2 . ". ".$code_pre[$line+1];
 						}
-	
+
 						if(isset($code_pre[$line+2]))
 						{
 							$code .= $line+3 . ". ".$code_pre[$line+2];
 						}
-	
+
 						unset($code_pre);
-	
-						$parser_exists = false;
-	
+
+						$parser_exists = FALSE;
+
 						if(!is_object($parser) || !method_exists($parser, 'mycode_parse_php'))
 						{
 							if(@file_exists(MYBB_ROOT."inc/class_parser.php"))
 							{
 								@require_once MYBB_ROOT."inc/class_parser.php";
 								$parser = new postParser;
-								$parser_exists = true;
+								$parser_exists = TRUE;
 							}
 						}
 						else
 						{
-							$parser_exists = true;
+							$parser_exists = TRUE;
 						}
-	
+
 						if($parser_exists)
 						{
-							$code = $parser->mycode_parse_php($code, true);
+							$code = $parser->mycode_parse_php($code, TRUE);
 						}
 						else
 						{
 							$code = @nl2br($code);
 						}
-	
+
 						$error_message .= "<dt>Code:</dt><dd>{$code}</dd>\n";
 					}
 				}
@@ -503,10 +503,10 @@ class errorHandler {
 		{
 			@header('HTTP/1.1 503 Service Temporarily Unavailable');
 			@header('Status: 503 Service Temporarily Unavailable');
-			@header('Retry-After: 1800'); 
+			@header('Retry-After: 1800');
 			@header("Content-type: text/html; charset={$charset}");
 			$_SERVER['PHP_SELF'] = htmlspecialchars_uni($_SERVER['PHP_SELF']);
-			
+
 			echo <<<EOF
 	<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" >

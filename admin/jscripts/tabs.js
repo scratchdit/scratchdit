@@ -32,10 +32,10 @@ Object.Event = {
 			var args = $A(arguments).slice(1);
 			try{
 				for(var i = 0; i < this._observers[event_name].length; ++i)
-					collected_return_values.push(this._observers[event_name][i].apply(this._observers[event_name][i],args) || null);
+					collected_return_values.push(this._observers[event_name][i].apply(this._observers[event_name][i],args) || NULL);
 			}catch(e){
 				if(e == $break)
-					return false;
+					return FALSE;
 				else
 					throw e;
 			}
@@ -57,12 +57,12 @@ Object.Event = {
 				var collected_return_values = [];
 				try{
 					if(this.options && this.options[event_name] && typeof(this.options[event_name]) == 'function')
-						collected_return_values.push(this.options[event_name].apply(this,args) || null);
+						collected_return_values.push(this.options[event_name].apply(this,args) || NULL);
 					for(var i = 0; i < this._observers[event_name].length; ++i)
-						collected_return_values.push(this._observers[event_name][i].apply(this._observers[event_name][i],args) || null);
+						collected_return_values.push(this._observers[event_name][i].apply(this._observers[event_name][i],args) || NULL);
 				}catch(e){
 					if(e == $break)
-						return false;
+						return FALSE;
 					else
 						throw e;
 				}
@@ -96,20 +96,20 @@ Object.extend(Control.Tabs,{
 });
 Object.extend(Control.Tabs.prototype,{
 	initialize: function(tab_list_container,options){
-		this.activeContainer = false;
-		this.activeLink = false;
+		this.activeContainer = FALSE;
+		this.activeLink = FALSE;
 		this.containers = $H({});
 		this.links = [];
 		Control.Tabs.instances.push(this);
 		this.options = {
 			beforeChange: Prototype.emptyFunction,
 			afterChange: Prototype.emptyFunction,
-			hover: false,
+			hover: FALSE,
 			linkSelector: 'li a',
-			setClassOnContainer: false,
+			setClassOnContainer: FALSE,
 			activeClassName: 'active',
 			defaultTab: 'first',
-			autoLinkExternal: true,
+			autoLinkExternal: TRUE,
 			targetRegExp: /#(.+)$/,
 			showFunction: Element.show,
 			hideFunction: Element.hide
@@ -164,7 +164,7 @@ Object.extend(Control.Tabs.prototype,{
 			if(window.event)
 				Event.stop(window.event);
 			this.setActiveTab(link);
-			return false;
+			return FALSE;
 		}.bind(this,link);
 	},
 	setActiveTab: function(link){
@@ -198,7 +198,7 @@ Object.extend(Control.Tabs.prototype,{
 				throw $break;
 			}
 		}.bind(this));
-		return false;
+		return FALSE;
 	},
 	previous: function(){
 		this.links.each(function(link,i){
@@ -207,15 +207,15 @@ Object.extend(Control.Tabs.prototype,{
 				throw $break;
 			}
 		}.bind(this));
-		return false;
+		return FALSE;
 	},
 	first: function(){
 		this.setActiveTab(this.links.first());
-		return false;
+		return FALSE;
 	},
 	last: function(){
 		this.setActiveTab(this.links.last());
-		return false;
+		return FALSE;
 	},
 	notify: function(event_name){
 		try{
@@ -225,7 +225,7 @@ Object.extend(Control.Tabs.prototype,{
 			if(e != $break)
 				throw e;
 			else
-				return false;
+				return FALSE;
 		}
 	}
 });

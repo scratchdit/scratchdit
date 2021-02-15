@@ -44,17 +44,17 @@ class LoginDataHandler extends DataHandler
 	/**
 	 * @var bool
 	 */
-	public $captcha_verified = true;
+	public $captcha_verified = TRUE;
 
 	/**
 	 * @var bool|captcha
 	 */
-	private $captcha = false;
+	private $captcha = FALSE;
 
 	/**
 	 * @var int
 	 */
-	public $username_method = null;
+	public $username_method = NULL;
 
 	/**
 	 * @param int $check_captcha
@@ -73,7 +73,7 @@ class LoginDataHandler extends DataHandler
 			}
 			if($mybb->settings['failedcaptchalogincount'] > 0 && ($user['loginattempts'] > $mybb->settings['failedcaptchalogincount'] || (int)$mybb->cookies['loginattempts'] > $mybb->settings['failedcaptchalogincount']))
 			{
-				$this->captcha_verified = false;
+				$this->captcha_verified = FALSE;
 				$this->verify_captcha();
 			}
 		}
@@ -94,30 +94,30 @@ class LoginDataHandler extends DataHandler
 			require_once MYBB_ROOT.'inc/class_captcha.php';
 			$this->captcha = new captcha;
 
-			if($this->captcha->validate_captcha() == false)
+			if($this->captcha->validate_captcha() == FALSE)
 			{
 				// CAPTCHA validation failed
 				foreach($this->captcha->get_errors() as $error)
 				{
 					$this->set_error($error);
 				}
-				return false;
+				return FALSE;
 			}
 			else
 			{
-				$this->captcha_verified = true;
-				return true;
+				$this->captcha_verified = TRUE;
+				return TRUE;
 			}
 		}
 		else if($mybb->input['quick_login'] == 1 && $mybb->input['quick_password'] && $mybb->input['quick_username'])
 		{
 			$this->set_error('regimagerequired');
-			return false;
+			return FALSE;
 		}
 		else
 		{
 			$this->set_error('regimageinvalid');
-			return false;
+			return FALSE;
 		}
 	}
 
@@ -131,10 +131,10 @@ class LoginDataHandler extends DataHandler
 		if(empty($this->login_data) || !$this->login_data['uid'])
 		{
 			$this->invalid_combination();
-			return false;
+			return FALSE;
 		}
 
-		return true;
+		return TRUE;
 	}
 
 	/**
@@ -142,7 +142,7 @@ class LoginDataHandler extends DataHandler
 	 *
 	 * @return bool
 	 */
-	function verify_password($strict = true)
+	function verify_password($strict = TRUE)
 	{
 		global $db, $mybb, $plugins;
 
@@ -152,7 +152,7 @@ class LoginDataHandler extends DataHandler
 		{
 			// Username must be validated to apply a password to
 			$this->invalid_combination();
-			return false;
+			return FALSE;
 		}
 
 		$args = array(
@@ -164,12 +164,12 @@ class LoginDataHandler extends DataHandler
 
 		$user = &$this->data;
 
-		if(!$this->login_data['uid'] || $this->login_data['uid'] && !$this->login_data['salt'] && $strict == false)
+		if(!$this->login_data['uid'] || $this->login_data['uid'] && !$this->login_data['salt'] && $strict == FALSE)
 		{
 			$this->invalid_combination();
 		}
 
-		if($strict == true)
+		if($strict == TRUE)
 		{
 			if(!$this->login_data['salt'])
 			{
@@ -195,17 +195,17 @@ class LoginDataHandler extends DataHandler
 
 		if(!verify_user_password($this->login_data, $user['password']))
 		{
-			$this->invalid_combination(true);
-			return false;
+			$this->invalid_combination(TRUE);
+			return FALSE;
 		}
 
-		return true;
+		return TRUE;
 	}
 
 	/**
 	 * @param bool $show_login_attempts
 	 */
-	function invalid_combination($show_login_attempts = false)
+	function invalid_combination($show_login_attempts = FALSE)
 	{
 		global $db, $lang, $mybb;
 
@@ -220,7 +220,7 @@ class LoginDataHandler extends DataHandler
 		{
 			if($mybb->settings['failedlogincount'] != 0 && $mybb->settings['failedlogintext'] == 1 && $this->login_data['uid'] != 0)
 			{
-				$logins = login_attempt_check($this->login_data['uid'], false) + 1;
+				$logins = login_attempt_check($this->login_data['uid'], FALSE) + 1;
 				$login_text = $lang->sprintf($lang->failed_login_again, $mybb->settings['failedlogincount'] - $logins);
 			}
 		}
@@ -250,7 +250,7 @@ class LoginDataHandler extends DataHandler
 			'username_method' => (int)$settings['username_method']
 		);
 
-		if($this->username_method !== null)
+		if($this->username_method !== NULL)
 		{
 			$options['username_method'] = (int)$this->username_method;
 		}
@@ -286,17 +286,17 @@ class LoginDataHandler extends DataHandler
 
 		$plugins->run_hooks('datahandler_login_validate_end', $this);
 
-		$this->set_validated(true);
+		$this->set_validated(TRUE);
 		if(count($this->get_errors()) > 0)
 		{
-			return false;
+			return FALSE;
 		}
 
-		return true;
+		return TRUE;
 	}
 
 	/**
-	 * @return bool true
+	 * @return bool TRUE
 	 */
 	function complete_login()
 	{
@@ -308,7 +308,7 @@ class LoginDataHandler extends DataHandler
 
 		// Login to MyBB
 		my_setcookie('loginattempts', 1);
-		my_setcookie("sid", $session->sid, -1, true);
+		my_setcookie("sid", $session->sid, -1, TRUE);
 
 		$newsession = array(
 			"uid" => $user['uid'],
@@ -317,21 +317,21 @@ class LoginDataHandler extends DataHandler
 		$db->update_query("sessions", $newsession, "sid = '{$session->sid}'");
 		$db->update_query("users", array("loginattempts" => 1), "uid = '{$user['uid']}'");
 
-		$remember = null;
+		$remember = NULL;
 		if(!isset($mybb->input['remember']) || $mybb->input['remember'] != "yes")
 		{
 			$remember = -1;
 		}
 
-		my_setcookie("mybbuser", $user['uid']."_".$user['loginkey'], $remember, true, "lax");
+		my_setcookie("mybbuser", $user['uid']."_".$user['loginkey'], $remember, TRUE, "lax");
 
-		if($this->captcha !== false)
+		if($this->captcha !== FALSE)
 		{
 			$this->captcha->invalidate_captcha();
 		}
 
 		$plugins->run_hooks('datahandler_login_complete_end', $this);
 
-		return true;
+		return TRUE;
 	}
 }

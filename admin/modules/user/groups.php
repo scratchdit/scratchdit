@@ -623,7 +623,7 @@ if($mybb->input['action'] == "add")
 			$errors[] = $lang->error_missing_title;
 		}
 
-		if(my_strpos($mybb->input['namestyle'], "{username}") === false)
+		if(my_strpos($mybb->input['namestyle'], "{username}") === FALSE)
 		{
 			$errors[] = $lang->error_missing_namestyle_username;
 		}
@@ -754,7 +754,7 @@ if($mybb->input['action'] == "edit")
 			$errors[] = $lang->error_missing_title;
 		}
 
-		if(my_strpos($mybb->input['namestyle'], "{username}") === false)
+		if(my_strpos($mybb->input['namestyle'], "{username}") === FALSE)
 		{
 			$errors[] = $lang->error_missing_namestyle_username;
 		}

@@ -15,10 +15,10 @@
 })(function(CodeMirror) {
   "use strict";
 
-  CodeMirror.defineOption("foldGutter", false, function(cm, val, old) {
+  CodeMirror.defineOption("foldGutter", FALSE, function(cm, val, old) {
     if (old && old != CodeMirror.Init) {
       cm.clearGutter(cm.state.foldGutter.options.gutter);
-      cm.state.foldGutter = null;
+      cm.state.foldGutter = NULL;
       cm.off("gutterClick", onGutterClick);
       cm.off("change", onChange);
       cm.off("viewportChange", onViewportChange);
@@ -47,16 +47,16 @@
   }
 
   function parseOptions(opts) {
-    if (opts === true) { opts = {};
+    if (opts === TRUE) { opts = {};
     }
 
-    if (opts.gutter == null) { opts.gutter = "CodeMirror-foldgutter";
+    if (opts.gutter == NULL) { opts.gutter = "CodeMirror-foldgutter";
     }
 
-    if (opts.indicatorOpen == null) { opts.indicatorOpen = "CodeMirror-foldgutter-open";
+    if (opts.indicatorOpen == NULL) { opts.indicatorOpen = "CodeMirror-foldgutter-open";
     }
 
-    if (opts.indicatorFolded == null) { opts.indicatorFolded = "CodeMirror-foldgutter-folded";
+    if (opts.indicatorFolded == NULL) { opts.indicatorFolded = "CodeMirror-foldgutter-folded";
     }
 
     return opts;
@@ -76,7 +76,7 @@
       elt.className = spec + " CodeMirror-guttermarker-subtle";
       return elt;
     } else {
-      return spec.cloneNode(true);
+      return spec.cloneNode(TRUE);
     }
   }
 
@@ -85,7 +85,7 @@
     var minSize = cm.foldOption(opts, "minFoldSize");
     var func    = cm.foldOption(opts, "rangeFinder");
     cm.eachLine(from, to, function(line) {
-      var mark = null;
+      var mark = NULL;
       if (isFolded(cm, cur)) {
         mark = marker(opts.indicatorFolded);
       } else {

@@ -2,13 +2,13 @@ var MyCodeSandbox = Class.create();
 
 MyCodeSandbox.prototype = {
 
-    url: null,
-    button: null,
-    regex_textbox: null,
-    replacement_textbox: null,
-    test_textbox: null,
-    html_textbox: null,
-    actual_div: null,
+    url: NULL,
+    button: NULL,
+    regex_textbox: NULL,
+    replacement_textbox: NULL,
+    test_textbox: NULL,
+    html_textbox: NULL,
+    actual_div: NULL,
     spinnerImage: "../images/spinner_big.gif",
 
     initialize: function(url, button, regex_textbox, replacement_textbox, test_textbox, html_textbox, actual_div)

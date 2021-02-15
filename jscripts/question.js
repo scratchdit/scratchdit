@@ -14,7 +14,7 @@ var question = {
 	        }
 		});
 
-		return false;
+		return FALSE;
 	},
 
 	refresh_complete: function(request)
@@ -33,7 +33,7 @@ var question = {
 			$("#question_id").val(json.sid);
 		}
 
-		$('#answer').removeClass('error valid').val('').prop('aria-invalid', null).removeData('previousValue')
+		$('#answer').removeClass('error valid').val('').prop('aria-invalid', NULL).removeData('previousValue')
 					.next('label').remove();
 	}
 };

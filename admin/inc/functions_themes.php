@@ -6,7 +6,7 @@
  *
  * @param  string The contents of the XML file
  * @param  array Optional array of options or overrides
- * @return boolean True on success, false on failure
+ * @return boolean TRUE on success, FALSE on failure
  */
 function import_theme_xml($xml, $options=array())
 {
@@ -323,7 +323,7 @@ function resync_stylesheet($stylesheet)
 		$db->update_query("themestylesheets", array('cachefile' => $db->escape_string($stylesheet['name'])), "sid='{$stylesheet['sid']}'", 1);
 	}
 
-	// Still don't have the cache file name or is it not a flat file? Return false
+	// Still don't have the cache file name or is it not a flat file? Return FALSE
 	if(!$stylesheet['cachefile'] || strpos($stylesheet['cachefile'], 'css.php') !== FALSE) {
 		return FALSE;
 	}
@@ -470,7 +470,7 @@ function build_new_theme($name, $properties=NULL, $parent=1)
  * Generates an array from an incoming CSS file.
  *
  * @param  string The incoming CSS
- * @return array Parsed CSS file as array, false on failure
+ * @return array Parsed CSS file as array, FALSE on failure
  */
 function css_to_array($css)
 {

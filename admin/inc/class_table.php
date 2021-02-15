@@ -189,7 +189,7 @@ class DefaultTable
 		}
 
 		$table .= "<table";
-		if(!is_null($class)) {
+		if(!is_NULL($class)) {
 			if(!$class) {
 				$class = "general";
 			}

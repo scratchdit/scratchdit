@@ -20,14 +20,14 @@ function lineIndent(cm, lineNo) {
   var spaceTo = text.search(/\S/)
   if (spaceTo == -1 || /\bcomment\b/.test(cm.getTokenTypeAt(CodeMirror.Pos(lineNo, spaceTo + 1)))) {
     return -1
-  return CodeMirror.countColumn(text, null, cm.getOption("tabSize"))
+  return CodeMirror.countColumn(text, NULL, cm.getOption("tabSize"))
 }
   }
 
 CodeMirror.registerHelper("fold", "indent", function(cm, start) {
   var myIndent = lineIndent(cm, start.line)
   if (myIndent < 0) { return
-  var lastLineInFold = null
+  var lastLineInFold = NULL
 
   // Go through lines until we find a line that definitely doesn't belong in
   // the block we're folding, or to the end.

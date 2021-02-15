@@ -30,7 +30,7 @@ class PHPGangsta_GoogleAuthenticator
             throw new Exception('Bad secret length');
         }
         $secret = '';
-        $rnd = false;
+        $rnd = FALSE;
         if (function_exists('random_bytes')) {
             $rnd = random_bytes($secretLength);
         } elseif (function_exists('mcrypt_create_iv')) {
@@ -38,10 +38,10 @@ class PHPGangsta_GoogleAuthenticator
         } elseif (function_exists('openssl_random_pseudo_bytes')) {
             $rnd = openssl_random_pseudo_bytes($secretLength, $cryptoStrong);
             if (!$cryptoStrong) {
-                $rnd = false;
+                $rnd = FALSE;
             }
         }
-        if ($rnd !== false) {
+        if ($rnd !== FALSE) {
             for ($i = 0; $i < $secretLength; ++$i) {
                 $secret .= $validChars[ord($rnd[$i]) & 31];
             }
@@ -56,13 +56,13 @@ class PHPGangsta_GoogleAuthenticator
      * Calculate the code, with given secret and point in time.
      *
      * @param string   $secret
-     * @param int|null $timeSlice
+     * @param int|NULL $timeSlice
      *
      * @return string
      */
-    public function getCode($secret, $timeSlice = null)
+    public function getCode($secret, $timeSlice = NULL)
     {
-        if ($timeSlice === null) {
+        if ($timeSlice === NULL) {
             $timeSlice = floor(time() / 30);
         }
 
@@ -71,7 +71,7 @@ class PHPGangsta_GoogleAuthenticator
         // Pack time into binary string
         $time = chr(0).chr(0).chr(0).chr(0).pack('N*', $timeSlice);
         // Hash it with users secret key
-        $hm = hash_hmac('SHA1', $time, $secretkey, true);
+        $hm = hash_hmac('SHA1', $time, $secretkey, TRUE);
         // Use last nipple of result as index/offset
         $offset = ord(substr($hm, -1)) & 0x0F;
         // grab 4 bytes of the result
@@ -98,11 +98,11 @@ class PHPGangsta_GoogleAuthenticator
      *
      * @return string
      */
-    public function getQRCodeGoogleUrl($name, $secret, $title = null, $params = array())
+    public function getQRCodeGoogleUrl($name, $secret, $title = NULL, $params = array())
     {
         $width = !empty($params['width']) && (int) $params['width'] > 0 ? (int) $params['width'] : 200;
         $height = !empty($params['height']) && (int) $params['height'] > 0 ? (int) $params['height'] : 200;
-        $level = !empty($params['level']) && array_search($params['level'], array('L', 'M', 'Q', 'H')) !== false ? $params['level'] : 'M';
+        $level = !empty($params['level']) && array_search($params['level'], array('L', 'M', 'Q', 'H')) !== FALSE ? $params['level'] : 'M';
 
         $urlencoded = urlencode('otpauth://totp/'.$name.'?secret='.$secret.'');
         if (isset($title)) {
@@ -118,28 +118,28 @@ class PHPGangsta_GoogleAuthenticator
      * @param string   $secret
      * @param string   $code
      * @param int      $discrepancy      This is the allowed time drift in 30 second units (8 means 4 minutes before or after)
-     * @param int|null $currentTimeSlice time slice if we want use other that time()
+     * @param int|NULL $currentTimeSlice time slice if we want use other that time()
      *
      * @return bool
      */
-    public function verifyCode($secret, $code, $discrepancy = 1, $currentTimeSlice = null)
+    public function verifyCode($secret, $code, $discrepancy = 1, $currentTimeSlice = NULL)
     {
-        if ($currentTimeSlice === null) {
+        if ($currentTimeSlice === NULL) {
             $currentTimeSlice = floor(time() / 30);
         }
 
         if (strlen($code) != 6) {
-            return false;
+            return FALSE;
         }
 
         for ($i = -$discrepancy; $i <= $discrepancy; ++$i) {
             $calculatedCode = $this->getCode($secret, $currentTimeSlice + $i);
             if ($this->timingSafeEquals($calculatedCode, $code)) {
-                return true;
+                return TRUE;
             }
         }
 
-        return false;
+        return FALSE;
     }
 
     /**
@@ -175,12 +175,12 @@ class PHPGangsta_GoogleAuthenticator
         $paddingCharCount = substr_count($secret, $base32chars[32]);
         $allowedValues = array(6, 4, 3, 1, 0);
         if (!in_array($paddingCharCount, $allowedValues)) {
-            return false;
+            return FALSE;
         }
         for ($i = 0; $i < 4; ++$i) {
             if ($paddingCharCount == $allowedValues[$i] &&
                 substr($secret, -($allowedValues[$i])) != str_repeat($base32chars[32], $allowedValues[$i])) {
-                return false;
+                return FALSE;
             }
         }
         $secret = str_replace('=', '', $secret);
@@ -189,7 +189,7 @@ class PHPGangsta_GoogleAuthenticator
         for ($i = 0; $i < count($secret); $i = $i + 8) {
             $x = '';
             if (!in_array($secret[$i], $base32chars)) {
-                return false;
+                return FALSE;
             }
             for ($j = 0; $j < 8; ++$j) {
                 $x .= str_pad(base_convert(@$base32charsFlipped[@$secret[$i + $j]], 10, 2), 5, '0', STR_PAD_LEFT);
@@ -226,7 +226,7 @@ class PHPGangsta_GoogleAuthenticator
      * @param string $safeString The internal (safe) value to be checked
      * @param string $userString The user submitted (unsafe) value
      *
-     * @return bool True if the two strings are identical
+     * @return bool TRUE if the two strings are identical
      */
     private function timingSafeEquals($safeString, $userString)
     {
@@ -237,7 +237,7 @@ class PHPGangsta_GoogleAuthenticator
         $userLen = strlen($userString);
 
         if ($userLen != $safeLen) {
-            return false;
+            return FALSE;
         }
 
         $result = 0;

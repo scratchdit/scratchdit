@@ -3,7 +3,7 @@ var MyBB = {
 	{
 		this.detectBrowser();
 		Event.observe(document, "dom:loaded", MyBB.pageLoaded);
-		return true;
+		return TRUE;
 	},
 
 	pageLoaded: function()
@@ -105,7 +105,7 @@ var MyBB = {
 	{
 		confirmReturn = confirm(deleteevent_confirm);
 
-		if(confirmReturn == true)
+		if(confirmReturn == TRUE)
 		{
 			var form = new Element("form", { method: "post", action: "calendar.php", style: "display: none;" });
 
@@ -155,9 +155,9 @@ var MyBB = {
 		var form = Event.findElement(e, 'FORM');
 		if(!form)
 		{
-			return false;
+			return FALSE;
 		}
-		form.getElements().each(function(element) {		
+		form.getElements().each(function(element) {
 			if(!element.hasClassName("checkall") && element.type == "checkbox")
 			{
 				element.checked = allbox.checked;
@@ -179,7 +179,7 @@ var MyBB = {
 	{
 		confirmReturn = confirm(delete_reputation_confirm);
 
-		if(confirmReturn == true)
+		if(confirmReturn == TRUE)
 		{
 			var form = new Element("form", { method: "post", action: "reputation.php?action=delete", style: "display: none;" });
 
@@ -233,7 +233,7 @@ var MyBB = {
 
 		promptres = prompt("Quick Page Jump\nPlease enter a page number between 1 and "+pages+" to jump to.", defpage);
 
-		if((promptres != null) && (promptres != "") && (promptres > 1) && (promptres <= pages))
+		if((promptres != NULL) && (promptres != "") && (promptres > 1) && (promptres <= pages))
 		{
 			window.location = "showthread.php?tid="+tid+"&page"+promotres;
 		}
@@ -244,12 +244,12 @@ var MyBB = {
 		element = Event.element(event);
 		if(!element)
 		{
-			return false;
+			return FALSE;
 		}
 		var fid = element.id.replace("mark_read_", "");
 		if(!fid)
 		{
-			return false;
+			return FALSE;
 		}
 		new Ajax.Request('misc.php?action=markread&fid='+fid+'&ajax=1&my_post_key='+my_post_key, {method: 'get', onComplete: function(request) {MyBB.forumMarkedRead(fid, request); }});
 	},
@@ -293,17 +293,17 @@ var MyBB = {
 	{
 		if(!$('pm_notice'))
 		{
-			return false;
+			return FALSE;
 		}
 
 		if(use_xmlhttprequest != 1)
 		{
-			return true;
+			return TRUE;
 		}
 
 		new Ajax.Request('private.php?action=dismiss_notice', {method: 'post', postBody: 'ajax=1&my_post_key='+my_post_key});
 		Element.remove('pm_notice');
-		return false;
+		return FALSE;
 	},
 
 	unHTMLchars: function(text)
@@ -318,7 +318,7 @@ var MyBB = {
 
 	HTMLchars: function(text)
 	{
-		text = text.replace(new RegExp("&(?!#[0-9]+;)", "g"), "&amp;");		
+		text = text.replace(new RegExp("&(?!#[0-9]+;)", "g"), "&amp;");
 		text = text.replace(/</g, "&lt;");
 		text = text.replace(/>/g, "&gt;");
 		text = text.replace(/"/g, "&quot;");
@@ -330,13 +330,13 @@ var MyBB = {
 		form = $('lang_select');
 		if(!form)
 		{
-			return false;
+			return FALSE;
 		}
 		form.submit();
 	},
-	
+
 	quickLogin: function()
-	{		
+	{
 		if($("quick_login"))
 		{
 			var form = new Element("form", { method: "post", action: "member.php" });
@@ -414,7 +414,7 @@ var MyBB = {
 			form.insert({ bottom: span });
 
 			form.innerHTML += lang.lost_password+lang.register_url;
-	
+
 			$("quick_login").innerHTML = "";
 			$("quick_login").insert({ before: form });
 
@@ -422,7 +422,7 @@ var MyBB = {
 			$('quick_login_username').focus();
 		}
 
-		return false;
+		return FALSE;
 	}
 };
 
@@ -432,35 +432,35 @@ var Cookie = {
 		cookies = document.cookie;
 		name = cookiePrefix+name+"=";
 		cookiePos = cookies.indexOf(name);
-		
-		if(cookiePos != -1) 
+
+		if(cookiePos != -1)
 		{
 			cookieStart = cookiePos+name.length;
 			cookieEnd = cookies.indexOf(";", cookieStart);
-			
-			if(cookieEnd == -1) 
+
+			if(cookieEnd == -1)
 			{
 				cookieEnd = cookies.length;
 			}
-			
+
 			return unescape(cookies.substring(cookieStart, cookieEnd));
 		}
 	},
 
 	set: function(name, value, expires)
 	{
-		if(!expires) 
+		if(!expires)
 		{
 			expires = "; expires=Wed, 1 Jan 2020 00:00:00 GMT;"
-		} 
-		else 
+		}
+		else
 		{
 			expire = new Date();
 			expire.setTime(expire.getTime()+(expires*1000));
 			expires = "; expires="+expire.toGMTString();
 		}
 
-		if(cookieDomain) 
+		if(cookieDomain)
 		{
 			domain = "; domain="+cookieDomain;
 		}
@@ -469,7 +469,7 @@ var Cookie = {
 			domain = "";
 		}
 
-		if(cookiePath != "") 
+		if(cookiePath != "")
 		{
 			path = cookiePath;
 		}
@@ -572,7 +572,7 @@ var DomLib = {
 		{
 			pageWidth = xScroll;
 		}
-		
+
 		var arrayPageSize = new Array(pageWidth,pageHeight,windowWidth,windowHeight);
 
 		return arrayPageSize;
@@ -619,7 +619,7 @@ var expandables = {
 		element = Event.element(e)
 		if(!element || !element.controls)
 		{
-			return false;
+			return FALSE;
 		}
 		var expandedItem = $(element.controls+"_e");
 		var collapsedItem = $(element.controls+"_c");
@@ -658,7 +658,7 @@ var expandables = {
 				this.saveCollapsed(element.controls, 1);
 			}
 		}
-		return true;
+		return TRUE;
 	},
 
 	saveCollapsed: function(id, add)
@@ -755,7 +755,7 @@ var lang = {
 
 };
 
-/* additions for IE5 compatibility */ 
+/* additions for IE5 compatibility */
 if(!Array.prototype.shift) {
 	Array.prototype.shift = function()
 	{
@@ -767,7 +767,7 @@ if(!Array.prototype.shift) {
 	}
 }
 
-if(!Array.prototype.unshift) { 
+if(!Array.prototype.unshift) {
 	Array.prototype.unshift = function()
 	{
 		this.reverse();

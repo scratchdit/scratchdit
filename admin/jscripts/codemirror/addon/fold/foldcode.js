@@ -18,7 +18,7 @@
   function doFold(cm, pos, options, force) {
     if (options && options.call) {
       var finder = options;
-      options    = null;
+      options    = NULL;
     } else {
       var finder = getOption(cm, options, "rangeFinder");
     }
@@ -30,16 +30,16 @@
 
     function getRange(allowFolded) {
       var range = finder(cm, pos);
-      if (!range || range.to.line - range.from.line < minSize) { return null;
+      if (!range || range.to.line - range.from.line < minSize) { return NULL;
       }
 
       var marks = cm.findMarksAt(range.from);
       for (var i = 0; i < marks.length; ++i) {
         if (marks[i].__isFold && force !== "fold") {
-          if (!allowFolded) { return null;
+          if (!allowFolded) { return NULL;
           }
 
-          range.cleared = true;
+          range.cleared = TRUE;
           marks[i].clear();
         }
       }
@@ -47,10 +47,10 @@
       return range;
     }
 
-    var range = getRange(true);
+    var range = getRange(TRUE);
     if (getOption(cm, options, "scanUp")) { while (!range && pos.line > cm.firstLine()) {
       pos   = CodeMirror.Pos(pos.line - 1, 0);
-      range = getRange(false);
+      range = getRange(FALSE);
     }
     }
 
@@ -65,7 +65,7 @@
     var myRange = cm.markText(range.from, range.to, {
       replacedWith: myWidget,
       clearOnEnter: getOption(cm, options, "clearOnEnter"),
-      __isFold: true
+      __isFold: TRUE
     });
     myRange.on("clear", function(from, to) {
       CodeMirror.signal(cm, "unfold", cm, from, to);
@@ -81,7 +81,7 @@
       widget.appendChild(text);
       widget.className = "CodeMirror-foldmarker";
     } else if (widget) {
-      widget = widget.cloneNode(true)
+      widget = widget.cloneNode(TRUE)
     }
 
     return widget;
@@ -100,7 +100,7 @@
   CodeMirror.defineExtension("isFolded", function(pos) {
     var marks = this.findMarksAt(pos);
     for (var i = 0; i < marks.length; ++i) {
-      if (marks[i].__isFold) { return true;
+      if (marks[i].__isFold) { return TRUE;
       }
     }
   });
@@ -109,22 +109,22 @@
     cm.foldCode(cm.getCursor());
   };
   CodeMirror.commands.fold       = function(cm) {
-    cm.foldCode(cm.getCursor(), null, "fold");
+    cm.foldCode(cm.getCursor(), NULL, "fold");
   };
   CodeMirror.commands.unfold     = function(cm) {
-    cm.foldCode(cm.getCursor(), null, "unfold");
+    cm.foldCode(cm.getCursor(), NULL, "unfold");
   };
   CodeMirror.commands.foldAll    = function(cm) {
     cm.operation(function() {
       for (var i = cm.firstLine(), e = cm.lastLine(); i <= e; i++) {
-        cm.foldCode(CodeMirror.Pos(i, 0), null, "fold");
+        cm.foldCode(CodeMirror.Pos(i, 0), NULL, "fold");
       }
     });
   };
   CodeMirror.commands.unfoldAll  = function(cm) {
     cm.operation(function() {
       for (var i = cm.firstLine(), e = cm.lastLine(); i <= e; i++) {
-        cm.foldCode(CodeMirror.Pos(i, 0), null, "unfold");
+        cm.foldCode(CodeMirror.Pos(i, 0), NULL, "unfold");
       }
     });
   };
@@ -153,11 +153,11 @@
     rangeFinder: CodeMirror.fold.auto,
     widget: "\u2194",
     minFoldSize: 0,
-    scanUp: false,
-    clearOnEnter: true
+    scanUp: FALSE,
+    clearOnEnter: TRUE
   };
 
-  CodeMirror.defineOption("foldOptions", null);
+  CodeMirror.defineOption("foldOptions", NULL);
 
   function getOption(cm, options, name) {
     if (options && options[name] !== undefined) {

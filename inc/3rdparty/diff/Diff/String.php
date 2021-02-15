@@ -54,7 +54,7 @@ class Horde_String
      *
      * @return mixed  The converted input data.
      */
-    public static function convertCharset($input, $from, $to, $force = false)
+    public static function convertCharset($input, $from, $to, $force = FALSE)
     {
         /* Don't bother converting numbers. */
         if (is_numeric($input)) {
@@ -157,7 +157,7 @@ class Horde_String
             $out = @iconv($from, $to . '//TRANSLIT', $input);
             $errmsg = isset($php_errormsg);
             ini_restore('track_errors');
-            if (!$errmsg && $out !== false) {
+            if (!$errmsg && $out !== FALSE) {
                 return $out;
             }
         }
@@ -177,19 +177,19 @@ class Horde_String
      * Makes a string lowercase.
      *
      * @param string $string   The string to be converted.
-     * @param boolean $locale  If true the string will be converted based on
+     * @param boolean $locale  If TRUE the string will be converted based on
      *                         a given charset, locale independent else.
-     * @param string $charset  If $locale is true, the charset to use when
+     * @param string $charset  If $locale is TRUE, the charset to use when
      *                         converting.
      *
      * @return string  The string with lowercase characters.
      */
-    public static function lower($string, $locale = false, $charset = null)
+    public static function lower($string, $locale = FALSE, $charset = NULL)
     {
         if ($locale) {
             if (Horde_Util::extensionExists('mbstring')) {
-                if (is_null($charset)) {
-                    throw new InvalidArgumentException('$charset argument must not be null');
+                if (is_NULL($charset)) {
+                    throw new InvalidArgumentException('$charset argument must not be NULL');
                 }
                 $ret = @mb_strtolower($string, self::_mbstringCharset($charset));
                 if (!empty($ret)) {
@@ -213,19 +213,19 @@ class Horde_String
      * Makes a string uppercase.
      *
      * @param string $string   The string to be converted.
-     * @param boolean $locale  If true the string will be converted based on a
+     * @param boolean $locale  If TRUE the string will be converted based on a
      *                         given charset, locale independent else.
-     * @param string $charset  If $locale is true, the charset to use when
+     * @param string $charset  If $locale is TRUE, the charset to use when
      *                         converting. If not provided the current charset.
      *
      * @return string  The string with uppercase characters.
      */
-    public static function upper($string, $locale = false, $charset = null)
+    public static function upper($string, $locale = FALSE, $charset = NULL)
     {
         if ($locale) {
             if (Horde_Util::extensionExists('mbstring')) {
-                if (is_null($charset)) {
-                    throw new InvalidArgumentException('$charset argument must not be null');
+                if (is_NULL($charset)) {
+                    throw new InvalidArgumentException('$charset argument must not be NULL');
                 }
                 $ret = @mb_strtoupper($string, self::_mbstringCharset($charset));
                 if (!empty($ret)) {
@@ -250,24 +250,24 @@ class Horde_String
      * alphabetic.
      *
      * @param string $string   The string to be capitalized.
-     * @param boolean $locale  If true the string will be converted based on a
+     * @param boolean $locale  If TRUE the string will be converted based on a
      *                         given charset, locale independent else.
      * @param string $charset  The charset to use, defaults to current charset.
      *
      * @return string  The capitalized string.
      */
-    public static function ucfirst($string, $locale = false, $charset = null)
+    public static function ucfirst($string, $locale = FALSE, $charset = NULL)
     {
         if ($locale) {
-            if (is_null($charset)) {
-                throw new InvalidArgumentException('$charset argument must not be null');
+            if (is_NULL($charset)) {
+                throw new InvalidArgumentException('$charset argument must not be NULL');
             }
             $first = self::substr($string, 0, 1, $charset);
             if (self::isAlpha($first, $charset)) {
-                $string = self::upper($first, true, $charset) . self::substr($string, 1, null, $charset);
+                $string = self::upper($first, TRUE, $charset) . self::substr($string, 1, NULL, $charset);
             }
         } else {
-            $string = self::upper(substr($string, 0, 1), false) . substr($string, 1);
+            $string = self::upper(substr($string, 0, 1), FALSE) . substr($string, 1);
         }
 
         return $string;
@@ -280,13 +280,13 @@ class Horde_String
      * Sentences are splitted into words at whitestrings.
      *
      * @param string $string   The string to be capitalized.
-     * @param boolean $locale  If true the string will be converted based on a
+     * @param boolean $locale  If TRUE the string will be converted based on a
      *                         given charset, locale independent else.
      * @param string $charset  The charset to use, defaults to current charset.
      *
      * @return string  The capitalized string.
      */
-    public static function ucwords($string, $locale = false, $charset = null)
+    public static function ucwords($string, $locale = FALSE, $charset = NULL)
     {
         $words = preg_split('/(\s+)/', $string, -1, PREG_SPLIT_DELIM_CAPTURE);
         for ($i = 0, $c = count($words); $i < $c; $i += 2) {
@@ -307,10 +307,10 @@ class Horde_String
      *
      * @return string  The string's part.
      */
-    public static function substr($string, $start, $length = null,
+    public static function substr($string, $start, $length = NULL,
                                   $charset = 'UTF-8')
     {
-        if (is_null($length)) {
+        if (is_NULL($length)) {
             $length = self::length($string, $charset) - $start;
         }
 
@@ -318,7 +318,7 @@ class Horde_String
             return '';
         }
 
-        $error = false;
+        $error = FALSE;
 
         /* Try mbstring. */
         if (Horde_Util::extensionExists('mbstring')) {
@@ -328,18 +328,18 @@ class Horde_String
             if (strlen($ret)) {
                 return $ret;
             }
-            $error = true;
+            $error = TRUE;
         }
 
         /* Try iconv. */
         if (Horde_Util::extensionExists('iconv')) {
             $ret = @iconv_substr($string, $start, $length, $charset);
 
-            /* iconv_substr() returns false on failure. */
-            if ($ret !== false) {
+            /* iconv_substr() returns FALSE on failure. */
+            if ($ret !== FALSE) {
                 return $ret;
             }
-            $error = true;
+            $error = TRUE;
         }
 
         /* Try intl. */
@@ -354,11 +354,11 @@ class Horde_String
                 $charset
             );
 
-            /* grapheme_substr() returns false on failure. */
-            if ($ret !== false) {
+            /* grapheme_substr() returns FALSE on failure. */
+            if ($ret !== FALSE) {
                 return $ret;
             }
-            $error = true;
+            $error = TRUE;
         }
 
         return $error
@@ -594,21 +594,21 @@ class Horde_String
      * @return string  String containing the wrapped text.
      */
     public static function wordwrap($string, $width = 75, $break = "\n",
-                                    $cut = false, $line_folding = false)
+                                    $cut = FALSE, $line_folding = FALSE)
     {
         $breakRegex = '(?:' . preg_quote($break) . ')';
         $rpos = self::rpos($break, "\n");
-        if ($rpos === false) {
+        if ($rpos === FALSE) {
             $rpos = 0;
         } else {
             $rpos++;
         }
         $wrapped = '';
-        $hasWrapped = false;
+        $hasWrapped = FALSE;
 
         while (self::length($string, 'UTF-8') > $width) {
             $line = self::substr($string, 0, $width + ($hasWrapped ? $rpos : 0), 'UTF-8');
-            $string = self::substr($string, self::length($line, 'UTF-8'), null, 'UTF-8');
+            $string = self::substr($string, self::length($line, 'UTF-8'), NULL, 'UTF-8');
 
             // Make sure we didn't cut a word, unless we want hard breaks
             // anyway.
@@ -622,7 +622,7 @@ class Horde_String
             if (preg_match($regex, $line, $match)) {
                 $wrapped .= $match[1] . $match[2];
                 $string = $match[3] . $string;
-                $hasWrapped = false;
+                $hasWrapped = FALSE;
                 continue;
             }
 
@@ -632,7 +632,7 @@ class Horde_String
                 preg_match('/^(.*?)(;|:)(\s+.*)$/us', $line, $match)) {
                 $wrapped .= $match[1] . $match[2];
                 $string = $break . $match[3] . $string;
-                $hasWrapped = true;
+                $hasWrapped = TRUE;
                 continue;
             }
 
@@ -645,7 +645,7 @@ class Horde_String
                 $wrapped .= $match[1];
                 $string = $break . ($line_folding ? $match[2] : '')
                     . $match[3] . $string;
-                $hasWrapped = true;
+                $hasWrapped = TRUE;
                 continue;
             }
 
@@ -653,12 +653,12 @@ class Horde_String
             if ($cut) {
                 $wrapped .= $line;
                 $string = $break . $string;
-                $hasWrapped = true;
+                $hasWrapped = TRUE;
                 continue;
             }
 
             $wrapped .= $line;
-            $hasWrapped = false;
+            $hasWrapped = FALSE;
         }
 
         return $wrapped . $string;
@@ -671,14 +671,14 @@ class Horde_String
      * @param integer $length     Wrap $text at this number of characters.
      * @param string $break_char  Character(s) to use when breaking lines.
      * @param boolean $quote      Ignore lines that are wrapped with the '>'
-     *                            character (RFC 2646)? If true, we don't
+     *                            character (RFC 2646)? If TRUE, we don't
      *                            remove any padding whitespace at the end of
      *                            the string.
      *
      * @return string  String containing the wrapped text.
      */
     public static function wrap($text, $length = 80, $break_char = "\n",
-                                $quote = false)
+                                $quote = FALSE)
     {
         $paragraphs = array();
 
@@ -751,13 +751,13 @@ class Horde_String
     }
 
     /**
-     * Returns true if the every character in the parameter is an alphabetic
+     * Returns TRUE if the every character in the parameter is an alphabetic
      * character.
      *
      * @param string $string   The string to test.
      * @param string $charset  The charset to use when testing the string.
      *
-     * @return boolean  True if the parameter was alphabetic only.
+     * @return boolean  TRUE if the parameter was alphabetic only.
      */
     public static function isAlpha($string, $charset)
     {
@@ -780,32 +780,32 @@ class Horde_String
     }
 
     /**
-     * Returns true if ever character in the parameter is a lowercase letter in
+     * Returns TRUE if ever character in the parameter is a lowercase letter in
      * the current locale.
      *
      * @param string $string   The string to test.
      * @param string $charset  The charset to use when testing the string.
      *
-     * @return boolean  True if the parameter was lowercase.
+     * @return boolean  TRUE if the parameter was lowercase.
      */
     public static function isLower($string, $charset)
     {
-        return ((self::lower($string, true, $charset) === $string) &&
+        return ((self::lower($string, TRUE, $charset) === $string) &&
                 self::isAlpha($string, $charset));
     }
 
     /**
-     * Returns true if every character in the parameter is an uppercase letter
+     * Returns TRUE if every character in the parameter is an uppercase letter
      * in the current locale.
      *
      * @param string $string   The string to test.
      * @param string $charset  The charset to use when testing the string.
      *
-     * @return boolean  True if the parameter was uppercase.
+     * @return boolean  TRUE if the parameter was uppercase.
      */
     public static function isUpper($string, $charset)
     {
-        return ((self::upper($string, true, $charset) === $string) &&
+        return ((self::upper($string, TRUE, $charset) === $string) &&
                 self::isAlpha($string, $charset));
     }
 
@@ -819,7 +819,7 @@ class Horde_String
      *
      * @return array  The matches array from the first regex that matches.
      */
-    public static function regexMatch($text, $regex, $charset = null)
+    public static function regexMatch($text, $regex, $charset = NULL)
     {
         if (!empty($charset)) {
             $regex = self::convertCharset($regex, $charset, 'utf-8');
@@ -845,7 +845,7 @@ class Horde_String
      *
      * @param string $text  The text to check.
      *
-     * @return boolean  True if valid UTF-8.
+     * @return boolean  TRUE if valid UTF-8.
      */
     public static function validUtf8($text)
     {
@@ -853,7 +853,7 @@ class Horde_String
 
         // First check for illegal surrogate pair sequences. See RFC 3629.
         if (preg_match('/\xE0[\x80-\x9F][\x80-\xBF]|\xED[\xA0-\xBF][\x80-\xBF]/S', $text)) {
-            return false;
+            return FALSE;
         }
 
         for ($i = 0, $len = strlen($text); $i < $len; ++$i) {
@@ -861,7 +861,7 @@ class Horde_String
             if ($c > 128) {
                 if ($c > 247) {
                     // STD 63 (RFC 3629) eliminates 5 & 6-byte characters.
-                    return false;
+                    return FALSE;
                 } elseif ($c > 239) {
                     $j = 3;
                 } elseif ($c > 223) {
@@ -869,23 +869,23 @@ class Horde_String
                 } elseif ($c > 191) {
                     $j = 1;
                 } else {
-                    return false;
+                    return FALSE;
                 }
 
                 if (($i + $j) > $len) {
-                    return false;
+                    return FALSE;
                 }
 
                 do {
                     $c = ord($text[++$i]);
                     if (($c < 128) || ($c > 191)) {
-                        return false;
+                        return FALSE;
                     }
                 } while (--$j);
             }
         }
 
-        return true;
+        return TRUE;
     }
 
     /**

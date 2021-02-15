@@ -8,10 +8,10 @@
 var Peeker = Class.create();
 Peeker.prototype = {
 
-    controller: null,
-    domain: null,
-    match: null,
-    is_nodelist: null,
+    controller: NULL,
+    domain: NULL,
+    match: NULL,
+    is_nodelist: NULL,
 
     /**
      * Checks the controller and shows/hide
@@ -61,7 +61,7 @@ Peeker.prototype = {
 
                 for(i = 0; i < controller.length; i++)
                 {
-           			if(controller[i].getAttribute("id") != null)
+           			if(controller[i].getAttribute("id") != NULL)
            			{
                			Event.observe(controller[i], "change", this.check.bindAsEventListener(this));
               			Event.observe(controller[i], "click", this.check.bindAsEventListener(this));

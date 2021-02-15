@@ -5,7 +5,7 @@ messageEditor.prototype = {
 	toolbarHeight: 0,
 	currentTheme: '',
 	themePath: '',
-	openDropDownMenu: null,
+	openDropDownMenu: NULL,
 
 	setTheme: function(theme)
 	{
@@ -27,9 +27,9 @@ messageEditor.prototype = {
 		// Sorry Konqueror, but due to a browser bug out of control with textarea values
 		// you do not get to use the fancy editor.
 
-		if(MyBB.browser == "konqueror" || (typeof(mybb_editor_disabled) != "undefined" && mybb_editor_disabled == true))
+		if(MyBB.browser == "konqueror" || (typeof(mybb_editor_disabled) != "undefined" && mybb_editor_disabled == TRUE))
 		{
-			return false;
+			return FALSE;
 		}
 
 		// Establish the base path to this javascript file
@@ -45,7 +45,7 @@ messageEditor.prototype = {
 		{
 			if(!this.options.lang)
 			{
-				return false;
+				return FALSE;
 			}
 
 			if(!this.options.rtl)
@@ -125,8 +125,8 @@ messageEditor.prototype = {
 		this.colors[38] = "#E6E6FA";
 		this.colors[39] = "#DDA0DD";
 		this.colors[40] = "#FFFFFF";
-		
-		// An array of video services to be shown (youtube, vimeo, etc) 
+
+		// An array of video services to be shown (youtube, vimeo, etc)
 		this.videos = new Object();
 		this.videos["dailymotion"] = this.options.lang.video_dailymotion;
 		this.videos["metacafe"] = this.options.lang.video_metacafe;
@@ -210,7 +210,7 @@ messageEditor.prototype = {
 			items: [
 				{type: 'dropdown', name: 'font', insert: 'font', title: this.options.lang.font, options: this.fonts},
 				{type: 'dropdown', name: 'size', insert: 'size', title: this.options.lang.size, options: this.sizes},
-				{type: 'button', name: 'color', insert: 'color', dropdown: true, color_select: true, image: 'color.gif', draw_option: this.drawColorOption, options: this.colors}
+				{type: 'button', name: 'color', insert: 'color', dropdown: TRUE, color_select: TRUE, image: 'color.gif', draw_option: this.drawColorOption, options: this.colors}
 			]
 		});
 
@@ -230,7 +230,7 @@ messageEditor.prototype = {
 				{type: 'button', name: 'quote', sprite: 'quote', insert: 'quote', title: this.options.lang.title_quote},
 				{type: 'button', name: 'code', sprite: 'code', insert: 'code', title: this.options.lang.title_code},
 				{type: 'button', name: 'php', sprite: 'php', insert: 'php', title: this.options.lang.title_php},
-				{type: 'button', name: 'video', insert: 'video', image: 'television.gif', dropdown: true, title: this.options.lang.title_video, options: this.videos}
+				{type: 'button', name: 'video', insert: 'video', image: 'television.gif', dropdown: TRUE, title: this.options.lang.title_video, options: this.videos}
 			]
 		});
 		this.createToolbar('formatting', {
@@ -297,13 +297,13 @@ messageEditor.prototype = {
 
 		if(MyBB.browser == 'ie') {
 			Event.observe($(this.textarea), 'focus', function() {
-				this.trackingCaret = true;
+				this.trackingCaret = TRUE;
 			}.bindAsEventListener(this));
 			Event.observe($(this.textarea), 'blur', function() {
-				this.trackingCaret = false;
+				this.trackingCaret = FALSE;
 			}.bindAsEventListener(this));
 			Event.observe($(this.textarea), 'mousedown', function() {
-				this.trackingCaret = true;
+				this.trackingCaret = TRUE;
 				this.storeCaret();
 			}.bindAsEventListener(this));
 		}
@@ -369,10 +369,10 @@ messageEditor.prototype = {
 		if(toolbar.lastChild.previousSibling)
 			toolbar.lastChild.previousSibling.className += ' toolbar_button_group_last';
 	},
-	
+
 	setElementState: function(element, state) {
 		element.addClassName('toolbar_'+state);
-		
+
 		if(element.hasClassName('toolbar_button_group_first')) {
 			if(state == 'clicked') {
 				append = 'toolbar_clicked';
@@ -383,7 +383,7 @@ messageEditor.prototype = {
 			append += '_button_group_first';
 			element.addClassName(append);
 		}
-		
+
 		if(element.hasClassName('toolbar_button_group_last')) {
 			if(state == 'clicked') {
 				append = 'toolbar_clicked';
@@ -395,11 +395,11 @@ messageEditor.prototype = {
 			element.addClassName(append);
 		}
 	},
-	
+
 	removeElementState: function(element, state)
 	{
 		element.removeClassName('toolbar_'+state);
-		
+
 		if(element.hasClassName('toolbar_button_group_first')) {
 			if(state == 'clicked') {
 				append = 'toolbar_clicked';
@@ -410,7 +410,7 @@ messageEditor.prototype = {
 			append += '_button_group_first';
 			element.removeClassName(append);
 		}
-		
+
 		if(element.hasClassName('toolbar_button_group_last')) {
 			if(state == 'clicked') {
 				append = 'toolbar_clicked';
@@ -420,7 +420,7 @@ messageEditor.prototype = {
 			}
 			append += '_button_group_last';
 			element.removeClassName(append);
-		}	
+		}
 	},
 
 	dropDownMenuItemClick: function(e)
@@ -430,17 +430,17 @@ messageEditor.prototype = {
 
 		if(!element)
 			return;
-		
+
 		if(!element.extra)
 			element = element.up('li');
-		
+
 		var mnu = element.up('ul');
 		var dropdown = this.getElementToolbarItem(mnu);
 		var label = dropdown.down('.editor_dropdown_label');
 
 		if(!dropdown.insertText || (dropdown.insertText != "video" && mnu.activeItem && mnu.activeItem == element))
 			return;
-		
+
 		mnu.lastItemValue = element.extra;
 
 		if(this.getSelectedText($(this.textarea)))
@@ -472,7 +472,7 @@ messageEditor.prototype = {
 
 	setDropDownMenuActiveItem: function(element, index)
 	{
-		if(element == null)
+		if(element == NULL)
 		{
 			return;
 		}
@@ -482,7 +482,7 @@ messageEditor.prototype = {
 		if(mnu.activeItem)
 		{
 			mnu.activeItem.removeClassName('editor_dropdown_menu_item_active');
-			mnu.activeItem = null;
+			mnu.activeItem = NULL;
 		}
 
 		if(index > 0)
@@ -596,7 +596,7 @@ messageEditor.prototype = {
 				this.setDropDownMenuActiveItem(dropdown, 0);
 			}.bindAsEventListener(this));
 		}
-		
+
 		$H(options.options).each(function(option)
 		{
 			if(options.draw_option)
@@ -633,16 +633,16 @@ messageEditor.prototype = {
 			return;
 		if(!element.elementType)
 			element = this.getElementToolbarItem(element);
-		
+
 		var mnu = $(element).down('ul');
-		
+
 		// This menu is already open, close it
 		if(mnu.style.display != 'none')
 		{
 			mnu.style.display = 'none';
 			element.removeClassName('editor_dropdown_menu_open');
 			this.removeElementState(element, 'clicked');
-			this.openDropDownMenu = null;
+			this.openDropDownMenu = NULL;
 			Event.stopObserving(document, 'click', this.hideOpenDropDownMenu.bindAsEventListener(this));
 		}
 		// Opening this menu
@@ -674,7 +674,7 @@ messageEditor.prototype = {
 		var dropDown = this.getElementToolbarItem(this.openDropDownMenu);
 		this.removeElementState(this.openDropDownMenu.parentNode, 'clicked');
 		this.removeElementState(element, 'clicked');
-		this.openDropDownMenu = null;
+		this.openDropDownMenu = NULL;
 		Event.stopObserving(document, 'click', this.hideOpenDropDownMenu.bindAsEventListener(this));
 	},
 
@@ -686,7 +686,7 @@ messageEditor.prototype = {
 			parent = parent.parentNode;
 		} while($(parent));
 
-		return false;
+		return FALSE;
 	},
 
 	storeCaret: function()
@@ -695,7 +695,7 @@ messageEditor.prototype = {
 		{
 			return;
 		}
-		
+
 		// Internet explorer errors if you try and select an element... so just handle that by try catch
 		try {
 			var range = document.selection.createRange();
@@ -722,7 +722,7 @@ messageEditor.prototype = {
 		}
 
 		var range = $(this.textarea).createTextRange();
-		range.collapse(true);
+		range.collapse(TRUE);
 		range.moveStart('character', this.lastCaretS);
 		range.moveEnd('character', this.lastCaretE - this.lastCaretS);
 		range.select();
@@ -740,12 +740,12 @@ messageEditor.prototype = {
 		// Does this item already exist?
 		if($('editor_item_'+options.name)) return;
 
-		insert_first_class = false;
+		insert_first_class = FALSE;
 
 		// Is this the first item? childnodes = 1 (closing br) or lastchild.previousSibling = sep
 		if(toolbar.childNodes.length == 1 || (toolbar.lastChild.previousSibling && toolbar.lastChild.previousSibling.className.indexOf('toolbar_sep') > -1 || (toolbar.lastChild.previousSibling.className.indexOf('editor_dropdown') > -1 && options.type != 'dropdown')))
 		{
-			insert_first_class = true;
+			insert_first_class = TRUE;
 		}
 
 		if(options.type == "dropdown")
@@ -754,7 +754,7 @@ messageEditor.prototype = {
 			if(dropdown)
 				toolbar.insertBefore(dropdown, toolbar.lastChild);
 
-			if(insert_first_class == true)
+			if(insert_first_class == TRUE)
 				dropdown.className += ' toolbar_dropdown_group_first';
 		}
 		else if(options.type == 'button')
@@ -762,7 +762,7 @@ messageEditor.prototype = {
 			var button = this.createToolbarButton(options)
 			toolbar.insertBefore(button, toolbar.lastChild);
 
-			if(insert_first_class == true)
+			if(insert_first_class == TRUE)
 				button.className += ' toolbar_button_group_first';
 		}
 		else if(options.type == 'separator')
@@ -799,7 +799,7 @@ messageEditor.prototype = {
 		button.insertExtra = '';
 		if(typeof(options.extra) != 'undefined')
 			button.insertExtra = options.extra;
-		
+
 		if(typeof(options.sprite) != 'undefined')
 		{
 			var img = document.createElement('span');
@@ -814,7 +814,7 @@ messageEditor.prototype = {
 
 		if(options.dropdown)
 		{
-			if(options.color_select == true)
+			if(options.color_select == TRUE)
 			{
 				var sel = document.createElement('em');
 				sel.className = 'editor_button_color_selected';
@@ -851,7 +851,7 @@ messageEditor.prototype = {
 				elem.parentNode.removeClassName('toolbar_button_over_arrow');
 			});
 			button.appendChild(mnu);
-			button.dropdown = true;
+			button.dropdown = TRUE;
 			button.menu = mnu;
 		}
 
@@ -860,7 +860,7 @@ messageEditor.prototype = {
 		{
 			button.disable = function()
 			{
-				if(button.disabled == true) return;
+				if(button.disabled == TRUE) return;
 
 				if(options.disabled_sprite)
 				{
@@ -870,7 +870,7 @@ messageEditor.prototype = {
 				else
 					img.src = this.themePath + '/images/' + options.disabled_img;
 
-				button.disabled = true;
+				button.disabled = TRUE;
 			};
 
 			button.enable = function()
@@ -885,16 +885,16 @@ messageEditor.prototype = {
 				else
 					img.src = this.themePath + '/images/' + options.image;
 
-				button.enabled = true;
+				button.enabled = TRUE;
 			};
 
-			if(options.disabled && options.disabled == true)
+			if(options.disabled && options.disabled == TRUE)
 			{
 				button.disable();
-				button.disabled = true;
+				button.disabled = TRUE;
 			}
 			else
-				button.disabled = false;
+				button.disabled = FALSE;
 		}
 
 		Event.observe(button, "mouseover", this.toolbarItemHover.bindAsEventListener(this));
@@ -919,7 +919,7 @@ messageEditor.prototype = {
 		element = Event.element(e);
 
 		if(!element)
-			return false;
+			return FALSE;
 
 		if(!element.elementType)
 			element = 	this.getElementToolbarItem(element);
@@ -951,7 +951,7 @@ messageEditor.prototype = {
 		this.storeCaret();
 		element = Event.element(e);
 		if(!element)
-			return false;
+			return FALSE;
 
 		if(!element.elementType)
 			element = this.getElementToolbarItem(element);
@@ -968,7 +968,7 @@ messageEditor.prototype = {
 		element = Event.element(e);
 
 		if(!element)
-			return false;
+			return FALSE;
 
 		if(!element.elementType)
 			element = this.getElementToolbarItem(element);
@@ -1015,16 +1015,16 @@ messageEditor.prototype = {
 		{
 			listItem = prompt(this.options.lang.enter_list_item, "");
 
-			if(listItem != "" && listItem != null)
+			if(listItem != "" && listItem != NULL)
 			{
 				list = list+"[*]"+listItem+"\n";
 			}
 		}
-		while(listItem != "" && listItem != null);
+		while(listItem != "" && listItem != NULL);
 
 		if(list == "")
 		{
-			return false;
+			return FALSE;
 		}
 
 		if(type)
@@ -1037,7 +1037,7 @@ messageEditor.prototype = {
 		}
 
 		list = list+"[/list]\n";
-		this.performInsert(list, "", true, false);
+		this.performInsert(list, "", TRUE, FALSE);
 	},
 
 	insertURL: function()
@@ -1058,11 +1058,11 @@ messageEditor.prototype = {
 
 			if(title)
 			{
-				this.performInsert("[url="+url+"]"+title+"[/url]", "", true, false);
+				this.performInsert("[url="+url+"]"+title+"[/url]", "", TRUE, FALSE);
 			}
 			else
 			{
-				this.performInsert("[url]"+url+"[/url]", "", true, false);
+				this.performInsert("[url]"+url+"[/url]", "", TRUE, FALSE);
 			}
 		}
 	},
@@ -1085,11 +1085,11 @@ messageEditor.prototype = {
 
 			if(title)
 			{
-				this.performInsert("[email="+email+"]"+title+"[/email]", "", true, false);
+				this.performInsert("[email="+email+"]"+title+"[/email]", "", TRUE, FALSE);
 			}
 			else
 			{
-				this.performInsert("[email]"+email+"[/email]", "", true, false);
+				this.performInsert("[email]"+email+"[/email]", "", TRUE, FALSE);
 			}
 		}
 	},
@@ -1100,10 +1100,10 @@ messageEditor.prototype = {
 
 		if(image)
 		{
-			this.performInsert("[img]"+image+"[/img]", "", true);
+			this.performInsert("[img]"+image+"[/img]", "", TRUE);
 		}
 	},
-	
+
 	insertVideo: function(type)
 	{
 		selectedText = this.getSelectedText($(this.textarea));
@@ -1119,7 +1119,7 @@ messageEditor.prototype = {
 
 		if(url)
 		{
-			this.performInsert("[video="+type+"]"+url+"[/video]", "", true, false);
+			this.performInsert("[video="+type+"]"+url+"[/video]", "", TRUE, FALSE);
 		}
 		this.setDropDownMenuActiveItem($('editor_item_video'), 0);
 	},
@@ -1146,8 +1146,8 @@ messageEditor.prototype = {
 				this.insertVideo(extra);
 				break;
 			default:
-				var already_open = false;
-				var no_insert = false;
+				var already_open = FALSE;
+				var no_insert = FALSE;
 				if(extra)
 				{
 					var full_tag = code+"_"+extra;
@@ -1163,8 +1163,8 @@ messageEditor.prototype = {
 					exploded_tag = tag.split("_");
 					if(exploded_tag[0] == code)
 					{
-						already_open = true;
-						this.performInsert("[/"+exploded_tag[0]+"]", "", false);
+						already_open = TRUE;
+						this.performInsert("[/"+exploded_tag[0]+"]", "", FALSE);
 						var elem = $('editor_item_'+exploded_tag[0]);
 
 						if(elem)
@@ -1179,7 +1179,7 @@ messageEditor.prototype = {
 
 						if(tag == full_tag)
 						{
-							no_insert = true;
+							no_insert = TRUE;
 						}
 					}
 					else
@@ -1189,24 +1189,24 @@ messageEditor.prototype = {
 				}.bind(this));
 
 				this.openTags = newTags;
-				var do_insert = false;
+				var do_insert = FALSE;
 
-				if(extra != "" && extra != "-" && no_insert == false)
+				if(extra != "" && extra != "-" && no_insert == FALSE)
 				{
 					start_tag = "["+code+"="+extra+"]";
 					end_tag = "[/"+code+"]";
-					do_insert = true;
+					do_insert = TRUE;
 				}
-				else if(!extra && already_open == false)
+				else if(!extra && already_open == FALSE)
 				{
 					start_tag = "["+code+"]";
 					end_tag = "[/"+code+"]";
-					do_insert = true;
+					do_insert = TRUE;
 				}
 
-				if(do_insert == true)
+				if(do_insert == TRUE)
 				{
-					if(!this.performInsert(start_tag, end_tag, true))
+					if(!this.performInsert(start_tag, end_tag, TRUE))
 					{
 						this.openTags.push(full_tag);
 						$('editor_item_close_tags').style.visibility = '';
@@ -1238,7 +1238,7 @@ messageEditor.prototype = {
 			var selection = document.selection;
 			var range = selection.createRange();
 
-			if((selection.type == "Text" || selection.type == "None") && range != null)
+			if((selection.type == "Text" || selection.type == "None") && range != NULL)
 			{
 				return range.text;
 			}
@@ -1259,11 +1259,11 @@ messageEditor.prototype = {
 
 	performInsert: function(open_tag, close_tag, is_single, ignore_selection)
 	{
-		var is_closed = true;
+		var is_closed = TRUE;
 
 		if(!ignore_selection)
 		{
-			var ignore_selection = false;
+			var ignore_selection = FALSE;
 		}
 
 		if(!close_tag)
@@ -1278,25 +1278,25 @@ messageEditor.prototype = {
 			var selection = document.selection;
 			var range = selection.createRange();
 
-			if(ignore_selection != false)
+			if(ignore_selection != FALSE)
 			{
 				selection.collapse;
 			}
 
-			if((selection.type == "Text" || selection.type == "None") && range != null && ignore_selection != true)
+			if((selection.type == "Text" || selection.type == "None") && range != NULL && ignore_selection != TRUE)
 			{
 				if(close_tag != "" && range.text.length > 0)
 				{
-					var keep_selected = true;
+					var keep_selected = TRUE;
 					range.text = open_tag+range.text+close_tag;
 				}
 				else
 				{
-					var keep_selected = false;
+					var keep_selected = FALSE;
 
 					if(is_single)
 					{
-						is_closed = false;
+						is_closed = FALSE;
 					}
 					range.text = open_tag;
 				}
@@ -1317,29 +1317,29 @@ messageEditor.prototype = {
 			var middle = textarea.value.substring(select_start, select_end);
 			var end = textarea.value.substring(select_end, textarea.textLength);
 
-			if(select_end - select_start > 0 && ignore_selection != true && close_tag != "")
+			if(select_end - select_start > 0 && ignore_selection != TRUE && close_tag != "")
 			{
-				var keep_selected = true;
+				var keep_selected = TRUE;
 				middle = open_tag+middle+close_tag;
 			}
 			else
 			{
-				var keep_selected = false;
+				var keep_selected = FALSE;
 				if(is_single)
 				{
-					is_closed = false;
+					is_closed = FALSE;
 				}
 				middle = open_tag;
 			}
 
 			textarea.value = start+middle+end;
 
-			if(keep_selected == true && ignore_selection != true)
+			if(keep_selected == TRUE && ignore_selection != TRUE)
 			{
 				textarea.selectionStart = select_start;
 				textarea.selectionEnd = select_start + middle.length;
 			}
-			else if(ignore_selection != true)
+			else if(ignore_selection != TRUE)
 			{
 				textarea.selectionStart = select_start + middle.length;
 				textarea.selectionEnd = textarea.selectionStart;
@@ -1352,14 +1352,14 @@ messageEditor.prototype = {
 
 			if(is_single)
 			{
-				is_closed = false;
+				is_closed = FALSE;
 			}
 		}
 		this.updateOldArea();
 		textarea.focus();
-		this.trackingCaret = true;
+		this.trackingCaret = TRUE;
 		this.storeCaret();
-		this.trackingCaret = false;		
+		this.trackingCaret = FALSE;
 		return is_closed;
 	},
 
@@ -1371,7 +1371,7 @@ messageEditor.prototype = {
 			{
 				tag = this.openTags.pop();
 				exploded_tag = tag.split("_");
-				this.performInsert("[/"+exploded_tag[0]+"]", "", false);
+				this.performInsert("[/"+exploded_tag[0]+"]", "", FALSE);
 
 				if($('editor_item_'+exploded_tag[0]))
 				{
@@ -1403,7 +1403,7 @@ messageEditor.prototype = {
 	{
 		if(!$(id))
 		{
-			return false;
+			return FALSE;
 		}
 
 		var smilies = $(id).select('.smilie');
@@ -1420,7 +1420,7 @@ messageEditor.prototype = {
 
 	openGetMoreSmilies: function(editor)
 	{
-		MyBB.popupWindow('misc.php?action=smilies&popup=true&editor='+editor, 'sminsert', 240, 280);
+		MyBB.popupWindow('misc.php?action=smilies&popup=TRUE&editor='+editor, 'sminsert', 240, 280);
 	},
 
 	insertSmilie: function(e)
@@ -1429,13 +1429,13 @@ messageEditor.prototype = {
 
 		if(!element || !element.alt)
 		{
-			return false;
+			return FALSE;
 		}
-		this.performInsert(element.alt, "", true, false);
+		this.performInsert(element.alt, "", TRUE, FALSE);
 	},
 
 	insertAttachment: function(aid)
 	{
-		this.performInsert("[attachment="+aid+"]", "", true, false);
+		this.performInsert("[attachment="+aid+"]", "", TRUE, FALSE);
 	}
 };

@@ -13,7 +13,7 @@ Language.syntax = [
 	{ input : /=(".*?")/g, output : '=<s>$1</s>' }, // atributes double quote
 	{ input : /=('.*?')/g, output : '=<s>$1</s>' }, // atributes single quote
 	{ input : /(&lt;!--.*?--&gt.)/g, output : '<ins>$1</ins>' }, // comments
-	{ input : /\b(alert|window|document|break|continue|do|for|new|this|void|case|default|else|function|return|typeof|while|if|label|switch|var|with|catch|boolean|int|try|FALSE|throws|null|TRUE|goto)\b/g, output : '<i>$1</i>' } // script reserved words
+	{ input : /\b(alert|window|document|break|continue|do|for|new|this|void|case|default|else|function|return|typeof|while|if|label|switch|var|with|catch|boolean|int|try|FALSE|throws|NULL|TRUE|goto)\b/g, output : '<i>$1</i>' } // script reserved words
 ]
 
 Language.snippets = [

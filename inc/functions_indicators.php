@@ -19,7 +19,7 @@ function mark_thread_read($tid, $fid)
 {
 	global $mybb, $db;
 
-	// Can only do "true" tracking for registered users
+	// Can only do "TRUE" tracking for registered users
 	if($mybb->settings['threadreadcut'] > 0 && $mybb->user['uid'])
 	{
 		// For registered users, store the information in the database.
@@ -104,7 +104,7 @@ function fetch_unread_count($fid)
 		}
 
 		// Not read any threads?
-		return false;
+		return FALSE;
 	}
 	else
 	{
@@ -141,7 +141,7 @@ function mark_forum_read($fid)
 {
 	global $mybb, $db;
 
-	// Can only do "true" tracking for registered users
+	// Can only do "TRUE" tracking for registered users
 	if($mybb->settings['threadreadcut'] > 0 && $mybb->user['uid'])
 	{
 		// Experimental setting to mark parent forums as read
@@ -187,7 +187,7 @@ function mark_forum_read($fid)
 			case "pgsql":
 			case "sqlite":
 				add_shutdown(array($db, "replace_query"), array("forumsread", array('fid' => $fid, 'uid' => $mybb->user['uid'], 'dateline' => TIME_NOW), array("fid", "uid")));
-				
+
 				if(!empty($forums_to_read))
 				{
 					foreach($forums_to_read as $forum)
@@ -227,7 +227,7 @@ function mark_all_forums_read()
 {
 	global $mybb, $db, $cache;
 
-	// Can only do "true" tracking for registered users
+	// Can only do "TRUE" tracking for registered users
 	if($mybb->user['uid'] > 0)
 	{
 		$db->update_query("users", array('lastvisit' => TIME_NOW), "uid='".$mybb->user['uid']."'");
@@ -238,18 +238,18 @@ function mark_all_forums_read()
 		{
 			// Need to loop through all forums and mark them as read
 			$forums = $cache->read('forums');
-			
+
 			$update_count = ceil(count($forums)/20);
-			
+
 			if($update_count < 15)
 			{
 				$update_count = 15;
 			}
-			
+
 			$mark_query = '';
 			$done = 0;
 			foreach(array_keys($forums) as $fid)
-			{				
+			{
 				switch($db->type)
 				{
 					case "pgsql":
@@ -264,7 +264,7 @@ function mark_all_forums_read()
 						$mark_query .= "('{$fid}', '{$mybb->user['uid']}', '".TIME_NOW."')";
 				}
 				++$done;
-				
+
 				// Only do this in loops of $update_count, save query time
 				if($done % $update_count)
 				{
@@ -287,7 +287,7 @@ function mark_all_forums_read()
 					}
 				}
 			}
-			
+
 			if($mark_query != '')
 			{
 				switch($db->type)

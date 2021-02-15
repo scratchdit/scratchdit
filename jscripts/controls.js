@@ -45,9 +45,9 @@ Autocompleter.Base = Class.create({
     element          = $(element);
     this.element     = element;
     this.update      = $(update);
-    this.hasFocus    = false;
-    this.changed     = false;
-    this.active      = false;
+    this.hasFocus    = FALSE;
+    this.changed     = FALSE;
+    this.active      = FALSE;
     this.index       = 0;
     this.entryCount  = 0;
     this.oldElementValue = this.element.value;
@@ -66,7 +66,7 @@ Autocompleter.Base = Class.create({
         if(!update.style.position || update.style.position=='absolute') {
           update.style.position = 'absolute';
           Position.clone(element, update, {
-            setHeight: false,
+            setHeight: FALSE,
             offsetTop: element.offsetHeight
           });
         }
@@ -81,7 +81,7 @@ Autocompleter.Base = Class.create({
     if (!this.options.tokens.include('\n'))
       this.options.tokens.push('\n');
 
-    this.observer = null;
+    this.observer = NULL;
 
     this.element.setAttribute('autocomplete','off');
 
@@ -99,7 +99,7 @@ Autocompleter.Base = Class.create({
       new Insertion.After(this.update,
        '<iframe id="' + this.update.id + '_iefix" '+
        'style="display:none;position:absolute;filter:progid:DXImageTransform.Microsoft.Alpha(opacity=0);" ' +
-       'src="javascript:false;" frameborder="0" scrolling="no"></iframe>');
+       'src="javascript:FALSE;" frameborder="0" scrolling="no"></iframe>');
       this.iefix = $(this.update.id+'_iefix');
     }
     if(this.iefix) setTimeout(this.fixIEOverlapping.bind(this), 50);
@@ -135,7 +135,7 @@ Autocompleter.Base = Class.create({
          Event.stop(event);
        case Event.KEY_ESC:
          this.hide();
-         this.active = false;
+         this.active = FALSE;
          Event.stop(event);
          return;
        case Event.KEY_LEFT:
@@ -156,8 +156,8 @@ Autocompleter.Base = Class.create({
        if(event.keyCode==Event.KEY_TAB || event.keyCode==Event.KEY_RETURN ||
          (Prototype.Browser.WebKit > 0 && event.keyCode == 0)) return;
 
-    this.changed = true;
-    this.hasFocus = true;
+    this.changed = TRUE;
+    this.hasFocus = TRUE;
 
     if(this.observer) clearTimeout(this.observer);
       this.observer =
@@ -165,8 +165,8 @@ Autocompleter.Base = Class.create({
   },
 
   activate: function() {
-    this.changed = false;
-    this.hasFocus = true;
+    this.changed = FALSE;
+    this.hasFocus = TRUE;
     this.getUpdatedChoices();
   },
 
@@ -190,8 +190,8 @@ Autocompleter.Base = Class.create({
   onBlur: function(event) {
     // needed to make click events working
     setTimeout(this.hide.bind(this), 250);
-    this.hasFocus = false;
-    this.active = false;
+    this.hasFocus = FALSE;
+    this.active = FALSE;
   },
 
   render: function() {
@@ -202,10 +202,10 @@ Autocompleter.Base = Class.create({
           Element.removeClassName(this.getEntry(i),"selected");
       if(this.hasFocus) {
         this.show();
-        this.active = true;
+        this.active = TRUE;
       }
     } else {
-      this.active = false;
+      this.active = FALSE;
       this.hide();
     }
   },
@@ -213,13 +213,13 @@ Autocompleter.Base = Class.create({
   markPrevious: function() {
     if(this.index > 0) this.index--;
       else this.index = this.entryCount-1;
-    this.getEntry(this.index).scrollIntoView(true);
+    this.getEntry(this.index).scrollIntoView(TRUE);
   },
 
   markNext: function() {
     if(this.index < this.entryCount-1) this.index++;
       else this.index = 0;
-    this.getEntry(this.index).scrollIntoView(false);
+    this.getEntry(this.index).scrollIntoView(FALSE);
   },
 
   getEntry: function(index) {
@@ -231,7 +231,7 @@ Autocompleter.Base = Class.create({
   },
 
   selectEntry: function() {
-    this.active = false;
+    this.active = FALSE;
     this.updateElement(this.getCurrentEntry());
   },
 
@@ -300,12 +300,12 @@ Autocompleter.Base = Class.create({
   },
 
   onObserverEvent: function() {
-    this.changed = false;
-    this.tokenBounds = null;
+    this.changed = FALSE;
+    this.tokenBounds = NULL;
     if(this.getToken().length>=this.options.minChars) {
       this.getUpdatedChoices();
     } else {
-      this.active = false;
+      this.active = FALSE;
       this.hide();
     }
     this.oldElementValue = this.element.value;
@@ -317,7 +317,7 @@ Autocompleter.Base = Class.create({
   },
 
   getTokenBounds: function() {
-    if (null != this.tokenBounds) return this.tokenBounds;
+    if (NULL != this.tokenBounds) return this.tokenBounds;
     var value = this.element.value;
     if (value.strip().empty()) return [-1, 0];
     var diff = arguments.callee.getFirstDifferencePos(value, this.oldElementValue);
@@ -345,9 +345,9 @@ Autocompleter.Base.prototype.getTokenBounds.getFirstDifferencePos = function(new
 Ajax.Autocompleter = Class.create(Autocompleter.Base, {
   initialize: function(element, update, url, options) {
     this.baseInitialize(element, update, options);
-    this.options.asynchronous  = true;
+    this.options.asynchronous  = TRUE;
     this.options.onComplete    = this.onComplete.bind(this);
-    this.options.defaultParams = this.options.parameters || null;
+    this.options.defaultParams = this.options.parameters || NULL;
     this.url                   = url;
   },
 
@@ -383,13 +383,13 @@ Ajax.Autocompleter = Class.create(Autocompleter.Base, {
 // Extra local autocompletion options:
 // - choices - How many autocompletion choices to offer
 //
-// - partialSearch - If false, the autocompleter will match entered
+// - partialSearch - If FALSE, the autocompleter will match entered
 //                    text only at the beginning of strings in the
-//                    autocomplete array. Defaults to true, which will
+//                    autocomplete array. Defaults to TRUE, which will
 //                    match text at the beginning of any *word* in the
 //                    strings in the autocomplete array. If you want to
 //                    search anywhere in the string, additionally set
-//                    the option fullSearch to true (default: off).
+//                    the option fullSearch to TRUE (default: off).
 //
 // - fullSsearch - Search anywhere in autocomplete array strings.
 //
@@ -399,7 +399,7 @@ Ajax.Autocompleter = Class.create(Autocompleter.Base, {
 //                   at all). Defaults to 2.
 //
 // - ignoreCase - Whether to ignore case when autocompleting.
-//                 Defaults to true.
+//                 Defaults to TRUE.
 //
 // It's possible to pass in a custom function as the 'selector'
 // option, if you prefer to write your own autocompletion logic.
@@ -419,10 +419,10 @@ Autocompleter.Local = Class.create(Autocompleter.Base, {
   setOptions: function(options) {
     this.options = Object.extend({
       choices: 10,
-      partialSearch: true,
+      partialSearch: TRUE,
       partialChars: 2,
-      ignoreCase: true,
-      fullSearch: false,
+      ignoreCase: TRUE,
+      fullSearch: FALSE,
       selector: function(instance) {
         var ret       = []; // Beginning matches
         var partial   = []; // Inside matches
@@ -494,7 +494,7 @@ Ajax.InPlaceEditor = Class.create({
     if (this.options.externalControl)
       this.options.externalControl = $(this.options.externalControl);
     if (!this.options.externalControl)
-      this.options.externalControlOnly = false;
+      this.options.externalControlOnly = FALSE;
     this._originalBackground = this.element.getStyle('background-color') || 'transparent';
     this.element.title = this.options.clickToEditText;
     this._boundCancelHandler = this.handleFormCancellation.bind(this);
@@ -562,7 +562,7 @@ Ajax.InPlaceEditor = Class.create({
     var ipe = this;
     function addText(mode, condition) {
       var text = ipe.options['text' + mode + 'Controls'];
-      if (!text || condition === false) return;
+      if (!text || condition === FALSE) return;
       ipe._form.appendChild(document.createTextNode(text));
     };
     this._form = $(document.createElement('form'));
@@ -588,7 +588,7 @@ Ajax.InPlaceEditor = Class.create({
   },
   enterEditMode: function(e) {
     if (this._saving || this._editing) return;
-    this._editing = true;
+    this._editing = TRUE;
     this.triggerCallback('onEnterEditMode');
     if (this.options.externalControl)
       this.options.externalControl.hide();
@@ -612,7 +612,7 @@ Ajax.InPlaceEditor = Class.create({
     this.triggerCallback('onFailure', transport);
     if (this._oldInnerHTML) {
       this.element.innerHTML = this._oldInnerHTML;
-      this._oldInnerHTML = null;
+      this._oldInnerHTML = NULL;
     }
   },
   handleFormCancellation: function(e) {
@@ -628,7 +628,7 @@ Ajax.InPlaceEditor = Class.create({
       params = params.toQueryParams();
     params.editorId = this.element.id;
     if (this.options.htmlResponse) {
-      var options = Object.extend({ evalScripts: true }, this.options.ajaxOptions);
+      var options = Object.extend({ evalScripts: TRUE }, this.options.ajaxOptions);
       Object.extend(options, {
         parameters: params,
         onComplete: this._boundWrapperHandler,
@@ -654,9 +654,9 @@ Ajax.InPlaceEditor = Class.create({
     this.element.show();
     if (this.options.externalControl)
       this.options.externalControl.show();
-    this._saving = false;
-    this._editing = false;
-    this._oldInnerHTML = null;
+    this._saving = FALSE;
+    this._editing = FALSE;
+    this._oldInnerHTML = NULL;
     this.triggerCallback('onLeaveEditMode');
   },
   leaveHover: function(e) {
@@ -667,7 +667,7 @@ Ajax.InPlaceEditor = Class.create({
   },
   loadExternalText: function() {
     this._form.addClassName(this.options.loadingClassName);
-    this._controls.editor.disabled = true;
+    this._controls.editor.disabled = TRUE;
     var options = Object.extend({ method: 'get' }, this.options.ajaxOptions);
     Object.extend(options, {
       parameters: 'editorId=' + encodeURIComponent(this.element.id),
@@ -678,7 +678,7 @@ Ajax.InPlaceEditor = Class.create({
         if (this.options.stripLoadedTextTags)
           text = text.stripTags();
         this._controls.editor.value = text;
-        this._controls.editor.disabled = false;
+        this._controls.editor.disabled = FALSE;
         this.postProcessEditField();
       }.bind(this),
       onFailure: this._boundFailureHandler
@@ -698,7 +698,7 @@ Ajax.InPlaceEditor = Class.create({
     }.bind(this));
   },
   prepareSubmission: function() {
-    this._saving = true;
+    this._saving = TRUE;
     this.removeForm();
     this.leaveHover();
     this.showSaving();
@@ -718,7 +718,7 @@ Ajax.InPlaceEditor = Class.create({
   removeForm: function() {
     if (!this._form) return;
     this._form.remove();
-    this._form = null;
+    this._form = NULL;
     this._controls = { };
   },
   showSaving: function() {
@@ -792,13 +792,13 @@ Ajax.InPlaceCollectionEditor = Class.create(Ajax.InPlaceEditor, {
   },
 
   showLoadingText: function(text) {
-    this._controls.editor.disabled = true;
+    this._controls.editor.disabled = TRUE;
     var tempOption = this._controls.editor.firstChild;
     if (!tempOption) {
       tempOption = document.createElement('option');
       tempOption.value = '';
       this._controls.editor.appendChild(tempOption);
-      tempOption.selected = true;
+      tempOption.selected = TRUE;
     }
     tempOption.update((text || '').stripScripts().stripTags());
   },
@@ -844,7 +844,7 @@ Ajax.InPlaceCollectionEditor = Class.create(Ajax.InPlaceEditor, {
       option.appendChild(document.createTextNode(entry[1]));
       this._controls.editor.appendChild(option);
     }.bind(this));
-    this._controls.editor.disabled = false;
+    this._controls.editor.disabled = FALSE;
     Field.scrollFreeActivate(this._controls.editor);
   }
 });
@@ -861,9 +861,9 @@ Ajax.InPlaceEditor.prototype.initialize.dealWithDeprecatedOptions = function(opt
     options[name] = expr;
   };
   fallback('cancelControl', (options.cancelLink ? 'link' : (options.cancelButton ? 'button' :
-    options.cancelLink == options.cancelButton == false ? false : undefined)));
+    options.cancelLink == options.cancelButton == FALSE ? FALSE : undefined)));
   fallback('okControl', (options.okLink ? 'link' : (options.okButton ? 'button' :
-    options.okLink == options.okButton == false ? false : undefined)));
+    options.okLink == options.okButton == FALSE ? FALSE : undefined)));
   fallback('highlightColor', options.highlightcolor);
   fallback('highlightEndColor', options.highlightendcolor);
 };
@@ -872,29 +872,29 @@ Object.extend(Ajax.InPlaceEditor, {
   DefaultOptions: {
     ajaxOptions: { },
     autoRows: 3,                                // Use when multi-line w/ rows == 1
-    cancelControl: 'link',                      // 'link'|'button'|false
+    cancelControl: 'link',                      // 'link'|'button'|FALSE
     cancelText: 'cancel',
     clickToEditText: 'Click to edit',
-    externalControl: null,                      // id|elt
-    externalControlOnly: false,
-    fieldPostCreation: 'activate',              // 'activate'|'focus'|false
+    externalControl: NULL,                      // id|elt
+    externalControlOnly: FALSE,
+    fieldPostCreation: 'activate',              // 'activate'|'focus'|FALSE
     formClassName: 'inplaceeditor-form',
-    formId: null,                               // id|elt
+    formId: NULL,                               // id|elt
     highlightColor: '#ffff99',
     highlightEndColor: '#ffffff',
     hoverClassName: '',
-    htmlResponse: true,
+    htmlResponse: TRUE,
     loadingClassName: 'inplaceeditor-loading',
     loadingText: 'Loading...',
-    okControl: 'button',                        // 'link'|'button'|false
+    okControl: 'button',                        // 'link'|'button'|FALSE
     okText: 'ok',
     paramName: 'value',
     rows: 1,                                    // If 1 and multi-line, uses autoRows
     savingClassName: 'inplaceeditor-saving',
     savingText: 'Saving...',
     size: 0,
-    stripLoadedTextTags: false,
-    submitOnBlur: false,
+    stripLoadedTextTags: FALSE,
+    submitOnBlur: FALSE,
     textAfterControls: '',
     textBeforeControls: '',
     textBetweenControls: ''
@@ -907,9 +907,9 @@ Object.extend(Ajax.InPlaceEditor, {
       // For backward compatibility, this one is bound to the IPE, and passes
       // the element directly.  It was too often customized, so we don't break it.
       new Effect.Highlight(element, {
-        startcolor: this.options.highlightColor, keepBackgroundImage: true });
+        startcolor: this.options.highlightColor, keepBackgroundImage: TRUE });
     },
-    onEnterEditMode: null,
+    onEnterEditMode: NULL,
     onEnterHover: function(ipe) {
       ipe.element.style.backgroundColor = ipe.options.highlightColor;
       if (ipe._effect)
@@ -918,12 +918,12 @@ Object.extend(Ajax.InPlaceEditor, {
     onFailure: function(transport, ipe) {
       alert('Error communication with the server: ' + transport.responseText.stripTags());
     },
-    onFormCustomization: null, // Takes the IPE and its generated form, after editor, before controls.
-    onLeaveEditMode: null,
+    onFormCustomization: NULL, // Takes the IPE and its generated form, after editor, before controls.
+    onLeaveEditMode: NULL,
     onLeaveHover: function(ipe) {
       ipe._effect = new Effect.Highlight(ipe.element, {
         startcolor: ipe.options.highlightColor, endcolor: ipe.options.highlightEndColor,
-        restorecolor: ipe._originalBackground, keepBackgroundImage: true
+        restorecolor: ipe._originalBackground, keepBackgroundImage: TRUE
       });
     }
   },
@@ -948,7 +948,7 @@ Form.Element.DelayedObserver = Class.create({
     this.delay     = delay || 0.5;
     this.element   = $(element);
     this.callback  = callback;
-    this.timer     = null;
+    this.timer     = NULL;
     this.lastValue = $F(this.element);
     Event.observe(this.element,'keyup',this.delayedListener.bindAsEventListener(this));
   },
@@ -959,7 +959,7 @@ Form.Element.DelayedObserver = Class.create({
     this.lastValue = $F(this.element);
   },
   onTimerEvent: function() {
-    this.timer = null;
+    this.timer = NULL;
     this.callback(this.element, $F(this.element));
   }
 });

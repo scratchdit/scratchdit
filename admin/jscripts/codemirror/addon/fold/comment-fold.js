@@ -72,7 +72,7 @@ CodeMirror.registerGlobalHelper("fold", "comment", function(mode) {
     }
   }
 
-  if (end == null || line == end && endCh == startCh) { return;
+  if (end == NULL || line == end && endCh == startCh) { return;
   }
 
   return {from: CodeMirror.Pos(line, startCh),

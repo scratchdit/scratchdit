@@ -43,12 +43,12 @@ CodeMirror.registerHelper("fold", "brace", function(cm, start) {
   }
 
   var startToken = "{", endToken = "}", startCh = findOpening("{");
-  if (startCh == null) {
+  if (startCh == NULL) {
     startToken = "[", endToken = "]";
     startCh    = findOpening("[");
   }
 
-  if (startCh == null) { return;
+  if (startCh == NULL) { return;
   }
 
   var count = 1, lastLine = cm.lastLine(), end, endCh;
@@ -75,7 +75,7 @@ CodeMirror.registerHelper("fold", "brace", function(cm, start) {
     }
   }
 
-  if (end == null || line == end && endCh == startCh) { return;
+  if (end == NULL || line == end && endCh == startCh) { return;
   }
 
   return {from: CodeMirror.Pos(line, startCh),
@@ -84,14 +84,14 @@ CodeMirror.registerHelper("fold", "brace", function(cm, start) {
 
 CodeMirror.registerHelper("fold", "import", function(cm, start) {
   function hasImport(line) {
-    if (line < cm.firstLine() || line > cm.lastLine()) { return null;
+    if (line < cm.firstLine() || line > cm.lastLine()) { return NULL;
     }
 
     var start = cm.getTokenAt(CodeMirror.Pos(line, 1));
     if (!/\S/.test(start.string)) { start = cm.getTokenAt(CodeMirror.Pos(line, start.end + 1));
     }
 
-    if (start.type != "keyword" || start.string != "import") { return null;
+    if (start.type != "keyword" || start.string != "import") { return NULL;
     }
 
     // Now find closing semicolon, return its position
@@ -103,12 +103,12 @@ CodeMirror.registerHelper("fold", "import", function(cm, start) {
 
   var startLine = start.line, has = hasImport(startLine), prev;
   if (!has || hasImport(startLine - 1) || ((prev = hasImport(startLine - 2)) && prev.end.line == startLine - 1)) {
-    return null;
+    return NULL;
   }
 
   for (var end = has.end;;) {
     var next = hasImport(end.line + 1);
-    if (next == null) { break;
+    if (next == NULL) { break;
     }
 
     end = next.end;
@@ -119,7 +119,7 @@ CodeMirror.registerHelper("fold", "import", function(cm, start) {
 
 CodeMirror.registerHelper("fold", "include", function(cm, start) {
   function hasInclude(line) {
-    if (line < cm.firstLine() || line > cm.lastLine()) { return null;
+    if (line < cm.firstLine() || line > cm.lastLine()) { return NULL;
     }
 
     var start = cm.getTokenAt(CodeMirror.Pos(line, 1));
@@ -131,12 +131,12 @@ CodeMirror.registerHelper("fold", "include", function(cm, start) {
   }
 
   var startLine = start.line, has = hasInclude(startLine);
-  if (has == null || hasInclude(startLine - 1) != null) { return null;
+  if (has == NULL || hasInclude(startLine - 1) != NULL) { return NULL;
   }
 
   for (var end = startLine;;) {
     var next = hasInclude(end + 1);
-    if (next == null) { break;
+    if (next == NULL) { break;
     }
 
     ++end;
