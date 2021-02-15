@@ -3771,7 +3771,7 @@ function my_strlen($string)
 	}
 
 	if (!array_key_exists('charset', $lang->settings)) {
-		$lang->settings['charset'] == "utf-8";
+		$lang->settings['charset'] = "utf-8";
 	}
 
 	if (strtolower($lang->settings['charset']) == "utf-8") {
