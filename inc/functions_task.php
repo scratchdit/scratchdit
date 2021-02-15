@@ -1,4 +1,5 @@
 <?php
+
 /**
  * MyBB 1.6
  * Copyright 2010 MyBB Group, All Rights Reserved
@@ -13,66 +14,59 @@
  * Execute a scheduled task.
  *
  * @param int The task ID. If none specified, the next task due to be ran is executed
+ *
  * @return boolean TRUE if successful, FALSE on failure
  */
-function run_task($tid=0)
+
+ 
+function run_task($tid = 0)
 {
 	global $db, $mybb, $cache, $plugins, $task, $lang;
 
 	// Run a specific task
-	if($tid > 0)
-	{
+	if ($tid > 0) {
 		$query = $db->simple_select("tasks", "*", "tid='{$tid}'");
-		$task = $db->fetch_array($query);
-	}
+		$task  = $db->fetch_array($query);
+	} else {
+		// Run the next task due to be run
 
-	// Run the next task due to be run
-	else
-	{
-		$query = $db->simple_select("tasks", "*", "enabled=1 AND nextrun<='".TIME_NOW."'", array("order_by" => "nextrun", "order_dir" => "asc", "limit" => 1));
+		$query = $db->simple_select("tasks", "*", "enabled=1 AND nextrun<='" . TIME_NOW . "'", array("order_by" => "nextrun", "order_dir" => "asc", "limit" => 1));
 		$task = $db->fetch_array($query);
 	}
 
 	// No task? Return
-	if(!$task['tid'])
-	{
+	if (!$task['tid']) {
 		$cache->update_tasks();
 		return FALSE;
 	}
 
 	// Is this task still running and locked less than 5 minutes ago? Well don't run it now - clearly it isn't broken!
-	if($task['locked'] != 0 && $task['locked'] > TIME_NOW-300)
-	{
+	if ($task['locked'] != 0 && $task['locked'] > TIME_NOW - 300) {
 		$cache->update_tasks();
 		return FALSE;
 	}
 	// Lock it! It' mine, all mine!
-	else
-	{
+	else {
 		$db->update_query("tasks", array("locked" => TIME_NOW), "tid='{$task['tid']}'");
 	}
 
 	// The task file does not exist
-	if(!file_exists(MYBB_ROOT."inc/tasks/{$task['file']}.php"))
-	{
-		if($task['logging'] == 1)
-		{
+	if (!file_exists(MYBB_ROOT . "inc/tasks/{$task['file']}.php")) {
+		if ($task['logging'] == 1) {
 			add_task_log($task, $lang->missing_task);
 		}
 		$cache->update_tasks();
 		return FALSE;
 	}
 	// Run the task
-	else
-	{
+	else {
 		// Update the nextrun time now, so if the task causes a fatal error, it doesn't get stuck first in the queue
 		$nextrun = fetch_next_run($task);
 		$db->update_query("tasks", array("nextrun" => $nextrun), "tid='{$task['tid']}'");
 
-		include_once MYBB_ROOT."inc/tasks/{$task['file']}.php";
+		include_once MYBB_ROOT . "inc/tasks/{$task['file']}.php";
 		$function = "task_{$task['file']}";
-		if(function_exists($function))
-		{
+		if (function_exists($function)) {
 			$function($task);
 		}
 	}
@@ -98,8 +92,7 @@ function add_task_log($task, $message)
 {
 	global $db;
 
-	if(!$task['logging'])
-	{
+	if (!$task['logging']) {
 		return;
 	}
 
@@ -127,189 +120,135 @@ function fetch_next_run($task)
 	$next_month = $current_month = date("m", $time);
 	$next_year = $current_year = date("Y", $time);
 
-	if($task['minute'] == "*")
-	{
+	if ($task['minute'] == "*") {
 		++$next_minute;
-		if($next_minute > 59)
-		{
+		if ($next_minute > 59) {
 			$reset_hour = 1;
 			$next_minute = 0;
 		}
-	}
-	else
-	{
-		if(build_next_run_bit($task['minute'], $current_minute) != FALSE)
-		{
+	} else {
+		if (build_next_run_bit($task['minute'], $current_minute) != FALSE) {
 			$next_minute = build_next_run_bit($task['minute'], $current_minute);
-		}
-		else
-		{
+		} else {
 			$next_minute = fetch_first_run_time($task['minute']);
 		}
-		if($next_minute <= $current_minute)
-		{
+		if ($next_minute <= $current_minute) {
 			$reset_hour = 1;
 		}
 	}
 
-	if($reset_hour || !run_time_exists($task['hour'], $current_hour))
-	{
-		if($task['hour'] == "*")
-		{
+	if ($reset_hour || !run_time_exists($task['hour'], $current_hour)) {
+		if ($task['hour'] == "*") {
 			++$next_hour;
-			if($next_hour > 23)
-			{
+			if ($next_hour > 23) {
 				$reset_day = 1;
 				$next_hour = 0;
 			}
-		}
-		else
-		{
-			if(build_next_run_bit($task['hour'], $current_hour) != FALSE)
-			{
+		} else {
+			if (build_next_run_bit($task['hour'], $current_hour) != FALSE) {
 				$next_hour = build_next_run_bit($task['hour'], $current_hour);
-			}
-			else
-			{
+			} else {
 				$next_hour = fetch_first_run_time($task['hour']);
 				$reset_day = 1;
 			}
-			if($next_hour < $current_hour)
-			{
+			if ($next_hour < $current_hour) {
 				$reset_day = 1;
 			}
 		}
 		$next_minute = fetch_first_run_time($task['minute']);
 	}
 
-	if($reset_day || ($task['weekday'] == "*" && !run_time_exists($task['day'], $current_day) || $task['day'] == "*" && !run_time_exists($task['weekday'], $current_weekday)))
-	{
-		if($task['weekday'] == "*")
-		{
-			if($task['day'] == "*")
-			{
+	if ($reset_day || ($task['weekday'] == "*" && !run_time_exists($task['day'], $current_day) || $task['day'] == "*" && !run_time_exists($task['weekday'], $current_weekday))) {
+		if ($task['weekday'] == "*") {
+			if ($task['day'] == "*") {
 				++$next_day;
-				if($next_day > date("t", $time))
-				{
+				if ($next_day > date("t", $time)) {
 					$reset_month = 1;
 					$next_day = 1;
 				}
-			}
-			else
-			{
-				if(build_next_run_bit($task['day'], $current_day) != FALSE)
-				{
+			} else {
+				if (build_next_run_bit($task['day'], $current_day) != FALSE) {
 					$next_day = build_next_run_bit($task['day'], $current_day);
-				}
-				else
-				{
+				} else {
 					$next_day = fetch_first_run_time($task['day']);
 					$reset_month = 1;
 				}
-				if($next_day < $current_day)
-				{
+				if ($next_day < $current_day) {
 					$reset_month = 1;
 				}
 			}
-		}
-		else
-		{
-			if(build_next_run_bit($task['weekday'], $current_weekday) != FALSE)
-			{
+		} else {
+			if (build_next_run_bit($task['weekday'], $current_weekday) != FALSE) {
 				$next_weekday = build_next_run_bit($task['weekday'], $current_weekday);
-			}
-			else
-			{
+			} else {
 				$next_weekday = fetch_first_run_time($task['weekday']);
 			}
-			$next_day = $current_day + ($next_weekday-$current_weekday);
-			if($next_day <= $current_day)
-			{
+			$next_day = $current_day + ($next_weekday - $current_weekday);
+			if ($next_day <= $current_day) {
 				$next_day += 7;
 			}
 
-			if($next_day > date("t", $time))
-			{
+			if ($next_day > date("t", $time)) {
 				$reset_month = 1;
 			}
 		}
 		$next_minute = fetch_first_run_time($task['minute']);
 		$next_hour = fetch_first_run_time($task['hour']);
-		if($next_day == $current_day && $next_hour < $current_hour)
-		{
+		if ($next_day == $current_day && $next_hour < $current_hour) {
 			$reset_month = 1;
 		}
 	}
 
-	if($reset_month || !run_time_exists($task['month'], $current_month))
-	{
-		if($task['month'] == "*")
-		{
+	if ($reset_month || !run_time_exists($task['month'], $current_month)) {
+		if ($task['month'] == "*") {
 			$next_month++;
-			if($next_month > 12)
-			{
+			if ($next_month > 12) {
 				$reset_year = 1;
 				$next_month = 1;
 			}
-		}
-		else
-		{
-			if(build_next_run_bit($task['month'], $current_month) != FALSE)
-			{
+		} else {
+			if (build_next_run_bit($task['month'], $current_month) != FALSE) {
 				$next_month = build_next_run_bit($task['month'], $current_month);
-			}
-			else
-			{
+			} else {
 				$next_month = fetch_first_run_time($task['month']);
 				$reset_year = 1;
 			}
-			if($next_month < $current_month)
-			{
+			if ($next_month < $current_month) {
 				$reset_year = 1;
 			}
 		}
 		$next_minute = fetch_first_run_time($task['minute']);
 		$next_hour = fetch_first_run_time($task['hour']);
-		if($task['weekday'] == "*")
-		{
+		if ($task['weekday'] == "*") {
 			$next_day = fetch_first_run_time($task['day']);
-			if($next_day == 0) $next_day = 1;
-		}
-		else
-		{
+			if ($next_day == 0) $next_day = 1;
+		} else {
 			$next_weekday = fetch_first_run_time($task['weekday']);
 			$new_weekday = date("w", mktime($next_hour, $next_minute, 0, $next_month, 1, $next_year));
-			$next_day = 1 + ($next_weekday-$new_weekday);
-			if($next_weekday < $new_weekday)
-			{
+			$next_day = 1 + ($next_weekday - $new_weekday);
+			if ($next_weekday < $new_weekday) {
 				$next_day += 7;
 			}
 		}
-		if($next_month == $current_month && $next_day == $current_day && $new_hour < $current_hour)
-		{
+		if ($next_month == $current_month && $next_day == $current_day && $new_hour < $current_hour) {
 			$reset_year = 1;
 		}
 	}
 
-	if($reset_year)
-	{
+	if ($reset_year) {
 		$next_year++;
 		$next_minute = fetch_first_run_time($task['minute']);
 		$next_hour = fetch_first_run_time($task['hour']);
 		$next_month = fetch_first_run_time($task['month']);
-		if($next_month == 0) $next_month = 1;
-		if($task['weekday'] == "*")
-		{
+		if ($next_month == 0) $next_month = 1;
+		if ($task['weekday'] == "*") {
 			$next_day = fetch_first_run_time($task['day']);
-			if($next_day == 0) $next_day = 1;
-		}
-		else
-		{
+			if ($next_day == 0) $next_day = 1;
+		} else {
 			$next_weekday = fetch_first_run_time($task['weekday']);
 			$new_weekday = date("w", mktime($next_hour, $next_minute, 0, $next_month, 1, $next_year));
-			$next_day = 1 + ($next_weekday-$new_weekday);
-			if($next_weekday < $new_weekday)
-			{
+			$next_day = 1 + ($next_weekday - $new_weekday);
+			if ($next_weekday < $new_weekday) {
 				$next_day += 7;
 			}
 		}
@@ -326,12 +265,10 @@ function fetch_next_run($task)
  */
 function build_next_run_bit($data, $bit)
 {
-	if($data == "*") return $bit;
+	if ($data == "*") return $bit;
 	$data = explode(",", $data);
-	foreach($data as $thing)
-	{
-		if($thing > $bit)
-		{
+	foreach ($data as $thing) {
+		if ($thing > $bit) {
 			return $thing;
 		}
 	}
@@ -346,7 +283,7 @@ function build_next_run_bit($data, $bit)
  */
 function fetch_first_run_time($data)
 {
-	if($data == "*") return "0";
+	if ($data == "*") return "0";
 	$data = explode(",", $data);
 	return $data[0];
 }
@@ -360,12 +297,10 @@ function fetch_first_run_time($data)
  */
 function run_time_exists($data, $bit)
 {
-	if($data == "*") return TRUE;
+	if ($data == "*") return TRUE;
 	$data = explode(",", $data);
-	if(in_array($bit, $data))
-	{
+	if (in_array($bit, $data)) {
 		return TRUE;
 	}
 	return FALSE;
 }
-?>
