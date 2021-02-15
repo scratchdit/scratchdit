@@ -39,7 +39,7 @@ class DefaultPage
 	 * @var string The action we're currently performing.
 	 */
 	public $active_action;
-	
+
 	/**
 	 * @var string Content for the side bar of the page if we have one.
 	 */
@@ -49,11 +49,12 @@ class DefaultPage
 	 * @var array The breadcrumb trail leading up to this page.
 	 */
 	public $_breadcrumb_trail = array();
-	
+
 	/**
 	 * @var string Any additional information to add between the <head> tags.
 	 */
 	public $extra_header = "";
+
 
 	/**
 	 * Output the page header.
@@ -63,20 +64,18 @@ class DefaultPage
 	function output_header($title="")
 	{
 		global $mybb, $admin_session, $lang, $plugins;
-		
+
 		$plugins->run_hooks("admin_page_output_header");
-		
-		if(!$title)
-		{
+
+		if(!$title) {
 			$title = $lang->mybb_admin_panel;
 		}
-		
+
 		$rtl = "";
-		if($lang->settings['rtl'] == 1)
-		{
+		if($lang->settings['rtl'] == 1) {
 			$rtl = " dir=\"rtl\"";
 		}
-		
+
 		echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
 		echo "<html xmlns=\"http://www.w3.org/1999/xhtml\"{$rtl}>\n";
 		echo "<head profile=\"http://gmpg.org/xfn/1\">\n";
@@ -86,8 +85,7 @@ class DefaultPage
 		echo "	<link rel=\"stylesheet\" href=\"styles/".$this->style."/main.css\" type=\"text/css\" />\n";
 
 		// Load stylesheet for this module if it has one
-		if(file_exists(MYBB_ADMIN_DIR."styles/{$this->style}/{$this->active_module}.css"))
-		{
+		if(file_exists(MYBB_ADMIN_DIR."styles/{$this->style}/{$this->active_module}.css")) {
 			echo "	<link rel=\"stylesheet\" href=\"styles/{$this->style}/{$this->active_module}.css\" type=\"text/css\" />\n";
 		}
 
@@ -131,37 +129,36 @@ var imagepath = '../images';
 		echo $this->_generate_breadcrumb();
 		echo "			</div>\n";
 		echo "           <div id=\"inner\">\n";
-			if(isset($admin_session['data']['flash_message']) && $admin_session['data']['flash_message'])
-		{
+			if(isset($admin_session['data']['flash_message']) && $admin_session['data']['flash_message']) {
 			$message = $admin_session['data']['flash_message']['message'];
-			$type = $admin_session['data']['flash_message']['type'];
+			$type    = $admin_session['data']['flash_message']['type'];
 			echo "<div id=\"flash_message\" class=\"{$type}\">\n";
 			echo "{$message}\n";
 			echo "</div>\n";
 			update_admin_session('flash_message', '');
-		}
-		if($this->show_post_verify_error == true)
-		{
+		 }
+
+		if($this->show_post_verify_error == TRUE) {
 			$this->output_error($lang->invalid_post_verify_key);
 		}
 	}
 
+
 	/**
 	 * Output the page footer.
 	 */
-	function output_footer($quit=true)
+	function output_footer($quit=TRUE)
 	{
 		global $mybb, $maintimer, $db, $lang, $plugins;
-		
+
 		$plugins->run_hooks("admin_page_output_footer");
-		
+
 		$memory_usage = $lang->na;
-		if(function_exists("memory_get_usage"))
-		{
-			$memory_usage = get_friendly_size(memory_get_peak_usage(true));
+		if(function_exists("memory_get_usage")) {
+			$memory_usage = get_friendly_size(memory_get_peak_usage(TRUE));
 		}
-		
-		$totaltime = $maintimer->stop();
+
+		$totaltime  = $maintimer->stop();
 		$querycount = $db->query_count;
 		echo "			</div>\n";
 		echo "		</div>\n";
@@ -169,20 +166,20 @@ var imagepath = '../images';
 		echo "	<br style=\"clear: both;\" />";
 		echo "	</div>\n";
 		echo "<div id=\"footer\"><p class=\"generation\">".$lang->sprintf($lang->generated_in, $totaltime, $querycount, $memory_usage)."</p><p class=\"powered\">Powered By MyBB. &copy; ".COPY_YEAR." MyBB Group. All Rights Reserved.</p></div>\n";
-		if($mybb->debug_mode)
-		{
+		if($mybb->debug_mode) {
 			echo $db->explain;
 		}
+
 		echo "</div>\n";
 		echo "</body>\n";
 		echo "</html>\n";
-		
-		if($quit != false)
-		{
+
+		if($quit != FALSE) {
 			exit;
 		}
 	}
-	
+
+
 	/**
 	 * Add an item to the page breadcrumb trail.
 	 *
@@ -193,24 +190,23 @@ var imagepath = '../images';
 	{
 		$this->_breadcrumb_trail[] = array("name" => $name, "url" => $url);
 	}
-	
+
+
 	/**
 	 * Generate a breadcrumb trail.
 	 */
 	function _generate_breadcrumb()
 	{
-		if(!is_array($this->_breadcrumb_trail))
-		{
-			return false;
+		if(!is_array($this->_breadcrumb_trail)) {
+			return FALSE;
 		}
+
 		$trail = "";
 		foreach($this->_breadcrumb_trail as $key => $crumb)
 		{
-			if($this->_breadcrumb_trail[$key+1])
-			{
+			if($this->_breadcrumb_trail[$key + 1]) {
 				$trail .= "<a href=\"".$crumb['url']."\">".$crumb['name']."</a>";
-				if($this->_breadcrumb_trail[$key+2])
-				{
+				if($this->_breadcrumb_trail[$key + 2]) {
 					$trail .= " &raquo; ";
 				}
 			}
@@ -219,9 +215,11 @@ var imagepath = '../images';
 				$trail .= "<span class=\"active\">".$crumb['name']."</span>";
 			}
 		}
+
 		return $trail;
 	}
-	
+
+
 	/**
 	 * Output a success message.
 	 *
@@ -232,6 +230,7 @@ var imagepath = '../images';
 		echo "<div class=\"success\">{$message}</div>\n";
 	}
 
+
 	/**
 	 * Output an alert/warning message.
 	 *
@@ -240,13 +239,14 @@ var imagepath = '../images';
 	 */
 	function output_alert($message, $id="")
 	{
-		if($id)
-		{
+		if($id) {
 			$id = " id=\"{$id}\"";
 		}
+
 		echo "<div class=\"alert\"{$id}>{$message}</div>\n";
 	}
-	
+
+
 	/**
 	 * Output an inline message.
 	 *
@@ -256,7 +256,8 @@ var imagepath = '../images';
 	{
 		echo "<div class=\"inline_message\">{$message}</div>\n";
 	}
-	
+
+
 	/**
 	 * Output a single error message.
 	 *
@@ -269,6 +270,7 @@ var imagepath = '../images';
 		echo "</div>\n";
 	}
 
+
 	/**
 	 * Output one or more inline error messages.
 	 *
@@ -277,11 +279,11 @@ var imagepath = '../images';
 	function output_inline_error($errors)
 	{
 		global $lang;
-		
-		if(!is_array($errors))
-		{
+
+		if(!is_array($errors)) {
 			$errors = array($errors);
 		}
+
 		echo "<div class=\"error\">\n";
 		echo "<p><em>{$lang->encountered_errors}</em></p>\n";
 		echo "<ul>\n";
@@ -289,6 +291,7 @@ var imagepath = '../images';
 		{
 			echo "<li>{$error}</li>\n";
 		}
+
 		echo "</ul>\n";
 		echo "</div>\n";
 	}
@@ -305,16 +308,15 @@ var imagepath = '../images';
 		global $lang, $cp_style, $mybb;
 
 		$copy_year = COPY_YEAR;
-		
+
 		$login_container_width = "";
-		$login_label_width = "";
-		 
+		$login_label_width     = "";
+
 		// If the language string for "Username" is too cramped then use this to define how much larger you want the gap to be (in px)
-		if($lang->login_field_width)
-        {
-        	$login_label_width = " style=\"width: ".(intval($lang->login_field_width)+100)."px;\"";
-			$login_container_width = " style=\"width: ".(410+(intval($lang->login_field_width)))."px;\"";
-        }
+		if($lang->login_field_width) {
+        	$login_label_width = " style=\"width: ".(intval($lang->login_field_width) + 100)."px;\"";
+			$login_container_width   = " style=\"width: ".(410 + (intval($lang->login_field_width)))."px;\"";
+  }
 
 		print <<<EOF
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -344,14 +346,13 @@ var imagepath = '../images';
 	<div id="content">
 		<h2>{$lang->please_login}</h2>
 EOF;
-		if($message)
-		{
+		if($message) {
 			echo "<p id=\"message\" class=\"{$class}\"><span class=\"text\">{$message}</span></p>";
 		}
+
 		// Make query string nice and pretty so that user can go to his/her preferred destination
 		$query_string = '';
-		if($_SERVER['QUERY_STRING'])
-		{
+		if($_SERVER['QUERY_STRING']) {
 			$query_string = '?'.preg_replace('#adminsid=(.{32})#i', '', $_SERVER['QUERY_STRING']);
 			$query_string = preg_replace('#my_post_key=(.{32})#i', '', $query_string);
 			$query_string = str_replace('action=logout', '', $query_string);
@@ -359,6 +360,7 @@ EOF;
 			$query_string = str_replace('?&', '?', $query_string);
 			$query_string = htmlspecialchars_uni($query_string);
 		}
+
 		switch($mybb->settings['username_method'])
 		{
 			case 0:
@@ -374,7 +376,7 @@ EOF;
 				$lang_username = $lang->username;
 				break;
 		}
-        
+
         // TODO: Better Fix?
        	$_SERVER['PHP_SELF'] = htmlspecialchars_uni($_SERVER['PHP_SELF']);
 print <<<EOF
@@ -405,17 +407,17 @@ print <<<EOF
 EOF;
 	exit;
 	}
-	
+
+
 	/**
 	 * Generate the lockout page
-	 *
 	 */
 	function show_lockedout()
 	{
 		global $lang, $mybb, $cp_style;
 
-		$copy_year = COPY_YEAR;
-		$allowed_attempts = intval($mybb->settings['maxloginattempts']);
+		$copy_year         = COPY_YEAR;
+		$allowed_attempts  = intval($mybb->settings['maxloginattempts']);
 		$lockedout_message = $lang->sprintf($lang->error_mybb_admin_lockedout_message, $allowed_attempts);
 
 		print <<<EOF
@@ -445,10 +447,10 @@ EOF;
 EOF;
 	exit;
 	}
-	
+
+
 	/**
 	 * Generate the lockout unlock page
-	 *
 	 */
 	function show_lockout_unlock()
 	{
@@ -518,6 +520,7 @@ EOF;
 	exit;
 	}
 
+
 	/**
 	 * Add an item to the primary navigation menu.
 	 *
@@ -537,15 +540,16 @@ EOF;
 		);
 	}
 
+
 	/**
 	 * Build the actual navigation menu.
 	 */
 	function _build_menu()
 	{
-		if(!is_array($this->_menu))
-		{
-			return false;
+		if(!is_array($this->_menu)) {
+			return FALSE;
 		}
+
 		$build_menu = "<div id=\"menu\">\n<ul>\n";
 		ksort($this->_menu);
 		foreach($this->_menu as $items)
@@ -553,12 +557,10 @@ EOF;
 			foreach($items as $menu_item)
 			{
 				$menu_item['link'] = htmlspecialchars($menu_item['link']);
-				if($menu_item['id'] == $this->active_module)
-				{
-					$sub_menu = $menu_item['submenu'];
+				if($menu_item['id'] == $this->active_module) {
+					$sub_menu       = $menu_item['submenu'];
 					$sub_menu_title = $menu_item['title'];
-					$build_menu .= "<li><a href=\"{$menu_item['link']}\" class=\"active\">{$menu_item['title']}</a></li>\n";
-
+					$build_menu    .= "<li><a href=\"{$menu_item['link']}\" class=\"active\">{$menu_item['title']}</a></li>\n";
 				}
 				else
 				{
@@ -566,15 +568,16 @@ EOF;
 				}
 			}
 		}
+
 		$build_menu .= "</ul>\n</div>";
 
-		if($sub_menu)
-		{
+		if($sub_menu) {
 			$this->_build_submenu($sub_menu_title, $sub_menu);
 		}
+
 		return $build_menu;
 	}
-	
+
 
 	/**
 	 * Build a navigation sub menu if we have one.
@@ -584,13 +587,13 @@ EOF;
 	 */
 	function _build_submenu($title, $items)
 	{
-		if(is_array($items))
-		{
+		if(is_array($items)) {
 			$sidebar = new sideBarItem($title);
 			$sidebar->add_menu_items($items, $this->active_action);
 			$this->submenu .= $sidebar->get_markup();
 		}
 	}
+
 
 	/**
 	 * Switch between two different alternating background colours.
@@ -598,8 +601,7 @@ EOF;
 	function get_alt_bg()
 	{
 		static $alt_bg;
-		if($alt_bg == "alt1")
-		{
+		if($alt_bg == "alt1") {
 			$alt_bg = "alt2";
 			return "alt1";
 		}
@@ -610,6 +612,7 @@ EOF;
 		}
 	}
 
+
 	/**
 	 * Output a Javascript based tab control on to the page.
 	 *
@@ -617,44 +620,46 @@ EOF;
 	 * @param boolean Whether or not to run the event onload or instantly
 	 * @param string The ID to use for the tabs for if you run multiple instances of the tabbing control in one html page
 	 */
-	function output_tab_control($tabs=array(), $observe_onload=true, $id="tabs")
+	function output_tab_control($tabs=array(), $observe_onload=TRUE, $id="tabs")
 	{
 		global $plugins;
 		$tabs = $plugins->run_hooks("admin_page_output_tab_control_start", $tabs);
 		echo "<script type=\"text/javascript\">\n";
-		if($observe_onload)
-		{
+		if($observe_onload) {
 			echo "Event.observe(window,'load',function(){\n";
 		}
+
 		echo "	\$\$('#{$id}').each(function(tabs)\n";
 		echo "	{\n";
 		echo "		new Control.Tabs(tabs);\n";
 		echo "	});\n";
-		if($observe_onload)
-		{
+		if($observe_onload) {
 			echo "});\n";
 		}
+
 		echo "</script>\n";
 		echo "<ul class=\"tabs\" id=\"{$id}\">\n";
 		$tab_count = count($tabs);
-		$done = 1;
+		$done      = 1;
 		foreach($tabs as $anchor => $title)
 		{
 			$class = "";
-			if($tab_count == $done)
-			{
+			if($tab_count == $done) {
 				$class .= " last";
 			}
-			if($done == 1)
-			{
+
+			if($done == 1) {
 				$class .= " first";
 			}
+
 			++$done;
 			echo "<li class=\"{$class}\"><a href=\"#tab_{$anchor}\">{$title}</a></li>\n";
 		}
+
 		echo "</ul>\n";
 		$plugins->run_hooks("admin_page_output_tab_control_end", $tabs);
 	}
+
 
 	/**
 	 * Output a series of primary navigation tabs for swithcing between items within a particular module/action.
@@ -671,30 +676,32 @@ EOF;
 		foreach($tabs as $id => $tab)
 		{
 			$class = '';
-			if($id == $active)
-			{
+			if($id == $active) {
 				$class = ' active';
 			}
-			if($tab['align'] == "right")
-			{
+
+			if($tab['align'] == "right") {
 				$class .= " right";
 			}
-			if($tab['link_target'])
-			{
+
+			if($tab['link_target']) {
 				$target = " target=\"{$tab['link_target']}\"";
 			}
+
 			echo "\t\t<li class=\"{$class}\"><a href=\"{$tab['link']}\"{$target}>{$tab['title']}</a></li>\n";
 			$target = '';
 		}
+
 		echo "\t</ul>\n";
-		if($tabs[$active]['description'])
-		{
+		if($tabs[$active]['description']) {
 			echo "\t<div class=\"tab_description\">{$tabs[$active]['description']}</div>\n";
 		}
+
 		echo "</div>";
 		$arguments = array('tabs' => $tabs, 'active' => $active);
 		$plugins->run_hooks("admin_page_output_nav_tabs_end", $arguments);
 	}
+
 
 	/**
 	 * Output a page asking if a user wishes to continue performing a specific action.
@@ -706,11 +713,11 @@ EOF;
 	function output_confirm_action($url, $message="", $title="")
 	{
 		global $lang;
-		
-		if(!$message)
-		{
+
+		if(!$message) {
 			$message = $lang->confirm_action;
 		}
+
 		$this->output_header($title);
 		$form = new Form($url, 'post');
 		echo "<div class=\"confirm_action\">\n";
@@ -725,20 +732,21 @@ EOF;
 		$this->output_footer();
 	}
 
+
 	/**
 	 * Build a clickable MyCode editor for the Admin CP.
 	 *
-	 * @param string The ID of the textarea to bind the editor to.
-	 * @param string The language string for the editor.
+	 * @param  string The ID of the textarea to bind the editor to.
+	 * @param  string The language string for the editor.
 	 * @return string The build MyCode editor Javascript.
 	 */
 	function build_codebuttons_editor($bind, $editor_language)
 	{
 		global $lang;
-		if($bind == "signature")
-		{
+		if($bind == "signature") {
 			$tabs_js = "Control.Tabs.observe('afterChange', function(instance, new_tab) { if(new_tab.id == \"tab_signature\") { initEditor() }});";
 		}
+
 		return "<script type=\"text/javascript\" src=\"../jscripts/editor.js\"></script>\n".
 				"<script type=\"text/javascript\">\n".
 				"//<![CDATA[\n".
@@ -748,6 +756,8 @@ EOF;
 				"//]]>".
 				"</script>";
 	}
+
+
 }
 
 /**
@@ -755,6 +765,7 @@ EOF;
  */
 class DefaultSidebarItem
 {
+
 	/**
 	 * @var The title of the side bar block.
 	 */
@@ -764,7 +775,8 @@ class DefaultSidebarItem
 	 * @var string The contents of the side bar block.
 	 */
 	private $_contents;
-	
+
+
 	/**
 	 * Constructor. Set the title of the side bar block.
 	 *
@@ -774,7 +786,8 @@ class DefaultSidebarItem
 	{
 		$this->_title = $title;
 	}
-	
+
+
 	/**
 	 * Add menus item to the side bar block.
 	 *
@@ -784,26 +797,27 @@ class DefaultSidebarItem
 	function add_menu_items($items, $active)
 	{
 		global $run_module;
-		
+
 		$this->_contents = "<ul class=\"menu\">";
 		foreach($items as $item)
 		{
-			if(!check_admin_permissions(array("module" => $run_module, "action" => $item['id']), false))
-			{
+			if(!check_admin_permissions(array("module" => $run_module, "action" => $item['id']), FALSE)) {
 				continue;
 			}
-			
+
 			$class = "";
-			if($item['id'] == $active)
-			{
+			if($item['id'] == $active) {
 				$class = "active";
 			}
-			$item['link'] = htmlspecialchars($item['link']);
+
+			$item['link']     = htmlspecialchars($item['link']);
 			$this->_contents .= "<li class=\"{$class}\"><a href=\"{$item['link']}\">{$item['title']}</a></li>\n";
 		}
+
 		$this->_contents .= "</ul>";
 	}
-	
+
+
 	/**
 	 * Sets custom html to the contents variable
 	 *
@@ -813,21 +827,24 @@ class DefaultSidebarItem
 	{
 		$this->_contents = $html;
 	}
-	
+
+
 	/**
 	 * Fetch the HTML markup for the side bar box.
 	 */
 	function get_markup()
 	{
-		$markup = "<div class=\"left_menu_box\">\n";
+		$markup  = "<div class=\"left_menu_box\">\n";
 		$markup .= "<div class=\"title\">{$this->_title}</div>\n";
-		if($this->_contents)
-		{
+		if($this->_contents) {
 			$markup .= $this->_contents;
 		}
+
 		$markup .= "</div>\n";
 		return $markup;
 	}
+
+
 }
 
 /**
@@ -835,6 +852,7 @@ class DefaultSidebarItem
  */
 class DefaultPopupMenu
 {
+
 	/**
 	 * @var string The title of the popup menu to be shown on the button.
 	 */
@@ -850,6 +868,7 @@ class DefaultPopupMenu
 	 */
 	private $_items;
 
+
 	/**
 	 * Initialise a new popup menu.
 	 *
@@ -858,9 +877,10 @@ class DefaultPopupMenu
 	 */
 	function __construct($id, $title='')
 	{
-		$this->_id = $id;
+		$this->_id    = $id;
 		$this->_title = $title;
 	}
+
 
 	/**
 	 * Add an item to the popup menu.
@@ -871,12 +891,13 @@ class DefaultPopupMenu
 	 */
 	function add_item($text, $link, $onclick='')
 	{
-		if($onclick)
-		{
+		if($onclick) {
 			$onclick = " onclick=\"{$onclick}\"";
 		}
+
 		$this->_items .= "<div class=\"popup_item_container\"><a href=\"{$link}\"{$onclick} class=\"popup_item\">{$text}</a></div>\n";
 	}
+
 
 	/**
 	 * Fetch the contents of the popup menu.
@@ -886,15 +907,16 @@ class DefaultPopupMenu
 	function fetch()
 	{
 		$popup = "<div class=\"popup_menu\" id=\"{$this->_id}_popup\">\n{$this->_items}</div>\n";
-		if($this->_title)
-		{
+		if($this->_title) {
 			$popup .= "<a href=\"javascript:;\" id=\"{$this->_id}\" class=\"popup_button\">{$this->_title}</a>\n";
 		}
+
 		$popup .= "<script type=\"text/javascript\">\n";
 		$popup .= "new PopupMenu('{$this->_id}');\n";
 		$popup .= "</script>\n";
 		return $popup;
 	}
+
 
 	/**
 	 * Outputs a popup menu to the browser.
@@ -903,5 +925,7 @@ class DefaultPopupMenu
 	{
 		echo $this->fetch();
 	}
+
+
 }
-?>
+
