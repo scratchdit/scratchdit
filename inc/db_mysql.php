@@ -135,7 +135,8 @@ class DB_MySQL
 	/**
 	 * Connect to the database server.
 	 *
-	 * @param  array Array of DBMS connection details.
+	 * @param array Array of DBMS connection details.
+	 *
 	 * @return resource The DB connection resource. Returns FALSE on fail or -1 on a db connect failure.
 	 */
 	function connect($config)
