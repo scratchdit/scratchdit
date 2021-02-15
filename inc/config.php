@@ -15,7 +15,7 @@ $config['database'] = array(
 'username' => 'mknzigyrzqkxrw',
 'password' => '459aca8d4ee638bbae583732c67b0fff3c015d37ede47f71098ca573446bd8db',
 'pconnect' => 0,
-'port' => 5432
+'port' => 5432,
 'write' => "");
 
 /**
