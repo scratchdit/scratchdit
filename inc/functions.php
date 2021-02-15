@@ -164,7 +164,7 @@ function run_shutdown()
 	}
 
 	// And finally.. plugins
-	if (!is_object($plugins) && !defined("NO_PLUGINS") && !($mybb->settings['no_plugins'] == 1)) {
+	if (!is_object($plugins) && !defined("NO_PLUGINS") && array_key_exists('no_plugins', $mybb->settings) && !($mybb->settings['no_plugins'] == 1)) {
 		require_once MYBB_ROOT . "inc/class_plugins.php";
 		$plugins = PluginSystem;
 		$plugins->load();
@@ -3765,7 +3765,7 @@ function my_strlen($string)
 
 	$string = preg_replace("#&\#([0-9]+);#", "-", $string);
 
-			if(!array_key_exists('charset',$lang->settings)){
+	if (!array_key_exists('charset', $lang->settings)) {
 		$lang->settings['charset'] == "utf-8";
 	}
 
