@@ -128,7 +128,7 @@ class MyBB
 	 *
 	 * @var boolean
 	 */
-	public $debug_mode = TRUE;
+	public $debug_mode = FALSE;
 
 
 	/**
