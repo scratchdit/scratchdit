@@ -23,11 +23,11 @@ $lang->load("misc");
 
 $plugins->run_hooks("misc_start");
 
-if($mybb->input['action'] == "dstswitch" && $mybb->request_method == "post" && $mybb->user['uid'] > 0)
+if ($mybb->input['action'] == "dstswitch" && $mybb->request_method == "post" && $mybb->user['uid'] > 0)
 {
-	if($mybb->user['dstcorrection'] == 2)
+	if ($mybb->user['dstcorrection'] == 2)
 	{
-		if($mybb->user['dst'] == 1)
+		if ($mybb->user['dst'] == 1)
 		{
 			$update_array = array("dst" => 0);
 		}
@@ -37,7 +37,7 @@ if($mybb->input['action'] == "dstswitch" && $mybb->request_method == "post" && $
 		}
 	}
 	$db->update_query("users", $update_array, "uid='{$mybb->user['uid']}'");
-	if(!$mybb->input['ajax'])
+	if (!$mybb->input['ajax'])
 	{
 		redirect("index.php", $lang->dst_settings_updated);
 	}
@@ -47,21 +47,21 @@ if($mybb->input['action'] == "dstswitch" && $mybb->request_method == "post" && $
 		exit;
 	}
 }
-if($mybb->input['action'] == "markread")
+if ($mybb->input['action'] == "markread")
 {
-	if($mybb->user['uid'] && verify_post_check($mybb->input['my_post_key'], TRUE) !== TRUE)
+	if ($mybb->user['uid'] && verify_post_check($mybb->input['my_post_key'], TRUE) !== TRUE)
 	{
 		// Protect our user's unread forums from CSRF
 		error($lang->invalid_post_code);
 	}
 
-	if($mybb->input['fid'])
+	if ($mybb->input['fid'])
 	{
 		$mybb->input['fid'] = intval($mybb->input['fid']);
 		$validforum = get_forum($mybb->input['fid']);
-		if(!$validforum)
+		if (!$validforum)
 		{
-			if(!$mybb->input['ajax'])
+			if (!$mybb->input['ajax'])
 			{
 				error($lang->error_invalidforum);
 			}
@@ -77,7 +77,7 @@ if($mybb->input['action'] == "markread")
 
 		$plugins->run_hooks("misc_markread_forum");
 
-		if(!$mybb->input['ajax'])
+		if (!$mybb->input['ajax'])
 		{
 			redirect(get_forum_link($mybb->input['fid']), $lang->redirect_markforumread);
 		}
@@ -96,13 +96,13 @@ if($mybb->input['action'] == "markread")
 		redirect("index.php", $lang->redirect_markforumsread);
 	}
 }
-elseif($mybb->input['action'] == "clearpass")
+elseif ($mybb->input['action'] == "clearpass")
 {
 	$plugins->run_hooks("misc_clearpass");
 
-	if($mybb->input['fid'])
+	if ($mybb->input['fid'])
 	{
-		if(!verify_post_check($mybb->input['my_post_key']))
+		if (!verify_post_check($mybb->input['my_post_key']))
 		{
 			error($lang->invalid_post_code);
 		}
@@ -111,27 +111,27 @@ elseif($mybb->input['action'] == "clearpass")
 		redirect("index.php", $lang->redirect_forumpasscleared);
 	}
 }
-elseif($mybb->input['action'] == "rules")
+elseif ($mybb->input['action'] == "rules")
 {
-	if($mybb->input['fid'])
+	if ($mybb->input['fid'])
 	{
 		$plugins->run_hooks("misc_rules_start");
 
 		$fid = intval($mybb->input['fid']);
 
 		$forum = get_forum($fid);
-		if(!$forum || $forum['type'] != "f" || $forum['rules'] == '')
+		if (!$forum || $forum['type'] != "f" || $forum['rules'] == '')
 		{
 			error($lang->error_invalidforum);
 		}
 
 		$forumpermissions = forum_permissions($forum['fid']);
-		if($forumpermissions['canview'] != 1)
+		if ($forumpermissions['canview'] != 1)
 		{
 			error_no_permission();
 		}
 
-		if(!$forum['rulestitle'])
+		if (!$forum['rulestitle'])
 		{
 			$forum['rulestitle'] = $lang->sprintf($lang->forum_rules, $forum['name']);
 		}
@@ -159,7 +159,7 @@ elseif($mybb->input['action'] == "rules")
 	}
 
 }
-elseif($mybb->input['action'] == "help")
+elseif ($mybb->input['action'] == "help")
 {
 	$lang->load("helpdocs");
 	$lang->load("helpsections");
@@ -175,30 +175,30 @@ elseif($mybb->input['action'] == "help")
 		WHERE h.hid='".intval($mybb->input['hid'])."'
 	");
 	$helpdoc = $db->fetch_array($query);
-	if($helpdoc['hid'])
+	if ($helpdoc['hid'])
 	{
-		if($helpdoc['section'] != 0 && $helpdoc['enabled'] != 0)
+		if ($helpdoc['section'] != 0 && $helpdoc['enabled'] != 0)
 		{
 			$plugins->run_hooks("misc_help_helpdoc_start");
 
-			if($helpdoc['usetranslation'] == 1)
+			if ($helpdoc['usetranslation'] == 1)
 			{
 				$langnamevar = "d".$helpdoc['hid']."_name";
 				$langdescvar = "d".$helpdoc['hid']."_desc";
 				$langdocvar = "d".$helpdoc['hid']."_document";
-				if($lang->$langnamevar)
+				if ($lang->$langnamevar)
 				{
 					$helpdoc['name'] = $lang->$langnamevar;
 				}
-				if($lang->$langdescvar)
+				if ($lang->$langdescvar)
 				{
 					$helpdoc['description'] = $lang->$langdescvar;
 				}
-				if($lang->$langdocvar)
+				if ($lang->$langdocvar)
 				{
 					$helpdoc['document'] = $lang->$langdocvar;
 
-					if($langdocvar == "d3_document")
+					if ($langdocvar == "d3_document")
 					{
 						$helpdoc['document'] = $lang->sprintf($helpdoc['document'], $mybb->user['logoutkey']);
 					}
@@ -230,29 +230,29 @@ elseif($mybb->input['action'] == "help")
 		$query = $db->simple_select("helpsections", "*", "enabled != 0", array('order_by' => 'disporder'));
 		while($section = $db->fetch_array($query))
 		{
-			if($section['usetranslation'] == 1)
+			if ($section['usetranslation'] == 1)
 			{
 				$langnamevar = "s".$section['sid']."_name";
 				$langdescvar = "s".$section['sid']."_desc";
-				if($lang->$langnamevar)
+				if ($lang->$langnamevar)
 				{
 					$section['name'] = $lang->$langnamevar;
 				}
-				if($lang->$langdescvar)
+				if ($lang->$langdescvar)
 				{
 					$section['description'] = $lang->$langdescvar;
 				}
 			}
-			if(is_array($helpdocs[$section['sid']]))
+			if (is_array($helpdocs[$section['sid']]))
 			{
 				$helpbits = '';
 				// Expand (or Collapse) forums
-				if($mybb->input['action'] == "expand")
+				if ($mybb->input['action'] == "expand")
 				{
 					my_setcookie("fcollapse[{$section['sid']}]", '');
 					$scollapse[$section['sid']] = '';
 				}
-				elseif($mybb->input['action'] == "collapse")
+				elseif ($mybb->input['action'] == "collapse")
 				{
 					my_setcookie("fcollapse[{$section['sid']}]", "y");
 					$scollapse[$section['sid']] = "y";
@@ -261,17 +261,17 @@ elseif($mybb->input['action'] == "help")
 				{
 					foreach($bit as $key => $helpdoc)
 					{
-						if($helpdoc['enabled'] != 0)
+						if ($helpdoc['enabled'] != 0)
 						{
-							if($helpdoc['usetranslation'] == 1)
+							if ($helpdoc['usetranslation'] == 1)
 							{
 								$langnamevar = "d".$helpdoc['hid'].'_name';
 								$langdescvar = "d".$helpdoc['hid'].'_desc';
-								if($lang->$langnamevar)
+								if ($lang->$langnamevar)
 								{
 									$helpdoc['name'] = $lang->$langnamevar;
 								}
-								if($lang->$langdescvar)
+								if ($lang->$langdescvar)
 								{
 									$helpdoc['description'] = $lang->$langdescvar;
 								}
@@ -282,7 +282,7 @@ elseif($mybb->input['action'] == "help")
 					}
 					$expdisplay = '';
 					$sname = "sid_".$section['sid']."_c";
-					if($collapsed[$sname] == "display: show;")
+					if ($collapsed[$sname] == "display: show;")
 					{
 						$expcolimage = "collapse_collapsed.gif";
 						$expdisplay = "display: none;";
@@ -302,23 +302,23 @@ elseif($mybb->input['action'] == "help")
 		output_page($help);
 	}
 }
-elseif($mybb->input['action'] == "buddypopup")
+elseif ($mybb->input['action'] == "buddypopup")
 {
 	$plugins->run_hooks("misc_buddypopup_start");
 
-	if($mybb->user['uid'] == 0)
+	if ($mybb->user['uid'] == 0)
 	{
 		error_no_permission();
 	}
-	if($mybb->input['removebuddy'] && verify_post_check($mybb->input['my_post_key']))
+	if ($mybb->input['removebuddy'] && verify_post_check($mybb->input['my_post_key']))
 	{
 		$buddies = $mybb->user['buddylist'];
 		$namesarray = explode(",",$buddies);
-		if(is_array($namesarray))
+		if (is_array($namesarray))
 		{
 			foreach($namesarray as $key => $buddyid)
 			{
-				if($buddyid == $mybb->input['removebuddy'])
+				if ($buddyid == $mybb->input['removebuddy'])
 				{
 					unset($namesarray[$key]);
 				}
@@ -329,7 +329,7 @@ elseif($mybb->input['action'] == "buddypopup")
 		}
 	}
 	// Load Buddies
-	if($mybb->user['buddylist'] != "")
+	if ($mybb->user['buddylist'] != "")
 	{
 		$timecut = TIME_NOW - $mybb->settings['wolcutoff'];
 		$query = $db->simple_select("users", "*", "uid IN ({$mybb->user['buddylist']})", array('order_by' => 'lastactive'));
@@ -337,9 +337,9 @@ elseif($mybb->input['action'] == "buddypopup")
 		while($buddy = $db->fetch_array($query))
 		{
 			$buddy_name = format_name($buddy['username'], $buddy['usergroup'], $buddy['displaygroup']);
-			$profile_link = build_profile_link($buddy_name, $buddy['uid'], '_blank', 'if(window.opener) { window.opener.location = this.href; return FALSE; }');
+			$profile_link = build_profile_link($buddy_name, $buddy['uid'], '_blank', 'if (window.opener) { window.opener.location = this.href; return FALSE; }');
 
-			if($mybb->user['receivepms'] != 0 && $buddy['receivepms'] != 0 && $groupscache[$buddy['usergroup']]['canusepms'] != 0)
+			if ($mybb->user['receivepms'] != 0 && $buddy['receivepms'] != 0 && $groupscache[$buddy['usergroup']]['canusepms'] != 0)
 			{
 				eval("\$send_pm = \"".$templates->get("misc_buddypopup_user_sendpm")."\";");
 			}
@@ -347,7 +347,7 @@ elseif($mybb->input['action'] == "buddypopup")
 			{
 				$send_pm = '';
 			}
-			if($buddy['lastactive'])
+			if ($buddy['lastactive'])
 			{
 				$last_active = $lang->sprintf($lang->last_active, my_date($mybb->settings['dateformat'], $buddy['lastactive']).", ".my_date($mybb->settings['timeformat'], $buddy['lastactive']));
 			}
@@ -356,10 +356,10 @@ elseif($mybb->input['action'] == "buddypopup")
 				$last_active = $lang->sprintf($lang->last_active, $lang->never);
 			}
 
-			if($buddy['avatar'])
+			if ($buddy['avatar'])
 			{
 				$buddy['avatar'] = htmlspecialchars_uni($buddy['avatar']);
-				if($buddy['avatardimensions'])
+				if ($buddy['avatardimensions'])
 				{
 					require_once MYBB_ROOT."inc/functions_image.php";
 					list($width, $height) = explode("|", $buddy['avatardimensions']);
@@ -382,7 +382,7 @@ elseif($mybb->input['action'] == "buddypopup")
 				);
 			}
 			$margin_top = ceil((50-$scaled_dimensions['height'])/2);
-			if($buddy['lastactive'] > $timecut && ($buddy['invisible'] == 0 || $mybb->user['usergroup'] == 4) && $buddy['lastvisit'] != $buddy['lastactive'])
+			if ($buddy['lastactive'] > $timecut && ($buddy['invisible'] == 0 || $mybb->user['usergroup'] == 4) && $buddy['lastvisit'] != $buddy['lastactive'])
 			{
 				eval("\$buddys['online'] .= \"".$templates->get("misc_buddypopup_user_online")."\";");
 			}
@@ -403,7 +403,7 @@ elseif($mybb->input['action'] == "buddypopup")
 	eval("\$buddylist = \"".$templates->get("misc_buddypopup")."\";");
 	output_page($buddylist);
 }
-elseif($mybb->input['action'] == "whoposted")
+elseif ($mybb->input['action'] == "whoposted")
 {
 	$numposts = 0;
 	$altbg = alt_trow();
@@ -411,7 +411,7 @@ elseif($mybb->input['action'] == "whoposted")
 	$tid = intval($mybb->input['tid']);
 	$thread = get_thread($tid);
 
-	if(is_moderator($thread['fid']))
+	if (is_moderator($thread['fid']))
 	{
 		$ismod = TRUE;
 		$show_posts = "(p.visible = '1' OR p.visible = '0')";
@@ -423,13 +423,13 @@ elseif($mybb->input['action'] == "whoposted")
 	}
 
 	// Make sure we are looking at a real thread here.
-	if(!$thread['tid'] || ($thread['visible'] == 0 && $ismod == FALSE) || ($thread['visible'] > 1 && $ismod == TRUE))
+	if (!$thread['tid'] || ($thread['visible'] == 0 && $ismod == FALSE) || ($thread['visible'] > 1 && $ismod == TRUE))
 	{
 		error($lang->error_invalidthread);
 	}
 	// Does the thread belong to a valid forum?
 	$forum = get_forum($thread['fid']);
-	if(!$forum || $forum['type'] != "f")
+	if (!$forum || $forum['type'] != "f")
 	{
 		error($lang->error_invalidforum);
 	}
@@ -437,7 +437,7 @@ elseif($mybb->input['action'] == "whoposted")
 	// Does the user have permission to view this thread?
 	$forumpermissions = forum_permissions($forum['fid']);
 
-	if($forumpermissions['canview'] != 1 || $forumpermissions['canviewthreads'] != 1)
+	if ($forumpermissions['canview'] != 1 || $forumpermissions['canviewthreads'] != 1)
 	{
 		error_no_permission();
 	}
@@ -445,7 +445,7 @@ elseif($mybb->input['action'] == "whoposted")
 	// Check if this forum is password protected and we have a valid password
 	check_forum_password($forum['fid']);
 
-	if($mybb->input['sort'] != 'username')
+	if ($mybb->input['sort'] != 'username')
 	{
 		$sortsql = ' ORDER BY posts DESC';
 	}
@@ -463,12 +463,12 @@ elseif($mybb->input['action'] == "whoposted")
 	");
 	while($poster = $db->fetch_array($query))
 	{
-		if($poster['username'] == '')
+		if ($poster['username'] == '')
 		{
 			$poster['username'] = $poster['postusername'];
 		}
 		$poster_name = format_name($poster['username'], $poster['usergroup'], $poster['displaygroup']);
-		if($poster['uid'])
+		if ($poster['uid'])
 		{
 			$onclick = "opener.location.href='".get_profile_link($poster['uid'])."'; return FALSE;";
 		}
@@ -481,10 +481,10 @@ elseif($mybb->input['action'] == "whoposted")
 	eval("\$whop = \"".$templates->get("misc_whoposted")."\";");
 	output_page($whop);
 }
-elseif($mybb->input['action'] == "smilies")
+elseif ($mybb->input['action'] == "smilies")
 {
 	$smilies = '';
-	if($mybb->input['popup'])
+	if ($mybb->input['popup'])
 	{ // make small popup list of smilies
 		$editor = addslashes(htmlentities($mybb->input['editor']));
 		$e = 1;
@@ -496,7 +496,7 @@ elseif($mybb->input['action'] == "smilies")
 			$smilie['insert'] = addslashes($smilie['find']);
 			$smilie['find'] = htmlspecialchars_uni($smilie['find']);
 			eval("\$smilies .= \"".$templates->get("misc_smilies_popup_smilie")."\";");
-			if($e == 2)
+			if ($e == 2)
 			{
 				$smilies .= "</tr><tr>";
 				$e = 1;
@@ -507,7 +507,7 @@ elseif($mybb->input['action'] == "smilies")
 				$e = 2;
 			}
 		}
-		if($e == 2)
+		if ($e == 2)
 		{
 			$smilies .= "<td colspan=\"2\" class=\"$class\">&nbsp;</td>";
 		}
@@ -529,37 +529,37 @@ elseif($mybb->input['action'] == "smilies")
 		output_page($smiliespage);
 	}
 }
-elseif($mybb->input['action'] == "imcenter")
+elseif ($mybb->input['action'] == "imcenter")
 {
-	if($mybb->input['imtype'] != "aim" && $mybb->input['imtype'] != "msn" && $mybb->input['imtype'] != "yahoo")
+	if ($mybb->input['imtype'] != "aim" && $mybb->input['imtype'] != "msn" && $mybb->input['imtype'] != "yahoo")
 	{
 		error($lang->error_invalidimtype);
 	}
 	$uid = $mybb->input['uid'];
 	$user = get_user($uid);
 
-	if(!$user['username'])
+	if (!$user['username'])
 	{
 		error($lang->error_invaliduser);
 	}
-	if(!$user[$mybb->input['imtype']])
+	if (!$user[$mybb->input['imtype']])
 	{
 		error($lang->error_invalidimtype);
 	}
 
 	// build im navigation bar
 	$navigationbar = $navsep = '';
-	if($user['aim'])
+	if ($user['aim'])
 	{
 		$navigationbar .= "<a href=\"misc.php?action=imcenter&amp;imtype=aim&amp;uid=$uid\">$lang->aol_im</a>";
 		$navsep = ' - ';
 	}
-	if($user['msn'])
+	if ($user['msn'])
 	{
 		$navigationbar .= "$navsep<a href=\"misc.php?action=imcenter&amp;imtype=msn&amp;uid=$uid\">$lang->msn</a>";
 		$navsep = ' - ';
 	}
-	if($user['yahoo'])
+	if ($user['yahoo'])
 	{
 		$navigationbar .= "$navsep<a href=\"misc.php?action=imcenter&amp;imtype=yahoo&amp;uid=$uid\">$lang->yahoo_im</a>";
 	}
@@ -571,7 +571,7 @@ elseif($mybb->input['action'] == "imcenter")
 	eval("\$imcenter = \"".$templates->get($imtemplate)."\";");
 	output_page($imcenter);
 }
-elseif($mybb->input['action'] == "syndication")
+elseif ($mybb->input['action'] == "syndication")
 {
 	$plugins->run_hooks("misc_syndication_start");
 
@@ -582,7 +582,7 @@ elseif($mybb->input['action'] == "syndication")
 
 	add_breadcrumb($lang->nav_syndication);
 	$unviewable = get_unviewable_forums();
-	if(is_array($forums))
+	if (is_array($forums))
 	{
 		$unexp = explode(",", $unviewable);
 		foreach($unexp as $fid)
@@ -593,14 +593,14 @@ elseif($mybb->input['action'] == "syndication")
 		$comma = '';
 		foreach($forums as $fid)
 		{
-			if($fid == "all")
+			if ($fid == "all")
 			{
 				$all = 1;
 				break;
 			}
-			elseif(is_numeric($fid))
+			elseif (is_numeric($fid))
 			{
-				if(!$unview[$fid])
+				if (!$unview[$fid])
 				{
 					$syndicate .= $comma.$fid;
 					$comma = ",";
@@ -609,16 +609,16 @@ elseif($mybb->input['action'] == "syndication")
 			}
 		}
 		$url = $mybb->settings['bburl']."/syndication.php";
-		if(!$all)
+		if (!$all)
 		{
 			$url .= "?fid=$syndicate";
 			$add = 1;
 		}
 
 		// If the version is not RSS2.0, set the type to Atom1.0.
-		if($version != "rss2.0")
+		if ($version != "rss2.0")
 		{
-			if(!$add)
+			if (!$add)
 			{
 				$url .= "?";
 			}
@@ -629,13 +629,13 @@ elseif($mybb->input['action'] == "syndication")
 			$url .= "type=atom1.0";
 			$add = 1;
 		}
-		if(intval($limit) > 0)
+		if (intval($limit) > 0)
 		{
-			if($limit > 100)
+			if ($limit > 100)
 			{
 				$limit = 100;
 			}
-			if(!$add)
+			if (!$add)
 			{
 				$url .= "?";
 			}
@@ -643,7 +643,7 @@ elseif($mybb->input['action'] == "syndication")
 			{
 				$url .= "&";
 			}
-			if(is_numeric($limit))
+			if (is_numeric($limit))
 			{
 				$url .= "limit=$limit";
 			}
@@ -652,13 +652,13 @@ elseif($mybb->input['action'] == "syndication")
 		eval("\$feedurl = \"".$templates->get("misc_syndication_feedurl")."\";");
 	}
 	unset($GLOBALS['forumcache']);
-	if(!$limit || !is_numeric($limit))
+	if (!$limit || !is_numeric($limit))
 	{
 		$limit = 15;
 	}
 
 	// If there is no version in the input, check the default (RSS2.0).
-	if($version == "atom1.0")
+	if ($version == "atom1.0")
 	{
 		$atom1check = "checked=\"checked\"";
 		$rss2check = '';
@@ -677,18 +677,18 @@ elseif($mybb->input['action'] == "syndication")
 }
 
 
-if($mybb->input['action'] == "clearcookies")
+if ($mybb->input['action'] == "clearcookies")
 {
 	$plugins->run_hooks("misc_clearcookies");
 
-	if($mybb->input['key'] != $mybb->user['logoutkey'])
+	if ($mybb->input['key'] != $mybb->user['logoutkey'])
 	{
 		error($lang->error_invalidkey);
 	}
 
 	$remove_cookies = array('mybb', 'mybbuser', 'mybb[password]', 'mybb[lastvisit]', 'mybb[lastactive]', 'collapsed', 'mybb[forumread]', 'mybb[threadsread]', 'mybbadmin');
 
-	if($mybb->settings['cookiedomain'])
+	if ($mybb->settings['cookiedomain'])
 	{
 		foreach($remove_cookies as $name)
 		{
@@ -711,12 +711,12 @@ function makesyndicateforums($pid="0", $selitem="", $addselect="1", $depth="", $
 	static $unviewableforums;
 
 	$pid = intval($pid);
-	if(!$permissions)
+	if (!$permissions)
 	{
 		$permissions = $mybb->usergroup;
 	}
 
-	if(!is_array($forumcache))
+	if (!is_array($forumcache))
 	{
 		// Get Forums
 		$query = $db->simple_select("forums", "*", "linkto = '' AND active!=0", array('order_by' => 'pid, disporder'));
@@ -726,27 +726,27 @@ function makesyndicateforums($pid="0", $selitem="", $addselect="1", $depth="", $
 		}
 	}
 
-	if(!is_array($permissioncache))
+	if (!is_array($permissioncache))
 	{
 		$permissioncache = forum_permissions();
 	}
 
-	if(!$unviewableforums)
+	if (!$unviewableforums)
 	{
 		// Save our unviewable forums in an array
 		$unviewableforums = explode(",", str_replace("'", "", $unviewable));
 	}
 
-	if(is_array($forumcache[$pid]))
+	if (is_array($forumcache[$pid]))
 	{
 		foreach($forumcache[$pid] as $key => $main)
 		{
 			foreach($main as $key => $forum)
 			{
 				$perms = $permissioncache[$forum['fid']];
-				if($perms['canview'] == 1 || $mybb->settings['hideprivateforums'] == 0)
+				if ($perms['canview'] == 1 || $mybb->settings['hideprivateforums'] == 0)
 				{
-					if($flist[$forum['fid']])
+					if ($flist[$forum['fid']])
 					{
 						$optionselected = "selected=\"selected\"";
 						$selecteddone = "1";
@@ -756,12 +756,12 @@ function makesyndicateforums($pid="0", $selitem="", $addselect="1", $depth="", $
 						$optionselected = '';
 					}
 
-					if($forum['password'] == '' && !in_array($forum['fid'], $unviewableforums) || $forum['password'] && $mybb->cookies['forumpass'][$forum['fid']] == md5($mybb->user['uid'].$forum['password']))
+					if ($forum['password'] == '' && !in_array($forum['fid'], $unviewableforums) || $forum['password'] && $mybb->cookies['forumpass'][$forum['fid']] == md5($mybb->user['uid'].$forum['password']))
 					{
 						$forumlistbits .= "<option value=\"{$forum['fid']}\" $optionselected>$depth {$forum['name']}</option>\n";
 					}
 
-					if($forumcache[$forum['fid']])
+					if ($forumcache[$forum['fid']])
 					{
 						$newdepth = $depth."&nbsp;&nbsp;&nbsp;&nbsp;";
 						$forumlistbits .= makesyndicateforums($forum['fid'], $selitem, 0, $newdepth, $perms);
@@ -770,9 +770,9 @@ function makesyndicateforums($pid="0", $selitem="", $addselect="1", $depth="", $
 			}
 		}
 	}
-	if($addselect)
+	if ($addselect)
 	{
-		if(!$selecteddone)
+		if (!$selecteddone)
 		{
 			$addsel = " selected=\"selected\"";
 		}

@@ -10,7 +10,7 @@
  */
 
 // Disallow direct access to this file for security reasons
-if(!defined("IN_MYBB"))
+if (!defined("IN_MYBB"))
 {
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
@@ -52,7 +52,7 @@ function user_action_handler($action)
 
 	$actions = $plugins->run_hooks("admin_user_action_handler", $actions);
 
-	if(isset($actions[$action]))
+	if (isset($actions[$action]))
 	{
 		$page->active_action = $actions[$action]['active'];
 		return $actions[$action]['file'];

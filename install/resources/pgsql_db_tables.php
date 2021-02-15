@@ -10,7 +10,7 @@
  */
 
 // Disallow direct access to this file for security reasons
-if(!defined("IN_MYBB"))
+if (!defined("IN_MYBB"))
 {
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
@@ -816,7 +816,7 @@ $query = $db->write_query("SELECT column_name
 						  AND constraint_name = '".$config['tableprefix']."userfields_pkey'
 						  LIMIT 1");
 $main_field = $db->fetch_field($query, 'column_name');
-if(!empty($main_field))
+if (!empty($main_field))
 {
 	$tables[] = "DROP SEQUENCE mybb_userfields_ufid_seq;";
 }

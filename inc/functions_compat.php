@@ -15,7 +15,7 @@
  * This allows MyBB to continue working on older installations of PHP 5.1 and above without these functions.
  */
 
-if(!function_exists('memory_get_peak_usage'))
+if (!function_exists('memory_get_peak_usage'))
 {
 	function memory_get_peak_usage($real_usage=FALSE)
 	{

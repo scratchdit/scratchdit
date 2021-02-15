@@ -22,7 +22,7 @@ function remove_attachment($pid, $posthash, $aid)
 	global $db, $mybb, $plugins;
 	$aid = intval($aid);
 	$posthash = $db->escape_string($posthash);
-	if($posthash != "")
+	if ($posthash != "")
 	{
 		$query = $db->simple_select("attachments", "aid, attachname, thumbnail, visible", "aid='{$aid}' AND posthash='{$posthash}'");
 		$attachment = $db->fetch_array($query);
@@ -37,7 +37,7 @@ function remove_attachment($pid, $posthash, $aid)
 
 	$db->delete_query("attachments", "aid='{$attachment['aid']}'");
 
-	if(defined('IN_ADMINCP'))
+	if (defined('IN_ADMINCP'))
 	{
 	    $uploadpath = '../'.$mybb->settings['uploadspath'];
 	}
@@ -48,22 +48,22 @@ function remove_attachment($pid, $posthash, $aid)
 
 	// Check if this attachment is referenced in any other posts. If it isn't, then we are safe to delete the actual file.
 	$query = $db->simple_select("attachments", "COUNT(aid) as numreferences", "attachname='".$db->escape_string($attachment['attachname'])."'");
-	if($db->fetch_field($query, "numreferences") == 0)
+	if ($db->fetch_field($query, "numreferences") == 0)
 	{
 		@unlink($uploadpath."/".$attachment['attachname']);
-		if($attachment['thumbnail'])
+		if ($attachment['thumbnail'])
 		{
 			@unlink($uploadpath."/".$attachment['thumbnail']);
 		}
 
 		$date_directory = explode('/', $attachment['attachname']);
-		if(@is_dir($uploadpath."/".$date_directory[0]))
+		if (@is_dir($uploadpath."/".$date_directory[0]))
 		{
 			@rmdir($uploadpath."/".$date_directory[0]);
 		}
 	}
 
-	if($attachment['visible'] == 1 && $pid)
+	if ($attachment['visible'] == 1 && $pid)
 	{
 		$post = get_post($pid);
 		update_thread_counters($post['tid'], array("attachmentcount" => "-1"));
@@ -80,12 +80,12 @@ function remove_attachments($pid, $posthash="")
 {
 	global $db, $mybb, $plugins;
 
-	if($pid)
+	if ($pid)
 	{
 		$post = get_post($pid);
 	}
 	$posthash = $db->escape_string($posthash);
-	if($posthash != "" && !$pid)
+	if ($posthash != "" && !$pid)
 	{
 		$query = $db->simple_select("attachments", "*", "posthash='$posthash'");
 	}
@@ -94,7 +94,7 @@ function remove_attachments($pid, $posthash="")
 		$query = $db->simple_select("attachments", "*", "pid='$pid'");
 	}
 
-	if(defined('IN_ADMINCP'))
+	if (defined('IN_ADMINCP'))
 	{
 	    $uploadpath = '../'.$mybb->settings['uploadspath'];
 	}
@@ -106,7 +106,7 @@ function remove_attachments($pid, $posthash="")
 	$num_attachments = 0;
 	while($attachment = $db->fetch_array($query))
 	{
-		if($attachment['visible'] == 1)
+		if ($attachment['visible'] == 1)
 		{
 			$num_attachments++;
 		}
@@ -117,23 +117,23 @@ function remove_attachments($pid, $posthash="")
 
 		// Check if this attachment is referenced in any other posts. If it isn't, then we are safe to delete the actual file.
 		$query2 = $db->simple_select("attachments", "COUNT(aid) as numreferences", "attachname='".$db->escape_string($attachment['attachname'])."'");
-		if($db->fetch_field($query2, "numreferences") == 0)
+		if ($db->fetch_field($query2, "numreferences") == 0)
 		{
 			@unlink($uploadpath."/".$attachment['attachname']);
-			if($attachment['thumbnail'])
+			if ($attachment['thumbnail'])
 			{
 				@unlink($uploadpath."/".$attachment['thumbnail']);
 			}
 
 			$date_directory = explode('/', $attachment['attachname']);
-			if(@is_dir($uploadpath."/".$date_directory[0]))
+			if (@is_dir($uploadpath."/".$date_directory[0]))
 			{
 				@rmdir($uploadpath."/".$date_directory[0]);
 			}
 		}
 	}
 
-	if($post['tid'])
+	if ($post['tid'])
 	{
 		update_thread_counters($post['tid'], array("attachmentcount" => "-{$num_attachments}"));
 	}
@@ -149,7 +149,7 @@ function remove_avatars($uid, $exclude="")
 {
 	global $mybb, $plugins;
 
-	if(defined('IN_ADMINCP'))
+	if (defined('IN_ADMINCP'))
 	{
 		$avatarpath = '../'.$mybb->settings['avataruploadpath'];
 	}
@@ -159,13 +159,13 @@ function remove_avatars($uid, $exclude="")
 	}
 
 	$dir = opendir($avatarpath);
-	if($dir)
+	if ($dir)
 	{
 		while($file = @readdir($dir))
 		{
 			$plugins->run_hooks("remove_avatars_do_delete", $file);
 
-			if(preg_match("#avatar_".$uid."\.#", $file) && is_file($avatarpath."/".$file) && $file != $exclude)
+			if (preg_match("#avatar_".$uid."\.#", $file) && is_file($avatarpath."/".$file) && $file != $exclude)
 			{
 				@unlink($avatarpath."/".$file);
 			}
@@ -186,17 +186,17 @@ function upload_avatar($avatar=array(), $uid=0)
 {
 	global $db, $mybb, $lang, $plugins;
 
-	if(!$uid)
+	if (!$uid)
 	{
 		$uid = $mybb->user['uid'];
 	}
 
-	if(!$avatar['name'] || !$avatar['tmp_name'])
+	if (!$avatar['name'] || !$avatar['tmp_name'])
 	{
 		$avatar = $_FILES['avatarupload'];
 	}
 
-	if(!is_uploaded_file($avatar['tmp_name']))
+	if (!is_uploaded_file($avatar['tmp_name']))
 	{
 		$ret['error'] = $lang->error_uploadfailed;
 		return $ret;
@@ -204,13 +204,13 @@ function upload_avatar($avatar=array(), $uid=0)
 
 	// Check we have a valid extension
 	$ext = get_extension(my_strtolower($avatar['name']));
-	if(!preg_match("#^(gif|jpg|jpeg|jpe|bmp|png)$#i", $ext))
+	if (!preg_match("#^(gif|jpg|jpeg|jpe|bmp|png)$#i", $ext))
 	{
 		$ret['error'] = $lang->error_avatartype;
 		return $ret;
 	}
 
-	if(defined('IN_ADMINCP'))
+	if (defined('IN_ADMINCP'))
 	{
 		$avatarpath = '../'.$mybb->settings['avataruploadpath'];
 		$lang->load("messages", TRUE);
@@ -222,7 +222,7 @@ function upload_avatar($avatar=array(), $uid=0)
 
 	$filename = "avatar_".$uid.".".$ext;
 	$file = upload_file($avatar, $avatarpath, $filename);
-	if($file['error'])
+	if ($file['error'])
 	{
 		@unlink($avatarpath."/".$filename);
 		$ret['error'] = $lang->error_uploadfailed;
@@ -231,7 +231,7 @@ function upload_avatar($avatar=array(), $uid=0)
 
 
 	// Lets just double check that it exists
-	if(!file_exists($avatarpath."/".$filename))
+	if (!file_exists($avatarpath."/".$filename))
 	{
 		$ret['error'] = $lang->error_uploadfailed;
 		@unlink($avatarpath."/".$filename);
@@ -240,7 +240,7 @@ function upload_avatar($avatar=array(), $uid=0)
 
 	// Check if this is a valid image or not
 	$img_dimensions = @getimagesize($avatarpath."/".$filename);
-	if(!is_array($img_dimensions))
+	if (!is_array($img_dimensions))
 	{
 		@unlink($avatarpath."/".$filename);
 		$ret['error'] = $lang->error_uploadfailed;
@@ -248,17 +248,17 @@ function upload_avatar($avatar=array(), $uid=0)
 	}
 
 	// Check avatar dimensions
-	if($mybb->settings['maxavatardims'] != '')
+	if ($mybb->settings['maxavatardims'] != '')
 	{
 		list($maxwidth, $maxheight) = @explode("x", $mybb->settings['maxavatardims']);
-		if(($maxwidth && $img_dimensions[0] > $maxwidth) || ($maxheight && $img_dimensions[1] > $maxheight))
+		if (($maxwidth && $img_dimensions[0] > $maxwidth) || ($maxheight && $img_dimensions[1] > $maxheight))
 		{
 			// Automatic resizing enabled?
-			if($mybb->settings['avatarresizing'] == "auto" || ($mybb->settings['avatarresizing'] == "user" && $mybb->input['auto_resize'] == 1))
+			if ($mybb->settings['avatarresizing'] == "auto" || ($mybb->settings['avatarresizing'] == "user" && $mybb->input['auto_resize'] == 1))
 			{
 				require_once MYBB_ROOT."inc/functions_image.php";
 				$thumbnail = generate_thumbnail($avatarpath."/".$filename, $avatarpath, $filename, $maxheight, $maxwidth);
-				if(!$thumbnail['filename'])
+				if (!$thumbnail['filename'])
 				{
 					$ret['error'] = $lang->sprintf($lang->error_avatartoobig, $maxwidth, $maxheight);
 					$ret['error'] .= "<br /><br />".$lang->error_avatarresizefailed;
@@ -276,7 +276,7 @@ function upload_avatar($avatar=array(), $uid=0)
 			else
 			{
 				$ret['error'] = $lang->sprintf($lang->error_avatartoobig, $maxwidth, $maxheight);
-				if($mybb->settings['avatarresizing'] == "user")
+				if ($mybb->settings['avatarresizing'] == "user")
 				{
 					$ret['error'] .= "<br /><br />".$lang->error_avataruserresize;
 				}
@@ -287,7 +287,7 @@ function upload_avatar($avatar=array(), $uid=0)
 	}
 
 	// Next check the file size
-	if($avatar['size'] > ($mybb->settings['avatarsize']*1024) && $mybb->settings['avatarsize'] > 0)
+	if ($avatar['size'] > ($mybb->settings['avatarsize']*1024) && $mybb->settings['avatarsize'] > 0)
 	{
 		@unlink($avatarpath."/".$filename);
 		$ret['error'] = $lang->error_uploadsize;
@@ -316,7 +316,7 @@ function upload_avatar($avatar=array(), $uid=0)
 	}
 
 	// Check if the uploaded file type matches the correct image type (returned by getimagesize)
-	if($img_dimensions[2] != $img_type || $img_type == 0)
+	if ($img_dimensions[2] != $img_type || $img_type == 0)
 	{
 		$ret['error'] = $lang->error_uploadfailed;
 		@unlink($avatarpath."/".$filename);
@@ -347,7 +347,7 @@ function upload_attachment($attachment, $update_attachment=FALSE)
 
 	$posthash = $db->escape_string($mybb->input['posthash']);
 
-	if(isset($attachment['error']) && $attachment['error'] != 0)
+	if (isset($attachment['error']) && $attachment['error'] != 0)
 	{
 		$ret['error'] = $lang->error_uploadfailed.$lang->error_uploadfailed_detail;
 		switch($attachment['error'])
@@ -377,7 +377,7 @@ function upload_attachment($attachment, $update_attachment=FALSE)
 		return $ret;
 	}
 
-	if(!is_uploaded_file($attachment['tmp_name']) || empty($attachment['tmp_name']))
+	if (!is_uploaded_file($attachment['tmp_name']) || empty($attachment['tmp_name']))
 	{
 		$ret['error'] = $lang->error_uploadfailed.$lang->error_uploadfailed_php4;
 		return $ret;
@@ -387,26 +387,26 @@ function upload_attachment($attachment, $update_attachment=FALSE)
 	// Check if we have a valid extension
 	$query = $db->simple_select("attachtypes", "*", "extension='".$db->escape_string($ext)."'");
 	$attachtype = $db->fetch_array($query);
-	if(!$attachtype['atid'])
+	if (!$attachtype['atid'])
 	{
 		$ret['error'] = $lang->error_attachtype;
 		return $ret;
 	}
 
 	// Check the size
-	if($attachment['size'] > $attachtype['maxsize']*1024 && $attachtype['maxsize'] != "")
+	if ($attachment['size'] > $attachtype['maxsize']*1024 && $attachtype['maxsize'] != "")
 	{
 		$ret['error'] = $lang->sprintf($lang->error_attachsize, $attachtype['maxsize']);
 		return $ret;
 	}
 
 	// Double check attachment space usage
-	if($mybb->usergroup['attachquota'] > 0)
+	if ($mybb->usergroup['attachquota'] > 0)
 	{
 		$query = $db->simple_select("attachments", "SUM(filesize) AS ausage", "uid='".$mybb->user['uid']."'");
 		$usage = $db->fetch_array($query);
 		$usage = $usage['ausage']+$attachment['size'];
-		if($usage > ($mybb->usergroup['attachquota']*1024))
+		if ($usage > ($mybb->usergroup['attachquota']*1024))
 		{
 			$friendlyquota = get_friendly_size($mybb->usergroup['attachquota']*1024);
 			$ret['error'] = $lang->sprintf($lang->error_reachedattachquota, $friendlyquota);
@@ -420,9 +420,9 @@ function upload_attachment($attachment, $update_attachment=FALSE)
 	// Check if an attachment with this name is already in the post
 	$query = $db->simple_select("attachments", "*", "filename='".$db->escape_string($attachment['name'])."' AND (posthash='$posthash' OR (pid='".intval($pid)."' AND pid!='0'))");
 	$prevattach = $db->fetch_array($query);
-	if($prevattach['aid'] && $update_attachment == FALSE)
+	if ($prevattach['aid'] && $update_attachment == FALSE)
 	{
-		if(!$mybb->usergroup['caneditattachments'] && !$forumpermissions['caneditattachments'])
+		if (!$mybb->usergroup['caneditattachments'] && !$forumpermissions['caneditattachments'])
 		{
 			$ret['error'] = $lang->error_alreadyuploaded_perm;
 			return $ret;
@@ -433,15 +433,15 @@ function upload_attachment($attachment, $update_attachment=FALSE)
 	}
 
 	$month_dir = '';
-	if(ini_get('safe_mode') != 1 && strtolower(ini_get('safe_mode')) != 'on')
+	if (ini_get('safe_mode') != 1 && strtolower(ini_get('safe_mode')) != 'on')
 	{
 		// Check if the attachment directory (YYYYMM) exists, if not, create it
 		$month_dir = gmdate("Ym");
-		if(!@is_dir($mybb->settings['uploadspath']."/".$month_dir))
+		if (!@is_dir($mybb->settings['uploadspath']."/".$month_dir))
 		{
 			@mkdir($mybb->settings['uploadspath']."/".$month_dir);
 			// Still doesn't exist - oh well, throw it in the main directory
-			if(!@is_dir($mybb->settings['uploadspath']."/".$month_dir))
+			if (!@is_dir($mybb->settings['uploadspath']."/".$month_dir))
 			{
 				$month_dir = '';
 			}
@@ -454,17 +454,17 @@ function upload_attachment($attachment, $update_attachment=FALSE)
 	$file = upload_file($attachment, $mybb->settings['uploadspath']."/".$month_dir, $filename);
 
 	// Failed to create the attachment in the monthly directory, just throw it in the main directory
-	if($file['error'] && $month_dir)
+	if ($file['error'] && $month_dir)
 	{
 		$file = upload_file($attachment, $mybb->settings['uploadspath'].'/', $filename);
 	}
 
-	if($month_dir)
+	if ($month_dir)
 	{
 		$filename = $month_dir."/".$filename;
 	}
 
-	if($file['error'])
+	if ($file['error'])
 	{
 		$ret['error'] = $lang->error_uploadfailed.$lang->error_uploadfailed_detail;
 		switch($file['error'])
@@ -480,7 +480,7 @@ function upload_attachment($attachment, $update_attachment=FALSE)
 	}
 
 	// Lets just double check that it exists
-	if(!file_exists($mybb->settings['uploadspath']."/".$filename))
+	if (!file_exists($mybb->settings['uploadspath']."/".$filename))
 	{
 		$ret['error'] = $lang->error_uploadfailed.$lang->error_uploadfailed_detail.$lang->error_uploadfailed_lost;
 		return $ret;
@@ -500,7 +500,7 @@ function upload_attachment($attachment, $update_attachment=FALSE)
 	);
 
 	// If we're uploading an image, check the MIME type compared to the image type and attempt to generate a thumbnail
-	if($ext == "gif" || $ext == "png" || $ext == "jpg" || $ext == "jpeg" || $ext == "jpe")
+	if ($ext == "gif" || $ext == "png" || $ext == "jpg" || $ext == "jpeg" || $ext == "jpe")
 	{
 		// Check a list of known MIME types to establish what kind of image we're uploading
 		switch(my_strtolower($file['type']))
@@ -527,7 +527,7 @@ function upload_attachment($attachment, $update_attachment=FALSE)
 		$attachtypes = $cache->read("attachtypes");
 		foreach($attachtypes as $attachtype)
 		{
-			if(!empty($attachtype['mimetype']))
+			if (!empty($attachtype['mimetype']))
 			{
 				$supported_mimes[] = $attachtype['mimetype'];
 			}
@@ -538,18 +538,18 @@ function upload_attachment($attachment, $update_attachment=FALSE)
 
 		$mime = "";
 		$file_path = $mybb->settings['uploadspath']."/".$filename;
-		if(function_exists("finfo_open"))
+		if (function_exists("finfo_open"))
 		{
 			$file_info = finfo_open(FILEINFO_MIME);
 			list($mime, ) = explode(';', finfo_file($file_info, MYBB_ROOT.$file_path), 1);
 			finfo_close($file_info);
 		}
-		else if(function_exists("mime_content_type"))
+		else if (function_exists("mime_content_type"))
 		{
 			$mime = mime_content_type(MYBB_ROOT.$file_path);
 		}
 
-		if(!is_array($img_dimensions) || ($img_dimensions[2] != $img_type && !in_array($mime, $supported_mimes)))
+		if (!is_array($img_dimensions) || ($img_dimensions[2] != $img_type && !in_array($mime, $supported_mimes)))
 		{
 			@unlink($mybb->settings['uploadspath']."/".$filename);
 			$ret['error'] = $lang->error_uploadfailed;
@@ -559,16 +559,16 @@ function upload_attachment($attachment, $update_attachment=FALSE)
 		$thumbname = str_replace(".attach", "_thumb.$ext", $filename);
 		$thumbnail = generate_thumbnail($mybb->settings['uploadspath']."/".$filename, $mybb->settings['uploadspath'], $thumbname, $mybb->settings['attachthumbh'], $mybb->settings['attachthumbw']);
 
-		if($thumbnail['filename'])
+		if ($thumbnail['filename'])
 		{
 			$attacharray['thumbnail'] = $thumbnail['filename'];
 		}
-		elseif($thumbnail['code'] == 4)
+		elseif ($thumbnail['code'] == 4)
 		{
 			$attacharray['thumbnail'] = "SMALL";
 		}
 	}
-	if($forum['modattachments'] == 1 && !is_moderator($forum['fid'], "", $mybb->user['uid']))
+	if ($forum['modattachments'] == 1 && !is_moderator($forum['fid'], "", $mybb->user['uid']))
 	{
 		$attacharray['visible'] = 0;
 	}
@@ -579,7 +579,7 @@ function upload_attachment($attachment, $update_attachment=FALSE)
 
 	$attacharray = $plugins->run_hooks("upload_attachment_do_insert", $attacharray);
 
-	if($prevattach['aid'] && $update_attachment == TRUE)
+	if ($prevattach['aid'] && $update_attachment == TRUE)
 	{
 		unset($attacharray['downloads']); // Keep our download count if we're updating an attachment
 		$db->update_query("attachments", $attacharray, "aid='".$db->escape_string($prevattach['aid'])."'");
@@ -590,7 +590,7 @@ function upload_attachment($attachment, $update_attachment=FALSE)
 		$aid = $db->insert_query("attachments", $attacharray);
 	}
 
-	if($tid)
+	if ($tid)
 	{
 		update_thread_counters($tid, array("attachmentcount" => "+1"));
 	}
@@ -609,13 +609,13 @@ function upload_file($file, $path, $filename="")
 {
 	global $plugins;
 
-	if(empty($file['name']) || $file['name'] == "none" || $file['size'] < 1)
+	if (empty($file['name']) || $file['name'] == "none" || $file['size'] < 1)
 	{
 		$upload['error'] = 1;
 		return $upload;
 	}
 
-	if(!$filename)
+	if (!$filename)
 	{
 		$filename = $file['name'];
 	}
@@ -624,7 +624,7 @@ function upload_file($file, $path, $filename="")
 	$filename = preg_replace("#/$#", "", $filename); // Make the filename safe
 	$moved = @move_uploaded_file($file['tmp_name'], $path."/".$filename);
 
-	if(!$moved)
+	if (!$moved)
 	{
 		$upload['error'] = 2;
 		return $upload;

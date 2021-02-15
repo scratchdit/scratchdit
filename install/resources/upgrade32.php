@@ -34,22 +34,22 @@ function upgrade32_dbchanges()
 	echo "<p>Performing necessary upgrade queries...</p>";
 	flush();
 
-	if($db->field_exists('candeletereputations', 'usergroups'))
+	if ($db->field_exists('candeletereputations', 'usergroups'))
 	{
 		$db->drop_column("usergroups", "candeletereputations");
 	}
 
-	if($db->field_exists('authsecret', 'adminoptions'))
+	if ($db->field_exists('authsecret', 'adminoptions'))
 	{
 		$db->drop_column("adminoptions", "authsecret");
 	}
 
-	if($db->field_exists('recovery_codes', 'adminoptions'))
+	if ($db->field_exists('recovery_codes', 'adminoptions'))
 	{
 		$db->drop_column("adminoptions", "recovery_codes");
 	}
 
-	if($db->field_exists('authenticated', 'adminsessions'))
+	if ($db->field_exists('authenticated', 'adminsessions'))
 	{
 		$db->drop_column("adminsessions", "authenticated");
 	}

@@ -30,7 +30,7 @@ function upgrade18_dbchanges()
 	echo "<p>Performing necessary upgrade queries...</p>";
 
 	// Update the usergroup sequence for pgSQL - #1094
-	if($mybb->config['database']['type'] == "pgsql")
+	if ($mybb->config['database']['type'] == "pgsql")
 	{
 		$query = $db->simple_select("usergroups", "COUNT(gid) AS group_count");
 		$group_count = $db->fetch_field($query, "group_count");

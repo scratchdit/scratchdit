@@ -64,11 +64,11 @@ class datacache
 				break;
 		}
 
-		if(is_object($this->handler))
+		if (is_object($this->handler))
 		{
-			if(method_exists($this->handler, "connect"))
+			if (method_exists($this->handler, "connect"))
 			{
-				if(!$this->handler->connect())
+				if (!$this->handler->connect())
 				{
 					$this->handler = NULL;
 				}
@@ -97,23 +97,23 @@ class datacache
 		global $db, $mybb;
 
 		// Already have this cache and we're not doing a hard refresh? Return cached copy
-		if(isset($this->cache[$name]) && $hard == FALSE)
+		if (isset($this->cache[$name]) && $hard == FALSE)
 		{
 			return $this->cache[$name];
 		}
 		// If we're not hard refreshing, and this cache doesn't exist, return FALSE
 		// It would have been loaded pre-global if it did exist anyway...
-		else if($hard == FALSE && !is_object($this->handler))
+		else if ($hard == FALSE && !is_object($this->handler))
 		{
 			return FALSE;
 		}
 
-		if(is_object($this->handler))
+		if (is_object($this->handler))
 		{
 			$data = $this->handler->fetch($name);
 
 			// No data returned - cache gone bad?
-			if($data === FALSE)
+			if ($data === FALSE)
 			{
 				// Fetch from database
 				$query = $db->simple_select("datacache", "title,cache", "title='".$db->escape_string($name)."'");
@@ -130,7 +130,7 @@ class datacache
 			$query = $db->simple_select("datacache", "title,cache", "title='$name'");
 			$cache_data = $db->fetch_array($query);
 
-			if(!$cache_data['title'])
+			if (!$cache_data['title'])
 			{
 				$data = FALSE;
 			}
@@ -143,7 +143,7 @@ class datacache
 		// Cache locally
 		$this->cache[$name] = $data;
 
-		if($data !== FALSE)
+		if ($data !== FALSE)
 		{
 			return $data;
 		}
@@ -175,7 +175,7 @@ class datacache
 		$db->replace_query("datacache", $replace_array, "", FALSE);
 
 		// Do we have a cache handler we're using?
-		if(is_object($this->handler))
+		if (is_object($this->handler))
 		{
 			$this->handler->put($name, $contents);
 		}
@@ -191,12 +191,12 @@ class datacache
 	{
 		global $db;
 
-		if(is_object($this->handler))
+		if (is_object($this->handler))
 		{
 			$size = $this->handler->size_of($name);
-			if(!$size)
+			if (!$size)
 			{
-				if($name)
+				if ($name)
 				{
 					$query = $db->simple_select("datacache", "cache", "title='{$name}'");
 					return strlen($db->fetch_field($query, "cache"));
@@ -214,7 +214,7 @@ class datacache
 		// Using MySQL as cache
 		else
 		{
-			if($name)
+			if ($name)
 			{
 				$query = $db->simple_select("datacache", "cache", "title='{$name}'");
 				return strlen($db->fetch_field($query, "cache"));
@@ -349,7 +349,7 @@ class datacache
 
 		// Get our forum list
 		cache_forums(TRUE);
-		if(!is_array($forum_cache))
+		if (!is_array($forum_cache))
 		{
 			return FALSE;
 		}
@@ -391,7 +391,7 @@ class datacache
 	private function build_forum_permissions($permissions=array(), $pid=0)
 	{
 		$usergroups = array_keys($this->read("usergroups", TRUE));
-		if($this->forum_permissions_forum_cache[$pid])
+		if ($this->forum_permissions_forum_cache[$pid])
 		{
 			foreach($this->forum_permissions_forum_cache[$pid] as $main)
 			{
@@ -400,11 +400,11 @@ class datacache
 					$perms = $permissions;
 					foreach($usergroups as $gid)
 					{
-						if($this->forum_permissions[$forum['fid']][$gid])
+						if ($this->forum_permissions[$forum['fid']][$gid])
 						{
 							$perms[$gid] = $this->forum_permissions[$forum['fid']][$gid];
 						}
-						if($perms[$gid])
+						if ($perms[$gid])
 						{
 							$perms[$gid]['fid'] = $forum['fid'];
 							$this->built_forum_permissions[$forum['fid']][$gid] = $perms[$gid];
@@ -439,7 +439,7 @@ class datacache
 
 		// Get our forum list
 		cache_forums(TRUE);
-		if(!is_array($forum_cache))
+		if (!is_array($forum_cache))
 		{
 			return FALSE;
 		}
@@ -473,7 +473,7 @@ class datacache
 			$this->moderators[$moderator['fid']]['users'][$moderator['id']] = $moderator;
 		}
 
-		if(!function_exists("sort_moderators_by_usernames"))
+		if (!function_exists("sort_moderators_by_usernames"))
 		{
 			function sort_moderators_by_usernames($a, $b)
 			{
@@ -494,7 +494,7 @@ class datacache
 			$this->moderators[$moderator['fid']]['usergroups'][$moderator['id']] = $moderator;
 		}
 
-		if(is_array($this->moderators))
+		if (is_array($this->moderators))
 		{
 			foreach(array_keys($this->moderators) as $fid)
 			{
@@ -516,21 +516,21 @@ class datacache
 	 */
 	private function build_moderators($moderators=array(), $pid=0)
 	{
-		if($this->moderators_forum_cache[$pid])
+		if ($this->moderators_forum_cache[$pid])
 		{
 			foreach($this->moderators_forum_cache[$pid] as $main)
 			{
 				foreach($main as $forum)
 				{
 					$forum_mods = '';
-					if(count($moderators))
+					if (count($moderators))
 					{
 						$forum_mods = $moderators;
 					}
 					// Append - local settings override that of a parent - array_merge works here
-					if($this->moderators[$forum['fid']])
+					if ($this->moderators[$forum['fid']])
 					{
-						if(is_array($forum_mods) && count($forum_mods))
+						if (is_array($forum_mods) && count($forum_mods))
 						{
 							$forum_mods = array_merge($forum_mods, $this->moderators[$forum['fid']]);
 						}
@@ -563,7 +563,7 @@ class datacache
 		{
 			foreach($forum as $key => $val)
 			{
-				if(in_array($key, $exclude))
+				if (in_array($key, $exclude))
 				{
 					unset($forum[$key]);
 				}
@@ -646,12 +646,12 @@ class datacache
 		$queue_size = $db->fetch_field($query, "queue_size");
 
 		$mailqueue = $this->read("mailqueue");
-		if(!is_array($mailqueue))
+		if (!is_array($mailqueue))
 		{
 			$mailqueue = array();
 		}
 		$mailqueue['queue_size'] = $queue_size;
-		if($last_run > 0)
+		if ($last_run > 0)
 		{
 			$mailqueue['last_run'] = $last_run;
 		}
@@ -682,13 +682,13 @@ class datacache
 		$next_task = $db->fetch_array($query);
 
 		$task_cache = $this->read("tasks");
-		if(!is_array($task_cache))
+		if (!is_array($task_cache))
 		{
 			$task_cache = array();
 		}
 		$task_cache['nextrun'] = $next_task['nextrun'];
 
-		if(!$task_cache['nextrun'])
+		if (!$task_cache['nextrun'])
 		{
 			$task_cache['nextrun'] = TIME_NOW+3600;
 		}
@@ -810,7 +810,7 @@ class datacache
 			array_pop($bday['bday']);
 			$bday['bday'] = implode('-', $bday['bday']);
 
-			if($bday['birthdayprivacy'] != 'all')
+			if ($bday['birthdayprivacy'] != 'all')
 			{
 				++$birthdays[$bday['bday']]['hiddencount'];
 				continue;
@@ -864,11 +864,11 @@ class datacache
 		$time = TIME_NOW; // Look for announcements that don't end, or that are ending some time in the future
 		$query = $db->simple_select("announcements", "fid", "enddate = '0' OR enddate > '{$time}'", array("order_by" => "aid"));
 
-		if($db->num_rows($query))
+		if ($db->num_rows($query))
 		{
 			while($forum = $db->fetch_array($query))
 			{
-				if(!isset($fd_statistics[$forum['fid']]['announcements']))
+				if (!isset($fd_statistics[$forum['fid']]['announcements']))
 				{
 					$fd_statistics[$forum['fid']]['announcements'] = 1;
 				}
@@ -878,7 +878,7 @@ class datacache
 		// Do we have any mod tools to use in our forums?
 		$query = $db->simple_select("modtools", "forums, tid", "type = 't'", array("order_by" => "tid"));
 
-		if($db->num_rows($query))
+		if ($db->num_rows($query))
 		{
 			unset($forum);
 			while($tool = $db->fetch_array($query))
@@ -887,12 +887,12 @@ class datacache
 
 				foreach($forums as $forum)
 				{
-					if(!$forum)
+					if (!$forum)
 					{
 						$forum = -1;
 					}
 
-					if(!isset($fd_statistics[$forum]['modtools']))
+					if (!isset($fd_statistics[$forum]['modtools']))
 					{
 						$fd_statistics[$forum]['modtools'] = 1;
 					}

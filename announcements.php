@@ -27,18 +27,18 @@ $plugins->run_hooks("announcements_start");
 $query = $db->simple_select("announcements", "fid", "aid='$aid'");
 $announcement = $db->fetch_array($query);
 
-if(!$announcement)
+if (!$announcement)
 {
 	error($lang->error_invalidannouncement);
 }
 
 // Get forum info
 $fid = $announcement['fid'];
-if($fid > 0)
+if ($fid > 0)
 {
 	$forum = get_forum($fid);
 
-	if(!$forum)
+	if (!$forum)
 	{
 		error($lang->error_invalidforum);
 	}
@@ -49,7 +49,7 @@ if($fid > 0)
 	// Permissions
 	$forumpermissions = forum_permissions($forum['fid']);
 
-	if($forumpermissions['canview'] == 0 || $forumpermissions['canviewthreads'] == 0)
+	if ($forumpermissions['canview'] == 0 || $forumpermissions['canviewthreads'] == 0)
 	{
 		error_no_permission();
 	}
@@ -74,7 +74,7 @@ $query = $db->query("
 
 $announcementarray = $db->fetch_array($query);
 
-if(!$announcementarray)
+if (!$announcementarray)
 {
 	error($lang->error_invalidannouncement);
 }
@@ -102,20 +102,20 @@ $announcement = build_postbit($announcementarray, 3);
 $announcementarray['subject'] = $parser->parse_badwords($announcementarray['subject']);
 $lang->forum_announcement = $lang->sprintf($lang->forum_announcement, htmlspecialchars_uni($announcementarray['subject']));
 
-if($announcementarray['startdate'] > $mybb->user['lastvisit'])
+if ($announcementarray['startdate'] > $mybb->user['lastvisit'])
 {
 	$setcookie = TRUE;
-	if($mybb->cookies['mybb']['announcements'])
+	if ($mybb->cookies['mybb']['announcements'])
 	{
 		$cookie = my_unserialize(stripslashes($mybb->cookies['mybb']['announcements']));
 
-		if(isset($cookie[$announcementarray['aid']]))
+		if (isset($cookie[$announcementarray['aid']]))
 		{
 			$setcookie = FALSE;
 		}
 	}
 
-	if($setcookie)
+	if ($setcookie)
 	{
 		my_set_array_cookie('announcements', $announcementarray['aid'], $announcementarray['startdate'], -1);
 	}

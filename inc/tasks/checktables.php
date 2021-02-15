@@ -14,7 +14,7 @@ function task_checktables($task)
 	global $db, $mybb, $lang;
 
 	// Sorry SQLite, you don't have a decent way of checking if the table is corrupted or not.
-	if($db->type == "sqlite")
+	if ($db->type == "sqlite")
 	{
 		return;
 	}
@@ -38,14 +38,14 @@ function task_checktables($task)
 		$comma = ",";
 	}
 
-	if($tables_list)
+	if ($tables_list)
 	{
 		$query = $db->query("CHECK TABLE {$tables_list}CHANGED;");
 		while($table = $db->fetch_array($query))
 		{
-			if(!in_array($table['Msg_text'], $ok))
+			if (!in_array($table['Msg_text'], $ok))
 			{
-				if($table['Table'] != $mybb->config['database']['database'].".".TABLE_PREFIX."settings" && $setting_done != TRUE)
+				if ($table['Table'] != $mybb->config['database']['database'].".".TABLE_PREFIX."settings" && $setting_done != TRUE)
 				{
 					$boardclosed = $mybb->settings['boardclosed'];
 					$boardclosed_reason = $mybb->settings['boardclosed_reason'];
@@ -62,7 +62,7 @@ function task_checktables($task)
 			}
 		}
 
-		if($table['Table'] != $mybb->config['database']['table_prefix'].".".TABLE_PREFIX."settings" && $setting_done == TRUE)
+		if ($table['Table'] != $mybb->config['database']['table_prefix'].".".TABLE_PREFIX."settings" && $setting_done == TRUE)
 		{
 			$db->update_query("settings", array('value' => $boardclosed), "name='boardclosed'", 1);
 			$db->update_query("settings", array('value' => $boardclosed_reason), "name='boardclosed_reason'", 1);
@@ -72,7 +72,7 @@ function task_checktables($task)
 
 	}
 
-	if(!empty($repaired))
+	if (!empty($repaired))
 	{
 		add_task_log($task, $lang->sprintf($lang->task_checktables_ran_found, implode(', ', $repaired)));
 	}

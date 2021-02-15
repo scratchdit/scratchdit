@@ -1,4 +1,5 @@
 <?php
+
 /**
  * MyBB 1.6
  * Copyright 2010 MyBB Group, All Rights Reserved
@@ -9,7 +10,7 @@
  * $Id$
  */
 
-class pluginSystem
+class PluginSystem
 {
 
 	/**
@@ -26,25 +27,23 @@ class pluginSystem
 	 */
 	public $current_hook;
 
+
 	/**
 	 * Load all plugins.
-	 *
 	 */
 	function load()
 	{
-		global $cache, $plugins;
+		global $cache;
 		$pluginlist = $cache->read("plugins");
-		if(is_array($pluginlist['active']))
-		{
-			foreach($pluginlist['active'] as $plugin)
-			{
-				if($plugin != "" && file_exists(MYBB_ROOT."inc/plugins/".$plugin.".php"))
-				{
-					require_once MYBB_ROOT."inc/plugins/".$plugin.".php";
+		if (array_key_exists('active', $pluginlist) && is_array($pluginlist['active'])) {
+			foreach ($pluginlist['active'] as $plugin) {
+				if ($plugin != "" && file_exists(MYBB_ROOT . "inc/plugins/" . $plugin . ".php")) {
+					include_once MYBB_ROOT . "inc/plugins/" . $plugin . ".php";
 				}
 			}
 		}
 	}
+
 
 	/**
 	 * Add a hook onto which a plugin can be attached.
@@ -53,13 +52,13 @@ class pluginSystem
 	 * @param string The function of this hook.
 	 * @param int The priority this hook has.
 	 * @param string The optional file belonging to this hook.
+	 *
 	 * @return boolean Always TRUE.
 	 */
-	function add_hook($hook, $function, $priority=10, $file="")
+	function add_hook($hook, $function, $priority = 10, $file = "")
 	{
 		// Check to see if we already have this hook running at this priority
-		if(!empty($this->hooks[$hook][$priority][$function]) && is_array($this->hooks[$hook][$priority][$function]))
-		{
+		if (!empty($this->hooks[$hook][$priority][$function]) && is_array($this->hooks[$hook][$priority][$function])) {
 			return TRUE;
 		}
 
@@ -71,46 +70,44 @@ class pluginSystem
 		return TRUE;
 	}
 
+
 	/**
 	 * Run the hooks that have plugins.
 	 *
 	 * @param string The name of the hook that is run.
 	 * @param string The argument for the hook that is run. The passed value MUST be a variable
+	 *
 	 * @return string The arguments for the hook.
 	 */
-	function run_hooks($hook, &$arguments="")
+	function run_hooks($hook, &$arguments = "")
 	{
-		if(!is_array($this->hooks[$hook]))
-		{
+		if (!is_array($this->hooks[$hook])) {
 			return $arguments;
 		}
+
 		$this->current_hook = $hook;
 		ksort($this->hooks[$hook]);
-		foreach($this->hooks[$hook] as $priority => $hooks)
-		{
-			if(is_array($hooks))
-			{
-				foreach($hooks as $hook)
-				{
-					if($hook['file'])
-					{
-						require_once $hook['file'];
+		foreach (array_values($this->hooks[$hook]) as $hooks) {
+			if (is_array($hooks)) {
+				foreach ($hooks as $hook) {
+					if ($hook['file']) {
+						include_once $hook['file'];
 					}
 
-					$func = $hook['function'];
+					$func       = $hook['function'];
 					$returnargs = $func($arguments);
 
-
-					if($returnargs)
-					{
+					if ($returnargs) {
 						$arguments = $returnargs;
 					}
 				}
 			}
 		}
+
 		$this->current_hook = '';
 		return $arguments;
 	}
+
 
 	/**
 	 * Run hooks by ref
@@ -121,6 +118,7 @@ class pluginSystem
 		$this->run_hooks($hook, $arguments);
 	}
 
+
 	/**
 	 * Remove a specific hook.
 	 *
@@ -129,20 +127,22 @@ class pluginSystem
 	 * @param string The filename of the plugin.
 	 * @param int The priority of the hook.
 	 */
-	function remove_hook($hook, $function, $file="", $priority=10)
+	function remove_hook($hook, $function, $file = "", $priority = 10)
 	{
 		// Check to see if we don't already have this hook running at this priority
-		if(!isset($this->hooks[$hook][$priority][$function]))
-		{
+		if (!isset($this->hooks[$hook][$priority][$function])) {
 			return TRUE;
 		}
+
 		unset($this->hooks[$hook][$priority][$function]);
 	}
+
 
 	/**
 	 * Establishes if a particular plugin is compatible with this version of MyBB.
 	 *
 	 * @param string The name of the plugin.
+	 *
 	 * @return boolean TRUE if compatible, FALSE if incompatible.
 	 */
 	function is_compatible($plugin)
@@ -150,33 +150,30 @@ class pluginSystem
 		global $mybb;
 
 		// Ignore potentially missing plugins.
-		if(!file_exists(MYBB_ROOT."inc/plugins/".$plugin.".php"))
-		{
+		if (!file_exists(MYBB_ROOT . "inc/plugins/$plugin.php")) {
 			return TRUE;
 		}
 
-		require_once MYBB_ROOT."inc/plugins/".$plugin.".php";
+		include_once MYBB_ROOT . "inc/plugins/$plugin.php";
 
 		$info_func = "{$plugin}_info";
-		if(!function_exists($info_func))
-		{
+		if (!function_exists($info_func)) {
 			return FALSE;
 		}
+
 		$plugin_info = $info_func();
 
 		// No compatibility set or compatibility = * - assume compatible
-		if(!$plugin_info['compatibility'] || $plugin_info['compatibility'] == "*")
-		{
+		if (!$plugin_info['compatibility'] || $plugin_info['compatibility'] == "*") {
 			return TRUE;
 		}
+
 		$compatibility = explode(",", $plugin_info['compatibility']);
-		foreach($compatibility as $version)
-		{
+		foreach ($compatibility as $version) {
 			$version = trim($version);
 			$version = str_replace("*", ".+", preg_quote($version));
 			$version = str_replace("\.+", ".+", $version);
-			if(preg_match("#{$version}#i", $mybb->version_code))
-			{
+			if (preg_match("#{$version}#i", $mybb->version_code)) {
 				return TRUE;
 			}
 		}
@@ -185,4 +182,3 @@ class pluginSystem
 		return FALSE;
 	}
 }
-?>

@@ -28,12 +28,12 @@ function upgrade37_dbchanges()
 	echo "<p>Performing necessary upgrade queries...</p>";
 	flush();
 
-	if($db->field_exists('canviewdeletionnotice', 'usergroups'))
+	if ($db->field_exists('canviewdeletionnotice', 'usergroups'))
 	{
 		$db->drop_column("usergroups", "canviewdeletionnotice");
 	}
 
-	if($db->field_exists('canviewdeletionnotice', 'forumpermissions'))
+	if ($db->field_exists('canviewdeletionnotice', 'forumpermissions'))
 	{
 		$db->drop_column("forumpermissions", "canviewdeletionnotice");
 	}

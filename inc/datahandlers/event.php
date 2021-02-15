@@ -10,7 +10,7 @@
  */
 
 // Disallow direct access to this file for security reasons
-if(!defined("IN_MYBB"))
+if (!defined("IN_MYBB"))
 {
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
@@ -63,7 +63,7 @@ class EventDataHandler extends DataHandler
 	{
 		$name = &$this->data['name'];
 		$name = trim($name);
-		if(!$name)
+		if (!$name)
 		{
 			$this->set_error("missing_name");
 			return FALSE;
@@ -80,7 +80,7 @@ class EventDataHandler extends DataHandler
 	{
 		$description = &$this->data['description'];
 		$description = trim($description);
-		if(!$description)
+		if (!$description)
 		{
 			$this->set_error("missing_description");
 			return FALSE;
@@ -98,65 +98,65 @@ class EventDataHandler extends DataHandler
 		$event = &$this->data;
 
 		// All types of events require a start date
-		if(!$event['start_date']['day'] || !$event['start_date']['month'] || !$event['start_date']['year'])
+		if (!$event['start_date']['day'] || !$event['start_date']['month'] || !$event['start_date']['year'])
 		{
 			$this->set_error("invalid_start_date");
 			return FALSE;
 		}
 
-		if($event['start_date']['day'] > date("t", mktime(0, 0, 0, $event['start_date']['month'], 1, $event['start_date']['year'])))
+		if ($event['start_date']['day'] > date("t", mktime(0, 0, 0, $event['start_date']['month'], 1, $event['start_date']['year'])))
 		{
 			$this->set_error("invalid_start_date");
 			return FALSE;
 		}
 
 		// Calendar events can only be within the next 5 years
-		if($event['start_date']['year'] > date("Y") + 5)
+		if ($event['start_date']['year'] > date("Y") + 5)
 		{
 			$this->set_error("invalid_start_year");
 			return FALSE;
 		}
 
 		//Check to see if the month is within 1 and 12
-		if($event['start_date']['month'] > 12 || $event['start_date']['month'] < 1)
+		if ($event['start_date']['month'] > 12 || $event['start_date']['month'] < 1)
 		{
 			$this->set_error("invalid_start_month");
 			return FALSE;
 		}
 
 		// For ranged events, we check the end date & times too
-		if($event['type'] == "ranged")
+		if ($event['type'] == "ranged")
 		{
-			if(!$event['end_date']['day'] || !$event['end_date']['month'] || !$event['end_date']['year'])
+			if (!$event['end_date']['day'] || !$event['end_date']['month'] || !$event['end_date']['year'])
 			{
 				$this->set_error("invalid_end_date");
 				return FALSE;
 			}
 
-			if($event['end_date']['day'] > date("t", mktime(0, 0, 0, $event['end_date']['month'], 1, $event['end_date']['year'])))
+			if ($event['end_date']['day'] > date("t", mktime(0, 0, 0, $event['end_date']['month'], 1, $event['end_date']['year'])))
 			{
 				$this->set_error("invalid_end_date");
 				return FALSE;
 			}
 
 			// Calendar events can only be within the next 5 years
-			if($event['end_date']['year'] > date("Y") + 5)
+			if ($event['end_date']['year'] > date("Y") + 5)
 			{
 				$this->set_error("invalid_end_year");
 				return FALSE;
 			}
 
 			//Check to see if the month is within 1 and 12
-			if($event['end_date']['month'] > 12 || $event['end_date']['month'] < 1)
+			if ($event['end_date']['month'] > 12 || $event['end_date']['month'] < 1)
 			{
 				$this->set_error("invalid_end_month");
 				return FALSE;
 			}
 
 			// Validate time input
-			if($event['start_date']['time'] || $event['end_date']['time'])
+			if ($event['start_date']['time'] || $event['end_date']['time'])
 			{
-				if(($event['start_date']['time'] && !$event['end_date']['time']) || ($event['end_date']['time'] && !$event['start_date']['time']))
+				if (($event['start_date']['time'] && !$event['end_date']['time']) || ($event['end_date']['time'] && !$event['start_date']['time']))
 				{
 					$this->set_error("cant_specify_one_time");
 					return FALSE;
@@ -164,7 +164,7 @@ class EventDataHandler extends DataHandler
 
 				// Begin start time validation
 				$start_time = $this->verify_time($event['start_date']['time']);
-				if(!is_array($start_time))
+				if (!is_array($start_time))
 				{
 					$this->set_error("start_time_invalid");
 					return FALSE;
@@ -172,7 +172,7 @@ class EventDataHandler extends DataHandler
 
 				// End time validation
 				$end_time = $this->verify_time($event['end_date']['time']);
-				if(!is_array($end_time))
+				if (!is_array($end_time))
 				{
 					$this->set_error("end_time_invalid");
 					return FALSE;
@@ -187,10 +187,10 @@ class EventDataHandler extends DataHandler
 			}
 		}
 
-		if(array_key_exists('timezone', $event))
+		if (array_key_exists('timezone', $event))
 		{
 			$event['timezone'] = floatval($event['timezone']);
-			if($event['timezone'] > 12 || $event['timezone'] < -12)
+			if ($event['timezone'] > 12 || $event['timezone'] < -12)
 			{
 				$this->set_error("invalid_timezone");
 				return FALSE;
@@ -201,11 +201,11 @@ class EventDataHandler extends DataHandler
 
 		$start_timestamp = gmmktime($start_time['hour'], $start_time['min'], 0, $event['start_date']['month'], $event['start_date']['day'], $event['start_date']['year']);
 
-		if($event['type'] == "ranged")
+		if ($event['type'] == "ranged")
 		{
 			$end_timestamp = gmmktime($end_time['hour'], $end_time['min'], 0, $event['end_date']['month'], $event['end_date']['day'], $event['end_date']['year']);
 
-			if($end_timestamp <= $start_timestamp)
+			if ($end_timestamp <= $start_timestamp)
 			{
 				$this->set_error("end_in_past");
 				return FALSE;
@@ -222,13 +222,13 @@ class EventDataHandler extends DataHandler
 	function verify_time($time)
 	{
 		preg_match('#^(0?[1-9]|1[012])\s?([:\.]?)\s?([0-5][0-9])?(\s?[ap]m)|([01][0-9]|2[0-3])\s?([:\.])\s?([0-5][0-9])$#i', $time, $matches);
-		if(count($matches) == 0)
+		if (count($matches) == 0)
 		{
 			return FALSE;
 		}
 
 		// 24h time
-		if(count($matches) == 8)
+		if (count($matches) == 8)
 		{
 			$hour = $matches[5];
 			$min = $matches[7];
@@ -239,11 +239,11 @@ class EventDataHandler extends DataHandler
 			$hour = $matches[1];
 			$min = intval($matches[3]);
 			$matches[4] = trim($matches[4]);
-			if(my_strtolower($matches[4]) == "pm" && $hour != 12)
+			if (my_strtolower($matches[4]) == "pm" && $hour != 12)
 			{
 				$hour += 12;
 			}
-			else if(my_strtolower($matches[4]) == "am" && $hour == 12)
+			else if (my_strtolower($matches[4]) == "am" && $hour == 12)
 			{
 				$hour = 0;
 			}
@@ -256,12 +256,12 @@ class EventDataHandler extends DataHandler
 		global $mybb;
 		$event = &$this->data;
 
-		if(!is_array($event['repeats']) || !$event['repeats']['repeats'])
+		if (!is_array($event['repeats']) || !$event['repeats']['repeats'])
 		{
 			return TRUE;
 		}
 
-		if(!$event['endtime'])
+		if (!$event['endtime'])
 		{
 			$this->set_error("only_ranged_events_repeat");
 			return FALSE;
@@ -271,7 +271,7 @@ class EventDataHandler extends DataHandler
 		{
 			case 1:
 				$event['repeats']['days'] = intval($event['repeats']['days']);
-				if($event['repeats']['days'] <= 0)
+				if ($event['repeats']['days'] <= 0)
 				{
 					$this->set_error("invalid_repeat_day_interval");
 					return FALSE;
@@ -280,12 +280,12 @@ class EventDataHandler extends DataHandler
 				break;
 			case 3:
 				$event['repeats']['weeks'] = intval($event['repeats']['weeks']);
-				if($event['repeats']['weeks'] <= 0)
+				if ($event['repeats']['weeks'] <= 0)
 				{
 					$this->set_error("invalid_repeat_week_interval");
 					return FALSE;
 				}
-				if(count($event['repeats']['days']) == 0)
+				if (count($event['repeats']['days']) == 0)
 				{
 					$this->set_error("invalid_repeat_weekly_days");
 					return FALSE;
@@ -293,10 +293,10 @@ class EventDataHandler extends DataHandler
 				asort($event['repeats']['days']);
 				break;
 			case 4:
-				if($event['repeats']['day'])
+				if ($event['repeats']['day'])
 				{
 					$event['repeats']['day'] = intval($event['repeats']['day']);
-					if($event['repeats']['day'] <= 0 || $event['repeats']['day'] > 31)
+					if ($event['repeats']['day'] <= 0 || $event['repeats']['day'] > 31)
 					{
 						$this->set_error("invalid_repeat_day_interval");
 						return FALSE;
@@ -304,24 +304,24 @@ class EventDataHandler extends DataHandler
 				}
 				else
 				{
-					if($event['repeats']['occurance'] != "last")
+					if ($event['repeats']['occurance'] != "last")
 					{
 						$event['repeats']['occurance'] = intval($event['repeats']['occurance']);
 					}
 					$event['repeats']['weekday'] = intval($event['repeats']['weekday']);
 				}
 				$event['repeats']['months'] = intval($event['repeats']['months']);
-				if($event['repeats']['months'] <= 0 || $event['repeats']['months'] > 12)
+				if ($event['repeats']['months'] <= 0 || $event['repeats']['months'] > 12)
 				{
 					$this->set_error("invalid_repeat_month_interval");
 					return FALSE;
 				}
 				break;
 			case 5:
-				if($event['repeats']['day'])
+				if ($event['repeats']['day'])
 				{
 					$event['repeats']['day'] = intval($event['repeats']['day']);
-					if($event['repeats']['day'] <= 0 || $event['repeats']['day'] > 31)
+					if ($event['repeats']['day'] <= 0 || $event['repeats']['day'] > 31)
 					{
 						$this->set_error("invalid_repeat_day_interval");
 						return FALSE;
@@ -329,20 +329,20 @@ class EventDataHandler extends DataHandler
 				}
 				else
 				{
-					if($event['repeats']['occurance'] != "last")
+					if ($event['repeats']['occurance'] != "last")
 					{
 						$event['repeats']['occurance'] = intval($event['repeats']['occurance']);
 					}
 					$event['repeats']['weekday'] = intval($event['repeats']['weekday']);
 				}
 				$event['repeats']['month'] = intval($event['repeats']['month']);
-				if($event['repeats']['month'] <= 0 || $event['repeats']['month'] > 12)
+				if ($event['repeats']['month'] <= 0 || $event['repeats']['month'] > 12)
 				{
 					$this->set_error("invalid_repeat_month_interval");
 					return FALSE;
 				}
 				$event['repeats']['years'] = intval($event['repeats']['years']);
-				if($event['repeats']['years'] <= 0 || $event['repeats']['years'] > 4)
+				if ($event['repeats']['years'] <= 0 || $event['repeats']['years'] > 4)
 				{
 					$this->set_error("invalid_repeat_year_interval");
 					return FALSE;
@@ -355,7 +355,7 @@ class EventDataHandler extends DataHandler
 		$event['starttime_user'] = $event['starttime'];
 		$event['endtime_user'] = $event['endtime'];
 		$next_occurance = fetch_next_occurance($event, array('start' => $event['starttime'], 'end' => $event['endtime']), $event['starttime'], TRUE);
-		if($next_occurance > $event['endtime'])
+		if ($next_occurance > $event['endtime'])
 		{
 			$this->set_error("event_wont_occur");
 			return FALSE;
@@ -374,22 +374,22 @@ class EventDataHandler extends DataHandler
 
 		$event = &$this->data;
 
-		if($this->method == "insert" || array_key_exists('name', $event))
+		if ($this->method == "insert" || array_key_exists('name', $event))
 		{
 			$this->verify_name();
 		}
 
-		if($this->method == "insert" || array_key_exists('description', $event))
+		if ($this->method == "insert" || array_key_exists('description', $event))
 		{
 			$this->verify_description();
 		}
 
-		if($this->method == "insert" || array_key_exists('start_date', $event) || array_key_exists('end_date', $event))
+		if ($this->method == "insert" || array_key_exists('start_date', $event) || array_key_exists('end_date', $event))
 		{
 			$this->verify_date();
 		}
 
-		if(($this->method == "insert" && $event['endtime']) || array_key_exists('repeats', $event))
+		if (($this->method == "insert" && $event['endtime']) || array_key_exists('repeats', $event))
 		{
 			$this->verify_repeats();
 		}
@@ -398,7 +398,7 @@ class EventDataHandler extends DataHandler
 
 		// We are done validating, return.
 		$this->set_validated(TRUE);
-		if(count($this->get_errors()) > 0)
+		if (count($this->get_errors()) > 0)
 		{
 			return FALSE;
 		}
@@ -419,12 +419,12 @@ class EventDataHandler extends DataHandler
 		global $db, $mybb, $plugins;
 
 		// Yes, validating is required.
-		if(!$this->get_validated())
+		if (!$this->get_validated())
 		{
 			die("The event needs to be validated before inserting it into the DB.");
 		}
 
-		if(count($this->get_errors()) > 0)
+		if (count($this->get_errors()) > 0)
 		{
 			die("The event is not valid.");
 		}
@@ -433,13 +433,13 @@ class EventDataHandler extends DataHandler
 
 		$query = $db->simple_select("calendars", "*", "cid='".intval($event['cid'])."'");
 		$calendar_moderation = $db->fetch_field($query, "moderation");
-		if($calendar_moderation == 1 && intval($event['private']) != 1)
+		if ($calendar_moderation == 1 && intval($event['private']) != 1)
 		{
 			$visible = 0;
-			if($event['uid'] == $mybb->user['uid'])
+			if ($event['uid'] == $mybb->user['uid'])
 			{
 				$calendar_permissions = get_calendar_permissions($event['cid']);
-				if($calendar_permissions['canbypasseventmod'] == 1)
+				if ($calendar_permissions['canbypasseventmod'] == 1)
 				{
 					$visible = 1;
 				}
@@ -489,12 +489,12 @@ class EventDataHandler extends DataHandler
 		global $db, $plugins;
 
 		// Yes, validating is required.
-		if(!$this->get_validated())
+		if (!$this->get_validated())
 		{
 			die("The event needs to be validated before inserting it into the DB.");
 		}
 
-		if(count($this->get_errors()) > 0)
+		if (count($this->get_errors()) > 0)
 		{
 			die("The event is not valid.");
 		}
@@ -503,28 +503,28 @@ class EventDataHandler extends DataHandler
 
 		$this->eid = $event['eid'];
 
-		if(isset($event['cid']))
+		if (isset($event['cid']))
 		{
 			$this->event_update_data['cid'] = $db->escape_string($event['cid']);
 		}
 
-		if(isset($event['name']))
+		if (isset($event['name']))
 		{
 			$this->event_update_data['name'] = $db->escape_string($event['name']);
 		}
 
-		if(isset($event['description']))
+		if (isset($event['description']))
 		{
 			$this->event_update_data['description'] = $db->escape_string($event['description']);
 		}
 
-		if(isset($event['starttime']))
+		if (isset($event['starttime']))
 		{
 			$this->event_update_data['starttime'] = intval($event['starttime']);
 			$this->event_update_data['usingtime'] = intval($event['usingtime']);
 		}
 
-		if(isset($event['endtime']))
+		if (isset($event['endtime']))
 		{
 			$this->event_update_data['endtime'] = intval($event['endtime']);
 			$this->event_update_data['usingtime'] = intval($event['usingtime']);
@@ -535,36 +535,36 @@ class EventDataHandler extends DataHandler
 			$this->event_update_data['usingtime'] = 0;
 		}
 
-		if(isset($event['repeats']))
+		if (isset($event['repeats']))
 		{
-			if(!empty($event['repeats']))
+			if (!empty($event['repeats']))
 			{
 				$event['repeats'] = serialize($event['repeats']);
 			}
 			$this->event_update_data['repeats'] = $db->escape_string($event['repeats']);
 		}
 
-		if(isset($event['timezone']))
+		if (isset($event['timezone']))
 		{
 			$this->event_update_data['timezone'] = $db->escape_string(floatval($event['timezone']));
 		}
 
-		if(isset($event['ignoretimezone']))
+		if (isset($event['ignoretimezone']))
 		{
 			$this->event_update_data['ignoretimezone'] = intval($event['ignoretimezone']);
 		}
 
-		if(isset($event['private']))
+		if (isset($event['private']))
 		{
 			$this->event_update_data['private'] = intval($event['private']);
 		}
 
-		if(isset($event['visible']))
+		if (isset($event['visible']))
 		{
 			$this->event_update_data['visible'] = $db->escape_string($event['visible']);
 		}
 
-		if(isset($event['uid']))
+		if (isset($event['uid']))
 		{
 			$this->event_update_data['uid'] = intval($event['uid']);
 		}

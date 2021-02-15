@@ -10,7 +10,7 @@
  */
 
 // Disallow direct access to this file for security reasons
-if(!defined("IN_MYBB"))
+if (!defined("IN_MYBB"))
 {
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
@@ -44,7 +44,7 @@ function home_action_handler($action)
 		'dashboard' => array('active' => 'dashboard', 'file' => 'index.php')
 	);
 
-	if(!isset($actions[$action]))
+	if (!isset($actions[$action]))
 	{
 		$page->active_action = "dashboard";
 	}
@@ -55,7 +55,7 @@ function home_action_handler($action)
 
 	$actions = $plugins->run_hooks("admin_home_action_handler", $actions);
 
-	if($page->active_action == "dashboard")
+	if ($page->active_action == "dashboard")
 	{
 		// Quick Access
 		$sub_menu = array();
@@ -80,7 +80,7 @@ function home_action_handler($action)
 		$online_admins = array();
 
 		// If there's only 1 user online, it has to be us.
-		if($db->num_rows($query) == 1)
+		if ($db->num_rows($query) == 1)
 		{
 			global $mybb;
 
@@ -121,9 +121,9 @@ function home_action_handler($action)
 
 		foreach($online_admins as $user)
 		{
-			if(!$done_users["{$user['uid']}.{$user['ip']}"])
+			if (!$done_users["{$user['uid']}.{$user['ip']}"])
 			{
-				if($user['type'] == "mobile")
+				if ($user['type'] == "mobile")
 				{
 					$class = " class=\"mobile_user\"";
 				}
@@ -142,7 +142,7 @@ function home_action_handler($action)
 		$page->sidebar .= $sidebar->get_markup();
 	}
 
-	if(isset($actions[$action]))
+	if (isset($actions[$action]))
 	{
 		$page->active_action = $actions[$action]['active'];
 		return $actions[$action]['file'];

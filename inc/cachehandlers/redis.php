@@ -32,7 +32,7 @@ class redisCacheHandler implements CacheHandlerInterface
 		global $mybb;
 
 		// Check if extension is loaded
-		if(!extension_loaded("Redis"))
+		if (!extension_loaded("Redis"))
 		{
 			// Throw our super awesome cache loading error
 			$mybb->trigger_generic_error("redis_load_error");
@@ -51,13 +51,13 @@ class redisCacheHandler implements CacheHandlerInterface
 
 		$this->redis = new Redis;
 
-		if(!$mybb->config['redis']['host'])
+		if (!$mybb->config['redis']['host'])
 		{
 			$message = "Please configure the redis settings in inc/config.php before attempting to use this cache handler";
 			$error_handler->trigger($message, MYBB_CACHEHANDLER_LOAD_ERROR);
 			die;
 		}
-		if($mybb->config['redis']['port'])
+		if ($mybb->config['redis']['port'])
 		{
 			$ret = $this->redis->pconnect($mybb->config['redis']['host'], $mybb->config['redis']['port']);
 		}
@@ -67,7 +67,7 @@ class redisCacheHandler implements CacheHandlerInterface
 		}
 
 
-		if(!$ret)
+		if (!$ret)
 		{
 			$message = "Unable to connect to the redis server on {$mybb->config['redis']['host']}:{$mybb->config['redis']['port']}. Are you sure it is running?";
 			$error_handler->trigger($message, MYBB_CACHEHANDLER_LOAD_ERROR);
@@ -90,7 +90,7 @@ class redisCacheHandler implements CacheHandlerInterface
 	{
 		$data = $this->redis->get($this->unique_id."_".$name);
 
-		if($data === FALSE)
+		if ($data === FALSE)
 		{
 			return FALSE;
 		}

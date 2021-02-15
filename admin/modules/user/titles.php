@@ -10,14 +10,14 @@
  */
 
 // Disallow direct access to this file for security reasons
-if(!defined("IN_MYBB"))
+if (!defined("IN_MYBB"))
 {
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
 
 $page->add_breadcrumb_item($lang->user_titles, "index.php?module=user-titles");
 
-if($mybb->input['action'] == "add" || !$mybb->input['action'])
+if ($mybb->input['action'] == "add" || !$mybb->input['action'])
 {
 	$sub_tabs['manage_titles'] = array(
 		'title' => $lang->user_titles,
@@ -33,23 +33,23 @@ if($mybb->input['action'] == "add" || !$mybb->input['action'])
 
 $plugins->run_hooks("admin_user_titles_begin");
 
-if($mybb->input['action'] == "add")
+if ($mybb->input['action'] == "add")
 {
 	$plugins->run_hooks("admin_user_titles_add");
 
-	if($mybb->request_method == "post")
+	if ($mybb->request_method == "post")
 	{
-		if(!trim($mybb->input['title']))
+		if (!trim($mybb->input['title']))
 		{
 			$errors[] = $lang->error_missing_title;
 		}
 
-		if(!isset($mybb->input['posts']))
+		if (!isset($mybb->input['posts']))
 		{
 			$errors[] = $lang->error_missing_posts;
 		}
 
-		if(!$errors)
+		if (!$errors)
 		{
 			$new_title = array(
 				"title" => $db->escape_string($mybb->input['title']),
@@ -86,7 +86,7 @@ if($mybb->input['action'] == "add")
 	$form = new Form("index.php?module=user-titles&amp;action=add", "post");
 
 
-	if($errors)
+	if ($errors)
 	{
 		$page->output_inline_error($errors);
 	}
@@ -106,32 +106,32 @@ if($mybb->input['action'] == "add")
 	$page->output_footer();
 }
 
-if($mybb->input['action'] == "edit")
+if ($mybb->input['action'] == "edit")
 {
 	$plugins->run_hooks("admin_user_titles_edit");
 
 	$query = $db->simple_select("usertitles", "*", "utid='".intval($mybb->input['utid'])."'");
 	$usertitle = $db->fetch_array($query);
 
-	if(!$usertitle['utid'])
+	if (!$usertitle['utid'])
 	{
 		flash_message($lang->error_invalid_user_title, 'error');
 		admin_redirect("index.php?module=user-titles");
 	}
 
-	if($mybb->request_method == "post")
+	if ($mybb->request_method == "post")
 	{
-		if(!trim($mybb->input['title']))
+		if (!trim($mybb->input['title']))
 		{
 			$errors[] = $lang->error_missing_title;
 		}
 
-		if(!isset($mybb->input['posts']))
+		if (!isset($mybb->input['posts']))
 		{
 			$errors[] = $lang->error_missing_posts;
 		}
 
-		if(!$errors)
+		if (!$errors)
 		{
 			$updated_title = array(
 				"title" => $db->escape_string($mybb->input['title']),
@@ -167,7 +167,7 @@ if($mybb->input['action'] == "edit")
 	$form = new Form("index.php?module=user-titles&amp;action=edit&amp;utid={$usertitle['utid']}", "post");
 
 
-	if($errors)
+	if ($errors)
 	{
 		$page->output_inline_error($errors);
 	}
@@ -192,26 +192,26 @@ if($mybb->input['action'] == "edit")
 
 }
 
-if($mybb->input['action'] == "delete")
+if ($mybb->input['action'] == "delete")
 {
 	$plugins->run_hooks("admin_user_titles_delete");
 
 	$query = $db->simple_select("usertitles", "*", "utid='".intval($mybb->input['utid'])."'");
 	$usertitle = $db->fetch_array($query);
 
-	if(!$usertitle['utid'])
+	if (!$usertitle['utid'])
 	{
 		flash_message($lang->error_invalid_user_title, 'error');
 		admin_redirect("index.php?module=user-titles");
 	}
 
 	// User clicked no
-	if($mybb->input['no'])
+	if ($mybb->input['no'])
 	{
 		admin_redirect("index.php?module=user-titles");
 	}
 
-	if($mybb->request_method == "post")
+	if ($mybb->request_method == "post")
 	{
 		$db->delete_query("usertitles", "utid='{$usertitle['utid']}'");
 
@@ -229,7 +229,7 @@ if($mybb->input['action'] == "delete")
 	}
 }
 
-if(!$mybb->input['action'])
+if (!$mybb->input['action'])
 {
 	$plugins->run_hooks("admin_user_titles_start");
 
@@ -253,7 +253,7 @@ if(!$mybb->input['action'])
 		$table->construct_row();
 	}
 
-	if($table->num_rows() == 0)
+	if ($table->num_rows() == 0)
 	{
 		$table->construct_cell($lang->no_user_titles, array('colspan' => 4));
 		$table->construct_row();

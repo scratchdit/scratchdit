@@ -29,17 +29,17 @@ $parser = new postParser;
 
 // Find out the thread limit.
 $thread_limit = intval($mybb->input['limit']);
-if($thread_limit > 50)
+if ($thread_limit > 50)
 {
 	$thread_limit = 50;
 }
-else if(!$thread_limit || $thread_limit < 0)
+else if (!$thread_limit || $thread_limit < 0)
 {
 	$thread_limit = 20;
 }
 
 // Syndicate a specific forum or all viewable?
-if(isset($mybb->input['fid']))
+if (isset($mybb->input['fid']))
 {
 	$forumlist = $mybb->input['fid'];
 	$forumlist = explode(',', $forumlist);
@@ -56,18 +56,18 @@ $inactiveforums = get_inactive_forums();
 $unviewable = '';
 
 // If there are any, add SQL to exclude them.
-if($unviewableforums)
+if ($unviewableforums)
 {
 	$unviewable .= " AND fid NOT IN($unviewableforums)";
 }
 
-if($inactiveforums)
+if ($inactiveforums)
 {
 	$unviewable .= " AND fid NOT IN($inactiveforums)";
 }
 
 // If there are no forums to syndicate, syndicate all viewable.
-if(!empty($forumlist))
+if (!empty($forumlist))
 {
     $forum_ids = "'-1'";
     foreach($forumlist as $fid)
@@ -94,7 +94,7 @@ while($forum = $db->fetch_array($query))
 }
 
 // If syndicating all forums then cut the title back to "All Forums"
-if($all_forums)
+if ($all_forums)
 {
     $title = $mybb->settings['bbname']." - ".$lang->all_forums;
 }
@@ -118,12 +118,12 @@ $onlyusfids = array();
 $group_permissions = forum_permissions();
 foreach($group_permissions as $fid => $forum_permissions)
 {
-	if($forum_permissions['canonlyviewownthreads'] == 1)
+	if ($forum_permissions['canonlyviewownthreads'] == 1)
 	{
 		$onlyusfids[] = $fid;
 	}
 }
-if(!empty($onlyusfids))
+if (!empty($onlyusfids))
 {
 	$permsql .= "AND (fid IN(".implode(',', $onlyusfids).") AND uid='{$mybb->user['uid']}')";
 }
@@ -142,7 +142,7 @@ while($thread = $db->fetch_array($query))
 	$firstposts[] = $thread['firstpost'];
 }
 
-if(!empty($firstposts))
+if (!empty($firstposts))
 {
 	$firstpostlist = "pid IN(".$db->escape_string(implode(',', $firstposts)).")";
 	$query = $db->simple_select("posts", "message, edittime, tid, fid, pid", $firstpostlist, array('order_by' => 'dateline', 'order_dir' => 'desc'));
@@ -167,7 +167,7 @@ if(!empty($firstposts))
 			$attachment['filesize'] = get_friendly_size($attachment['filesize']);
 			$attachment['icon'] = get_attachment_icon($ext);
 			eval("\$attbit = \"".$templates->get("postbit_attachments_attachment")."\";");
-			if(stripos($parsed_message, "[attachment=".$attachment['aid']."]") !== FALSE)
+			if (stripos($parsed_message, "[attachment=".$attachment['aid']."]") !== FALSE)
 			{
 				$parsed_message = preg_replace("#\[attachment=".$attachment['aid']."]#si", $attbit, $parsed_message);
 			}

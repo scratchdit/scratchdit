@@ -20,7 +20,7 @@ function mark_thread_read($tid, $fid)
 	global $mybb, $db;
 
 	// Can only do "TRUE" tracking for registered users
-	if($mybb->settings['threadreadcut'] > 0 && $mybb->user['uid'])
+	if ($mybb->settings['threadreadcut'] > 0 && $mybb->user['uid'])
 	{
 		// For registered users, store the information in the database.
 		switch($db->type)
@@ -43,7 +43,7 @@ function mark_thread_read($tid, $fid)
 	}
 
 	$unread_count = fetch_unread_count($fid);
-	if($unread_count == 0)
+	if ($unread_count == 0)
 	{
 		mark_forum_read($fid);
 	}
@@ -63,20 +63,20 @@ function fetch_unread_count($fid)
 	$permissions = forum_permissions($fid);
 	$cutoff = TIME_NOW-$mybb->settings['threadreadcut']*60*60*24;
 
-	if($permissions['canonlyviewownthreads'])
+	if ($permissions['canonlyviewownthreads'])
 	{
 		$onlyview = " AND uid = '{$mybb->user['uid']}'";
 		$onlyview2 = " AND t.uid = '{$mybb->user['uid']}'";
 	}
 
-	if($mybb->user['uid'] == 0)
+	if ($mybb->user['uid'] == 0)
 	{
 		$comma = '';
 		$tids = '';
 		$threadsread = my_unserialize($mybb->cookies['mybb']['threadread']);
 		$forumsread = my_unserialize($mybb->cookies['mybb']['forumread']);
 
-		if(!empty($threadsread))
+		if (!empty($threadsread))
 		{
 			foreach($threadsread as $key => $value)
 			{
@@ -85,7 +85,7 @@ function fetch_unread_count($fid)
 			}
 		}
 
-		if(!empty($tids))
+		if (!empty($tids))
 		{
 			$count = 0;
 
@@ -94,7 +94,7 @@ function fetch_unread_count($fid)
 
 			while($thread = $db->fetch_array($query))
 			{
-				if($thread['lastpost'] > intval($threadsread[$thread['tid']]) && $thread['lastpost'] > intval($forumsread[$thread['fid']]))
+				if ($thread['lastpost'] > intval($threadsread[$thread['tid']]) && $thread['lastpost'] > intval($forumsread[$thread['fid']]))
 				{
 					++$count;
 				}
@@ -142,18 +142,18 @@ function mark_forum_read($fid)
 	global $mybb, $db;
 
 	// Can only do "TRUE" tracking for registered users
-	if($mybb->settings['threadreadcut'] > 0 && $mybb->user['uid'])
+	if ($mybb->settings['threadreadcut'] > 0 && $mybb->user['uid'])
 	{
 		// Experimental setting to mark parent forums as read
 		$forums_to_read = array();
 
-		if($mybb->settings['readparentforums'])
+		if ($mybb->settings['readparentforums'])
 		{
 			$ignored_forums = array();
 			$forums = array_reverse(explode(",", get_parent_list($fid)));
 
 			unset($forums[0]);
-			if(!empty($forums))
+			if (!empty($forums))
 			{
 				$ignored_forums[] = $fid;
 
@@ -165,7 +165,7 @@ function mark_forum_read($fid)
 					$children = explode(",", get_parent_list($forum));
 					foreach($children as $child)
 					{
-						if(in_array($child, $ignored_forums))
+						if (in_array($child, $ignored_forums))
 						{
 							continue;
 						}
@@ -174,7 +174,7 @@ function mark_forum_read($fid)
 						$ignored_forums[] = $child;
 					}
 
-					if(fetch_unread_count(implode(",", $fids)) == 0)
+					if (fetch_unread_count(implode(",", $fids)) == 0)
 					{
 						$forums_to_read[] = $forum;
 					}
@@ -188,7 +188,7 @@ function mark_forum_read($fid)
 			case "sqlite":
 				add_shutdown(array($db, "replace_query"), array("forumsread", array('fid' => $fid, 'uid' => $mybb->user['uid'], 'dateline' => TIME_NOW), array("fid", "uid")));
 
-				if(!empty($forums_to_read))
+				if (!empty($forums_to_read))
 				{
 					foreach($forums_to_read as $forum)
 					{
@@ -198,7 +198,7 @@ function mark_forum_read($fid)
 				break;
 			default:
 				$child_sql = '';
-				if(!empty($forums_to_read))
+				if (!empty($forums_to_read))
 				{
 					foreach($forums_to_read as $forum)
 					{
@@ -228,20 +228,20 @@ function mark_all_forums_read()
 	global $mybb, $db, $cache;
 
 	// Can only do "TRUE" tracking for registered users
-	if($mybb->user['uid'] > 0)
+	if ($mybb->user['uid'] > 0)
 	{
 		$db->update_query("users", array('lastvisit' => TIME_NOW), "uid='".$mybb->user['uid']."'");
 		require_once MYBB_ROOT."inc/functions_user.php";
 		update_pm_count('', 2);
 
-		if($mybb->settings['threadreadcut'] > 0)
+		if ($mybb->settings['threadreadcut'] > 0)
 		{
 			// Need to loop through all forums and mark them as read
 			$forums = $cache->read('forums');
 
 			$update_count = ceil(count($forums)/20);
 
-			if($update_count < 15)
+			if ($update_count < 15)
 			{
 				$update_count = 15;
 			}
@@ -257,7 +257,7 @@ function mark_all_forums_read()
 						$mark_query[] = array('fid' => $fid, 'uid' => $mybb->user['uid'], 'dateline' => TIME_NOW);
 						break;
 					default:
-						if($mark_query != '')
+						if ($mark_query != '')
 						{
 							$mark_query .= ',';
 						}
@@ -266,7 +266,7 @@ function mark_all_forums_read()
 				++$done;
 
 				// Only do this in loops of $update_count, save query time
-				if($done % $update_count)
+				if ($done % $update_count)
 				{
 					switch($db->type)
 					{
@@ -288,7 +288,7 @@ function mark_all_forums_read()
 				}
 			}
 
-			if($mark_query != '')
+			if ($mark_query != '')
 			{
 				switch($db->type)
 				{

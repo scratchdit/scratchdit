@@ -20,7 +20,7 @@ function user_exists($uid)
 	global $db;
 
 	$query = $db->simple_select("users", "COUNT(*) as user", "uid='".intval($uid)."'", array('limit' => 1));
-	if($db->fetch_field($query, 'user') == 1)
+	if ($db->fetch_field($query, 'user') == 1)
 	{
 		return TRUE;
 	}
@@ -43,7 +43,7 @@ function username_exists($username)
 	$username = $db->escape_string(my_strtolower($username));
 	$query = $db->simple_select("users", "COUNT(*) as user", "LOWER(username)='".$username."' OR LOWER(email)='".$username."'", array('limit' => 1));
 
-	if($db->fetch_field($query, 'user') == 1)
+	if ($db->fetch_field($query, 'user') == 1)
 	{
 		return TRUE;
 	}
@@ -82,7 +82,7 @@ function validate_password_from_username($username, $password)
 	}
 
 	$user = $db->fetch_array($query);
-	if(!$user['uid'])
+	if (!$user['uid'])
 	{
 		return FALSE;
 	}
@@ -103,16 +103,16 @@ function validate_password_from_username($username, $password)
 function validate_password_from_uid($uid, $password, $user = array())
 {
 	global $db, $mybb;
-	if($mybb->user['uid'] == $uid)
+	if ($mybb->user['uid'] == $uid)
 	{
 		$user = $mybb->user;
 	}
-	if(!$user['password'])
+	if (!$user['password'])
 	{
 		$query = $db->simple_select("users", "uid,username,password,salt,loginkey,usergroup", "uid='".intval($uid)."'", array('limit' => 1));
 		$user = $db->fetch_array($query);
 	}
-	if(!$user['salt'])
+	if (!$user['salt'])
 	{
 		// Generate a salt for this user and assume the password stored in db is a plain md5 password
 		$user['salt'] = generate_salt();
@@ -124,7 +124,7 @@ function validate_password_from_uid($uid, $password, $user = array())
 		$db->update_query("users", $sql_array, "uid='".$user['uid']."'", 1);
 	}
 
-	if(!$user['loginkey'])
+	if (!$user['loginkey'])
 	{
 		$user['loginkey'] = generate_loginkey();
 		$sql_array = array(
@@ -132,7 +132,7 @@ function validate_password_from_uid($uid, $password, $user = array())
 		);
 		$db->update_query("users", $sql_array, "uid = ".$user['uid'], 1);
 	}
-	if(salt_password(md5($password), $user['salt']) == $user['password'])
+	if (salt_password(md5($password), $user['salt']) == $user['password'])
 	{
 		return $user;
 	}
@@ -157,11 +157,11 @@ function update_password($uid, $password, $salt="")
 	$newpassword = array();
 
 	// If no salt was specified, check in database first, if still doesn't exist, create one
-	if(!$salt)
+	if (!$salt)
 	{
 		$query = $db->simple_select("users", "salt", "uid='$uid'", array('limit' => 1));
 		$user = $db->fetch_array($query);
-		if($user['salt'])
+		if ($user['salt'])
 		{
 			$salt = $user['salt'];
 		}
@@ -272,19 +272,19 @@ function add_subscribed_thread($tid, $notification=1, $uid="")
 {
 	global $mybb, $db;
 
-	if(!$uid)
+	if (!$uid)
 	{
 		$uid = $mybb->user['uid'];
 	}
 
-	if(!$uid)
+	if (!$uid)
 	{
 		return;
 	}
 
 	$query = $db->simple_select("threadsubscriptions", "*", "tid='".intval($tid)."' AND uid='".intval($uid)."'", array('limit' => 1));
 	$subscription = $db->fetch_array($query);
-	if(!$subscription['tid'])
+	if (!$subscription['tid'])
 	{
 		$insert_array = array(
 			'uid' => intval($uid),
@@ -319,12 +319,12 @@ function remove_subscribed_thread($tid, $uid="")
 {
 	global $mybb, $db;
 
-	if(!$uid)
+	if (!$uid)
 	{
 		$uid = $mybb->user['uid'];
 	}
 
-	if(!$uid)
+	if (!$uid)
 	{
 		return;
 	}
@@ -345,12 +345,12 @@ function add_subscribed_forum($fid, $uid="")
 {
 	global $mybb, $db;
 
-	if(!$uid)
+	if (!$uid)
 	{
 		$uid = $mybb->user['uid'];
 	}
 
-	if(!$uid)
+	if (!$uid)
 	{
 		return;
 	}
@@ -360,7 +360,7 @@ function add_subscribed_forum($fid, $uid="")
 
 	$query = $db->simple_select("forumsubscriptions", "*", "fid='".$fid."' AND uid='{$uid}'", array('limit' => 1));
 	$fsubscription = $db->fetch_array($query);
-	if(!$fsubscription['fid'])
+	if (!$fsubscription['fid'])
 	{
 		$insert_array = array(
 			'fid' => $fid,
@@ -384,12 +384,12 @@ function remove_subscribed_forum($fid, $uid="")
 {
 	global $mybb, $db;
 
-	if(!$uid)
+	if (!$uid)
 	{
 		$uid = $mybb->user['uid'];
 	}
 
-	if(!$uid)
+	if (!$uid)
 	{
 		return;
 	}
@@ -409,7 +409,7 @@ function usercp_menu()
 	$lang->load("usercpnav");
 
 	// Add the default items as plugins with separated priorities of 10
-	if($mybb->settings['enablepms'] != 0)
+	if ($mybb->settings['enablepms'] != 0)
 	{
 		$plugins->add_hook("usercp_menu", "usercp_menu_messenger", 10);
 	}
@@ -439,11 +439,11 @@ function usercp_menu_messenger()
 	{
 		$folderinfo = explode("**", $folders, 2);
 		$folderinfo[1] = get_pm_folder_name($folderinfo[0], $folderinfo[1]);
-		if($folderinfo[0] == 4)
+		if ($folderinfo[0] == 4)
 		{
 			$class = "usercp_nav_trash_pmfolder";
 		}
-		else if($folderlinks)
+		else if ($folderlinks)
 		{
 			$class = "usercp_nav_sub_pmfolder";
 		}
@@ -466,14 +466,14 @@ function usercp_menu_profile()
 {
 	global $db, $mybb, $templates, $theme, $usercpmenu, $lang, $collapsed, $collapsedimg;
 
-	if($mybb->usergroup['canchangename'] != 0)
+	if ($mybb->usergroup['canchangename'] != 0)
 	{
 		eval("\$changenameop = \"".$templates->get("usercp_nav_changename")."\";");
 	}
 
-	if($mybb->usergroup['canusesig'] == 1 && ($mybb->usergroup['canusesigxposts'] == 0 || $mybb->usergroup['canusesigxposts'] > 0 && $mybb->user['postnum'] > $mybb->usergroup['canusesigxposts']))
+	if ($mybb->usergroup['canusesig'] == 1 && ($mybb->usergroup['canusesigxposts'] == 0 || $mybb->usergroup['canusesigxposts'] > 0 && $mybb->user['postnum'] > $mybb->usergroup['canusesigxposts']))
 	{
-		if($mybb->user['suspendsignature'] == 0 || $mybb->user['suspendsignature'] == 1 && $mybb->user['suspendsigtime'] > 0 && $mybb->user['suspendsigtime'] < TIME_NOW)
+		if ($mybb->user['suspendsignature'] == 0 || $mybb->user['suspendsignature'] == 1 && $mybb->user['suspendsigtime'] > 0 && $mybb->user['suspendsigtime'] < TIME_NOW)
 		{
 			eval("\$changesigop = \"".$templates->get("usercp_nav_editsignature")."\";");
 		}
@@ -493,7 +493,7 @@ function usercp_menu_misc()
 	$query = $db->simple_select("posts", "COUNT(*) AS draftcount", "visible='-2' AND uid='".$mybb->user['uid']."'");
 	$count = $db->fetch_array($query);
 
-	if($count['draftcount'] > 0)
+	if ($count['draftcount'] > 0)
 	{
 		$draftstart = "<strong>";
 		$draftend = "</strong>";
@@ -514,7 +514,7 @@ function get_usertitle($uid="")
 {
 	global $db, $mybb;
 
-	if($mybb->user['uid'] == $uid)
+	if ($mybb->user['uid'] == $uid)
 	{
 		$user = $mybb->user;
 	}
@@ -524,7 +524,7 @@ function get_usertitle($uid="")
 		$user = $db->fetch_array($query);
 	}
 
-	if($user['usertitle'])
+	if ($user['usertitle'])
 	{
 		return $user['usertitle'];
 	}
@@ -550,13 +550,13 @@ function update_pm_count($uid=0, $count_to_update=7)
 	static $pm_lastvisit_cache;
 
 	// If no user id, assume that we mean the current logged in user.
-	if(intval($uid) == 0)
+	if (intval($uid) == 0)
 	{
 		$uid = $mybb->user['uid'];
 	}
 
 	// Update total number of messages.
-	if($count_to_update & 1)
+	if ($count_to_update & 1)
 	{
 		$query = $db->simple_select("privatemessages", "COUNT(pmid) AS pms_total", "uid='".$uid."'");
 		$total = $db->fetch_array($query);
@@ -564,14 +564,14 @@ function update_pm_count($uid=0, $count_to_update=7)
 	}
 
 	// Update number of unread messages.
-	if($count_to_update & 2 && $db->field_exists("unreadpms", "users") == TRUE)
+	if ($count_to_update & 2 && $db->field_exists("unreadpms", "users") == TRUE)
 	{
 		$query = $db->simple_select("privatemessages", "COUNT(pmid) AS pms_unread", "uid='".$uid."' AND status='0' AND folder='1'");
 		$unread = $db->fetch_array($query);
 		$pmcount['unreadpms'] = $unread['pms_unread'];
 	}
 
-	if(is_array($pmcount))
+	if (is_array($pmcount))
 	{
 		$db->update_query("users", $pmcount, "uid='".intval($uid)."'");
 	}
@@ -589,7 +589,7 @@ function get_pm_folder_name($fid, $name="")
 {
 	global $lang;
 
-	if($name != '')
+	if ($name != '')
 	{
 		return $name;
 	}

@@ -26,7 +26,7 @@ function task_delayedmoderation($task)
 		$tids = explode(',', $delayedmoderation['tids']);
 		$input = unserialize($delayedmoderation['inputs']);
 
-		if(my_strpos($delayedmoderation['type'], "modtool") !== FALSE)
+		if (my_strpos($delayedmoderation['type'], "modtool") !== FALSE)
 		{
 			list(, $custom_id) = explode('_', $delayedmoderation['type'], 2);
 			$custommod->execute($custom_id, $tids);
@@ -40,7 +40,7 @@ function task_delayedmoderation($task)
 					$query2 = $db->simple_select("threads", "tid,closed", "tid IN({$delayedmoderation['tids']})");
 					while($thread = $db->fetch_array($query2))
 					{
-						if($thread['closed'] == 1)
+						if ($thread['closed'] == 1)
 						{
 							$closed_tids[] = $thread['tid'];
 						}
@@ -50,12 +50,12 @@ function task_delayedmoderation($task)
 						}
 					}
 
-					if(!empty($closed_tids))
+					if (!empty($closed_tids))
 					{
 						$moderation->open_threads($closed_tids);
 					}
 
-					if(!empty($open_tids))
+					if (!empty($open_tids))
 					{
 						$moderation->close_threads($open_tids);
 					}
@@ -77,7 +77,7 @@ function task_delayedmoderation($task)
 					$query2 = $db->simple_select("threads", "tid,sticky", "tid IN({$delayedmoderation['tids']})");
 					while($thread = $db->fetch_array($query2))
 					{
-						if($thread['sticky'] == 1)
+						if ($thread['sticky'] == 1)
 						{
 							$stuck_tids[] = $thread['tid'];
 						}
@@ -87,18 +87,18 @@ function task_delayedmoderation($task)
 						}
 					}
 
-					if(!empty($stuck_tids))
+					if (!empty($stuck_tids))
 					{
 						$moderation->unstick_threads($stuck_tids);
 					}
 
-					if(!empty($unstuck_tids))
+					if (!empty($unstuck_tids))
 					{
 						$moderation->stick_threads($unstuck_tids);
 					}
 					break;
 				case "merge":
-					if(count($tids) != 1)
+					if (count($tids) != 1)
 					{
 						continue;
 					}
@@ -108,18 +108,18 @@ function task_delayedmoderation($task)
 					$input['threadurl'] = $realurl[0];
 
 					// Are we using an SEO URL?
-					if(substr($input['threadurl'], -4) == "html")
+					if (substr($input['threadurl'], -4) == "html")
 					{
 						// Get thread to merge's tid the SEO way
 						preg_match("#thread-([0-9]+)?#i", $input['threadurl'], $threadmatch);
 						preg_match("#post-([0-9]+)?#i", $input['threadurl'], $postmatch);
 
-						if($threadmatch[1])
+						if ($threadmatch[1])
 						{
 							$parameters['tid'] = $threadmatch[1];
 						}
 
-						if($postmatch[1])
+						if ($postmatch[1])
 						{
 							$parameters['pid'] = $postmatch[1];
 						}
@@ -130,7 +130,7 @@ function task_delayedmoderation($task)
 						$splitloc = explode(".php", $input['threadurl']);
 						$temp = explode("&", my_substr($splitloc[1], 1));
 
-						if(!empty($temp))
+						if (!empty($temp))
 						{
 							for($i = 0; $i < count($temp); $i++)
 							{
@@ -145,13 +145,13 @@ function task_delayedmoderation($task)
 						}
 					}
 
-					if($parameters['pid'] && !$parameters['tid'])
+					if ($parameters['pid'] && !$parameters['tid'])
 					{
 						$query = $db->simple_select("posts", "*", "pid='".intval($parameters['pid'])."'");
 						$post = $db->fetch_array($query);
 						$mergetid = $post['tid'];
 					}
-					else if($parameters['tid'])
+					else if ($parameters['tid'])
 					{
 						$mergetid = $parameters['tid'];
 					}
@@ -161,18 +161,18 @@ function task_delayedmoderation($task)
 					$query = $db->simple_select("threads", "*", "tid='".intval($mergetid)."'");
 					$mergethread = $db->fetch_array($query);
 
-					if(!$mergethread['tid'])
+					if (!$mergethread['tid'])
 					{
 						continue;
 					}
 
-					if($mergetid == $delayedmoderation['tid'])
+					if ($mergetid == $delayedmoderation['tid'])
 					{
 						// sanity check
 						continue;
 					}
 
-					if($input['subject'])
+					if ($input['subject'])
 					{
 						$subject = $input['subject'];
 					}
@@ -198,7 +198,7 @@ function task_delayedmoderation($task)
 					$query2 = $db->simple_select("threads", "tid,visible", "tid IN({$delayedmoderation['tids']})");
 					while($thread = $db->fetch_array($query2))
 					{
-						if($thread['visible'] == 1)
+						if ($thread['visible'] == 1)
 						{
 							$approved_tids[] = $thread['tid'];
 						}
@@ -208,12 +208,12 @@ function task_delayedmoderation($task)
 						}
 					}
 
-					if(!empty($approved_tids))
+					if (!empty($approved_tids))
 					{
 						$moderation->unapprove_threads($approved_tids);
 					}
 
-					if(!empty($unapproved_tids))
+					if (!empty($unapproved_tids))
 					{
 						$moderation->approve_threads($unapproved_tids);
 					}

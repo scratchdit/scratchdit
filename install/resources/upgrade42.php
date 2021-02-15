@@ -29,7 +29,7 @@ function upgrade42_dbchanges()
 	echo "<p>Performing necessary upgrade queries...</p>";
 	flush();
 
-	if($db->field_exists('ipaddress', 'pollvotes'))
+	if ($db->field_exists('ipaddress', 'pollvotes'))
 	{
 		$db->drop_column('pollvotes', 'ipaddress');
 	}

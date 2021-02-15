@@ -31,10 +31,10 @@ class memcachedCacheHandler implements CacheHandlerInterface
 	{
 		global $mybb;
 
-		if(!function_exists("memcached_connect"))
+		if (!function_exists("memcached_connect"))
 		{
 			// Check if our Memcached extension is loaded
-			if(!extension_loaded("Memcached"))
+			if (!extension_loaded("Memcached"))
 			{
 				// Throw our super awesome cache loading error
 				$mybb->trigger_generic_error("memcached_load_error");
@@ -54,7 +54,7 @@ class memcachedCacheHandler implements CacheHandlerInterface
 
 		$this->memcached = new Memcached;
 
-		if($mybb->config['memcache']['host'])
+		if ($mybb->config['memcache']['host'])
 		{
 			$mybb->config['memcache'][0] = $mybb->config['memcache'];
 			unset($mybb->config['memcache']['host']);
@@ -63,21 +63,21 @@ class memcachedCacheHandler implements CacheHandlerInterface
 
 		foreach($mybb->config['memcache'] as $memcached)
 		{
-			if(!$memcached['host'])
+			if (!$memcached['host'])
 			{
 				$message = "Please configure the memcache settings in inc/config.php before attempting to use this cache handler";
 				$error_handler->trigger($message, MYBB_CACHEHANDLER_LOAD_ERROR);
 				die;
 			}
 
-			if(!isset($memcached['port']))
+			if (!isset($memcached['port']))
 			{
 				$memcached['port'] = "11211";
 			}
 
 			$this->memcached->addServer($memcached['host'], $memcached['port']);
 
-			if(!$this->memcached)
+			if (!$this->memcached)
 			{
 				$message = "Unable to connect to the memcached server on {$memcached['memcache_host']}:{$memcached['memcache_port']}. Are you sure it is running?";
 				$error_handler->trigger($message, MYBB_CACHEHANDLER_LOAD_ERROR);
@@ -101,7 +101,7 @@ class memcachedCacheHandler implements CacheHandlerInterface
 	{
 		$data = $this->memcached->get($this->unique_id."_".$name);
 
-		if($data === FALSE)
+		if ($data === FALSE)
 		{
 			return FALSE;
 		}

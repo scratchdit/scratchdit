@@ -16,11 +16,11 @@
  */
 
 // Disallow direct access to this file for security reasons
-if(!defined("IN_MYBB"))
+if (!defined("IN_MYBB"))
 {
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
- 
+
 /** Text_Diff_Renderer */
 require_once MYBB_ROOT.'inc/3rdparty/diff/Diff/Renderer.php';
 

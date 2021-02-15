@@ -25,7 +25,7 @@ add_breadcrumb($lang->nav_stats);
 
 $stats = $cache->read("stats");
 
-if($stats['numthreads'] < 1 || $stats['numusers'] < 1)
+if ($stats['numthreads'] < 1 || $stats['numusers'] < 1)
 {
 	error($lang->not_enough_info_stats);
 }
@@ -39,7 +39,7 @@ $postspermember = my_number_format(round(($stats['numposts'] / $stats['numusers'
 $query = $db->simple_select("users", "regdate", "", array('order_by' => 'regdate', 'limit' => 1));
 $result = $db->fetch_array($query);
 $days = (TIME_NOW - $result['regdate']) / 86400;
-if($days < 1)
+if ($days < 1)
 {
 	$days = 1;
 }
@@ -52,7 +52,7 @@ $membersperday = my_number_format(round(($stats['numusers'] / $days), 2));
 $unviewableforums = get_unviewable_forums(TRUE);
 $fidnot = '1=1';
 $unviewableforumsarray = array();
-if($unviewableforums)
+if ($unviewableforums)
 {
 	$fidnot = "fid NOT IN ($unviewableforums)";
 	$unviewableforumsarray = explode(',', $unviewableforums);
@@ -61,17 +61,17 @@ if($unviewableforums)
 // Most replied-to threads
 $most_replied = $cache->read("most_replied_threads");
 
-if(!$most_replied)
+if (!$most_replied)
 {
 	$cache->update_most_replied_threads();
 	$most_replied = $cache->read("most_replied_threads", TRUE);
 }
 
-if(!empty($most_replied))
+if (!empty($most_replied))
 {
 	foreach($most_replied as $key => $thread)
 	{
-		if(!in_array("'{$thread['fid']}'", $unviewableforumsarray))
+		if (!in_array("'{$thread['fid']}'", $unviewableforumsarray))
 		{
 			$thread['subject'] = htmlspecialchars_uni($parser->parse_badwords($thread['subject']));
 			$numberbit = my_number_format($thread['replies']);
@@ -85,17 +85,17 @@ if(!empty($most_replied))
 // Most viewed threads
 $most_viewed = $cache->read("most_viewed_threads");
 
-if(!$most_viewed)
+if (!$most_viewed)
 {
 	$cache->update_most_viewed_threads();
 	$most_viewed = $cache->read("most_viewed_threads", TRUE);
 }
 
-if(!empty($most_viewed))
+if (!empty($most_viewed))
 {
 	foreach($most_viewed as $key => $thread)
 	{
-		if(!in_array("'{$thread['fid']}'", $unviewableforumsarray))
+		if (!in_array("'{$thread['fid']}'", $unviewableforumsarray))
 		{
 			$thread['subject'] = htmlspecialchars_uni($parser->parse_badwords($thread['subject']));
 			$numberbit = my_number_format($thread['views']);
@@ -107,13 +107,13 @@ if(!empty($most_viewed))
 }
 
 // Top forum
-if(!empty($fidnot))
+if (!empty($fidnot))
 {
 	$fidnot .= " AND";
 }
 $query = $db->simple_select("forums", "fid, name, threads, posts", "$fidnot type='f'", array('order_by' => 'posts', 'order_dir' => 'DESC', 'limit' => 1));
 $forum = $db->fetch_array($query);
-if(!$forum['posts'])
+if (!$forum['posts'])
 {
 	$topforum = $lang->none;
 	$topforumposts = $lang->no;
@@ -151,14 +151,14 @@ switch($db->type)
 		");
 }
 $user = $db->fetch_array($query);
-if(!$user['poststoday'])
+if (!$user['poststoday'])
 {
 	$topposter = $lang->nobody;
 	$topposterposts = $lang->no_posts;
 }
 else
 {
-	if(!$user['uid'])
+	if (!$user['uid'])
 	{
 		$topposter = $lang->guest;
 	}

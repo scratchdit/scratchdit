@@ -21,7 +21,7 @@ $parser = new postParser;
 // Load global language phrases
 $lang->load("online");
 
-if($mybb->usergroup['canviewonline'] == 0)
+if ($mybb->usergroup['canviewonline'] == 0)
 {
 	error_no_permission();
 }
@@ -29,7 +29,7 @@ if($mybb->usergroup['canviewonline'] == 0)
 // Make navigation
 add_breadcrumb($lang->nav_online, "online.php");
 
-if($mybb->input['action'] == "today")
+if ($mybb->input['action'] == "today")
 {
 	add_breadcrumb($lang->nav_onlinetoday);
 
@@ -45,12 +45,12 @@ if($mybb->input['action'] == "today")
 	// Add pagination
 	$perpage = $mybb->settings['threadsperpage'];
 
-	if(intval($mybb->input['page']) > 0)
+	if (intval($mybb->input['page']) > 0)
 	{
 		$page = intval($mybb->input['page']);
 		$start = ($page-1) * $perpage;
 		$pages = ceil($todaycount / $perpage);
-		if($page > $pages)
+		if ($page > $pages)
 		{
 			$start = 0;
 			$page = 1;
@@ -68,12 +68,12 @@ if($mybb->input['action'] == "today")
 	while($online = $db->fetch_array($query))
 	{
 		$invisiblemark = '';
-		if($online['invisible'] == 1)
+		if ($online['invisible'] == 1)
 		{
 			$invisiblemark = "*";
 		}
 
-		if($online['invisible'] != 1 || $mybb->usergroup['canviewwolinvis'] == 1 || $online['uid'] == $mybb->user['uid'])
+		if ($online['invisible'] != 1 || $mybb->usergroup['canviewwolinvis'] == 1 || $online['uid'] == $mybb->user['uid'])
 		{
 			$username = $online['username'];
 			$username = format_name($username, $online['usergroup'], $online['displaygroup']);
@@ -84,7 +84,7 @@ if($mybb->input['action'] == "today")
 		}
 	}
 
-	if($todaycount == 1)
+	if ($todaycount == 1)
 	{
 		$onlinetoday = $lang->member_online_today;
 	}
@@ -93,11 +93,11 @@ if($mybb->input['action'] == "today")
 		$onlinetoday = $lang->sprintf($lang->members_were_online_today, $todaycount);
 	}
 
-	if($invis_count)
+	if ($invis_count)
 	{
 		$string = $lang->members_online_hidden;
 
-		if($invis_count == 1)
+		if ($invis_count == 1)
 		{
 			$string = $lang->member_online_hidden;
 		}
@@ -117,12 +117,12 @@ else
 	$plugins->run_hooks("online_start");
 
 	// Custom sorting options
-	if($mybb->input['sortby'] == "username")
+	if ($mybb->input['sortby'] == "username")
 	{
 		$sql = "u.username ASC, s.time DESC";
 		$refresh_string = "?sortby=username";
 	}
-	elseif($mybb->input['sortby'] == "location")
+	elseif ($mybb->input['sortby'] == "location")
 	{
 		$sql = "s.location, s.time DESC";
 		$refresh_string = "?sortby=location";
@@ -137,7 +137,7 @@ else
 				$sql = "s.time DESC";
 				break;
 			default:
-				$sql = "IF( s.uid >0, 1, 0 ) DESC, s.time DESC";
+				$sql = "if ( s.uid >0, 1, 0 ) DESC, s.time DESC";
 				break;
 		}
 		$refresh_string = '';
@@ -168,12 +168,12 @@ else
 	// How many pages are there?
 	$perpage = $mybb->settings['threadsperpage'];
 
-	if(intval($mybb->input['page']) > 0)
+	if (intval($mybb->input['page']) > 0)
 	{
 		$page = intval($mybb->input['page']);
 		$start = ($page-1) * $perpage;
 		$pages = ceil($online_count / $perpage);
-		if($page > $pages)
+		if ($page > $pages)
 		{
 			$start = 0;
 			$page = 1;
@@ -211,15 +211,15 @@ else
 		$botkey = my_strtolower(str_replace("bot=", '', $user['sid']));
 
 		// Have a registered user
-		if($user['uid'] > 0)
+		if ($user['uid'] > 0)
 		{
-			if($users[$user['uid']]['time'] < $user['time'] || !$users[$user['uid']])
+			if ($users[$user['uid']]['time'] < $user['time'] || !$users[$user['uid']])
 			{
 				$users[$user['uid']] = $user;
 			}
 		}
 		// Otherwise this session is a bot
-		else if(my_strpos($user['sid'], "bot=") !== FALSE && $spiders[$botkey])
+		else if (my_strpos($user['sid'], "bot=") !== FALSE && $spiders[$botkey])
 		{
 			$user['bot'] = $spiders[$botkey]['name'];
 			$user['usergroup'] = $spiders[$botkey]['usergroup'];
@@ -234,7 +234,7 @@ else
 
 	// Now we build the actual online rows - we do this separately because we need to query all of the specific activity and location information
 	$online_rows = '';
-	if(is_array($users))
+	if (is_array($users))
 	{
 		reset($users);
 		foreach($users as $user)
@@ -242,7 +242,7 @@ else
 			$online_rows .= build_wol_row($user);
 		}
 	}
-	if(is_array($guests))
+	if (is_array($guests))
 	{
 		reset($guests);
 		foreach($guests as $user)
@@ -258,7 +258,7 @@ else
 	$record_time = my_date($mybb->settings['timeformat'], $most_online['time']);
 
 	// Set automatic refreshing if enabled
-	if($mybb->settings['refreshwol'] > 0)
+	if ($mybb->settings['refreshwol'] > 0)
 	{
 		$refresh_time = $mybb->settings['refreshwol'] * 60;
 		$refresh = "<meta http-equiv=\"refresh\" content=\"{$refresh_time};URL=online.php{$refresh_string}\" />";

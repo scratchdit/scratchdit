@@ -26,11 +26,11 @@ $max_size = 32;
 $min_angle = -30;
 $max_angle = 30;
 
-if($mybb->input['imagehash'] == "test")
+if ($mybb->input['imagehash'] == "test")
 {
 	$imagestring = "MyBB";
 }
-elseif($mybb->input['imagehash'])
+elseif ($mybb->input['imagehash'])
 {
 	$query = $db->simple_select("captcha", "*", "imagehash='".$db->escape_string(strval($mybb->input['imagehash']))."'", array("limit" => 1));
 	$regimage = $db->fetch_array($query);
@@ -44,16 +44,16 @@ else
 $ttf_fonts = array();
 
 // We have support for TRUE-type fonts (FreeType 2)
-if(function_exists("imagefttext"))
+if (function_exists("imagefttext"))
 {
 	// Get a list of the files in the 'catpcha_fonts' directory
 	$ttfdir  = @opendir(MYBB_ROOT."inc/captcha_fonts");
-	if($ttfdir)
+	if ($ttfdir)
 	{
 		while($file = readdir($ttfdir))
 		{
 			// If this file is a ttf file, add it to the list
-			if(is_file(MYBB_ROOT."inc/captcha_fonts/".$file) && get_extension($file) == "ttf")
+			if (is_file(MYBB_ROOT."inc/captcha_fonts/".$file) && get_extension($file) == "ttf")
 			{
 				$ttf_fonts[] = MYBB_ROOT."inc/captcha_fonts/".$file;
 			}
@@ -62,7 +62,7 @@ if(function_exists("imagefttext"))
 }
 
 // Have one or more TTF fonts in our array, we can use TTF captha's
-if(count($ttf_fonts) > 0)
+if (count($ttf_fonts) > 0)
 {
 	$use_ttf = 1;
 }
@@ -72,7 +72,7 @@ else
 }
 
 // Check for GD >= 2, create base image
-if(gd_version() >= 2)
+if (gd_version() >= 2)
 {
 	$im = imagecreateTRUEcolor($img_width, $img_height);
 }
@@ -82,7 +82,7 @@ else
 }
 
 // No GD support, die.
-if(!$im)
+if (!$im)
 {
 	die("No GD support.");
 }
@@ -93,11 +93,11 @@ imagefill($im, 0, 0, $bg_color);
 
 // Draw random circles, squares or lines?
 $to_draw = my_rand(0, 2);
-if($to_draw == 1)
+if ($to_draw == 1)
 {
 	draw_circles($im);
 }
-else if($to_draw == 2)
+else if ($to_draw == 2)
 {
 	draw_squares($im);
 }
@@ -213,7 +213,7 @@ function draw_string(&$im, $string)
 {
 	global $use_ttf, $min_size, $max_size, $min_angle, $max_angle, $ttf_fonts, $img_height, $img_width;
 
-	if(empty($string))
+	if (empty($string))
 	{
 		return FALSE;
 	}
@@ -223,7 +223,7 @@ function draw_string(&$im, $string)
 	for($i = 0; $i < $string_length; ++$i)
 	{
 		// Using TTF fonts
-		if($use_ttf)
+		if ($use_ttf)
 		{
 			// Select a random font size
 			$font_size = my_rand($min_size, $max_size);
@@ -271,7 +271,7 @@ function draw_string(&$im, $string)
 			$pos_y = $img_height / 2 - $string_height -10 + my_rand(-3, 3);
 
 			// Create a temporary image for this character
-			if(gd_version() >= 2)
+			if (gd_version() >= 2)
 			{
 				$temp_im = imagecreateTRUEcolor(15, 20);
 			}

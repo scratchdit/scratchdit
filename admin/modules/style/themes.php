@@ -10,7 +10,7 @@
  */
 
 // Disallow direct access to this file for security reasons
-if(!defined("IN_MYBB"))
+if (!defined("IN_MYBB"))
 {
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
@@ -30,13 +30,13 @@ var delete_confirm_lang_string = '{$lang->delete_confirm_js}';
 //]]>
 </script>";
 
-if($mybb->input['action'] == "xmlhttp_stylesheet" && $mybb->request_method == "post")
+if ($mybb->input['action'] == "xmlhttp_stylesheet" && $mybb->request_method == "post")
 {
 	// Fetch the theme we want to edit this stylesheet in
 	$query = $db->simple_select("themes", "*", "tid='".intval($mybb->input['tid'])."'");
 	$theme = $db->fetch_array($query);
 
-	if(!$theme['tid'])
+	if (!$theme['tid'])
 	{
 		flash_message($lang->error_invalid_theme, 'error');
 		admin_redirect("index.php?module=style-themes");
@@ -44,7 +44,7 @@ if($mybb->input['action'] == "xmlhttp_stylesheet" && $mybb->request_method == "p
 
 	$parent_list = make_parent_theme_list($theme['tid']);
 	$parent_list = implode(',', $parent_list);
-	if(!$parent_list)
+	if (!$parent_list)
 	{
 		$parent_list = 1;
 	}
@@ -53,7 +53,7 @@ if($mybb->input['action'] == "xmlhttp_stylesheet" && $mybb->request_method == "p
 	$stylesheet = $db->fetch_array($query);
 
 	// Does the theme not exist?
-	if(!$stylesheet['sid'])
+	if (!$stylesheet['sid'])
 	{
 		flash_message($lang->error_invalid_stylesheet, 'error');
 		admin_redirect("index.php?module=style-themes");
@@ -94,7 +94,7 @@ if($mybb->input['action'] == "xmlhttp_stylesheet" && $mybb->request_method == "p
 
 $page->add_breadcrumb_item($lang->themes, "index.php?module=style-themes");
 
-if($mybb->input['action'] == "add" || $mybb->input['action'] == "import" || $mybb->input['action'] == "browse" || !$mybb->input['action'])
+if ($mybb->input['action'] == "add" || $mybb->input['action'] == "import" || $mybb->input['action'] == "browse" || !$mybb->input['action'])
 {
 	$sub_tabs['themes'] = array(
 		'title' => $lang->themes,
@@ -123,7 +123,7 @@ if($mybb->input['action'] == "add" || $mybb->input['action'] == "import" || $myb
 
 $plugins->run_hooks("admin_style_themes_begin");
 
-if($mybb->input['action'] == "browse")
+if ($mybb->input['action'] == "browse")
 {
 	$plugins->run_hooks("admin_style_themes_browse");
 
@@ -137,12 +137,12 @@ if($mybb->input['action'] == "browse")
 	require_once MYBB_ROOT."inc/class_xml.php";
 
 	$keywords = "";
-	if($mybb->input['keywords'])
+	if ($mybb->input['keywords'])
 	{
 		$keywords = "&keywords=".urlencode($mybb->input['keywords']);
 	}
 
-	if($mybb->input['page'])
+	if ($mybb->input['page'])
 	{
 		$url_page = "&page=".intval($mybb->input['page']);
 	}
@@ -153,7 +153,7 @@ if($mybb->input['action'] == "browse")
 	}
 
 	// Gets the major version code. i.e. 1410 -> 1400 or 121 -> 1200
-	if($mybb->version_code >= 1000)
+	if ($mybb->version_code >= 1000)
 	{
 		$major_version_code = round($mybb->version_code/100, 0)*100;
 	}
@@ -164,7 +164,7 @@ if($mybb->input['action'] == "browse")
 
 	$contents = fetch_remote_file("http://mods.mybb.com/xmlbrowse.php?type=theme&version={$major_version_code}{$keywords}{$url_page}", $post_data);
 
-	if(!$contents)
+	if (!$contents)
 	{
 		$page->output_inline_error($lang->error_communication_problem);
 		$page->output_footer();
@@ -178,16 +178,16 @@ if($mybb->input['action'] == "browse")
 	$parser = new XMLParser($contents);
 	$tree = $parser->get_tree();
 
-	if(!array_key_exists("results", $tree))
+	if (!array_key_exists("results", $tree))
 	{
 		$page->output_inline_error($lang->error_communication_problem);
 		$page->output_footer();
 		exit;
 	}
 
-	if(!empty($tree['results']['result']))
+	if (!empty($tree['results']['result']))
 	{
-		if(array_key_exists("tag", $tree['results']['result']))
+		if (array_key_exists("tag", $tree['results']['result']))
 		{
 			$only_theme = $tree['results']['result'];
 			unset($tree['results']['result']);
@@ -203,7 +203,7 @@ if($mybb->input['action'] == "browse")
 		}
 	}
 
-	if($table->num_rows() == 0)
+	if ($table->num_rows() == 0)
 	{
 		$table->construct_cell($lang->error_no_results_found, array("colspan" => 3));
 		$table->construct_row();
@@ -211,7 +211,7 @@ if($mybb->input['action'] == "browse")
 
 	$search = new Form("index.php?module=style-themes&amp;action=browse", 'post', 'search_form');
 	echo "<div style=\"padding-bottom: 3px; margin-top: -9px; text-align: right;\">";
-	if($mybb->input['keywords'])
+	if ($mybb->input['keywords'])
 	{
 		$default_class = '';
 		$value = htmlspecialchars_uni($mybb->input['keywords']);
@@ -227,7 +227,7 @@ if($mybb->input['action'] == "browse")
 		var form = document.getElementById('search_form');
 		form.onsubmit = function() {
 			var search = document.getElementById('search_keywords');
-			if(search.value == '' || search.value == '{$lang->search_for_themes}')
+			if (search.value == '' || search.value == '{$lang->search_for_themes}')
 			{
 				search.focus();
 				return FALSE;

@@ -9,7 +9,7 @@
  */
 
 // Disallow direct access to this file for security reasons
-if(!defined("IN_MYBB"))
+if (!defined("IN_MYBB"))
 {
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
@@ -65,13 +65,13 @@ class LoginDataHandler extends DataHandler
 
 		$user = &$this->data;
 
-		if($check_captcha)
+		if ($check_captcha)
 		{
-			if(!isset($mybb->cookies['loginattempts']))
+			if (!isset($mybb->cookies['loginattempts']))
 			{
 				$mybb->cookies['loginattempts'] = 0;
 			}
-			if($mybb->settings['failedcaptchalogincount'] > 0 && ($user['loginattempts'] > $mybb->settings['failedcaptchalogincount'] || (int)$mybb->cookies['loginattempts'] > $mybb->settings['failedcaptchalogincount']))
+			if ($mybb->settings['failedcaptchalogincount'] > 0 && ($user['loginattempts'] > $mybb->settings['failedcaptchalogincount'] || (int)$mybb->cookies['loginattempts'] > $mybb->settings['failedcaptchalogincount']))
 			{
 				$this->captcha_verified = FALSE;
 				$this->verify_captcha();
@@ -88,13 +88,13 @@ class LoginDataHandler extends DataHandler
 
 		$user = &$this->data;
 
-		if($user['imagestring'] || $mybb->settings['captchaimage'] != 1)
+		if ($user['imagestring'] || $mybb->settings['captchaimage'] != 1)
 		{
 			// Check their current captcha input - if correct, hide the captcha input area
 			require_once MYBB_ROOT.'inc/class_captcha.php';
 			$this->captcha = new captcha;
 
-			if($this->captcha->validate_captcha() == FALSE)
+			if ($this->captcha->validate_captcha() == FALSE)
 			{
 				// CAPTCHA validation failed
 				foreach($this->captcha->get_errors() as $error)
@@ -109,7 +109,7 @@ class LoginDataHandler extends DataHandler
 				return TRUE;
 			}
 		}
-		else if($mybb->input['quick_login'] == 1 && $mybb->input['quick_password'] && $mybb->input['quick_username'])
+		else if ($mybb->input['quick_login'] == 1 && $mybb->input['quick_password'] && $mybb->input['quick_username'])
 		{
 			$this->set_error('regimagerequired');
 			return FALSE;
@@ -128,7 +128,7 @@ class LoginDataHandler extends DataHandler
 	{
 		$this->get_login_data();
 
-		if(empty($this->login_data) || !$this->login_data['uid'])
+		if (empty($this->login_data) || !$this->login_data['uid'])
 		{
 			$this->invalid_combination();
 			return FALSE;
@@ -148,7 +148,7 @@ class LoginDataHandler extends DataHandler
 
 		$this->get_login_data();
 
-		if(empty($this->login_data['username']))
+		if (empty($this->login_data['username']))
 		{
 			// Username must be validated to apply a password to
 			$this->invalid_combination();
@@ -164,14 +164,14 @@ class LoginDataHandler extends DataHandler
 
 		$user = &$this->data;
 
-		if(!$this->login_data['uid'] || $this->login_data['uid'] && !$this->login_data['salt'] && $strict == FALSE)
+		if (!$this->login_data['uid'] || $this->login_data['uid'] && !$this->login_data['salt'] && $strict == FALSE)
 		{
 			$this->invalid_combination();
 		}
 
-		if($strict == TRUE)
+		if ($strict == TRUE)
 		{
-			if(!$this->login_data['salt'])
+			if (!$this->login_data['salt'])
 			{
 				// Generate a salt for this user and assume the password stored in db is a plain md5 password
 				$password_fields = create_password($this->login_data['password']);
@@ -179,7 +179,7 @@ class LoginDataHandler extends DataHandler
 				$db->update_query("users", $password_fields, "uid = '{$this->login_data['uid']}'");
 			}
 
-			if(!$this->login_data['loginkey'])
+			if (!$this->login_data['loginkey'])
 			{
 				$this->login_data['loginkey'] = generate_loginkey();
 
@@ -193,7 +193,7 @@ class LoginDataHandler extends DataHandler
 
 		$plugins->run_hooks('datahandler_login_verify_password_end', $args);
 
-		if(!verify_user_password($this->login_data, $user['password']))
+		if (!verify_user_password($this->login_data, $user['password']))
 		{
 			$this->invalid_combination(TRUE);
 			return FALSE;
@@ -210,15 +210,15 @@ class LoginDataHandler extends DataHandler
 		global $db, $lang, $mybb;
 
 		// Don't show an error when the captcha was wrong!
-		if(!$this->captcha_verified)
+		if (!$this->captcha_verified)
 		{
 			return;
 		}
 
 		$login_text = '';
-		if($show_login_attempts)
+		if ($show_login_attempts)
 		{
-			if($mybb->settings['failedlogincount'] != 0 && $mybb->settings['failedlogintext'] == 1 && $this->login_data['uid'] != 0)
+			if ($mybb->settings['failedlogincount'] != 0 && $mybb->settings['failedlogintext'] == 1 && $this->login_data['uid'] != 0)
 			{
 				$logins = login_attempt_check($this->login_data['uid'], FALSE) + 1;
 				$login_text = $lang->sprintf($lang->failed_login_again, $mybb->settings['failedlogincount'] - $logins);
@@ -250,7 +250,7 @@ class LoginDataHandler extends DataHandler
 			'username_method' => (int)$settings['username_method']
 		);
 
-		if($this->username_method !== NULL)
+		if ($this->username_method !== NULL)
 		{
 			$options['username_method'] = (int)$this->username_method;
 		}
@@ -269,17 +269,17 @@ class LoginDataHandler extends DataHandler
 
 		$plugins->run_hooks('datahandler_login_validate_start', $this);
 
-		if(!defined('IN_ADMINCP'))
+		if (!defined('IN_ADMINCP'))
 		{
 			$this->verify_attempts($mybb->settings['captchaimage']);
 		}
 
-		if(array_key_exists('username', $user))
+		if (array_key_exists('username', $user))
 		{
 			$this->verify_username();
 		}
 
-		if(array_key_exists('password', $user))
+		if (array_key_exists('password', $user))
 		{
 			$this->verify_password();
 		}
@@ -287,7 +287,7 @@ class LoginDataHandler extends DataHandler
 		$plugins->run_hooks('datahandler_login_validate_end', $this);
 
 		$this->set_validated(TRUE);
-		if(count($this->get_errors()) > 0)
+		if (count($this->get_errors()) > 0)
 		{
 			return FALSE;
 		}
@@ -318,14 +318,14 @@ class LoginDataHandler extends DataHandler
 		$db->update_query("users", array("loginattempts" => 1), "uid = '{$user['uid']}'");
 
 		$remember = NULL;
-		if(!isset($mybb->input['remember']) || $mybb->input['remember'] != "yes")
+		if (!isset($mybb->input['remember']) || $mybb->input['remember'] != "yes")
 		{
 			$remember = -1;
 		}
 
 		my_setcookie("mybbuser", $user['uid']."_".$user['loginkey'], $remember, TRUE, "lax");
 
-		if($this->captcha !== FALSE)
+		if ($this->captcha !== FALSE)
 		{
 			$this->captcha->invalidate_captcha();
 		}

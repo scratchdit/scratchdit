@@ -21,7 +21,7 @@ function task_versioncheck($task)
 	// Check for the latest version
 	$contents = fetch_remote_file("//mybb.com/version_check.php");
 
-	if(!$contents)
+	if (!$contents)
 	{
 		add_task_log($task, $lang->task_versioncheck_ran_errors);
 		return FALSE;
@@ -34,7 +34,7 @@ function task_versioncheck($task)
 
 	$latest_code = (int)$tree['mybb']['version_code']['value'];
 	$latest_version = "<strong>".htmlspecialchars_uni($tree['mybb']['latest_version']['value'])."</strong> (".$latest_code.")";
-	if($latest_code > $mybb->version_code)
+	if ($latest_code > $mybb->version_code)
 	{
 		$latest_version = "<span style=\"color: #C00;\">".$latest_version."</span>";
 		$version_warn = 1;
@@ -57,7 +57,7 @@ function task_versioncheck($task)
 	require_once MYBB_ROOT . '/inc/class_parser.php';
 	$post_parser = new postParser();
 
-	if($feed_parser->error == '')
+	if ($feed_parser->error == '')
 	{
 		foreach($feed_parser->items as $item)
 		{

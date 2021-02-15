@@ -95,37 +95,37 @@ class captcha
 		$this->type = $mybb->settings['captchaimage'];
 
 		// Prepare the build template
-		if($template)
+		if ($template)
 		{
 			$this->captcha_template = $template;
 
-			if($this->type == 2)
+			if ($this->type == 2)
 			{
 				$this->captcha_template .= "_recaptcha";
 			}
 		}
 
 		// Work on which CAPTCHA we've got installed
-		if($this->type == 2 && $mybb->settings['captchapublickey'] && $mybb->settings['captchaprivatekey'])
+		if ($this->type == 2 && $mybb->settings['captchapublickey'] && $mybb->settings['captchaprivatekey'])
 		{
 			// We want to use reCAPTCHA, set the server options
 			$this->server = "http://www.google.com/recaptcha/api";
 			$this->secure_server = "https://www.google.com/recaptcha/api";
 			$this->verify_server = "www.google.com";
 
-			if($build == TRUE)
+			if ($build == TRUE)
 			{
 				$this->build_recaptcha();
 			}
 		}
-		else if($this->type == 1)
+		else if ($this->type == 1)
 		{
-			if(!function_exists("imagecreatefrompng"))
+			if (!function_exists("imagecreatefrompng"))
 			{
 				// We want to use the default CAPTCHA, but it's not installed
 				return FALSE;
 			}
-			else if($build == TRUE)
+			else if ($build == TRUE)
 			{
 				$this->build_captcha();
 			}
@@ -171,7 +171,7 @@ class captcha
 
 		$field = array();
 
-		if($this->type == 1)
+		if ($this->type == 1)
 		{
 			// Names
 			$hash = "imagehash";
@@ -181,7 +181,7 @@ class captcha
 			$field['hash'] = $db->escape_string($mybb->input['imagehash']);
 			$field['string'] = $db->escape_string($mybb->input['imagestring']);
 		}
-		else if($this->type == 2)
+		else if ($this->type == 2)
 		{
 			// Names
 			$hash = "recaptcha_challenge_field";
@@ -202,7 +202,7 @@ class captcha
 
 		// Plugin hook
 
-		if($this->type == 1)
+		if ($this->type == 1)
 		{
 			// We have a normal CAPTCHA to handle
 			$imagehash = $db->escape_string($mybb->input['imagehash']);
@@ -211,19 +211,19 @@ class captcha
 			$query = $db->simple_select("captcha", "*", "imagehash = '{$imagehash}' AND LOWER(imagestring) = '{$imagestring}'");
 			$imgcheck = $db->fetch_array($query);
 
-			if(!$imgcheck['dateline'])
+			if (!$imgcheck['dateline'])
 			{
 				$this->set_error($lang->invalid_captcha_verify);
 			}
 
 			$db->delete_query("captcha", "imagehash = '{$imagehash}'");
 		}
-		elseif($this->type == 2)
+		elseif ($this->type == 2)
 		{
 			$challenge = $mybb->input['recaptcha_challenge_field'];
 			$response = $mybb->input['recaptcha_response_field'];
 
-			if(!$challenge || strlen($challenge) == 0 || !$response || strlen($response) == 0)
+			if (!$challenge || strlen($challenge) == 0 || !$response || strlen($response) == 0)
 			{
 				$this->set_error($lang->invalid_captcha);
 			}
@@ -248,7 +248,7 @@ class captcha
 
 				$fs = @fsockopen($this->verify_server, 80, $errno, $errstr, 10);
 
-				if($fs == FALSE)
+				if ($fs == FALSE)
 				{
 					$this->set_error($lang->invalid_captcha_transmit);
 				}
@@ -267,7 +267,7 @@ class captcha
 					$response = explode("\r\n\r\n", $response, 2);
 					$answer = explode("\n", $response[1]);
 
-					if(trim($answer[0]) != 'TRUE')
+					if (trim($answer[0]) != 'TRUE')
 					{
 						// We got it wrong! Oh no...
 						$this->set_error($lang->invalid_captcha_verify);
@@ -278,7 +278,7 @@ class captcha
 
 		// Plugin hook
 
-		if(count($this->errors) > 0)
+		if (count($this->errors) > 0)
 		{
 			return FALSE;
 		}
@@ -313,9 +313,9 @@ class captcha
 		{
 			$lang_string = $error['error_code'];
 
-			if(!$lang_string)
+			if (!$lang_string)
 			{
-				if($lang->invalid_captcha_verify)
+				if ($lang->invalid_captcha_verify)
 				{
 					$lang_string = 'invalid_captcha_verify';
 				}
@@ -325,18 +325,18 @@ class captcha
 				}
 			}
 
-			if(!$lang->$lang_string)
+			if (!$lang->$lang_string)
 			{
 				$errors[] = $error['error_code'];
 				continue;
 			}
 
-			if(!empty($error['data']) && !is_array($error['data']))
+			if (!empty($error['data']) && !is_array($error['data']))
 			{
 				$error['data'] = array($error['data']);
 			}
 
-			if(is_array($error['data']))
+			if (is_array($error['data']))
 			{
 				array_unshift($error['data'], $lang->$lang_string);
 				$errors[] = call_user_func_array(array($lang, "sprintf"), $error['data']);

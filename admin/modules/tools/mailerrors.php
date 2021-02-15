@@ -10,7 +10,7 @@
  */
 
 // Disallow direct access to this file for security reasons
-if(!defined("IN_MYBB"))
+if (!defined("IN_MYBB"))
 {
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
@@ -19,50 +19,50 @@ $page->add_breadcrumb_item($lang->system_email_log, "index.php?module=tools-mail
 
 $plugins->run_hooks("admin_tools_mailerrors_begin");
 
-if($mybb->input['action'] == "prune" && $mybb->request_method == "post")
+if ($mybb->input['action'] == "prune" && $mybb->request_method == "post")
 {
 	$plugins->run_hooks("admin_tools_mailerrors_prune");
-	
-	if($mybb->input['delete_all'])
+
+	if ($mybb->input['delete_all'])
 	{
 		$db->delete_query("mailerrors");
 		$num_deleted = $db->affected_rows();
-		
+
 		$plugins->run_hooks("admin_tools_mailerrors_prune_delete_all_commit");
-		
+
 		// Log admin action
 		log_admin_action($num_deleted);
-		
+
 		flash_message($lang->all_logs_deleted, 'success');
 		admin_redirect("index.php?module=tools-mailerrors");
 	}
-	else if(is_array($mybb->input['log']))
+	else if (is_array($mybb->input['log']))
 	{
 		$log_ids = implode(",", array_map("intval", $mybb->input['log']));
-		if($log_ids)
+		if ($log_ids)
 		{
 			$db->delete_query("mailerrors", "eid IN ({$log_ids})");
 			$num_deleted = $db->affected_rows();
 		}
 	}
-	
+
 	$plugins->run_hooks("admin_tools_mailerrors_prune_commit");
-	
+
 	// Log admin action
 	log_admin_action($num_deleted);
-	
+
 	flash_message($lang->selected_logs_deleted, 'success');
 	admin_redirect("index.php?module=tools-mailerrors");
 }
 
-if($mybb->input['action'] == "view")
+if ($mybb->input['action'] == "view")
 {
 	$plugins->run_hooks("admin_tools_mailerrors_view");
-	
+
 	$query = $db->simple_select("mailerrors", "*", "eid='".intval($mybb->input['eid'])."'");
 	$log = $db->fetch_array($query);
 
-	if(!$log['eid'])
+	if (!$log['eid'])
 	{
 		exit;
 	}
@@ -93,14 +93,14 @@ if($mybb->input['action'] == "view")
 	$table->construct_cell($log['error'], array("colspan" => 2));
 	$table->construct_row();
 
-	if($log['smtpcode'])
+	if ($log['smtpcode'])
 	{
 		$table->construct_cell($lang->smtp_code);
 		$table->construct_cell($log['smtpcode']);
 		$table->construct_row();
 	}
-	
-	if($log['smtperror'])
+
+	if ($log['smtperror'])
 	{
 		$table->construct_cell($lang->smtp_server_response);
 		$table->construct_cell($log['smtperror']);
@@ -139,13 +139,13 @@ if($mybb->input['action'] == "view")
 	<?php
 }
 
-if(!$mybb->input['action'])
+if (!$mybb->input['action'])
 {
 	$plugins->run_hooks("admin_tools_mailerrors_start");
-	
+
 	$per_page = 20;
 
-	if($mybb->input['page'] && $mybb->input['page'] > 1)
+	if ($mybb->input['page'] && $mybb->input['page'] > 1)
 	{
 		$mybb->input['page'] = intval($mybb->input['page']);
 		$start = ($mybb->input['page']*$per_page)-$per_page;
@@ -159,47 +159,47 @@ if(!$mybb->input['action'])
 	$additional_criteria = array();
 
 	$page->output_header($lang->system_email_log);
-	
+
 	$sub_tabs['mailerrors'] = array(
 		'title' => $lang->system_email_log,
 		'link' => "index.php?module=tools-mailerrors",
 		'description' => $lang->system_email_log_desc
 	);
-	
+
 	$page->output_nav_tabs($sub_tabs, 'mailerrors');
 
 	$form = new Form("index.php?module=tools-mailerrors&amp;action=prune", "post");
 
 	// Begin criteria filtering
-	if($mybb->input['subject'])
+	if ($mybb->input['subject'])
 	{
 		$additional_sql_criteria .= " AND subject LIKE '%".$db->escape_string($mybb->input['subject'])."%'";
 		$additional_criteria[] = "subject='".htmlspecialchars_uni($mybb->input['subject'])."'";
 		$form->generate_hidden_field("subject", $mybb->input['subject']);
 	}
 
-	if($mybb->input['fromaddress'])
+	if ($mybb->input['fromaddress'])
 	{
 		$additional_sql_criteria .= " AND fromaddress LIKE '%".$db->escape_string($mybb->input['fromaddress'])."%'";
 		$additional_criteria[] = "fromaddress='".urlencode($mybb->input['fromaddress'])."'";
 		$form->generate_hidden_field("fromaddress", $mybb->input['fromaddress']);
 	}
 
-	if($mybb->input['toaddress'])
+	if ($mybb->input['toaddress'])
 	{
 		$additional_sql_criteria .= " AND toaddress LIKE '%".$db->escape_string($mybb->input['toaddress'])."%'";
 		$additional_criteria[] = "toaddress='".urlencode($mybb->input['toaddress'])."'";
 		$form->generate_hidden_field("toaddress", $mybb->input['toaddress']);
 	}
 
-	if($mybb->input['error'])
+	if ($mybb->input['error'])
 	{
 		$additional_sql_criteria .= " AND error LIKE '%".$db->escape_string($mybb->input['error'])."%'";
 		$additional_criteria[] = "error='".urlencode($mybb->input['error'])."'";
 		$form->generate_hidden_field("error", $mybb->input['error']);
 	}
 
-	if($additional_criteria)
+	if ($additional_criteria)
 	{
 		$additional_criteria = "&amp;".implode("&amp;", $additional_criteria);
 	}
@@ -233,8 +233,8 @@ if(!$mybb->input['action'])
 		$table->construct_cell($log['dateline'], array("class" => "align_center"));
 		$table->construct_row();
 	}
-	
-	if($table->num_rows() == 0)
+
+	if ($table->num_rows() == 0)
 	{
 		$table->construct_cell($lang->no_logs, array("colspan" => 5));
 		$table->construct_row();
@@ -249,18 +249,18 @@ if(!$mybb->input['action'])
 	}
 
 	$form->end();
-	
+
 	$query = $db->simple_select("mailerrors l", "COUNT(eid) AS logs", "1=1 {$additional_sql_criteria}");
 	$total_rows = $db->fetch_field($query, "logs");
 
 	echo "<br />".draw_admin_pagination($mybb->input['page'], $per_page, $total_rows, "index.php?module=tools-mailerrors&amp;page={page}{$additional_criteria}");
-	
+
 	$form = new Form("index.php?module=tools-mailerrors", "post");
 	$form_container = new FormContainer($lang->filter_system_email_log);
-	$form_container->output_row($lang->subject_contains, "", $form->generate_text_box('subject', $mybb->input['subject'], array('id' => 'subject')), 'subject');	
-	$form_container->output_row($lang->error_message_contains, "", $form->generate_text_box('error', $mybb->input['error'], array('id' => 'error')), 'error');	
-	$form_container->output_row($lang->to_address_contains, "", $form->generate_text_box('toaddress', $mybb->input['toaddress'], array('id' => 'toaddress')), 'toaddress');	
-	$form_container->output_row($lang->from_address_contains, "", $form->generate_text_box('fromaddress', $mybb->input['fromaddress'], array('id' => 'fromaddress')), 'fromaddress');	
+	$form_container->output_row($lang->subject_contains, "", $form->generate_text_box('subject', $mybb->input['subject'], array('id' => 'subject')), 'subject');
+	$form_container->output_row($lang->error_message_contains, "", $form->generate_text_box('error', $mybb->input['error'], array('id' => 'error')), 'error');
+	$form_container->output_row($lang->to_address_contains, "", $form->generate_text_box('toaddress', $mybb->input['toaddress'], array('id' => 'toaddress')), 'toaddress');
+	$form_container->output_row($lang->from_address_contains, "", $form->generate_text_box('fromaddress', $mybb->input['fromaddress'], array('id' => 'fromaddress')), 'fromaddress');
 
 	$form_container->end();
 	$buttons = array();

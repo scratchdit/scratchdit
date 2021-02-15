@@ -10,7 +10,7 @@
  */
 
 // Disallow direct access to this file for security reasons
-if(!defined("IN_MYBB"))
+if (!defined("IN_MYBB"))
 {
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
@@ -80,11 +80,11 @@ function acp_recount_user_posts()
 	{
 		$fids[] = $forum['fid'];
 	}
-	if(is_array($fids))
+	if (is_array($fids))
     {
         $fids = implode(',', $fids);
     }
-	if($fids)
+	if ($fids)
 	{
 		$fids = " AND p.fid NOT IN($fids)";
 	}
@@ -128,11 +128,11 @@ function acp_rebuild_attachment_thumbnails()
 	while($attachment = $db->fetch_array($query))
 	{
 		$ext = my_strtolower(my_substr(strrchr($attachment['filename'], "."), 1));
-		if($ext == "gif" || $ext == "png" || $ext == "jpg" || $ext == "jpeg" || $ext == "jpe")
+		if ($ext == "gif" || $ext == "png" || $ext == "jpg" || $ext == "jpeg" || $ext == "jpe")
 		{
 			$thumbname = str_replace(".attach", "_thumb.$ext", $attachment['attachname']);
 			$thumbnail = generate_thumbnail(MYBB_ROOT."uploads/".$attachment['attachname'], MYBB_ROOT."uploads/", $thumbname, $mybb->settings['attachthumbh'], $mybb->settings['attachthumbw']);
-			if($thumbnail['code'] == 4)
+			if ($thumbnail['code'] == 4)
 			{
 				$thumbnail['filename'] = "SMALL";
 			}
@@ -147,7 +147,7 @@ function check_proceed($current, $finish, $next_page, $per_page, $name, $name2, 
 {
 	global $page, $lang, $plugins;
 
-	if($finish >= $current)
+	if ($finish >= $current)
 	{
 		flash_message($message, 'success');
 		admin_redirect("index.php?module=tools-recount_rebuild");
@@ -164,7 +164,7 @@ function check_proceed($current, $finish, $next_page, $per_page, $name, $name2, 
 		echo "<div class=\"confirm_action\">\n";
 		echo "<p>{$lang->confirm_proceed_rebuild}</p>\n";
 		echo "<br />\n";
-		echo "<script type=\"text/javascript\">window.onload = function() { var button = $$('#proceed_button'); if(button[0]) { button[0].value = '{$lang->automatically_redirecting}'; button[0].disabled = TRUE; button[0].style.color = '#aaa'; button[0].style.borderColor = '#aaa'; document.forms[0].submit(); }}</script>";
+		echo "<script type=\"text/javascript\">window.onload = function() { var button = $$('#proceed_button'); if (button[0]) { button[0].value = '{$lang->automatically_redirecting}'; button[0].disabled = TRUE; button[0].style.color = '#aaa'; button[0].style.borderColor = '#aaa'; document.forms[0].submit(); }}</script>";
 		echo "<p class=\"buttons\">\n";
 		echo $form->generate_submit_button($lang->proceed, array('class' => 'button_yes', 'id' => 'proceed_button'));
 		echo "</p>\n";
@@ -177,78 +177,78 @@ function check_proceed($current, $finish, $next_page, $per_page, $name, $name2, 
 	}
 }
 
-if(!$mybb->input['action'])
+if (!$mybb->input['action'])
 {
 	$plugins->run_hooks("admin_tools_recount_rebuild_start");
 
-	if($mybb->request_method == "post")
+	if ($mybb->request_method == "post")
 	{
 		require_once MYBB_ROOT."inc/functions_rebuild.php";
 
-		if(!isset($mybb->input['page']) || intval($mybb->input['page']) < 1)
+		if (!isset($mybb->input['page']) || intval($mybb->input['page']) < 1)
 		{
 			$mybb->input['page'] = 1;
 		}
 
-		if(isset($mybb->input['do_rebuildforumcounters']))
+		if (isset($mybb->input['do_rebuildforumcounters']))
 		{
 			$plugins->run_hooks("admin_tools_recount_rebuild_forum_counters");
 
-			if($mybb->input['page'] == 1)
+			if ($mybb->input['page'] == 1)
 			{
 				// Log admin action
 				log_admin_action("forum");
 			}
-			if(!intval($mybb->input['forumcounters']))
+			if (!intval($mybb->input['forumcounters']))
 			{
 				$mybb->input['forumcounters'] = 50;
 			}
 
 			acp_rebuild_forum_counters();
 		}
-		elseif(isset($mybb->input['do_rebuildthreadcounters']))
+		elseif (isset($mybb->input['do_rebuildthreadcounters']))
 		{
 			$plugins->run_hooks("admin_tools_recount_rebuild_thread_counters");
 
-			if($mybb->input['page'] == 1)
+			if ($mybb->input['page'] == 1)
 			{
 				// Log admin action
 				log_admin_action("thread");
 			}
-			if(!intval($mybb->input['threadcounters']))
+			if (!intval($mybb->input['threadcounters']))
 			{
 				$mybb->input['threadcounters'] = 500;
 			}
 
 			acp_rebuild_thread_counters();
 		}
-		elseif(isset($mybb->input['do_recountuserposts']))
+		elseif (isset($mybb->input['do_recountuserposts']))
 		{
 			$plugins->run_hooks("admin_tools_recount_rebuild_user_posts");
 
-			if($mybb->input['page'] == 1)
+			if ($mybb->input['page'] == 1)
 			{
 				// Log admin action
 				log_admin_action("userposts");
 			}
-			if(!intval($mybb->input['userposts']))
+			if (!intval($mybb->input['userposts']))
 			{
 				$mybb->input['userposts'] = 500;
 			}
 
 			acp_recount_user_posts();
 		}
-		elseif(isset($mybb->input['do_rebuildattachmentthumbs']))
+		elseif (isset($mybb->input['do_rebuildattachmentthumbs']))
 		{
 			$plugins->run_hooks("admin_tools_recount_rebuild_attachment_thumbs");
 
-			if($mybb->input['page'] == 1)
+			if ($mybb->input['page'] == 1)
 			{
 				// Log admin action
 				log_admin_action("attachmentthumbs");
 			}
 
-			if(!intval($mybb->input['attachmentthumbs']))
+			if (!intval($mybb->input['attachmentthumbs']))
 			{
 				$mybb->input['attachmentthumbs'] = 500;
 			}

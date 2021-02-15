@@ -9,7 +9,7 @@
  */
 
 // Disallow direct access to this file for security reasons
-if(!defined("IN_MYBB"))
+if (!defined("IN_MYBB"))
 {
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
@@ -24,11 +24,11 @@ $sub_tabs['awaiting_activation'] = array(
 
 $plugins->run_hooks("admin_user_awaiting_activation_begin");
 
-if($mybb->input['action'] == "activate" && $mybb->request_method == "post")
+if ($mybb->input['action'] == "activate" && $mybb->request_method == "post")
 {
 	$plugins->run_hooks("admin_user_awaiting_activation_activate");
 
-	if(!is_array($mybb->input['user']))
+	if (!is_array($mybb->input['user']))
 	{
 		$mybb->input['user'] = array();
 	}
@@ -36,7 +36,7 @@ if($mybb->input['action'] == "activate" && $mybb->request_method == "post")
 	$mybb->input['user'] = array_map('intval', $mybb->input['user']);
 	$user_ids = implode(", ", $mybb->input['user']);
 
-	if(empty($user_ids))
+	if (empty($user_ids))
 	{
 		flash_message($lang->no_users_selected, 'error');
 		admin_redirect("index.php?module=user-awaiting_activation");
@@ -44,7 +44,7 @@ if($mybb->input['action'] == "activate" && $mybb->request_method == "post")
 
 	$num_activated = $num_deleted = 0;
 	$users_to_delete = array();
-	if(!empty($mybb->input['delete'])) // Delete selected user(s)
+	if (!empty($mybb->input['delete'])) // Delete selected user(s)
 	{
 		require_once MYBB_ROOT.'inc/datahandlers/user.php';
 		$userhandler = new UserDataHandler('delete');
@@ -52,14 +52,14 @@ if($mybb->input['action'] == "activate" && $mybb->request_method == "post")
 		$query = $db->simple_select("users", "uid, usergroup", "uid IN ({$user_ids})");
 		while($user = $db->fetch_array($query))
 		{
-			if($user['usergroup'] == 5)
+			if ($user['usergroup'] == 5)
 			{
 				++$num_deleted;
 				$users_to_delete[] = (int)$user['uid'];
 			}
 		}
 
-		if(!empty($users_to_delete))
+		if (!empty($users_to_delete))
 		{
 			$userhandler->delete_user($users_to_delete, 1);
 		}
@@ -78,7 +78,7 @@ if($mybb->input['action'] == "activate" && $mybb->request_method == "post")
 		while($user = $db->fetch_array($query))
 		{
 			++$num_activated;
-			if($user['coppauser'])
+			if ($user['coppauser'])
 			{
 				$updated_user = array(
 					"coppauser" => 0
@@ -90,7 +90,7 @@ if($mybb->input['action'] == "activate" && $mybb->request_method == "post")
 			}
 
 			// Move out of awaiting activation if they're in it.
-			if($user['usergroup'] == 5)
+			if ($user['usergroup'] == 5)
 			{
 				$updated_user['usergroup'] = 2;
 			}
@@ -112,7 +112,7 @@ if($mybb->input['action'] == "activate" && $mybb->request_method == "post")
 	}
 }
 
-if(!$mybb->input['action'])
+if (!$mybb->input['action'])
 {
 	$plugins->run_hooks("admin_user_awaiting_activation_start");
 
@@ -123,12 +123,12 @@ if(!$mybb->input['action'])
 
 	$mybb->input['page'] = $mybb->get_input('page', MyBB::INPUT_INT);
 
-	if($mybb->input['page'] > 1)
+	if ($mybb->input['page'] > 1)
 	{
 		$mybb->input['page'] = $mybb->input['page'];
 		$start = ($mybb->input['page']*$per_page)-$per_page;
 		$pages = ceil($total_rows / $per_page);
-		if($mybb->input['page'] > $pages)
+		if ($mybb->input['page'] > $pages)
 		{
 			$mybb->input['page'] = 1;
 			$start = 0;
@@ -172,11 +172,11 @@ if(!$mybb->input['action'])
 		$user['regdate'] = my_date('relative', $user['regdate']);
 		$user['lastactive'] = my_date('relative', $user['lastactive']);
 
-		if($user['reg_type'] == 'r' || $user['reg_type'] == 'b' && $user['validated'] == 0)
+		if ($user['reg_type'] == 'r' || $user['reg_type'] == 'b' && $user['validated'] == 0)
 		{
 			$user['type'] = $lang->email_activation;
 		}
-		elseif($user['coppauser'] == 1)
+		elseif ($user['coppauser'] == 1)
 		{
 			$user['type'] = $lang->admin_activation_coppa;
 		}
@@ -185,7 +185,7 @@ if(!$mybb->input['action'])
 			$user['type'] = $lang->administrator_activation;
 		}
 
-		if(empty($user['regip']))
+		if (empty($user['regip']))
 		{
 			$user['regip'] = $lang->na;
 		}
@@ -204,7 +204,7 @@ if(!$mybb->input['action'])
 		$table->construct_row();
 	}
 
-	if($table->num_rows() == 0)
+	if ($table->num_rows() == 0)
 	{
 		$table->construct_cell($lang->no_users_awaiting_activation, array('colspan' => 7));
 		$table->construct_row();

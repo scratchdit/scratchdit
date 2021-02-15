@@ -49,17 +49,17 @@ class FeedParser
 		// This is to work around some dodgy bug we've detected with certain installations of PHP
 		// where certain characters would magically appear between the fetch_remote_file call
 		// and here which break the feed being imported.
-		if(strpos($contents, "<") !== 0)
+		if (strpos($contents, "<") !== 0)
 		{
 			$contents = substr($contents, strpos($contents, "<"));
 		}
-		if(strrpos($contents, ">")+1 !== strlen($contents))
+		if (strrpos($contents, ">")+1 !== strlen($contents))
 		{
 			$contents = substr($contents, 0, strrpos($contents, ">")+1);
 		}
 
 		// Could not load the feed, return an error
-		if(!$contents)
+		if (!$contents)
 		{
 			$this->error = "invalid_file";
 			return FALSE;
@@ -70,7 +70,7 @@ class FeedParser
 		$tree = $parser->get_tree();
 
 		// If the feed is invalid, throw back an error
-		if($tree == FALSE)
+		if ($tree == FALSE)
 		{
 			$this->error = "invalid_feed_xml";
 			return FALSE;
@@ -80,7 +80,7 @@ class FeedParser
 		$tree = $this->keys_to_lowercase($tree);
 
 		// This is an RSS feed, parse it
-		if(array_key_exists("rss", $tree))
+		if (array_key_exists("rss", $tree))
 		{
 			$this->parse_rss($tree['rss']);
 		}
@@ -111,7 +111,7 @@ class FeedParser
 		);
 
 		// The XML parser does not create a multidimensional array of items if there is one item, so fake it
-		if(!array_key_exists("0", $feed_contents['channel']['item']))
+		if (!array_key_exists("0", $feed_contents['channel']['item']))
 		{
 			$feed_contents['channel']['item'] = array($feed_contents['channel']['item']);
 		}
@@ -126,30 +126,30 @@ class FeedParser
 
 
 			// Set the item title if we have it
-			if(array_key_exists("title", $feed_item))
+			if (array_key_exists("title", $feed_item))
 			{
 				$item['title'] = $feed_item['title']['value'];
 			}
 
-			if(array_key_exists("description", $feed_item))
+			if (array_key_exists("description", $feed_item))
 			{
 				$item['description'] = $feed_item['description']['value'];
 			}
 
-			if(array_key_exists("link", $feed_item))
+			if (array_key_exists("link", $feed_item))
 			{
 				$item['link'] = $feed_item['link']['value'];
 			}
 
 			// If we have a pub date, store it and attempt to generate a unix timestamp from it
-			if(array_key_exists("pubdate", $feed_item))
+			if (array_key_exists("pubdate", $feed_item))
 			{
 				$item['date'] = $feed_item['pubdate']['value'];
 				$item['date_timestamp'] = $this->get_rss_timestamp($item['date']);
 			}
 
 			// If we have a GUID
-			if(array_key_exists("guid", $feed_item))
+			if (array_key_exists("guid", $feed_item))
 			{
 				$item['guid'] = $feed_item['guid']['value'];
 			}
@@ -160,22 +160,22 @@ class FeedParser
 			}
 
 			// If we have some content, set it
-			if(array_key_exists("content:encoded", $feed_item))
+			if (array_key_exists("content:encoded", $feed_item))
 			{
 				$item['content'] = $feed_item['content:encoded']['value'];
 			}
-			else if(array_key_exists("content", $feed_item))
+			else if (array_key_exists("content", $feed_item))
 			{
 				$item['content'] = $feed_item['content']['value'];
 			}
 
 			// We have a DC based creator, set it
-			if(array_key_exists("dc:creator", $feed_item))
+			if (array_key_exists("dc:creator", $feed_item))
 			{
 				$item['author'] = $feed_item['dc:creator']['value'];
 			}
 			// Otherwise, attempt to use the author if we have it
-			else if(array_key_exists("author", $feed_item))
+			else if (array_key_exists("author", $feed_item))
 			{
 				$item['author'] = $feed_item['author']['value'];
 			}
@@ -198,7 +198,7 @@ class FeedParser
 		foreach($array as $key => $value)
 		{
 			$new_key = strtolower($key);
-			if(is_array($value))
+			if (is_array($value))
 			{
 				$new_array[$new_key] = $this->keys_to_lowercase($value);
 			}
@@ -219,9 +219,9 @@ class FeedParser
 	function get_rss_timestamp($date)
 	{
 		$stamp = strtotime($date);
-		if($stamp <= 0)
+		if ($stamp <= 0)
 		{
-			if(preg_match("#\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\+\d{2}:\d{2}#", $time, $result))
+			if (preg_match("#\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\+\d{2}:\d{2}#", $time, $result))
 			{
 				$time = str_replace(array("T", "+"), array(" ", " +"), $time);
 				$time[23] = "";

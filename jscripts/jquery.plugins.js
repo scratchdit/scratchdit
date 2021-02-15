@@ -259,7 +259,7 @@
 (function (factory) {
   // Making your jQuery plugin work better with npm tools
   // //blog.npmjs.org/post/112712169830/making-your-jquery-plugin-work-better-with-npm
-  if(typeof module === "object" && typeof module.exports === "object") {
+  if (typeof module === "object" && typeof module.exports === "object") {
     factory(require("jquery"), window, document);
   }
   else {
@@ -336,7 +336,7 @@
     open: function() {
       var m = this;
       this.block();
-      if(this.options.doFade) {
+      if (this.options.doFade) {
         setTimeout(function() {
           m.show();
         }, this.options.fadeDuration * this.options.fadeDelay);
@@ -367,7 +367,7 @@
       this.$body.css('overflow','hidden');
       this.$blocker = $('<div class="jquery-modal blocker current"></div>').appendTo(this.$body);
       selectCurrent();
-      if(this.options.doFade) {
+      if (this.options.doFade) {
         this.$blocker.css('opacity',0).animate({opacity: 1}, this.options.fadeDuration);
       }
       this.$elm.trigger($.modal.BLOCK, [this._ctx()]);
@@ -393,7 +393,7 @@
         this.$elm.append(this.closeButton);
       }
       this.$elm.addClass(this.options.modalClass).appendTo(this.$blocker);
-      if(this.options.doFade) {
+      if (this.options.doFade) {
         this.$elm.css('opacity',0).show().animate({opacity: 1}, this.options.fadeDuration);
       } else {
         this.$elm.show();
@@ -405,7 +405,7 @@
       this.$elm.trigger($.modal.BEFORE_CLOSE, [this._ctx()]);
       if (this.closeButton) this.closeButton.remove();
       var _this = this;
-      if(this.options.doFade) {
+      if (this.options.doFade) {
         this.$elm.fadeOut(this.options.fadeDuration, function () {
           _this.$elm.trigger($.modal.AFTER_CLOSE, [_this._ctx()]);
         });
@@ -502,7 +502,7 @@
 		var el = $(el);
 		var popup = this;
 		var popup_menu = $("#" + el.attr('id') + "_popup");
-		if(typeof close_in_popupmenu == 'undefined')
+		if (typeof close_in_popupmenu == 'undefined')
 		{
 			var close_in_popupmenu = TRUE;
 		}
@@ -511,7 +511,7 @@
 		{
 			e.preventDefault();
 
-			if(popup_menu.is(':visible'))
+			if (popup_menu.is(':visible'))
 			{
 				popup.close();
 				return;
@@ -522,7 +522,7 @@
 			offset.top += el.outerHeight();
 
 			// We only adjust if it goes out of the page (?)
-			if((el.offset().left + popup_menu.outerWidth()) > $(window).width())
+			if ((el.offset().left + popup_menu.outerWidth()) > $(window).width())
 				var adjust = popup_menu.outerWidth() - el.outerWidth();
 			else
 				var adjust = 0;
@@ -538,15 +538,15 @@
 			// Closes the popup if we click outside the button (this doesn't seem to work properly - couldn't find any solutions that actually did - if we click the first item on the menu)
 			// Credits: //stackoverflow.com/questions/1160880/detect-click-outside-element
 			$('body, .popup_item').bind('click.close_popup', function(e) {
-				if(close_in_popupmenu)
+				if (close_in_popupmenu)
 				{
-					if($(e.target).closest("#" + el.attr('id')).length == 0) {
+					if ($(e.target).closest("#" + el.attr('id')).length == 0) {
 						popup.close();
 					}
 				}
 				else
 				{
-					if($(e.target).closest("#" + el.attr('id')).length == 0 && $(e.target).closest("#" + el.attr('id') + '_popup').length == 0) {
+					if ($(e.target).closest("#" + el.attr('id')).length == 0 && $(e.target).closest("#" + el.attr('id') + '_popup').length == 0) {
 						popup.close();
 					}
 				}

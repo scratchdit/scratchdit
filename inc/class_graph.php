@@ -91,7 +91,7 @@ class Graph {
 		// Setup initial graph layout
 
 		// Check for GD >= 2, create base image
-		if(gd_version() >= 2)
+		if (gd_version() >= 2)
 		{
 			$this->im = imagecreateTRUEcolor($this->img_width, $this->img_height);
 		}
@@ -101,12 +101,12 @@ class Graph {
 		}
 
 		// No GD support, die.
-		if(!$this->im)
+		if (!$this->im)
 		{
 			return FALSE;
 		}
 
-		if(function_exists("imageantialias"))
+		if (function_exists("imageantialias"))
 		{
 			imageantialias($this->im, TRUE);
 		}
@@ -152,7 +152,7 @@ class Graph {
 	 */
 	private function image_create_rectangle($x1, $y1, $x2, $y2, $radius=1, $color=NULL)
 	{
-		if($color == NULL)
+		if ($color == NULL)
 		{
 			$color = $this->color(0, 0, 0);
 		}
@@ -161,7 +161,7 @@ class Graph {
 		imagefilledrectangle($this->im, $x1, $y1+$radius, $x2, $y2-$radius, $color);
 		imagefilledrectangle($this->im, $x1+$radius, $y1, $x2-$radius, $y2, $color);
 
-		if($radius > 0)
+		if ($radius > 0)
 		{
 			$diameter = $radius*2;
 
@@ -266,7 +266,7 @@ class Graph {
 
 		foreach($this->points as $x => $y)
 		{
-			if(($x_label_scale == 0 || (($x+1) % $x_label_scale) == 0) && $x != 0)
+			if (($x_label_scale == 0 || (($x+1) % $x_label_scale) == 0) && $x != 0)
 			{
 				$x_label_points[] = $x;
 
@@ -276,13 +276,13 @@ class Graph {
 			}
 
 			// Look ahead to find our next point, if there is one
-			if(!array_key_exists($x+1, $this->points))
+			if (!array_key_exists($x+1, $this->points))
 			{
 				break;
 			}
 			$next_y = $this->points[$x+1];
 
-			if($y_scale_factor == 0)
+			if ($y_scale_factor == 0)
 			{
 				$y_scaled = $next_y_scaled = 0;
 			}
@@ -309,7 +309,7 @@ class Graph {
 		// Draw our bottom label
 		imagestring($this->im, 2, ($this->img_width / 2), $y_initial+25, $this->bottom_label, $this->color(0, 0, 0));
 
-		if($max > 4)
+		if ($max > 4)
 		{
 			// Draw our y labels
 			for($i = 1; $i < 4; ++$i)

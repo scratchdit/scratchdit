@@ -34,7 +34,7 @@ class MailHandler
 	 * @var string
 	 */
 	public $from;
-	
+
 	/**
 	 * Who the email should return to.
 	 *
@@ -48,7 +48,7 @@ class MailHandler
 	 * @var string
 	 */
 	public $subject;
-	
+
 	/**
 	 * The unaltered subject of mail.
 	 *
@@ -109,11 +109,11 @@ class MailHandler
 	function build_message($to, $subject, $message, $from="", $charset="", $headers="", $format="text", $message_text="", $return_email="")
 	{
 		global $parser, $lang, $mybb;
-		
+
 		$this->message = '';
 		$this->headers = $headers;
 
-		if($from)
+		if ($from)
 		{
 			$this->from = $from;
 		}
@@ -121,7 +121,7 @@ class MailHandler
 		{
 			$this->from = "";
 
-			if($mybb->settings['mail_handler'] == 'smtp')
+			if ($mybb->settings['mail_handler'] == 'smtp')
 			{
 				$this->from = $mybb->settings['adminemail'];
 			}
@@ -132,14 +132,14 @@ class MailHandler
 			}
 		}
 
-		if($return_email)
+		if ($return_email)
 		{
 			$this->return_email = $return_email;
 		}
 		else
 		{
 			$this->return_email = "";
-			if($mybb->settings['returnemail'])
+			if ($mybb->settings['returnemail'])
 			{
 				$this->return_email = $mybb->settings['returnemail'];
 			}
@@ -152,7 +152,7 @@ class MailHandler
 		$this->set_to($to);
 		$this->set_subject($subject);
 
-		if($charset)
+		if ($charset)
 		{
 			$this->set_charset($charset);
 		}
@@ -171,7 +171,7 @@ class MailHandler
 	{
 		global $lang;
 
-		if(empty($charset))
+		if (empty($charset))
 		{
 			$this->charset = $lang->settings['charset'];
 		}
@@ -190,12 +190,12 @@ class MailHandler
 	{
 		$message = $this->cleanup_crlf($message);
 
-		if($message_text)
+		if ($message_text)
 		{
 			$message_text = $this->cleanup_crlf($message_text);
 		}
 
-		if($this->parse_format == "html" || $this->parse_format == "both")
+		if ($this->parse_format == "html" || $this->parse_format == "both")
 		{
 			$this->set_html_headers($message, $message_text);
 		}
@@ -244,12 +244,12 @@ class MailHandler
 	 */
 	function set_html_headers($message, $message_text="")
 	{
-		if(!$message_text && $this->parse_format == 'both')
+		if (!$message_text && $this->parse_format == 'both')
 		{
 			$message_text = strip_tags($message);
 		}
-		
-		if($this->parse_format == 'both')
+
+		if ($this->parse_format == 'both')
 		{
 			$mime_boundary = "=_NextPart".md5(TIME_NOW);
 
@@ -284,18 +284,18 @@ class MailHandler
 	{
 		// Build mail headers
 		$this->headers .= "From: {$this->from}{$this->delimiter}";
-		
-		if($this->return_email)
+
+		if ($this->return_email)
 		{
 			$this->headers .= "Return-Path: {$this->return_email}{$this->delimiter}";
 			$this->headers .= "Reply-To: {$this->return_email}{$this->delimiter}";
 		}
 
-		if(isset($_SERVER['SERVER_NAME']))
+		if (isset($_SERVER['SERVER_NAME']))
 		{
 			$http_host = $_SERVER['SERVER_NAME'];
 		}
-		else if(isset($_SERVER['HTTP_HOST']))
+		else if (isset($_SERVER['HTTP_HOST']))
 		{
 			$http_host = $_SERVER['HTTP_HOST'];
 		}
@@ -306,7 +306,7 @@ class MailHandler
 
 		$msg_id = md5(uniqid(TIME_NOW)) . "@" . $http_host;
 
-		if($mybb->settings['mail_message_id'])
+		if ($mybb->settings['mail_message_id'])
 		{
 			$this->headers .= "Message-ID: <{$msg_id}>{$this->delimiter}";
 		}
@@ -316,7 +316,7 @@ class MailHandler
 		$this->headers .= "X-Mailer: MyBB{$this->delimiter}";
 		$this->headers .= "MIME-Version: 1.0{$this->delimiter}";
 	}
-	
+
 	/**
 	 * Log a fatal error message to the database.
 	 *
@@ -326,7 +326,7 @@ class MailHandler
 	function fatal_error($error)
 	{
 		global $db;
-		
+
 		$mail_error = array(
 			"subject" => $db->escape_string($this->orig_subject),
 			"message" => $db->escape_string($this->message),
@@ -338,10 +338,10 @@ class MailHandler
 			"smtpcode" => intval($this->code)
 		);
 		$db->insert_query("mailerrors", $mail_error);
-		
+
 		// Another neat feature would be the ability to notify the site administrator via email - but wait, with email down, how do we do that? How about private message and hope the admin checks their PMs?
 	}
-	
+
 	/**
 	 * Rids pesky characters from subjects, recipients, from addresses etc (prevents mail injection too)
 	 *
@@ -381,7 +381,7 @@ class MailHandler
 	 */
 	function utf8_encode($string)
 	{
-		if(strtolower($this->charset) == 'utf-8' && preg_match('/[^\x20-\x7E]/', $string))
+		if (strtolower($this->charset) == 'utf-8' && preg_match('/[^\x20-\x7E]/', $string))
 		{
 			$chunk_size = 47; // Derived from floor((75 - strlen("=?UTF-8?B??=")) * 0.75);
 			$len = strlen($string);
@@ -406,6 +406,6 @@ class MailHandler
 			return trim($output);
 		}
 		return $string;
-	} 
+	}
 }
 ?>

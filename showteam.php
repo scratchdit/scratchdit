@@ -35,13 +35,13 @@ while($usergroup = $db->fetch_array($query))
 	$usergroups[$usergroup['gid']] = $usergroup;
 }
 
-if(empty($usergroups))
+if (empty($usergroups))
 {
 	error($lang->error_noteamstoshow);
 }
 
 // Fetch specific forum moderator details
-if($usergroups[6]['gid'])
+if ($usergroups[6]['gid'])
 {
 	$query = $db->query("
 		SELECT m.*, f.name
@@ -60,11 +60,11 @@ if($usergroups[6]['gid'])
 // Now query the users of those specific groups
 $groups_in = implode(",", array_keys($usergroups));
 $users_in = implode(",", array_keys($moderators));
-if(!$groups_in)
+if (!$groups_in)
 {
 	$groups_in = 0;
 }
-if(!$users_in)
+if (!$users_in)
 {
 	$users_in = 0;
 }
@@ -74,11 +74,11 @@ $query = $db->simple_select("users", "uid, username, displaygroup, usergroup, ig
 while($user = $db->fetch_array($query))
 {
 	// If this user is a moderator
-	if(isset($moderators[$user['uid']]))
+	if (isset($moderators[$user['uid']]))
 	{
 		foreach($moderators[$user['uid']] as $forum)
 		{
-			if($forum_permissions[$forum['fid']]['canview'] == 1)
+			if ($forum_permissions[$forum['fid']]['canview'] == 1)
 			{
 				$forum_url = get_forum_link($forum['fid']);
 				eval("\$forumlist .= \"".$templates->get("showteam_moderators_forum")."\";");
@@ -89,13 +89,13 @@ while($user = $db->fetch_array($query))
 		$usergroups[6]['user_list'][$user['uid']] = $user;
 	}
 
-	if($user['displaygroup'] == '6' || $user['usergroup'] == '6')
+	if ($user['displaygroup'] == '6' || $user['usergroup'] == '6')
 	{
 		$usergroups[6]['user_list'][$user['uid']] = $user;
 	}
 
 	// Are they also in another group which is being shown on the list?
-	if($user['displaygroup'] != 0)
+	if ($user['displaygroup'] != 0)
 	{
 		$group = $user['displaygroup'];
 	}
@@ -104,7 +104,7 @@ while($user = $db->fetch_array($query))
 		$group = $user['usergroup'];
 	}
 
-	if($usergroups[$group] && $group != 6)
+	if ($usergroups[$group] && $group != 6)
 	{
 		$usergroups[$group]['user_list'][$user['uid']] = $user;
 	}
@@ -115,7 +115,7 @@ $grouplist = '';
 foreach($usergroups as $usergroup)
 {
 	// If we have no users - don't show this group
-	if(!isset($usergroup['user_list']))
+	if (!isset($usergroup['user_list']))
 	{
 		continue;
 	}
@@ -129,12 +129,12 @@ foreach($usergroups as $usergroup)
 		// For the postbit templates
 		$post['uid'] = $user['uid'];
 		$emailcode = $pmcode = '';
-		if($user['hideemail'] != 1)
+		if ($user['hideemail'] != 1)
 		{
 			eval("\$emailcode = \"".$templates->get("postbit_email")."\";");
 		}
 
-		if($user['receivepms'] != 0 && $mybb->settings['enablepms'] != 0 && my_strpos(",".$user['ignorelist'].",", ",".$mybb->user['uid'].",") === FALSE)
+		if ($user['receivepms'] != 0 && $mybb->settings['enablepms'] != 0 && my_strpos(",".$user['ignorelist'].",", ",".$mybb->user['uid'].",") === FALSE)
 		{
 			eval("\$pmcode = \"".$templates->get("postbit_pm")."\";");
 		}
@@ -142,7 +142,7 @@ foreach($usergroups as $usergroup)
 		$bgcolor = alt_trow();
 
 		// If the current group is a moderator group
-		if($usergroup['gid'] == 6 && !empty($user['forumlist']))
+		if ($usergroup['gid'] == 6 && !empty($user['forumlist']))
 		{
 			$forumslist = $user['forumlist'];
 			eval("\$modrows .= \"".$templates->get("showteam_moderators_mod")."\";");
@@ -153,12 +153,12 @@ foreach($usergroups as $usergroup)
 		}
 	}
 
-	if($modrows && $usergroup['gid'] == 6)
+	if ($modrows && $usergroup['gid'] == 6)
 	{
 		eval("\$grouplist .= \"".$templates->get("showteam_moderators")."\";");
 	}
 
-	if($usergrouprows)
+	if ($usergrouprows)
 	{
 		eval("\$grouplist .= \"".$templates->get("showteam_usergroup")."\";");
 	}
@@ -166,7 +166,7 @@ foreach($usergroups as $usergroup)
 	$usergrouprows = $modrows = '';
 }
 
-if(empty($grouplist))
+if (empty($grouplist))
 {
 	error($lang->error_noteamstoshow);
 }

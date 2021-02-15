@@ -80,12 +80,12 @@ class dbpdoEngine {
 	 */
 	function fetch_array($query)
 	{
-		if(!is_object($query))
+		if (!is_object($query))
 		{
 			return;
 		}
 
-		if($this->seek_array[$query->guid])
+		if ($this->seek_array[$query->guid])
 		{
 			$array = $query->fetch(PDO::FETCH_BOTH, $this->seek[$query->guid]['offset'], $this->seek[$query->guid]['row']);
 		}
@@ -105,7 +105,7 @@ class dbpdoEngine {
 	 */
 	function seek($query, $row)
 	{
-		if(!is_object($query))
+		if (!is_object($query))
 		{
 			return;
 		}
@@ -121,7 +121,7 @@ class dbpdoEngine {
 	 */
 	function num_rows($query)
 	{
-		if(!is_object($query))
+		if (!is_object($query))
 		{
 			return;
 		}
@@ -148,7 +148,7 @@ class dbpdoEngine {
 	 */
 	function error_number($query)
 	{
-		if(!is_object($query) || !method_exists($query, "errorCode"))
+		if (!is_object($query) || !method_exists($query, "errorCode"))
 		{
 			return;
 		}
@@ -166,7 +166,7 @@ class dbpdoEngine {
 	 */
 	function error_string($query)
 	{
-		if(!is_object($query) || !method_exists($query, "errorInfo"))
+		if (!is_object($query) || !method_exists($query, "errorInfo"))
 		{
 			return $this->db->errorInfo();
 		}

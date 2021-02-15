@@ -20,14 +20,14 @@ var question = {
 	refresh_complete: function(request)
 	{
 		var json = JSON.parse(request.responseText);
-		if(json.hasOwnProperty("errors"))
+		if (json.hasOwnProperty("errors"))
 		{
 			$.each(json.errors, function(i, message)
 			{
 				$.jGrowl(lang.question_fetch_failure + ' ' + message, {theme:'jgrowl_error'});
 			});
 		}
-		else if(json.question && json.sid)
+		else if (json.question && json.sid)
 		{
 			$("#question").html(json.question);
 			$("#question_id").val(json.sid);

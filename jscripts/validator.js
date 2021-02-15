@@ -5,7 +5,7 @@ FormValidator.prototype = {
 
 	initialize: function(form, options)
 	{
-		if(!$(form))
+		if (!$(form))
 		{
 			alert("Invalid form");
 		}
@@ -18,16 +18,16 @@ FormValidator.prototype = {
 			status_field: field+"_status"
 		};
 		Object.extend(options, customOptions || {});
-		if(!$(field) && !validation_type)
+		if (!$(field) && !validation_type)
 		{
 			return FALSE;
 		}
-		if(!this.validation_fields[field])
+		if (!this.validation_fields[field])
 		{
 			this.validation_fields[field] = new Array();
 			Event.observe($(field), "blur", this.onBlur.bindAsEventListener(this));
 		}
-		if(!$(options.status_field))
+		if (!$(options.status_field))
 		{
 			this.createStatusField(field);
 		}
@@ -44,7 +44,7 @@ FormValidator.prototype = {
 
 	validateField: function(id, twin_call, submit_call)
 	{
-		if(!this.validation_fields[id])
+		if (!this.validation_fields[id])
 		{
 			return FALSE;
 		}
@@ -52,23 +52,23 @@ FormValidator.prototype = {
 		for(var i=0; i<validation_field.length;i++)
 		{
 			var field = validation_field[i];
-			if(field.validation_type == "matches")
+			if (field.validation_type == "matches")
 			{
 				twin = field.options.match_field;
-				if(Element.hasClassName(twin, "invalid_field"))
+				if (Element.hasClassName(twin, "invalid_field"))
 				{
 					return FALSE;
 				}
 			}
 			result = this.checkValidation(id, field.validation_type, field.options, submit_call);
 			options = field.options;
-			if(result == FALSE)
+			if (result == FALSE)
 			{
 				this.showError(id, options.status_field, options.failure_message);
 				// don't run any further validation routines
 				return FALSE;
 			}
-			else if(result == "loading")
+			else if (result == "loading")
 			{
 				this.showLoading(id, options.status_field, options.loading_message);
 				$(id).className = "";
@@ -79,15 +79,15 @@ FormValidator.prototype = {
 				ret = TRUE;
 				this.showSuccess(id, options.status_field, options.success_message);
 				// Has match field
-				if(options.match_field && !twin_call)
+				if (options.match_field && !twin_call)
 				{
-					if(field.validation_type != "matches")
+					if (field.validation_type != "matches")
 					{
 						return TRUE;
 					}
 
 					ret = this.validateField(options.match_field, 1);
-					if(ret == FALSE)
+					if (ret == FALSE)
 					{
 						$(id).className = "invalid_field";
 					}
@@ -101,12 +101,12 @@ FormValidator.prototype = {
 		element = $(id);
 		field_type = element.type.toLowerCase();
 
-		if(typeof type == "function")
+		if (typeof type == "function")
 		{
 			return type(id, this);
 		}
 
-		if(field_type == "radio" || field_type == "checkbox")
+		if (field_type == "radio" || field_type == "checkbox")
 		{
 			value = this.getCheckedValue(id);
 		}
@@ -117,29 +117,29 @@ FormValidator.prototype = {
 		switch(type.toLowerCase())
 		{
 			case "ajax":
-				if(use_xmlhttprequest == 1)
+				if (use_xmlhttprequest == 1)
 				{
-					if(!options.url)
+					if (!options.url)
 					{
 						return FALSE;
 					}
 
 					// don't ajax validate on submit
-					if(submit_call)
+					if (submit_call)
 					{
 						return TRUE;
 					}
 
 					extra = "";
 
-					if(typeof options.extra_body == "object")
+					if (typeof options.extra_body == "object")
 					{
 						for(x = 0; x < options.extra_body.length; ++x)
 						{
 							extra += "&" + escape(options.extra_body[x]) + "=" + encodeURIComponent(this.getValue(options.extra_body[x]));
 						}
 					}
-					else if(typeof options.extra_body != "undefined")
+					else if (typeof options.extra_body != "undefined")
 					{
 						extra = "&" + escape(options.extra_body) + "=" + encodeURIComponent(this.getValue(options.extra_body));
 					}
@@ -152,7 +152,7 @@ FormValidator.prototype = {
 				type = "notempty";
 			case "notempty":
 				value = value.replace(/^\s+|\s+$/g,"");
-				if(value == NULL || value.length == 0)
+				if (value == NULL || value.length == 0)
 				{
 					return FALSE;
 				}
@@ -160,7 +160,7 @@ FormValidator.prototype = {
 				return TRUE;
 				break;
 			case "length":
-				if((options.min && value.length < options.min) || (options.max && value.length > options.max))
+				if ((options.min && value.length < options.min) || (options.max && value.length > options.max))
 				{
 					return FALSE;
 				}
@@ -168,12 +168,12 @@ FormValidator.prototype = {
 				return TRUE;
 				break;
 			case "matches":
-				if(!options.match_field)
+				if (!options.match_field)
 				{
 					return FALSE;
 				}
 
-				if(value != this.getValue(options.match_field))
+				if (value != this.getValue(options.match_field))
 				{
 					return FALSE;
 				}
@@ -183,7 +183,7 @@ FormValidator.prototype = {
 			case "regexp":
 				regexp = new RegExp(options.regexp);
 
-				if(!element.value.match(regexp))
+				if (!element.value.match(regexp))
 				{
 					return FALSE;
 				}
@@ -195,19 +195,19 @@ FormValidator.prototype = {
 
 	ajaxValidateComplete: function(id, options, request)
 	{
-		if(request.responseXML.getElementsByTagName("success").length > 0)
+		if (request.responseXML.getElementsByTagName("success").length > 0)
 		{
 			response = request.responseXML.getElementsByTagName("success")[0].firstChild;
-			if(response)
+			if (response)
 			{
 				response = response.data;
 			}
 			this.showSuccess(id, options.status_field, response);
 		}
-		else if(request.responseXML.getElementsByTagName("fail").length > 0)
+		else if (request.responseXML.getElementsByTagName("fail").length > 0)
 		{
 			response = request.responseXML.getElementsByTagName("fail")[0].firstChild;
-			if(response)
+			if (response)
 			{
 				response = response.data;
 			}
@@ -222,7 +222,7 @@ FormValidator.prototype = {
 		}.bind(this));
 
 		errorFields = $$(".invalid_field");
-		if(errorFields.length > 0)
+		if (errorFields.length > 0)
 		{
 			// Focus on field with first error
 			errorFields[0].focus();
@@ -258,7 +258,7 @@ FormValidator.prototype = {
 		Element.removeClassName(area, "validation_loading");
 		Element.addClassName(area, "validation_error");
 		$(field).className = "invalid_field";
-		if(!message)
+		if (!message)
 		{
 			message = "The value you entered is invalid";
 		}
@@ -272,7 +272,7 @@ FormValidator.prototype = {
 		Element.removeClassName(area, "validation_loading");
 		Element.addClassName(area, "validation_success");
 		$(field).className = "valid_field";
-		if(message)
+		if (message)
 		{
 			$(area).innerHTML = message;
 			$(area).show();
@@ -289,7 +289,7 @@ FormValidator.prototype = {
 		Element.removeClassName(area, "validation_error");
 		Element.addClassName(area, "validation_loading");
 
-		if(!message)
+		if (!message)
 		{
 			message = "Checking for validity...";
 		}
@@ -302,7 +302,7 @@ FormValidator.prototype = {
 	{
 		element = $(element);
 
-		if(!element)
+		if (!element)
 		{
 			return FALSE;
 		}
@@ -322,7 +322,7 @@ FormValidator.prototype = {
 			case "select-one":
 				value = '';
 				index = element.selectedIndex;
-				if(index >= 0)
+				if (index >= 0)
 				{
 					value = element.options[index].value;
 				}
@@ -331,7 +331,7 @@ FormValidator.prototype = {
 			case "select-multiple":
 				var value = new Array();
 				element.options.each(function(option) {
-					if(option.checked == TRUE)
+					if (option.checked == TRUE)
 					{
 						value.push(option.value);
 					}
@@ -346,12 +346,12 @@ FormValidator.prototype = {
 	{
 		element = $(element);
 
-		if(!element)
+		if (!element)
 		{
 			return FALSE;
 		}
 
-		if(!element.parentNode)
+		if (!element.parentNode)
 		{
 			return FALSE;
 		}
@@ -359,19 +359,19 @@ FormValidator.prototype = {
 		var value = new Array();
 		inputs = element.parentNode.getElementsByTagName('INPUT');
 		inputs.each(function(input) {
-			if(input.checked == TRUE)
+			if (input.checked == TRUE)
 			{
 				value.push(input.value);
 			}
 		});
 
 		// No matches, no return value
-		if(value.length == 0)
+		if (value.length == 0)
 		{
 			return '';
 		}
 		// One match, return string
-		else if(value.length == 1)
+		else if (value.length == 1)
 		{
 			return value[0];
 		}

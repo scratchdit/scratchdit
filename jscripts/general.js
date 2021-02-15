@@ -20,19 +20,19 @@ var MyBB = {
 
 		// Initialise "initial focus" field if we have one
 		initialfocus = $$('input.initial_focus');
-		if(initialfocus[0])
+		if (initialfocus[0])
 		{
 			initialfocus[0].focus();
 		}
 
-		if(typeof(use_xmlhttprequest) != "undefined" && use_xmlhttprequest == 1)
+		if (typeof(use_xmlhttprequest) != "undefined" && use_xmlhttprequest == 1)
 		{
 			mark_read_imgs = $$('img.ajax_mark_read');
 			mark_read_imgs.each(function(element) {
-				if(element.src.match("off.gif") || element.src.match("offlock.gif") || (element.title && element.title == lang.no_new_posts)) return;
+				if (element.src.match("off.gif") || element.src.match("offlock.gif") || (element.title && element.title == lang.no_new_posts)) return;
 				Event.observe(element, "click", MyBB.markForumRead.bindAsEventListener(this));
 				element.style.cursor = 'pointer';
-				if(element.title)
+				if (element.title)
 				{
 					element.title += " - ";
 				}
@@ -46,40 +46,40 @@ var MyBB = {
 		this.useragent = navigator.userAgent.toLowerCase();
 		this.useragent_version = parseInt(navigator.appVersion);
 
-		if(navigator.product == "Gecko" && navigator.vendor.indexOf("Apple Computer") != -1)
+		if (navigator.product == "Gecko" && navigator.vendor.indexOf("Apple Computer") != -1)
 		{
 			this.browser = "safari";
 		}
-		else if(this.useragent.indexOf("chrome") != -1)
+		else if (this.useragent.indexOf("chrome") != -1)
 		{
 			this.browser = "chrome";
 		}
-		else if(navigator.product == "Gecko")
+		else if (navigator.product == "Gecko")
 		{
 			this.browser = "mozilla";
 		}
-		else if(this.useragent.indexOf("opera") != -1)
+		else if (this.useragent.indexOf("opera") != -1)
 		{
 			this.browser = "opera";
 		}
-		else if(this.useragent.indexOf("konqueror") != -1)
+		else if (this.useragent.indexOf("konqueror") != -1)
 		{
 			this.browser = "konqueror";
 		}
-		else if(this.useragent.indexOf("msie") != -1)
+		else if (this.useragent.indexOf("msie") != -1)
 		{
 			this.browser = "ie";
 		}
-		else if(this.useragent.indexOf("compatible") == -1 && this.useragent.indexOf("mozilla") != -1)
+		else if (this.useragent.indexOf("compatible") == -1 && this.useragent.indexOf("mozilla") != -1)
 		{
 			this.browser = "netscape";
 		}
 
-		if(this.useragent.indexOf("win") != -1)
+		if (this.useragent.indexOf("win") != -1)
 		{
 			this.os = "win";
 		}
-		else if(this.useragent.indexOf("mac") != -1)
+		else if (this.useragent.indexOf("mac") != -1)
 		{
 			this.os = "mac";
 		}
@@ -89,12 +89,12 @@ var MyBB = {
 	{
 		settings = "toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes,resizable=yes";
 
-		if(width)
+		if (width)
 		{
 			settings = settings+",width="+width;
 		}
 
-		if(height)
+		if (height)
 		{
 			settings = settings+",height="+height;
 		}
@@ -105,7 +105,7 @@ var MyBB = {
 	{
 		confirmReturn = confirm(deleteevent_confirm);
 
-		if(confirmReturn == TRUE)
+		if (confirmReturn == TRUE)
 		{
 			var form = new Element("form", { method: "post", action: "calendar.php", style: "display: none;" });
 
@@ -117,7 +117,7 @@ var MyBB = {
 				})
 			});
 
-			if(my_post_key)
+			if (my_post_key)
 			{
 				form.insert({ bottom: new Element("input",
 					{
@@ -153,12 +153,12 @@ var MyBB = {
 	{
 		var allbox = Event.element(e);
 		var form = Event.findElement(e, 'FORM');
-		if(!form)
+		if (!form)
 		{
 			return FALSE;
 		}
 		form.getElements().each(function(element) {
-			if(!element.hasClassName("checkall") && element.type == "checkbox")
+			if (!element.hasClassName("checkall") && element.type == "checkbox")
 			{
 				element.checked = allbox.checked;
 			}
@@ -167,7 +167,7 @@ var MyBB = {
 
 	reputation: function(uid, pid)
 	{
-		if(!pid)
+		if (!pid)
 		{
 			var pid = 0;
 		}
@@ -179,7 +179,7 @@ var MyBB = {
 	{
 		confirmReturn = confirm(delete_reputation_confirm);
 
-		if(confirmReturn == TRUE)
+		if (confirmReturn == TRUE)
 		{
 			var form = new Element("form", { method: "post", action: "reputation.php?action=delete", style: "display: none;" });
 
@@ -191,7 +191,7 @@ var MyBB = {
 				})
 			});
 
-			if(my_post_key)
+			if (my_post_key)
 			{
 				form.insert({ bottom: new Element("input",
 					{
@@ -222,7 +222,7 @@ var MyBB = {
 
 	hopPage: function(tid, page, pages)
 	{
-		if(pages > 1)
+		if (pages > 1)
 		{
 			defpage = page + 1;
 		}
@@ -233,7 +233,7 @@ var MyBB = {
 
 		promptres = prompt("Quick Page Jump\nPlease enter a page number between 1 and "+pages+" to jump to.", defpage);
 
-		if((promptres != NULL) && (promptres != "") && (promptres > 1) && (promptres <= pages))
+		if ((promptres != NULL) && (promptres != "") && (promptres > 1) && (promptres <= pages))
 		{
 			window.location = "showthread.php?tid="+tid+"&page"+promotres;
 		}
@@ -242,12 +242,12 @@ var MyBB = {
 	markForumRead: function(event)
 	{
 		element = Event.element(event);
-		if(!element)
+		if (!element)
 		{
 			return FALSE;
 		}
 		var fid = element.id.replace("mark_read_", "");
-		if(!fid)
+		if (!fid)
 		{
 			return FALSE;
 		}
@@ -256,7 +256,7 @@ var MyBB = {
 
 	forumMarkedRead: function(fid, request)
 	{
-		if(request.responseText == 1)
+		if (request.responseText == 1)
 		{
 			$('mark_read_'+fid).src = $('mark_read_'+fid).src.replace("on.gif", "off.gif");
 			Event.stopObserving($('mark_read_'+fid), "click", MyBB.markForumRead.bindAsEventListener(this));
@@ -269,9 +269,9 @@ var MyBB = {
 	{
 		var date = new Date();
 		var local_offset = date.getTimezoneOffset() / 60;
-		if(Math.abs(parseInt(timezone_with_dst) + local_offset) == 1)
+		if (Math.abs(parseInt(timezone_with_dst) + local_offset) == 1)
 		{
-			if(use_xmlhttprequest != 1 || !new Ajax.Request('misc.php?action=dstswitch&ajax=1', {method: 'post'})) // Ajax update failed? (No ajax support) Fake it
+			if (use_xmlhttprequest != 1 || !new Ajax.Request('misc.php?action=dstswitch&ajax=1', {method: 'post'})) // Ajax update failed? (No ajax support) Fake it
 			{
 				var form = new Element("form", { method: "post", action: "misc.php", style: "display: none;" });
 
@@ -291,12 +291,12 @@ var MyBB = {
 
 	dismissPMNotice: function()
 	{
-		if(!$('pm_notice'))
+		if (!$('pm_notice'))
 		{
 			return FALSE;
 		}
 
-		if(use_xmlhttprequest != 1)
+		if (use_xmlhttprequest != 1)
 		{
 			return TRUE;
 		}
@@ -328,7 +328,7 @@ var MyBB = {
 	changeLanguage: function()
 	{
 		form = $('lang_select');
-		if(!form)
+		if (!form)
 		{
 			return FALSE;
 		}
@@ -337,7 +337,7 @@ var MyBB = {
 
 	quickLogin: function()
 	{
-		if($("quick_login"))
+		if ($("quick_login"))
 		{
 			var form = new Element("form", { method: "post", action: "member.php" });
 			form.insert({ bottom: new Element("input",
@@ -348,7 +348,7 @@ var MyBB = {
 				})
 			});
 
-			if(document.location.href)
+			if (document.location.href)
 			{
 				form.insert({ bottom: new Element("input",
 					{
@@ -374,8 +374,8 @@ var MyBB = {
 					type: "text",
 					value: lang.username,
 					"class": "textbox",
-					onfocus: "if(this.value == '"+lang.username+"') { this.value=''; }",
-					onblur: "if(this.value == '') { this.value='"+lang.username+"'; }"
+					onfocus: "if (this.value == '"+lang.username+"') { this.value=''; }",
+					onblur: "if (this.value == '') { this.value='"+lang.username+"'; }"
 				})
 			}).insert({ bottom: "&nbsp;" });
 
@@ -386,8 +386,8 @@ var MyBB = {
 					type: "password",
 					value: lang.password,
 					"class": "textbox",
-					onfocus: "if(this.value == '"+lang.password+"') { this.value=''; }",
-					onblur: "if(this.value == '') { this.value='"+lang.password+"'; }"
+					onfocus: "if (this.value == '"+lang.password+"') { this.value=''; }",
+					onblur: "if (this.value == '') { this.value='"+lang.password+"'; }"
 				})
 			}).insert({ bottom: "&nbsp;" });
 
@@ -433,12 +433,12 @@ var Cookie = {
 		name = cookiePrefix+name+"=";
 		cookiePos = cookies.indexOf(name);
 
-		if(cookiePos != -1)
+		if (cookiePos != -1)
 		{
 			cookieStart = cookiePos+name.length;
 			cookieEnd = cookies.indexOf(";", cookieStart);
 
-			if(cookieEnd == -1)
+			if (cookieEnd == -1)
 			{
 				cookieEnd = cookies.length;
 			}
@@ -449,7 +449,7 @@ var Cookie = {
 
 	set: function(name, value, expires)
 	{
-		if(!expires)
+		if (!expires)
 		{
 			expires = "; expires=Wed, 1 Jan 2020 00:00:00 GMT;"
 		}
@@ -460,7 +460,7 @@ var Cookie = {
 			expires = "; expires="+expire.toGMTString();
 		}
 
-		if(cookieDomain)
+		if (cookieDomain)
 		{
 			domain = "; domain="+cookieDomain;
 		}
@@ -469,7 +469,7 @@ var Cookie = {
 			domain = "";
 		}
 
-		if(cookiePath != "")
+		if (cookiePath != "")
 		{
 			path = cookiePath;
 		}
@@ -494,15 +494,15 @@ var DomLib = {
 	{
 		var yScroll;
 
-		if(self.pageYOffset)
+		if (self.pageYOffset)
 		{
 			yScroll = self.pageYOffset;
 		}
-		else if(document.documentElement && document.documentElement.scrollTop) // Explorer 6 Strict
+		else if (document.documentElement && document.documentElement.scrollTop) // Explorer 6 Strict
 		{
 			yScroll = document.documentElement.scrollTop;
 		}
-		else if(document.body) // all other Explorers
+		else if (document.body) // all other Explorers
 		{
 			yScroll = document.body.scrollTop;
 		}
@@ -518,12 +518,12 @@ var DomLib = {
 	{
 		var xScroll, yScroll;
 
-		if(window.innerHeight && window.scrollMaxY)
+		if (window.innerHeight && window.scrollMaxY)
 		{
 			xScroll = document.body.scrollWidth;
 			yScroll = window.innerHeight + window.scrollMaxY;
 		}
-		else if(document.body.scrollHeight > document.body.offsetHeight) // All but Explorer Mac
+		else if (document.body.scrollHeight > document.body.offsetHeight) // All but Explorer Mac
 		{
 			xScroll = document.body.scrollWidth;
 			yScroll = document.body.scrollHeight;
@@ -535,12 +535,12 @@ var DomLib = {
 		}
 
 		var windowWidth, windowHeight;
-		if(self.innerHeight) // all except Explorer
+		if (self.innerHeight) // all except Explorer
 		{
 			windowWidth = self.innerWidth;
 			windowHeight = self.innerHeight;
 		}
-		else if(document.documentElement && document.documentElement.clientHeight)  // Explorer 6 Strict Mode
+		else if (document.documentElement && document.documentElement.clientHeight)  // Explorer 6 Strict Mode
 		{
 			windowWidth = document.documentElement.clientWidth;
 			windowHeight = document.documentElement.clientHeight;
@@ -554,7 +554,7 @@ var DomLib = {
 		var pageHeight, pageWidth;
 
 		// For small pages with total height less then height of the viewport
-		if(yScroll < windowHeight)
+		if (yScroll < windowHeight)
 		{
 			pageHeight = windowHeight;
 		}
@@ -564,7 +564,7 @@ var DomLib = {
 		}
 
 		// For small pages with total width less then width of the viewport
-		if(xScroll < windowWidth)
+		if (xScroll < windowWidth)
 		{
 			pageWidth = windowWidth;
 		}
@@ -583,17 +583,17 @@ var expandables = {
 	init: function()
 	{
 		expanders = $$('img.expander');
-		if(expanders.length > 0)
+		if (expanders.length > 0)
 		{
 			expanders.each(function(expander) {
-				if(!expander.id)
+				if (!expander.id)
 				{
 					return;
 				}
 
 				Event.observe(expander, "click", this.expandCollapse.bindAsEventListener(this));
 
-				if(MyBB.browser == "ie")
+				if (MyBB.browser == "ie")
 				{
 					expander.style.cursor = "hand";
 				}
@@ -605,7 +605,7 @@ var expandables = {
 				expander.controls = expander.id.replace("_img", "");
 				var row = $(expander.controls);
 
-				if(row)
+				if (row)
 				{
 					Event.observe(row, "dblclick", this.expandCollapse.bindAsEventListener(this));
 					row.controls = expander.id.replace("_img", "");
@@ -617,16 +617,16 @@ var expandables = {
 	expandCollapse: function(e)
 	{
 		element = Event.element(e)
-		if(!element || !element.controls)
+		if (!element || !element.controls)
 		{
 			return FALSE;
 		}
 		var expandedItem = $(element.controls+"_e");
 		var collapsedItem = $(element.controls+"_c");
 
-		if(expandedItem && collapsedItem)
+		if (expandedItem && collapsedItem)
 		{
-			if(expandedItem.style.display == "none")
+			if (expandedItem.style.display == "none")
 			{
 				expandedItem.show();
 				collapsedItem.hide();
@@ -639,9 +639,9 @@ var expandables = {
 				this.saveCollapsed(element.controls, 1);
 			}
 		}
-		else if(expandedItem && !collapsedItem)
+		else if (expandedItem && !collapsedItem)
 		{
-			if(expandedItem.style.display == "none")
+			if (expandedItem.style.display == "none")
 			{
 				expandedItem.show();
 				element.src = element.src.replace("collapse_collapsed.gif", "collapse.gif");
@@ -667,18 +667,18 @@ var expandables = {
 		var newCollapsed = new Array();
 		var collapsed = Cookie.get("collapsed");
 
-		if(collapsed)
+		if (collapsed)
 		{
 			saved = collapsed.split("|");
 			saved.each(function(item) {
-				if(item != id && item != "")
+				if (item != id && item != "")
 				{
 					newCollapsed[newCollapsed.length] = item;
 				}
 			});
 		}
 
-		if(add == 1)
+		if (add == 1)
 		{
 			newCollapsed[newCollapsed.length] = id;
 		}
@@ -693,7 +693,7 @@ ActivityIndicator.prototype = {
 	{
 		var image;
 
-		if(options && options.image)
+		if (options && options.image)
 		{
 			image = "<img src=\""+options.image+"\" alt=\"\" />";
 		}
@@ -705,7 +705,7 @@ ActivityIndicator.prototype = {
 		this.height = options.height || 150;
 		this.width = options.width || 150;
 
-		if(owner == "body")
+		if (owner == "body")
 		{
 			arrayPageSize = DomLib.getPageSize();
 			arrayPageScroll = DomLib.getPageScroll();
@@ -715,7 +715,7 @@ ActivityIndicator.prototype = {
 		}
 		else
 		{
-			if($(owner))
+			if ($(owner))
 			{
 				owner = $(owner);
 			}
@@ -756,7 +756,7 @@ var lang = {
 };
 
 /* additions for IE5 compatibility */
-if(!Array.prototype.shift) {
+if (!Array.prototype.shift) {
 	Array.prototype.shift = function()
 	{
 		firstElement = this[0];
@@ -767,7 +767,7 @@ if(!Array.prototype.shift) {
 	}
 }
 
-if(!Array.prototype.unshift) {
+if (!Array.prototype.unshift) {
 	Array.prototype.unshift = function()
 	{
 		this.reverse();
@@ -779,7 +779,7 @@ if(!Array.prototype.unshift) {
 	}
 }
 
-if(!Array.prototype.push) {
+if (!Array.prototype.push) {
 	Array.prototype.push = function()
 	{
 		for(var i=0;i<arguments.length;i++){
@@ -789,7 +789,7 @@ if(!Array.prototype.push) {
 	}
 }
 
-if(!Array.prototype.pop) {
+if (!Array.prototype.pop) {
 	Array.prototype.pop = function() {
 		lastElement = this[this.length-1];
 		this.length = Math.max(this.length-1,0);
@@ -818,7 +818,7 @@ if (!Function.prototype.apply) {
 	}
 }
 
-if(!Function.prototype.call) {
+if (!Function.prototype.call) {
 	Function.prototype.call = function(obj, param) {
 		obj.base = this;
 		obj.base(param);

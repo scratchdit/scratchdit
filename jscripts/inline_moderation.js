@@ -2,7 +2,7 @@ var inlineModeration = {
 	init: function()
 	{
 		inlineModeration.inlineCount = 0;
-		if(!inlineType || !inlineId)
+		if (!inlineType || !inlineId)
 		{
 			return FALSE;
 		}
@@ -10,14 +10,14 @@ var inlineModeration = {
 		inlineModeration.cookieName = "inlinemod_"+inlineType+inlineId;
 		inputs = document.getElementsByTagName("input");
 
-		if(!inputs)
+		if (!inputs)
 		{
 			return FALSE;
 		}
 
 		inlineCookie = Cookie.get(inlineModeration.cookieName);
 
-		if(inlineCookie)
+		if (inlineCookie)
 		{
 			inlineIds = inlineCookie.split("|");
 		}
@@ -25,33 +25,33 @@ var inlineModeration = {
 		for(var i=0; i < inputs.length; i++)
 		{
 			var element = inputs[i];
-			if((element.name != "allbox") && (element.type == "checkbox") && (element.id.split("_")[0] == "inlinemod"))
+			if ((element.name != "allbox") && (element.type == "checkbox") && (element.id.split("_")[0] == "inlinemod"))
 			{
 				Event.observe(element, "click", inlineModeration.checkItem);
 			}
 
-			if(inlineCookie)
+			if (inlineCookie)
 			{
 				inlineCheck = element.id.split("_");
 				id = inlineCheck[1];
 
-				if(inlineIds.indexOf('ALL') != -1)
+				if (inlineIds.indexOf('ALL') != -1)
 				{
 					inlineModeration.clearChecked();
 					inlineCookie = NULL;
 				}
-				else if(inlineIds.indexOf(id) != -1)
+				else if (inlineIds.indexOf(id) != -1)
 				{
 					element.checked = TRUE;
 					var tr = element.up('tr');
 					var fieldset = element.up('fieldset');
 
-					if(tr)
+					if (tr)
 					{
 						tr.addClassName('trow_selected');
 					}
 
-					if(fieldset)
+					if (fieldset)
 					{
 						fieldset.addClassName('inline_selected');
 					}
@@ -60,7 +60,7 @@ var inlineModeration = {
 				{
 					element.checked = FALSE;
 					var tr = element.up('tr');
-					if(tr)
+					if (tr)
 					{
 						tr.removeClassName('trow_selected');
 					}
@@ -68,14 +68,14 @@ var inlineModeration = {
 			}
 		}
 
-		if(inlineCookie)
+		if (inlineCookie)
 		{
 			goButton = $("inline_go");
-			if(inlineIds)
+			if (inlineIds)
 			{
 				var inlineCount = 0;
 				inlineIds.each(function(item) {
-					if(item != '') inlineCount++;
+					if (item != '') inlineCount++;
 				});
 				inlineModeration.inlineCount = inlineCount;
 			}
@@ -88,7 +88,7 @@ var inlineModeration = {
 	{
 		element = Event.element(e);
 
-		if(!element)
+		if (!element)
 		{
 			return FALSE;
 		}
@@ -96,7 +96,7 @@ var inlineModeration = {
 		inlineCheck = element.id.split("_");
 		id = inlineCheck[1];
 
-		if(!id)
+		if (!id)
 		{
 			return FALSE;
 		}
@@ -105,13 +105,13 @@ var inlineModeration = {
 		var remIds = new Array();
 		inlineCookie = Cookie.get(inlineModeration.cookieName);
 
-		if(inlineCookie)
+		if (inlineCookie)
 		{
 			inlineIds = inlineCookie.split("|");
 			inlineIds.each(function(item) {
-				if(item != "" && item != NULL)
+				if (item != "" && item != NULL)
 				{
-					if(item != id)
+					if (item != id)
 					{
 						newIds[newIds.length] = item;
 					}
@@ -119,12 +119,12 @@ var inlineModeration = {
 			});
 		}
 
-		if(element.checked == TRUE)
+		if (element.checked == TRUE)
 		{
 			inlineModeration.inlineCount++;
 			newIds[newIds.length] = id;
 			var tr = element.up('tr');
-			if(tr)
+			if (tr)
 			{
 				tr.addClassName('trow_selected');
 			}
@@ -133,12 +133,12 @@ var inlineModeration = {
 		{
 			inlineModeration.inlineCount--;
 			var tr = element.up('tr');
-			if(tr)
+			if (tr)
 			{
 				tr.removeClassName('trow_selected');
 			}
 
-			if(inlineCookie.indexOf("ALL") != -1)
+			if (inlineCookie.indexOf("ALL") != -1)
 			{
 				// We've already selected all threads, add this to our "no-go" cookie
 				remIds[remIds.length] = id;
@@ -147,7 +147,7 @@ var inlineModeration = {
 
 		goButton = $("inline_go");
 
-		if(remIds.length)
+		if (remIds.length)
 		{
 			inlineData = "|"+remIds.join("|")+"|";
 			Cookie.set(inlineModeration.cookieName + '_removed', inlineData, 3600000);
@@ -163,7 +163,7 @@ var inlineModeration = {
 			Cookie.set(inlineModeration.cookieName, inlineData, 3600000);
 		}
 
-		if(inlineModeration.inlineCount < 0)
+		if (inlineModeration.inlineCount < 0)
 		{
 			inlineModeration.inlineCount = 0;
 		}
@@ -176,28 +176,28 @@ var inlineModeration = {
 	clearChecked: function()
 	{
 		var selectRow = document.getElementById("selectAllrow");
-		if(selectRow)
+		if (selectRow)
 		{
 			selectRow.style.display = "none";
 		}
 
 		var allSelectedRow = document.getElementById("allSelectedrow");
-		if(allSelectedRow)
+		if (allSelectedRow)
 		{
 			allSelectedRow.style.display = "none";
 		}
 
 		inputs = document.getElementsByTagName("input");
 
-		if(!inputs)
+		if (!inputs)
 		{
 			return FALSE;
 		}
 
 		$H(inputs).each(function(element) {
 			var element = element.value;
-			if(!element.value) return;
-			if(element.type == "checkbox" && (element.id.split("_")[0] == "inlinemod" || element.name == "allbox"))
+			if (!element.value) return;
+			if (element.type == "checkbox" && (element.id.split("_")[0] == "inlinemod" || element.name == "allbox"))
 			{
 				element.checked = FALSE;
 			}
@@ -224,14 +224,14 @@ var inlineModeration = {
 	{
 		inputs = document.getElementsByTagName("input");
 
-		if(!inputs)
+		if (!inputs)
 		{
 			return FALSE;
 		}
 
 		inlineCookie = Cookie.get(inlineModeration.cookieName);
 
-		if(inlineCookie)
+		if (inlineCookie)
 		{
 			inlineIds = inlineCookie.split("|");
 		}
@@ -239,9 +239,9 @@ var inlineModeration = {
 		var newIds = new Array();
 		$H(inputs).each(function(element) {
 			var element = element.value;
-			if(!element.value) return;
+			if (!element.value) return;
 			inlineCheck = element.id.split("_");
-			if((element.name != "allbox") && (element.type == "checkbox") && (inlineCheck[0] == "inlinemod"))
+			if ((element.name != "allbox") && (element.type == "checkbox") && (inlineCheck[0] == "inlinemod"))
 			{
 				id = inlineCheck[1];
 				var changed = (element.checked != master.checked);
@@ -249,7 +249,7 @@ var inlineModeration = {
 
 				var tr = element.up('tr');
 				var fieldset = element.up('fieldset');
-				if(tr && master.checked == TRUE)
+				if (tr && master.checked == TRUE)
 				{
 					tr.addClassName('trow_selected');
 				}
@@ -258,9 +258,9 @@ var inlineModeration = {
 					tr.removeClassName('trow_selected');
 				}
 
-				if(typeof(fieldset) != "undefined")
+				if (typeof(fieldset) != "undefined")
 				{
-					if(master.checked == TRUE)
+					if (master.checked == TRUE)
 					{
 						fieldset.addClassName('inline_selected');
 					}
@@ -270,9 +270,9 @@ var inlineModeration = {
 					}
 				}
 
-				if(changed)
+				if (changed)
 				{
-					if(master.checked == TRUE)
+					if (master.checked == TRUE)
 					{
 						inlineModeration.inlineCount++;
 						newIds[newIds.length] = id;
@@ -288,17 +288,17 @@ var inlineModeration = {
 		inlineData = "|"+newIds.join("|")+"|";
 		goButton = $("inline_go");
 
-		if(inlineModeration.inlineCount < 0)
+		if (inlineModeration.inlineCount < 0)
 		{
 			inlineModeration.inlineCount = 0;
 		}
 
-		if(inlineModeration.inlineCount < all_text)
+		if (inlineModeration.inlineCount < all_text)
 		{
 			var selectRow = document.getElementById("selectAllrow");
-			if(selectRow)
+			if (selectRow)
 			{
-				if(master.checked == TRUE)
+				if (master.checked == TRUE)
 				{
 					selectRow.style.display = "table-row";
 				}
@@ -319,13 +319,13 @@ var inlineModeration = {
 		Cookie.set(inlineModeration.cookieName, "|ALL|", 3600000);
 
 		var selectRow = document.getElementById("selectAllrow");
-		if(selectRow)
+		if (selectRow)
 		{
 			selectRow.style.display = "none";
 		}
 
 		var allSelectedRow = document.getElementById("allSelectedrow");
-		if(allSelectedRow)
+		if (allSelectedRow)
 		{
 			allSelectedRow.style.display = "table-row";
 		}

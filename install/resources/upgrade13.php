@@ -31,15 +31,15 @@ function upgrade13_dbchanges()
 	echo "<p>Performing necessary upgrade queries..</p>";
 	flush();
 
-	if($db->type == "mysql" || $db->type == "mysqli")
+	if ($db->type == "mysql" || $db->type == "mysqli")
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."adminsessions ADD INDEX ( `uid` )");
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."adminsessions ADD INDEX ( `dateline` )");
 	}
 
-	if($db->type != "sqlite")
+	if ($db->type != "sqlite")
 	{
-		if($db->index_exists("users", "username"))
+		if ($db->index_exists("users", "username"))
 		{
 			$db->write_query("ALTER TABLE ".TABLE_PREFIX."users DROP KEY username");
 		}
@@ -50,7 +50,7 @@ function upgrade13_dbchanges()
 			$db->update_query("users", array('username' => $user['username']."_dup".$user['uid']), "uid='{$user['uid']}'", 1);
 		}
 
-		if($db->type == "pgsql")
+		if ($db->type == "pgsql")
 		{
 			$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD UNIQUE(username)");
 		}
@@ -60,7 +60,7 @@ function upgrade13_dbchanges()
 		}
 	}
 
-	if($db->type == "pgsql")
+	if ($db->type == "pgsql")
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."users CHANGE longregip longregip int NOT NULL default '0'");
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."users CHANGE longlastip longlastip int NOT NULL default '0'");
@@ -86,7 +86,7 @@ function upgrade13_dbchanges1()
 
 	$output->print_header("Post IP Repair Conversion");
 
-	if(!$_POST['ipspage'])
+	if (!$_POST['ipspage'])
 	{
 		$ipp = 5000;
 	}
@@ -95,7 +95,7 @@ function upgrade13_dbchanges1()
 		$ipp = $_POST['ipspage'];
 	}
 
-	if($_POST['ipstart'])
+	if ($_POST['ipstart'])
 	{
 		$startat = $_POST['ipstart'];
 		$upper = $startat+$ipp;
@@ -111,7 +111,7 @@ function upgrade13_dbchanges1()
 	$query = $db->simple_select("posts", "COUNT(pid) AS ipcount");
 	$cnt = $db->fetch_array($query);
 
-	if($upper > $cnt['ipcount'])
+	if ($upper > $cnt['ipcount'])
 	{
 		$upper = $cnt['ipcount'];
 	}
@@ -125,7 +125,7 @@ function upgrade13_dbchanges1()
 	while($post = $db->fetch_array($query))
 	{
 		// Have we already converted this ip?
-		if(my_ip2long($post['ipaddress']) < 0)
+		if (my_ip2long($post['ipaddress']) < 0)
 		{
 			$db->update_query("posts", array('longipaddress' => my_ip2long($post['ipaddress'])), "pid = '{$post['pid']}'");
 		}
@@ -133,7 +133,7 @@ function upgrade13_dbchanges1()
 	}
 
 	$remaining = $upper-$cnt['ipcount'];
-	if($remaining && $ipaddress)
+	if ($remaining && $ipaddress)
 	{
 		$nextact = "13_dbchanges1";
 		$startat = $startat+$ipp;
@@ -147,7 +147,7 @@ function upgrade13_dbchanges1()
 	$output->print_contents($contents);
 
 	global $footer_extra;
-	$footer_extra = "<script type=\"text/javascript\">window.onload = function() { var button = $$('.submit_button'); if(button[0]) { button[0].value = 'Automatically Redirecting...'; button[0].disabled = TRUE; button[0].style.color = '#aaa'; button[0].style.borderColor = '#aaa'; document.forms[0].submit(); }}</script>";
+	$footer_extra = "<script type=\"text/javascript\">window.onload = function() { var button = $$('.submit_button'); if (button[0]) { button[0].value = 'Automatically Redirecting...'; button[0].disabled = TRUE; button[0].style.color = '#aaa'; button[0].style.borderColor = '#aaa'; document.forms[0].submit(); }}</script>";
 
 	$output->print_footer($nextact);
 }
@@ -158,7 +158,7 @@ function upgrade13_dbchanges2()
 
 	$output->print_header("User IP Repair Conversion");
 
-	if(!$_POST['ipspage'])
+	if (!$_POST['ipspage'])
 	{
 		$ipp = 5000;
 	}
@@ -167,7 +167,7 @@ function upgrade13_dbchanges2()
 		$ipp = $_POST['ipspage'];
 	}
 
-	if($_POST['ipstart'])
+	if ($_POST['ipstart'])
 	{
 		$startat = $_POST['ipstart'];
 		$upper = $startat+$ipp;
@@ -183,7 +183,7 @@ function upgrade13_dbchanges2()
 	$query = $db->simple_select("users", "COUNT(uid) AS ipcount");
 	$cnt = $db->fetch_array($query);
 
-	if($upper > $cnt['ipcount'])
+	if ($upper > $cnt['ipcount'])
 	{
 		$upper = $cnt['ipcount'];
 	}
@@ -197,17 +197,17 @@ function upgrade13_dbchanges2()
 	while($user = $db->fetch_array($query))
 	{
 		// Have we already converted this ip?
-		if(my_ip2long($user['regip']) < 0)
+		if (my_ip2long($user['regip']) < 0)
 		{
 			$update_array['longregip'] = intval(my_ip2long($user['regip']));
 		}
 
-		if(my_ip2long($user['lastip']) < 0)
+		if (my_ip2long($user['lastip']) < 0)
 		{
 			$update_array['longlastip'] = intval(my_ip2long($user['lastip']));
 		}
 
-		if(!empty($update_array))
+		if (!empty($update_array))
 		{
 			$db->update_query("users", $update_array, "uid = '{$user['uid']}'");
 		}
@@ -217,7 +217,7 @@ function upgrade13_dbchanges2()
 	}
 
 	$remaining = $upper-$cnt['ipcount'];
-	if($remaining && $ipaddress)
+	if ($remaining && $ipaddress)
 	{
 		$nextact = "13_dbchanges2";
 		$startat = $startat+$ipp;
@@ -231,7 +231,7 @@ function upgrade13_dbchanges2()
 	$output->print_contents($contents);
 
 	global $footer_extra;
-	$footer_extra = "<script type=\"text/javascript\">window.onload = function() { var button = $$('.submit_button'); if(button[0]) { button[0].value = 'Automatically Redirecting...'; button[0].disabled = TRUE; button[0].style.color = '#aaa'; button[0].style.borderColor = '#aaa'; document.forms[0].submit(); }}</script>";
+	$footer_extra = "<script type=\"text/javascript\">window.onload = function() { var button = $$('.submit_button'); if (button[0]) { button[0].value = 'Automatically Redirecting...'; button[0].disabled = TRUE; button[0].style.color = '#aaa'; button[0].style.borderColor = '#aaa'; document.forms[0].submit(); }}</script>";
 
 	$output->print_footer($nextact);
 }

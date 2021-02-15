@@ -153,7 +153,7 @@ class DB_PgSQL
 	function connect($config)
 	{
 		// Simple connection to one server
-		if(array_key_exists('hostname', $config))
+		if (array_key_exists('hostname', $config))
 		{
 			$connections['read'][] = $config;
 		}
@@ -161,11 +161,11 @@ class DB_PgSQL
 		// Connecting to more than one server
 		{
 			// Specified multiple servers, but no specific read/write servers
-			if(!array_key_exists('read', $config))
+			if (!array_key_exists('read', $config))
 			{
 				foreach($config as $key => $settings)
 				{
-					if(is_int($key)) $connections['read'][] = $settings;
+					if (is_int($key)) $connections['read'][] = $settings;
 				}
 			}
 			// Specified both read & write servers
@@ -180,12 +180,12 @@ class DB_PgSQL
 		// Actually connect to the specified servers
 		foreach(array('read', 'write') as $type)
 		{
-			if(!is_array($connections[$type]))
+			if (!is_array($connections[$type]))
 			{
 				break;
 			}
 
-			if(array_key_exists('hostname', $connections[$type]))
+			if (array_key_exists('hostname', $connections[$type]))
 			{
 				$details = $connections[$type];
 				unset($connections);
@@ -199,7 +199,7 @@ class DB_PgSQL
 			foreach($connections[$type] as $single_connection)
 			{
 				$connect_function = "pg_connect";
-				if($single_connection['pconnect'])
+				if ($single_connection['pconnect'])
 				{
 					$connect_function = "pg_pconnect";
 				}
@@ -210,22 +210,22 @@ class DB_PgSQL
 
 				$this->connect_string = "dbname={$single_connection['database']} user={$single_connection['username']}";
 
-				if(strpos($single_connection['hostname'], ':') !== FALSE)
+				if (strpos($single_connection['hostname'], ':') !== FALSE)
 				{
 					list($single_connection['hostname'], $single_connection['port']) = explode(':', $single_connection['hostname']);
 				}
 
-				if($single_connection['port'])
+				if ($single_connection['port'])
 				{
 					$this->connect_string .= " port={$single_connection['port']}";
 				}
 
-				if($single_connection['hostname'] != "")
+				if ($single_connection['hostname'] != "")
 				{
 					$this->connect_string .= " host={$single_connection['hostname']}";
 				}
 
-				if($single_connection['password'])
+				if ($single_connection['password'])
 				{
 					$this->connect_string .= " password={$single_connection['password']}";
 				}
@@ -235,7 +235,7 @@ class DB_PgSQL
 				$this->query_time += $time_spent;
 
 				// Successful connection? break down brother!
-				if($this->$link)
+				if ($this->$link)
 				{
 					$this->connections[] = "[".strtoupper($type)."] {$single_connection['username']}@{$single_connection['hostname']} (Connected in ".number_format($time_spent, 0)."s)";
 					break;
@@ -248,19 +248,19 @@ class DB_PgSQL
 		}
 
 		// No write server was specified (simple connection or just multiple servers) - mirror write link
-		if(!array_key_exists('write', $connections))
+		if (!array_key_exists('write', $connections))
 		{
 			$this->write_link = &$this->read_link;
 		}
 
 		// Have no read connection?
-		if(!$this->read_link)
+		if (!$this->read_link)
 		{
 			$this->error("[READ] Unable to connect to PgSQL server");
 			return FALSE;
 		}
 		// No write?
-		else if(!$this->write_link)
+		else if (!$this->write_link)
 		{
 			$this->error("[WRITE] Unable to connect to PgSQL server");
 			return FALSE;
@@ -288,16 +288,16 @@ class DB_PgSQL
 
 		$this->get_execution_time();
 
-		if(strtolower(substr(ltrim($string), 0, 5)) == 'alter')
+		if (strtolower(substr(ltrim($string), 0, 5)) == 'alter')
 		{
 			$string = preg_replace("#\sAFTER\s([a-z_]+?)(;*?)$#i", "", $string);
-			if(strstr($string, 'CHANGE') !== FALSE)
+			if (strstr($string, 'CHANGE') !== FALSE)
 			{
 				$string = str_replace(' CHANGE ', ' ALTER ', $string);
 			}
 		}
 
-		if($write_query && $this->write_link)
+		if ($write_query && $this->write_link)
 		{
 			while(pg_connection_busy($this->write_link));
 			$this->current_link = &$this->write_link;
@@ -312,7 +312,7 @@ class DB_PgSQL
 			$query = pg_get_result($this->current_link);
 		}
 
-		if((pg_result_error($query) && !$hide_errors))
+		if ((pg_result_error($query) && !$hide_errors))
 		{
 			$this->error($string, $query);
 			exit;
@@ -322,7 +322,7 @@ class DB_PgSQL
 		$this->query_time += $query_time;
 		$this->query_count++;
 
-		if($mybb->debug_mode)
+		if ($mybb->debug_mode)
 		{
 			$this->explain_query($string, $query_time);
 		}
@@ -349,7 +349,7 @@ class DB_PgSQL
 	 */
 	function explain_query($string, $qtime)
 	{
-		if(preg_match("#^\s*select#i", $string))
+		if (preg_match("#^\s*select#i", $string))
 		{
 			$query = pg_query($this->current_link, "EXPLAIN $string");
 			$this->explain .= "<table style=\"background-color: #666;\" width=\"95%\" cellpadding=\"4\" cellspacing=\"1\" align=\"center\">\n".
@@ -420,7 +420,7 @@ class DB_PgSQL
 	 */
 	function fetch_field($query, $field, $row=FALSE)
 	{
-		if($row === FALSE)
+		if ($row === FALSE)
 		{
 			$array = $this->fetch_array($query);
 			return $array[$field];
@@ -469,7 +469,7 @@ class DB_PgSQL
 		$field = $this->fetch_field($query, 'column_name');
 
 		// Do we not have a primary field?
-		if(!$field)
+		if (!$field)
 		{
 			return;
 		}
@@ -485,7 +485,7 @@ class DB_PgSQL
 	function close()
 	{
 		@pg_close($this->read_link);
-		if($this->write_link)
+		if ($this->write_link)
 		{
 			@pg_close($this->write_link);
 		}
@@ -498,7 +498,7 @@ class DB_PgSQL
 	 */
 	function error_number($query="")
 	{
-		if(!$query || !function_exists("pg_result_error_field"))
+		if (!$query || !function_exists("pg_result_error_field"))
 		{
 			return 0;
 		}
@@ -513,12 +513,12 @@ class DB_PgSQL
 	 */
 	function error_string($query="")
 	{
-		if($query)
+		if ($query)
 		{
 			return pg_result_error($query);
 		}
 
-		if($this->current_link)
+		if ($this->current_link)
 		{
 			return pg_last_error($this->current_link);
 		}
@@ -535,13 +535,13 @@ class DB_PgSQL
 	 */
 	function error($string="", $query="")
 	{
-		if($this->error_reporting)
+		if ($this->error_reporting)
 		{
-			if(class_exists("errorHandler"))
+			if (class_exists("errorHandler"))
 			{
 				global $error_handler;
 
-				if(!is_object($error_handler))
+				if (!is_object($error_handler))
 				{
 					require_once MYBB_ROOT."inc/class_error.php";
 					$error_handler = new errorHandler();
@@ -592,7 +592,7 @@ class DB_PgSQL
 	 */
 	function list_tables($database, $prefix='')
 	{
-		if($prefix)
+		if ($prefix)
 		{
 			$query = $this->query("SELECT table_name FROM information_schema.tables WHERE table_schema='public' AND table_name LIKE '".$this->escape_string($prefix)."%'");
 		}
@@ -622,7 +622,7 @@ class DB_PgSQL
 
 		$exists = $this->fetch_field($query, 'table_names');
 
-		if($exists > 0)
+		if ($exists > 0)
 		{
 			return TRUE;
 		}
@@ -645,7 +645,7 @@ class DB_PgSQL
 
 		$exists = $this->fetch_field($query, "column_names");
 
-		if($exists > 0)
+		if ($exists > 0)
 		{
 			return TRUE;
 		}
@@ -664,7 +664,7 @@ class DB_PgSQL
 	function shutdown_query($query, $name=0)
 	{
 		global $shutdown_queries;
-		if($name)
+		if ($name)
 		{
 			$shutdown_queries[$name] = $query;
 		}
@@ -686,25 +686,25 @@ class DB_PgSQL
 	function simple_select($table, $fields="*", $conditions="", $options=array())
 	{
 		$query = "SELECT ".$fields." FROM ".$this->table_prefix.$table;
-		if($conditions != "")
+		if ($conditions != "")
 		{
 			$query .= " WHERE ".$conditions;
 		}
 
-		if(isset($options['order_by']))
+		if (isset($options['order_by']))
 		{
 			$query .= " ORDER BY ".$options['order_by'];
-			if(isset($options['order_dir']))
+			if (isset($options['order_dir']))
 			{
 				$query .= " ".my_strtoupper($options['order_dir']);
 			}
 		}
 
-		if(isset($options['limit_start']) && isset($options['limit']))
+		if (isset($options['limit_start']) && isset($options['limit']))
 		{
 			$query .= " LIMIT ".$options['limit_start'].", ".$options['limit'];
 		}
-		else if(isset($options['limit']))
+		else if (isset($options['limit']))
 		{
 			$query .= " LIMIT ".$options['limit'];
 		}
@@ -722,7 +722,7 @@ class DB_PgSQL
 	 */
 	function insert_query($table, $array, $insert_id=TRUE)
 	{
-		if(!is_array($array))
+		if (!is_array($array))
 		{
 			return FALSE;
 		}
@@ -735,7 +735,7 @@ class DB_PgSQL
 			VALUES ('".$values."')
 		");
 
-		if($insert_id != FALSE)
+		if ($insert_id != FALSE)
 		{
 			return $this->insert_id();
 		}
@@ -754,7 +754,7 @@ class DB_PgSQL
 	 */
 	function insert_query_multiple($table, $array)
 	{
-		if(!is_array($array))
+		if (!is_array($array))
 		{
 			return FALSE;
 		}
@@ -788,7 +788,7 @@ class DB_PgSQL
 	 */
 	function update_query($table, $array, $where="", $limit="", $no_quote=FALSE)
 	{
-		if(!is_array($array))
+		if (!is_array($array))
 		{
 			return FALSE;
 		}
@@ -797,7 +797,7 @@ class DB_PgSQL
 		$query = "";
 		$quote = "'";
 
-		if($no_quote == TRUE)
+		if ($no_quote == TRUE)
 		{
 			$quote = "";
 		}
@@ -807,7 +807,7 @@ class DB_PgSQL
 			$query .= $comma.$field."={$quote}".$value."{$quote}";
 			$comma = ', ';
 		}
-		if(!empty($where))
+		if (!empty($where))
 		{
 			$query .= " WHERE $where";
 		}
@@ -828,7 +828,7 @@ class DB_PgSQL
 	function delete_query($table, $where="", $limit="")
 	{
 		$query = "";
-		if(!empty($where))
+		if (!empty($where))
 		{
 			$query .= " WHERE $where";
 		}
@@ -848,7 +848,7 @@ class DB_PgSQL
 	 */
 	function escape_string($string)
 	{
-		if(function_exists("pg_escape_string"))
+		if (function_exists("pg_escape_string"))
 		{
 			$string = pg_escape_string($string);
 		}
@@ -888,7 +888,7 @@ class DB_PgSQL
 	 */
 	function get_version()
 	{
-		if($this->version)
+		if ($this->version)
 		{
 			return $this->version;
 		}
@@ -950,7 +950,7 @@ class DB_PgSQL
 				WHERE c.relname = '{$this->table_prefix}{$table}' AND d.adnum = '{$row['attnum']}'
 			");
 
-			if(!$query2)
+			if (!$query2)
 			{
 				unset($row['rowdefault']);
 			}
@@ -959,7 +959,7 @@ class DB_PgSQL
 				$row['rowdefault'] = $this->fetch_field($query2, 'rowdefault');
 			}
 
-			if($row['type'] == 'bpchar')
+			if ($row['type'] == 'bpchar')
 			{
 				// Stored in the engine as bpchar, but in the CREATE TABLE statement it's char
 				$row['type'] = 'char';
@@ -967,25 +967,25 @@ class DB_PgSQL
 
 			$line = "  {$row['field']} {$row['type']}";
 
-			if(strpos($row['type'], 'char') !== FALSE)
+			if (strpos($row['type'], 'char') !== FALSE)
 			{
-				if($row['lengthvar'] > 0)
+				if ($row['lengthvar'] > 0)
 				{
 					$line .= '('.($row['lengthvar'] - 4).')';
 				}
 			}
 
-			if(strpos($row['type'], 'numeric') !== FALSE)
+			if (strpos($row['type'], 'numeric') !== FALSE)
 			{
 				$line .= '('.sprintf("%s,%s", (($row['lengthvar'] >> 16) & 0xffff), (($row['lengthvar'] - 4) & 0xffff)).')';
 			}
 
-			if(!empty($row['rowdefault']))
+			if (!empty($row['rowdefault']))
 			{
 				$line .= " DEFAULT {$row['rowdefault']}";
 			}
 
-			if($row['notNULL'] == 't')
+			if ($row['notNULL'] == 't')
 			{
 				$line .= ' NOT NULL';
 			}
@@ -1010,14 +1010,14 @@ class DB_PgSQL
 		// We do this in two steps. It makes placing the comma easier
 		while($row = $this->fetch_array($query))
 		{
-			if($row['primary_key'] == 't')
+			if ($row['primary_key'] == 't')
 			{
 				$primary_key[] = $row['column_name'];
 				$primary_key_name = $row['index_name'];
 			}
 		}
 
-		if(!empty($primary_key))
+		if (!empty($primary_key))
 		{
 			$lines[] = "  CONSTRAINT $primary_key_name PRIMARY KEY (".implode(', ', $primary_key).")";
 		}
@@ -1046,7 +1046,7 @@ class DB_PgSQL
 		");
 		while($field = $this->fetch_array($query))
 		{
-			if($field['field'] == $primary_key)
+			if ($field['field'] == $primary_key)
 			{
 				$field['extra'] = 'auto_increment';
 			}
@@ -1134,7 +1134,7 @@ class DB_PgSQL
 		$exists = $this->fetch_field($query, $index);
 		$this->error_reporting = $err;
 
-		if($exists)
+		if ($exists)
 		{
 			return TRUE;
 		}
@@ -1153,7 +1153,7 @@ class DB_PgSQL
 	 */
 	function drop_table($table, $hard=FALSE, $table_prefix=TRUE)
 	{
-		if($table_prefix == FALSE)
+		if ($table_prefix == FALSE)
 		{
 			$table_prefix = "";
 		}
@@ -1162,9 +1162,9 @@ class DB_PgSQL
 			$table_prefix = $this->table_prefix;
 		}
 
-		if($hard == FALSE)
+		if ($hard == FALSE)
 		{
-			if($this->table_exists($table))
+			if ($this->table_exists($table))
 			{
 				$this->write_query('DROP TABLE '.$table_prefix.$table);
 			}
@@ -1178,7 +1178,7 @@ class DB_PgSQL
 		$field = $this->fetch_field($query, 'column_name');
 
 		// Do we not have a primary field?
-		if($field)
+		if ($field)
 		{
 			$this->write_query('DROP SEQUENCE {$table}_{$field}_id_seq');
 		}
@@ -1194,7 +1194,7 @@ class DB_PgSQL
 	 */
 	function replace_query($table, $replacements=array(), $default_field="", $insert_id=TRUE)
 	{
-		if($default_field == "")
+		if ($default_field == "")
 		{
 			$query = $this->write_query("SELECT column_name FROM information_schema.constraint_column_usage WHERE table_name = '{$this->table_prefix}{$table}' and constraint_name = '{$this->table_prefix}{$table}_pkey' LIMIT 1");
 			$main_field = $this->fetch_field($query, 'column_name');
@@ -1205,7 +1205,7 @@ class DB_PgSQL
 		}
 
 		$update = FALSE;
-		if(is_array($main_field) && !empty($main_field))
+		if (is_array($main_field) && !empty($main_field))
 		{
 			$search_bit = array();
 			$string = '';
@@ -1216,7 +1216,7 @@ class DB_PgSQL
 
 			$search_bit = implode(" AND ", $search_bit);
 			$query = $this->write_query("SELECT COUNT(".$main_field[0].") as count FROM {$this->table_prefix}{$table} WHERE {$search_bit} LIMIT 1");
-			if($this->fetch_field($query, "count") == 1)
+			if ($this->fetch_field($query, "count") == 1)
 			{
 				$update = TRUE;
 			}
@@ -1227,7 +1227,7 @@ class DB_PgSQL
 
 			while($column = $this->fetch_array($query))
 			{
-				if($column[$main_field] == $replacements[$main_field])
+				if ($column[$main_field] == $replacements[$main_field])
 				{
 					$update = TRUE;
 					break;
@@ -1235,9 +1235,9 @@ class DB_PgSQL
 			}
 		}
 
-		if($update === TRUE)
+		if ($update === TRUE)
 		{
-			if(is_array($main_field))
+			if (is_array($main_field))
 			{
 				return $this->update_query($table, $replacements, $search_bit);
 			}
@@ -1302,16 +1302,16 @@ class DB_PgSQL
 	{
 		$result1 = $result2 = $result3 = TRUE;
 
-		if($new_definition !== FALSE)
+		if ($new_definition !== FALSE)
 		{
 			$result1 = $this->write_query("ALTER TABLE {$this->table_prefix}{$table} ALTER COLUMN {$column} TYPE {$new_definition}");
 		}
 
-		if($new_not_NULL !== FALSE)
+		if ($new_not_NULL !== FALSE)
 		{
 			$set_drop = "DROP";
 
-			if(strtolower($new_not_NULL) == "set")
+			if (strtolower($new_not_NULL) == "set")
 			{
 				$set_drop = "SET";
 			}
@@ -1319,7 +1319,7 @@ class DB_PgSQL
 			$result2 = $this->write_query("ALTER TABLE {$this->table_prefix}{$table} ALTER COLUMN {$column} {$set_drop} NOT NULL");
 		}
 
-		if($new_default_value !== FALSE)
+		if ($new_default_value !== FALSE)
 		{
 			$result3 = $this->write_query("ALTER TABLE {$this->table_prefix}{$table} ALTER COLUMN {$column} SET DEFAULT {$new_default_value}");
 		}
@@ -1366,7 +1366,7 @@ class DB_PgSQL
 	 */
 	function fetch_size($table='')
 	{
-		if($table != '')
+		if ($table != '')
 		{
 			$query = $this->query("SELECT reltuples, relpages FROM pg_class WHERE relname = '".$this->table_prefix.$table."'");
 		}
@@ -1426,7 +1426,7 @@ class DB_PgSQL
 
 
 		// Just starting timer, init and return
-		if(!$time_start)
+		if (!$time_start)
 		{
 			$time_start = $time;
 			return;
@@ -1435,7 +1435,7 @@ class DB_PgSQL
 		else
 		{
 			$total = $time-$time_start;
-			if($total < 0) $total = 0;
+			if ($total < 0) $total = 0;
 			$time_start = 0;
 			return $total;
 		}

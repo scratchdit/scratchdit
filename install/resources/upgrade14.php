@@ -33,12 +33,12 @@ function upgrade14_dbchanges()
 
 	// TODO: Need to check for PostgreSQL / SQLite support
 
-	if($db->field_exists('codepress', "adminoptions"))
+	if ($db->field_exists('codepress', "adminoptions"))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."adminoptions DROP codepress;");
 	}
 
-	if($db->type == "pgsql")
+	if ($db->type == "pgsql")
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."adminoptions ADD codepress int NOT NULL default '1' AFTER cpstyle");
 	}
@@ -47,39 +47,39 @@ function upgrade14_dbchanges()
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."adminoptions ADD codepress int(1) NOT NULL default '1' AFTER cpstyle");
 	}
 
-	if($db->type != "sqlite")
+	if ($db->type != "sqlite")
 	{
 		$longregip_index = $db->index_exists("users", "longregip");
 		$longlastip_index = $db->index_exists("users", "longlastip");
 
-		if($longlastip_index == TRUE)
+		if ($longlastip_index == TRUE)
 		{
 			$db->write_query("ALTER TABLE ".TABLE_PREFIX."users DROP KEY longlastip");
 		}
 
-		if($longregip_index == TRUE)
+		if ($longregip_index == TRUE)
 		{
 			$db->write_query("ALTER TABLE ".TABLE_PREFIX."users DROP KEY longregip");
 		}
 
 		$longipaddress_index = $db->index_exists("posts", "longipaddress");
-		if($longipaddress_index == TRUE)
+		if ($longipaddress_index == TRUE)
 		{
 			$db->write_query("ALTER TABLE ".TABLE_PREFIX."posts DROP KEY longipaddress");
 		}
 	}
 
-	if($db->field_exists('loginattempts', "sessions"))
+	if ($db->field_exists('loginattempts', "sessions"))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."sessions DROP loginattempts;");
 	}
 
-	if($db->field_exists('loginattempts', "users"))
+	if ($db->field_exists('loginattempts', "users"))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."users DROP loginattempts;");
 	}
 
-	if($db->type == "pgsql")
+	if ($db->type == "pgsql")
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD loginattempts smallint NOT NULL default '1';");
 	}
@@ -88,17 +88,17 @@ function upgrade14_dbchanges()
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD loginattempts tinyint(2) NOT NULL default '1';");
 	}
 
-	if($db->field_exists('failedlogin', "sessions"))
+	if ($db->field_exists('failedlogin', "sessions"))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."sessions DROP failedlogin;");
 	}
 
-	if($db->field_exists('failedlogin', "users"))
+	if ($db->field_exists('failedlogin', "users"))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."users DROP failedlogin;");
 	}
 
-	if($db->type == "pgsql")
+	if ($db->type == "pgsql")
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD failedlogin bigint NOT NULL default '0';");
 	}
@@ -107,13 +107,13 @@ function upgrade14_dbchanges()
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD failedlogin bigint(30) NOT NULL default '0';");
 	}
 
-	if($db->type == "mysql" || $db->type == "mysqli")
+	if ($db->type == "mysql" || $db->type == "mysqli")
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD INDEX longregip (longregip)");
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD INDEX longlastip (longlastip)");
 	}
 
-	if($db->type == "sqlite")
+	if ($db->type == "sqlite")
 	{
 		// Because SQLite 2 nor 3 allows changing a column with a primary key constraint we have to completely rebuild the entire table
 		// *sigh* This is the 21st century, right?
@@ -136,9 +136,9 @@ function upgrade14_dbchanges()
 			$db->insert_query("datacache", $data);
 		}
 	}
-	else if($db->type == "pgsql")
+	else if ($db->type == "pgsql")
 	{
-		if(!$db->index_exists("datacache", "title"))
+		if (!$db->index_exists("datacache", "title"))
 		{
 			$db->write_query("ALTER TABLE ".TABLE_PREFIX."datacache ADD PRIMARY KEY (title)");
 		}
@@ -158,7 +158,7 @@ function upgrade14_dbchanges1()
 	echo "<p>Performing necessary upgrade queries..</p>";
 	flush();
 
-	if($db->type == "mysql" || $db->type == "mysqli")
+	if ($db->type == "mysql" || $db->type == "mysqli")
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."posts ADD INDEX longipaddress (longipaddress)");
 	}

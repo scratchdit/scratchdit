@@ -2,7 +2,7 @@
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
 // Disallow direct access to this file for security reasons
-if(!defined("IN_MYBB"))
+if (!defined("IN_MYBB"))
 {
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
@@ -155,7 +155,7 @@ class Services_JSON
     function utf162utf8($utf16)
     {
         // oh please oh please oh please oh please oh please
-        if(function_exists('mb_convert_encoding')) {
+        if (function_exists('mb_convert_encoding')) {
             return mb_convert_encoding($utf16, 'UTF-8', 'UTF-16');
         }
 
@@ -199,7 +199,7 @@ class Services_JSON
     function utf82utf16($utf8)
     {
         // oh please oh please oh please oh please oh please
-        if(function_exists('mb_convert_encoding')) {
+        if (function_exists('mb_convert_encoding')) {
             return mb_convert_encoding($utf8, 'UTF-16', 'UTF-8');
         }
 
@@ -387,7 +387,7 @@ class Services_JSON
                                             array_values($var));
 
                     foreach($properties as $property) {
-                        if(Services_JSON::isError($property)) {
+                        if (Services_JSON::isError($property)) {
                             return $property;
                         }
                     }
@@ -399,7 +399,7 @@ class Services_JSON
                 $elements = array_map(array($this, 'encode'), $var);
 
                 foreach($elements as $element) {
-                    if(Services_JSON::isError($element)) {
+                    if (Services_JSON::isError($element)) {
                         return $element;
                     }
                 }
@@ -414,7 +414,7 @@ class Services_JSON
                                         array_values($vars));
 
                 foreach($properties as $property) {
-                    if(Services_JSON::isError($property)) {
+                    if (Services_JSON::isError($property)) {
                         return $property;
                     }
                 }
@@ -441,7 +441,7 @@ class Services_JSON
     {
         $encoded_value = $this->encode($value);
 
-        if(Services_JSON::isError($encoded_value)) {
+        if (Services_JSON::isError($encoded_value)) {
             return $encoded_value;
         }
 
@@ -809,7 +809,7 @@ if (class_exists('PEAR_Error')) {
 
 }
 
-if(!function_exists('json_encode'))
+if (!function_exists('json_encode'))
 {
 	function json_encode($var)
 	{
@@ -818,7 +818,7 @@ if(!function_exists('json_encode'))
 	}
 }
 
-if(!function_exists('json_decode'))
+if (!function_exists('json_decode'))
 {
 	function json_decode($var)
 	{

@@ -10,7 +10,7 @@
  */
 
 // Disallow direct access to this file for security reasons
-if(!defined("IN_MYBB"))
+if (!defined("IN_MYBB"))
 {
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
@@ -33,10 +33,10 @@ $plugins->run_hooks("admin_tools_tasks_begin");
 function check_time_values($value, $min, $max, $return_type)
 {
 	// If the values aren't in an array form, make them into an array
-	if(!is_array($value))
+	if (!is_array($value))
 	{
 		// Empty value == *
-		if($value === '')
+		if ($value === '')
 		{
 			return ($return_type == 'string') ? '*' : array('*');
 		}
@@ -44,63 +44,63 @@ function check_time_values($value, $min, $max, $return_type)
 		$value = explode(',', $value);
 	}
 	// If * is in the array, always return with * because it overrides all
-	if(in_array('*', $value))
+	if (in_array('*', $value))
 	{
 		return ($return_type == 'string') ? '*' : array('*');
 	}
 	// Validate each value in array
 	foreach($value as $time)
 	{
-		if($time < $min || $time > $max)
+		if ($time < $min || $time > $max)
 		{
 			return FALSE;
 		}
 	}
 	// Return based on return type
-	if($return_type == 'string')
+	if ($return_type == 'string')
 	{
 		$value = implode(',', $value);
 	}
 	return $value;
 }
 
-if($mybb->input['action'] == "add")
+if ($mybb->input['action'] == "add")
 {
 	$plugins->run_hooks("admin_tools_tasks_add");
 
-	if($mybb->request_method == "post")
+	if ($mybb->request_method == "post")
 	{
-		if(!trim($mybb->input['title']))
+		if (!trim($mybb->input['title']))
 		{
 			$errors[] = $lang->error_missing_title;
 		}
 
-		if(!trim($mybb->input['description']))
+		if (!trim($mybb->input['description']))
 		{
 			$errors[] = $lang->error_missing_description;
 		}
 
-		if(!file_exists(MYBB_ROOT."inc/tasks/".$mybb->input['file'].".php"))
+		if (!file_exists(MYBB_ROOT."inc/tasks/".$mybb->input['file'].".php"))
 		{
 			$errors[] = $lang->error_invalid_task_file;
 		}
 
 		$mybb->input['minute'] = check_time_values($mybb->input['minute'], 0, 59, 'string');
-		if($mybb->input['minute'] === FALSE)
+		if ($mybb->input['minute'] === FALSE)
 		{
 			$errors[] = $lang->error_invalid_minute;
 		}
 
 		$mybb->input['hour'] = check_time_values($mybb->input['hour'], 0, 59, 'string');
-		if($mybb->input['hour'] === FALSE)
+		if ($mybb->input['hour'] === FALSE)
 		{
 			$errors[] = $lang->error_invalid_hour;
 		}
 
-		if($mybb->input['day'] != "*" && $mybb->input['day'] != '')
+		if ($mybb->input['day'] != "*" && $mybb->input['day'] != '')
 		{
 			$mybb->input['day'] = check_time_values($mybb->input['day'], 1, 31, 'string');
-			if($mybb->input['day'] === FALSE)
+			if ($mybb->input['day'] === FALSE)
 			{
 				$errors[] = $lang->error_invalid_day;
 			}
@@ -109,7 +109,7 @@ if($mybb->input['action'] == "add")
 		else
 		{
 			$mybb->input['weekday'] = check_time_values($mybb->input['weekday'], 0, 6, 'array');
-			if($mybb->input['weekday'] === FALSE)
+			if ($mybb->input['weekday'] === FALSE)
 			{
 				$errors[] = $lang->error_invalid_weekday;
 			}
@@ -117,12 +117,12 @@ if($mybb->input['action'] == "add")
 		}
 
 		$mybb->input['month'] = check_time_values($mybb->input['month'], 1, 12, 'array');
-		if($mybb->input['month'] === FALSE)
+		if ($mybb->input['month'] === FALSE)
 		{
 			$errors[] = $lang->error_invalid_month;
 		}
 
-		if(!$errors)
+		if (!$errors)
 		{
 			$new_task = array(
 				"title" => $db->escape_string($mybb->input['title']),
@@ -172,7 +172,7 @@ if($mybb->input['action'] == "add")
 
 	$page->output_nav_tabs($sub_tabs, 'add_task');
 	$form = new Form("index.php?module=tools-tasks&amp;action=add", "post", "add");
-	if($errors)
+	if ($errors)
 	{
 		$page->output_inline_error($errors);
 	}
@@ -192,7 +192,7 @@ if($mybb->input['action'] == "add")
 	$task_files = scandir(MYBB_ROOT."inc/tasks/");
 	foreach($task_files as $task_file)
 	{
-		if(is_file(MYBB_ROOT."inc/tasks/{$task_file}") && get_extension($task_file) == "php")
+		if (is_file(MYBB_ROOT."inc/tasks/{$task_file}") && get_extension($task_file) == "php")
 		{
 			$file_id = preg_replace("#\.".get_extension($task_file)."$#i", "$1", $task_file);
 			$task_list[$file_id] = $task_file;
@@ -245,7 +245,7 @@ if($mybb->input['action'] == "add")
 	$page->output_footer();
 }
 
-if($mybb->input['action'] == "edit")
+if ($mybb->input['action'] == "edit")
 {
 	$plugins->run_hooks("admin_tools_tasks_edit");
 
@@ -253,45 +253,45 @@ if($mybb->input['action'] == "edit")
 	$task = $db->fetch_array($query);
 
 	// Does the task not exist?
-	if(!$task['tid'])
+	if (!$task['tid'])
 	{
 		flash_message($lang->error_invalid_task, 'error');
 		admin_redirect("index.php?module=tools-tasks");
 	}
 
-	if($mybb->request_method == "post")
+	if ($mybb->request_method == "post")
 	{
-		if(!trim($mybb->input['title']))
+		if (!trim($mybb->input['title']))
 		{
 			$errors[] = $lang->error_missing_title;
 		}
 
-		if(!trim($mybb->input['description']))
+		if (!trim($mybb->input['description']))
 		{
 			$errors[] = $lang->error_missing_description;
 		}
 
-		if(!file_exists(MYBB_ROOT."inc/tasks/".$mybb->input['file'].".php"))
+		if (!file_exists(MYBB_ROOT."inc/tasks/".$mybb->input['file'].".php"))
 		{
 			$errors[] = $lang->error_invalid_task_file;
 		}
 
 		$mybb->input['minute'] = check_time_values($mybb->input['minute'], 0, 59, 'string');
-		if($mybb->input['minute'] === FALSE)
+		if ($mybb->input['minute'] === FALSE)
 		{
 			$errors[] = $lang->error_invalid_minute;
 		}
 
 		$mybb->input['hour'] = check_time_values($mybb->input['hour'], 0, 59, 'string');
-		if($mybb->input['hour'] === FALSE)
+		if ($mybb->input['hour'] === FALSE)
 		{
 			$errors[] = $lang->error_invalid_hour;
 		}
 
-		if($mybb->input['day'] != "*" && $mybb->input['day'] != '')
+		if ($mybb->input['day'] != "*" && $mybb->input['day'] != '')
 		{
 			$mybb->input['day'] = check_time_values($mybb->input['day'], 1, 31, 'string');
-			if($mybb->input['day'] === FALSE)
+			if ($mybb->input['day'] === FALSE)
 			{
 				$errors[] = $lang->error_invalid_day;
 			}
@@ -300,7 +300,7 @@ if($mybb->input['action'] == "edit")
 		else
 		{
 			$mybb->input['weekday'] = check_time_values($mybb->input['weekday'], 0, 6, 'array');
-			if($mybb->input['weekday'] === FALSE)
+			if ($mybb->input['weekday'] === FALSE)
 			{
 				$errors[] = $lang->error_invalid_weekday;
 			}
@@ -308,16 +308,16 @@ if($mybb->input['action'] == "edit")
 		}
 
 		$mybb->input['month'] = check_time_values($mybb->input['month'], 1, 12, 'array');
-		if($mybb->input['month'] === FALSE)
+		if ($mybb->input['month'] === FALSE)
 		{
 			$errors[] = $lang->error_invalid_month;
 		}
 
-		if(!$errors)
+		if (!$errors)
 		{
 			$enable_confirmation = FALSE;
 			// Check if we need to ask the user to confirm turning on the task
-			if(($task['file'] == "backupdb" || $task['file'] == "checktables") && $task['enabled'] == 0 && $mybb->input['enabled'] == 1)
+			if (($task['file'] == "backupdb" || $task['file'] == "checktables") && $task['enabled'] == 0 && $mybb->input['enabled'] == 1)
 			{
 				$mybb->input['enabled'] = 0;
 				$enable_confirmation = TRUE;
@@ -347,7 +347,7 @@ if($mybb->input['action'] == "edit")
 
 			flash_message($lang->success_task_updated, 'success');
 
-			if($enable_confirmation == TRUE)
+			if ($enable_confirmation == TRUE)
 			{
 				admin_redirect("index.php?module=tools-tasks&amp;action=enable&amp;tid={$task['tid']}&amp;my_post_key={$mybb->post_code}");
 			}
@@ -371,7 +371,7 @@ if($mybb->input['action'] == "edit")
 
 	$form = new Form("index.php?module=tools-tasks&amp;action=edit", "post");
 
-	if($errors)
+	if ($errors)
 	{
 		$page->output_inline_error($errors);
 		$task_data = $mybb->input;
@@ -392,7 +392,7 @@ if($mybb->input['action'] == "edit")
 	$task_files = scandir(MYBB_ROOT."inc/tasks/");
 	foreach($task_files as $task_file)
 	{
-		if(is_file(MYBB_ROOT."inc/tasks/{$task_file}") && get_extension($task_file) == "php")
+		if (is_file(MYBB_ROOT."inc/tasks/{$task_file}") && get_extension($task_file) == "php")
 		{
 			$file_id = preg_replace("#\.".get_extension($task_file)."$#i", "$1", $task_file);
 			$task_list[$file_id] = $task_file;
@@ -445,7 +445,7 @@ if($mybb->input['action'] == "edit")
 	$page->output_footer();
 }
 
-if($mybb->input['action'] == "delete")
+if ($mybb->input['action'] == "delete")
 {
 	$plugins->run_hooks("admin_tools_tasks_delete");
 
@@ -453,19 +453,19 @@ if($mybb->input['action'] == "delete")
 	$task = $db->fetch_array($query);
 
 	// Does the task not exist?
-	if(!$task['tid'])
+	if (!$task['tid'])
 	{
 		flash_message($lang->error_invalid_task, 'error');
 		admin_redirect("index.php?module=tools-tasks");
 	}
 
 	// User clicked no
-	if($mybb->input['no'])
+	if ($mybb->input['no'])
 	{
 		admin_redirect("index.php?module=tools-tasks");
 	}
 
-	if($mybb->request_method == "post")
+	if ($mybb->request_method == "post")
 	{
 		// Delete the task & any associated task log entries
 		$db->delete_query("tasks", "tid='{$task['tid']}'");
@@ -488,15 +488,15 @@ if($mybb->input['action'] == "delete")
 	}
 }
 
-if($mybb->input['action'] == "enable" || $mybb->input['action'] == "disable")
+if ($mybb->input['action'] == "enable" || $mybb->input['action'] == "disable")
 {
-	if(!verify_post_check($mybb->input['my_post_key']))
+	if (!verify_post_check($mybb->input['my_post_key']))
 	{
 		flash_message($lang->invalid_post_verify_key2, 'error');
 		admin_redirect("index.php?module=tools-tasks");
 	}
 
-	if($mybb->input['action'] == "enable")
+	if ($mybb->input['action'] == "enable")
 	{
 		$plugins->run_hooks("admin_tools_tasks_enable");
 	}
@@ -509,23 +509,23 @@ if($mybb->input['action'] == "enable" || $mybb->input['action'] == "disable")
 	$task = $db->fetch_array($query);
 
 	// Does the task not exist?
-	if(!$task['tid'])
+	if (!$task['tid'])
 	{
 		flash_message($lang->error_invalid_task, 'error');
 		admin_redirect("index.php?module=tools-tasks");
 	}
 
-	if($mybb->input['action'] == "enable")
+	if ($mybb->input['action'] == "enable")
 	{
-		if($task['file'] == "backupdb" || $task['file'] == "checktables")
+		if ($task['file'] == "backupdb" || $task['file'] == "checktables")
 		{
 			// User clicked no
-			if($mybb->input['no'])
+			if ($mybb->input['no'])
 			{
 				admin_redirect("index.php?module=tools-tasks");
 			}
 
-			if($mybb->request_method == "post")
+			if ($mybb->request_method == "post")
 			{
 				$nextrun = fetch_next_run($task);
 				$db->update_query("tasks", array("nextrun" => $nextrun, "enabled" => 1), "tid='{$task['tid']}'");
@@ -574,9 +574,9 @@ if($mybb->input['action'] == "enable" || $mybb->input['action'] == "disable")
 	}
 }
 
-if($mybb->input['action'] == "run")
+if ($mybb->input['action'] == "run")
 {
-	if(!verify_post_check($mybb->input['my_post_key']))
+	if (!verify_post_check($mybb->input['my_post_key']))
 	{
 		flash_message($lang->invalid_post_verify_key2, 'error');
 		admin_redirect("index.php?module=tools-tasks");
@@ -590,7 +590,7 @@ if($mybb->input['action'] == "run")
 	$task = $db->fetch_array($query);
 
 	// Does the task not exist?
-	if(!$task['tid'])
+	if (!$task['tid'])
 	{
 		flash_message($lang->error_invalid_task, 'error');
 		admin_redirect("index.php?module=tools-tasks");
@@ -607,7 +607,7 @@ if($mybb->input['action'] == "run")
 	admin_redirect("index.php?module=tools-tasks");
 }
 
-if($mybb->input['action'] == "logs")
+if ($mybb->input['action'] == "logs")
 {
 	$plugins->run_hooks("admin_tools_tasks_logs");
 
@@ -641,13 +641,13 @@ if($mybb->input['action'] == "logs")
 
 	$per_page = 50;
 
-	if($mybb->input['page'] > 0)
+	if ($mybb->input['page'] > 0)
 	{
 		$current_page = intval($mybb->input['page']);
 		$start = ($current_page-1)*$per_page;
 		$pages = $log_count / $per_page;
 		$pages = ceil($pages);
-		if($current_page > $pages)
+		if ($current_page > $pages)
 		{
 			$start = 0;
 			$current_page = 1;
@@ -679,7 +679,7 @@ if($mybb->input['action'] == "logs")
 		$table->construct_row();
 	}
 
-	if($table->num_rows() == 0)
+	if ($table->num_rows() == 0)
 	{
 		$table->construct_cell($lang->no_task_logs, array("colspan" => "3"));
 		$table->construct_row();
@@ -690,7 +690,7 @@ if($mybb->input['action'] == "logs")
 	$page->output_footer();
 }
 
-if(!$mybb->input['action'])
+if (!$mybb->input['action'])
 {
 	$plugins->run_hooks("admin_tools_tasks_start");
 
@@ -725,7 +725,7 @@ if(!$mybb->input['action'])
 		$task['title'] = htmlspecialchars_uni($task['title']);
 		$task['description'] = htmlspecialchars_uni($task['description']);
 		$next_run = date($mybb->settings['dateformat'], $task['nextrun']).", ".date($mybb->settings['timeformat'], $task['nextrun']);
-		if($task['enabled'] == 1)
+		if ($task['enabled'] == 1)
 		{
 			$icon = "<img src=\"styles/{$page->style}/images/icons/bullet_on.gif\" alt=\"({$lang->alt_enabled})\" title=\"{$lang->alt_enabled}\"  style=\"vertical-align: middle;\" /> ";
 		}
@@ -738,7 +738,7 @@ if(!$mybb->input['action'])
 
 		$popup = new PopupMenu("task_{$task['tid']}", $lang->options);
 		$popup->add_item($lang->edit_task, "index.php?module=tools-tasks&amp;action=edit&amp;tid={$task['tid']}");
-		if($task['enabled'] == 1)
+		if ($task['enabled'] == 1)
 		{
 			$popup->add_item($lang->disable_task, "index.php?module=tools-tasks&amp;action=disable&amp;tid={$task['tid']}&amp;my_post_key={$mybb->post_code}");
 		}

@@ -16,9 +16,9 @@ function task_backupdb($task)
 
 	@set_time_limit(0);
 
-	if(!defined('MYBB_ADMIN_DIR'))
+	if (!defined('MYBB_ADMIN_DIR'))
 	{
-		if(!isset($config['admin_dir']))
+		if (!isset($config['admin_dir']))
 		{
 			$config['admin_dir'] = "admin";
 		}
@@ -27,7 +27,7 @@ function task_backupdb($task)
 	}
 
 	// Check if folder is writable, before allowing submission
-	if(!is_writable(MYBB_ADMIN_DIR."/backups"))
+	if (!is_writable(MYBB_ADMIN_DIR."/backups"))
 	{
 		add_task_log($task, $lang->task_backup_cannot_write_backup);
 	}
@@ -37,7 +37,7 @@ function task_backupdb($task)
 
 		$file = MYBB_ADMIN_DIR.'backups/backup_'.substr(md5($mybb->user['uid'].TIME_NOW), 0, 10).random_str(54);
 
-		if(function_exists('gzopen'))
+		if (function_exists('gzopen'))
 		{
 			$fp = gzopen($file.'.sql.gz', 'w9');
 		}
@@ -73,7 +73,7 @@ function task_backupdb($task)
 				$comma = '';
 				foreach($field_list as $field)
 				{
-					if(!isset($row[$field]) || is_NULL($row[$field]))
+					if (!isset($row[$field]) || is_NULL($row[$field]))
 					{
 						$insert .= $comma."NULL";
 					}
@@ -91,7 +91,7 @@ function task_backupdb($task)
 
 		$db->set_table_prefix(TABLE_PREFIX);
 
-		if(function_exists('gzopen'))
+		if (function_exists('gzopen'))
 		{
 			gzwrite($fp, $contents);
 			gzclose($fp);
@@ -111,7 +111,7 @@ function clear_overflow($fp, &$contents)
 {
 	global $mybb;
 
-	if(function_exists('gzopen'))
+	if (function_exists('gzopen'))
 	{
 		gzwrite($fp, $contents);
 	}

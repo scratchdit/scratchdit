@@ -21,12 +21,12 @@ function task_usercleanup($task)
 	while($user = $db->fetch_array($query))
 	{
 		$updated_user = array();
-		if($user['moderationtime'] != 0 && $user['moderationtime'] < TIME_NOW)
+		if ($user['moderationtime'] != 0 && $user['moderationtime'] < TIME_NOW)
 		{
 			$updated_user['moderateposts'] = 0;
 			$updated_user['moderationtime'] = 0;
 		}
-		if($user['suspensiontime'] != 0 && $user['suspensiontime'] < TIME_NOW)
+		if ($user['suspensiontime'] != 0 && $user['suspensiontime'] < TIME_NOW)
 		{
 			$updated_user['suspendposting'] = 0;
 			$updated_user['suspensiontime'] = 0;
@@ -38,7 +38,7 @@ function task_usercleanup($task)
 	$query = $db->simple_select("users", "uid, suspendsigtime", "suspendsignature != 0 AND suspendsigtime < '".TIME_NOW."'");
 	while($user = $db->fetch_array($query))
 	{
-		if($user['suspendsigtime'] != 0 && $user['suspendsigtime'] < TIME_NOW)
+		if ($user['suspendsigtime'] != 0 && $user['suspendsigtime'] < TIME_NOW)
 		{
 			$updated_user = array(
 				"suspendsignature" => 0,
@@ -60,9 +60,9 @@ function task_usercleanup($task)
 		$db->update_query("users", $updated_user, "uid='{$ban['uid']}'");
 		$db->delete_query("banned", "uid='{$ban['uid']}'");
 	}
-	
+
 	$cache->update_moderators();
-	
+
 	add_task_log($task, $lang->task_usercleanup_ran);
 }
 ?>

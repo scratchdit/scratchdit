@@ -8,7 +8,7 @@
  */
 
 // Disallow direct access to this file for security reasons
-if(!defined("IN_MYBB"))
+if (!defined("IN_MYBB"))
 {
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
@@ -28,9 +28,9 @@ $sub_tabs['prune_spam_logs'] = array(
 
 $plugins->run_hooks("admin_tools_spamlog_begin");
 
-if($mybb->input['action'] == 'prune')
+if ($mybb->input['action'] == 'prune')
 {
-	if(!is_super_admin($mybb->user['uid']))
+	if (!is_super_admin($mybb->user['uid']))
 	{
 		flash_message($lang->cannot_perform_action_super_admin_general, 'error');
 		admin_redirect("index.php?module=tools-spamlog");
@@ -38,11 +38,11 @@ if($mybb->input['action'] == 'prune')
 
 	$plugins->run_hooks("admin_tools_spamlog_prune");
 
-	if($mybb->request_method == 'post')
+	if ($mybb->request_method == 'post')
 	{
 		$is_today = FALSE;
 		$mybb->input['older_than'] = $mybb->get_input('older_than', MyBB::INPUT_INT);
-		if($mybb->input['older_than'] <= 0)
+		if ($mybb->input['older_than'] <= 0)
 		{
 			$is_today = TRUE;
 			$mybb->input['older_than'] = 1;
@@ -50,13 +50,13 @@ if($mybb->input['action'] == 'prune')
 		$where = 'dateline < '.(TIME_NOW-($mybb->input['older_than']*86400));
 
 		// Searching for entries in a specific module
-		if($mybb->input['filter_username'])
+		if ($mybb->input['filter_username'])
 		{
 			$where .= " AND username='".$db->escape_string($mybb->input['filter_username'])."'";
 		}
 
 		// Searching for entries in a specific module
-		if($mybb->input['filter_email'])
+		if ($mybb->input['filter_email'])
 		{
 			$where .= " AND email='".$db->escape_string($mybb->input['filter_email'])."'";
 		}
@@ -70,11 +70,11 @@ if($mybb->input['action'] == 'prune')
 		log_admin_action($mybb->input['older_than'], $mybb->input['filter_username'], $mybb->input['filter_email'], $num_deleted);
 
 		$success = $lang->success_pruned_spam_logs;
-		if($is_today == TRUE && $num_deleted > 0)
+		if ($is_today == TRUE && $num_deleted > 0)
 		{
 			$success .= ' '.$lang->note_logs_locked;
 		}
-		elseif($is_today == TRUE && $num_deleted == 0)
+		elseif ($is_today == TRUE && $num_deleted == 0)
 		{
 			flash_message($lang->note_logs_locked, 'error');
 			admin_redirect('index.php?module=tools-spamlog');
@@ -94,7 +94,7 @@ if($mybb->input['action'] == 'prune')
 	$form_container = new FormContainer($lang->prune_spam_logs);
 	$form_container->output_row($lang->spam_username, "", $form->generate_text_box('filter_username', $mybb->get_input('filter_username'), array('id' => 'filter_username')), 'filter_username');
 	$form_container->output_row($lang->spam_email, "", $form->generate_text_box('filter_email', $mybb->get_input('filter_email'), array('id' => 'filter_email')), 'filter_email');
-	if(!$mybb->get_input('older_than'))
+	if (!$mybb->get_input('older_than'))
 	{
 		$mybb->input['older_than'] = '30';
 	}
@@ -107,7 +107,7 @@ if($mybb->input['action'] == 'prune')
 	$page->output_footer();
 }
 
-if(!$mybb->get_input('action'))
+if (!$mybb->get_input('action'))
 {
 	$plugins->run_hooks("admin_tools_spamlog_start");
 
@@ -116,7 +116,7 @@ if(!$mybb->get_input('action'))
 	$page->output_nav_tabs($sub_tabs, 'spam_logs');
 
 	$perpage = $mybb->get_input('perpage', MyBB::INPUT_INT);
-	if(!$perpage)
+	if (!$perpage)
 	{
 		$perpage = 20;
 	}
@@ -126,27 +126,27 @@ if(!$mybb->get_input('action'))
 	$additional_criteria = array();
 
 	// Searching for entries witha  specific username
-	if($mybb->get_input('username'))
+	if ($mybb->get_input('username'))
 	{
 		$where .= " AND username='".$db->escape_string($mybb->get_input('username'))."'";
 		$additional_criteria[] = "username=".urlencode($mybb->get_input('username'));
 	}
 
 	// Searching for entries with a specific email
-	if($mybb->get_input('email'))
+	if ($mybb->get_input('email'))
 	{
 		$where .= " AND email='".$db->escape_string($mybb->get_input('email'))."'";
 		$additional_criteria[] = "email=".urlencode($mybb->get_input('email'));
 	}
 
 	// Searching for entries with a specific IP
-	if($mybb->get_input('ipaddress') > 0)
+	if ($mybb->get_input('ipaddress') > 0)
 	{
 		$where .= " AND ipaddress=".$db->escape_binary(my_inet_pton($mybb->get_input('ipaddress')));
 		$additional_criteria[] = "ipaddress=".urlencode($mybb->get_input('ipaddress'));
 	}
 
-	if($additional_criteria)
+	if ($additional_criteria)
 	{
 		$additional_criteria = "&amp;".implode("&amp;", $additional_criteria);
 	}
@@ -171,7 +171,7 @@ if(!$mybb->get_input('action'))
 			$sortby = "dateline";
 	}
 	$order = $mybb->get_input('order');
-	if($order != "asc")
+	if ($order != "asc")
 	{
 		$order = "desc";
 	}
@@ -180,7 +180,7 @@ if(!$mybb->get_input('action'))
 	$rescount = $db->fetch_field($query, "count");
 
 	// Figure out if we need to display multiple pages.
-	if($mybb->get_input('page') != "last")
+	if ($mybb->get_input('page') != "last")
 	{
 		$pagecnt = $mybb->get_input('page', MyBB::INPUT_INT);
 	}
@@ -189,17 +189,17 @@ if(!$mybb->get_input('action'))
 	$pages = $logcount / $perpage;
 	$pages = ceil($pages);
 
-	if($mybb->get_input('page') == "last")
+	if ($mybb->get_input('page') == "last")
 	{
 		$pagecnt = $pages;
 	}
 
-	if($pagecnt > $pages)
+	if ($pagecnt > $pages)
 	{
 		$pagecnt = 1;
 	}
 
-	if($pagecnt)
+	if ($pagecnt)
 	{
 		$start = ($pagecnt-1) * $perpage;
 	}
@@ -224,16 +224,16 @@ if(!$mybb->get_input('action'))
 		$ip_address = my_inet_ntop($db->unescape_binary($row['ipaddress']));
 
 		$dateline = '';
-		if($row['dateline'] > 0)
+		if ($row['dateline'] > 0)
 		{
 			$dateline = my_date('relative', $row['dateline']);
 		}
 
 		$confidence = '0%';
 		$data       = @my_unserialize($row['data']);
-		if(is_array($data) && !empty($data))
+		if (is_array($data) && !empty($data))
 		{
-			if(isset($data['confidence']))
+			if (isset($data['confidence']))
 			{
 				$confidence = (double)$data['confidence'].'%';
 			}
@@ -249,7 +249,7 @@ if(!$mybb->get_input('action'))
 		$table->construct_row();
 	}
 
-	if($table->num_rows() == 0)
+	if ($table->num_rows() == 0)
 	{
 		$table->construct_cell($lang->no_spam_logs, array("colspan" => "5"));
 		$table->construct_row();
@@ -258,7 +258,7 @@ if(!$mybb->get_input('action'))
 	$table->output($lang->spam_logs);
 
 	// Do we need to construct the pagination?
-	if($rescount > $perpage)
+	if ($rescount > $perpage)
 	{
 		echo draw_admin_pagination($pagecnt, $perpage, $rescount, "index.php?module=tools-spamlog&amp;perpage={$perpage}{$additional_criteria}&amp;sortby={$mybb->get_input('sortby')}&amp;order={$order}")."<br />";
 	}

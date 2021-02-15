@@ -10,7 +10,7 @@
  */
 
 // Disallow direct access to this file for security reasons
-if(!defined("IN_MYBB"))
+if (!defined("IN_MYBB"))
 {
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
@@ -21,7 +21,7 @@ require_once MYBB_ROOT."inc/functions_upload.php";
 
 $page->add_breadcrumb_item($lang->users, "index.php?module=user-users");
 
-if($mybb->input['action'] == "add" || $mybb->input['action'] == "merge" || $mybb->input['action'] == "search" || !$mybb->input['action'])
+if ($mybb->input['action'] == "add" || $mybb->input['action'] == "merge" || $mybb->input['action'] == "search" || !$mybb->input['action'])
 {
 	$sub_tabs['browse_users'] = array(
 		'title' => $lang->browse_users,
@@ -141,25 +141,25 @@ $plugins->run_hooks("admin_user_users_begin");
 
 // Initialise the views manager for user based views
 require MYBB_ADMIN_DIR."inc/functions_view_manager.php";
-if($mybb->input['action'] == "views")
+if ($mybb->input['action'] == "views")
 {
 	view_manager("index.php?module=user-users", "user", $user_view_fields, $sort_options, "user_search_conditions");
 }
 
-if($mybb->input['action'] == "avatar_gallery")
+if ($mybb->input['action'] == "avatar_gallery")
 {
 	$plugins->run_hooks("admin_user_users_avatar_gallery");
 
 	$user = get_user($mybb->input['uid']);
-	if(!$user['uid'])
+	if (!$user['uid'])
 	{
 		exit;
 	}
 
 	// We've selected a new avatar for this user!
-	if($mybb->input['avatar'])
+	if ($mybb->input['avatar'])
 	{
-	if(!verify_post_check($mybb->input['my_post_key']))
+	if (!verify_post_check($mybb->input['my_post_key']))
 		{
 			echo $lang->invalid_post_verify_key2;
 			exit;
@@ -167,7 +167,7 @@ if($mybb->input['action'] == "avatar_gallery")
 
 		$mybb->input['avatar'] = str_replace(array("./", ".."), "", $mybb->input['avatar']);
 
-		if(file_exists("../".$mybb->settings['avatardir']."/".$mybb->input['avatar']))
+		if (file_exists("../".$mybb->settings['avatardir']."/".$mybb->input['avatar']))
 		{
 			$dimensions = @getimagesize("../".$mybb->settings['avatardir']."/".$mybb->input['avatar']);
 			$updated_avatar = array(
@@ -207,28 +207,28 @@ if($mybb->input['action'] == "avatar_gallery")
 
 	$mybb->settings['avatardir'] = "../".$mybb->settings['avatardir'];
 
-	if(!is_dir($mybb->settings['avatardir']) && is_dir(MYBB_ROOT."/images/avatars/"))
+	if (!is_dir($mybb->settings['avatardir']) && is_dir(MYBB_ROOT."/images/avatars/"))
 	{
 		$mybb->settings['avatardir'] = "../images/avatars/";
 	}
 
 	// Within a gallery
-	if(!empty($gallery))
+	if (!empty($gallery))
 	{
 		$path = $gallery."/";
 		$real_path = $mybb->settings['avatardir']."/".$path;
-		if(is_dir($real_path))
+		if (is_dir($real_path))
 		{
 			// Build friendly gallery breadcrumb
 			$gallery_path = explode("/", $gallery);
 			foreach($gallery_path as $key => $url_bit)
 			{
-				if($breadcrumb_url) $breadcrumb_url .= "/";
+				if ($breadcrumb_url) $breadcrumb_url .= "/";
 				$breadcrumb_url .= $url_bit;
 				$gallery_name = str_replace(array("_", "%20"), " ", $url_bit);
 				$gallery_name = ucwords($gallery_name);
 
-				if($gallery_path[$key+1])
+				if ($gallery_path[$key+1])
 				{
 					$breadcrumb .= " &raquo; <a href=\"index.php?module=user-users&amp;action=avatar_gallery&amp;uid={$user['uid']}&amp;gallery={$breadcrumb_url}\">{$gallery_name}</a>";
 				}
@@ -253,11 +253,11 @@ if($mybb->input['action'] == "avatar_gallery")
 	$sub_galleries = $avatars = array();
 	$files = @scandir($real_path);
 
-	if(is_array($files))
+	if (is_array($files))
 	{
 		foreach($files as $file)
 		{
-			if($file == "." || $file == ".." || $file == ".svn")
+			if ($file == "." || $file == ".." || $file == ".svn")
 			{
 				continue;
 			}
@@ -265,21 +265,21 @@ if($mybb->input['action'] == "avatar_gallery")
 			// Build friendly name
 			$friendly_name = str_replace(array("_", "%20"), " ", $file);
 			$friendly_name = ucwords($friendly_name);
-			if(is_dir($real_path."/".$file))
+			if (is_dir($real_path."/".$file))
 			{
 				// Only add this gallery if there are avatars or galleries inside it (no empty directories!)
 				$has = 0;
 				$dh = @opendir($real_path."/".$file);
 				while(FALSE !== ($sub_file = readdir($dh)))
 				{
-					if(preg_match("#\.(jpg|jpeg|gif|bmp|png)$#i", $sub_file) || is_dir($real_path."/".$file."/".$sub_file))
+					if (preg_match("#\.(jpg|jpeg|gif|bmp|png)$#i", $sub_file) || is_dir($real_path."/".$file."/".$sub_file))
 					{
 						$has = 1;
 						break;
 					}
 				}
 				@closedir($dh);
-				if($has == 1)
+				if ($has == 1)
 				{
 					$sub_galleries[] = array(
 						"path" => $path.$file,
@@ -287,7 +287,7 @@ if($mybb->input['action'] == "avatar_gallery")
 					);
 				}
 			}
-			else if(preg_match("#\.(jpg|jpeg|gif|bmp|png)$#i", $file))
+			else if (preg_match("#\.(jpg|jpeg|gif|bmp|png)$#i", $file))
 			{
 				$friendly_name = preg_replace("#\.(jpg|jpeg|gif|bmp|png)$#i", "", $friendly_name);
 
@@ -310,11 +310,11 @@ if($mybb->input['action'] == "avatar_gallery")
 	echo "<div id=\"gallery_breadcrumb\">{$breadcrumb}</div>\n";
 	echo "<div id=\"gallery\">\n";
 	echo "<ul id=\"galleries\">\n";
-	if(is_array($sub_galleries))
+	if (is_array($sub_galleries))
 	{
 		foreach($sub_galleries as $gallery)
 		{
-			if(!$gallery['thumb'])
+			if (!$gallery['thumb'])
 			{
 				$gallery['thumb'] = "styles/{$page->style}/images/avatar_gallery.gif";
 				$gallery['thumb_width'] = 64;
@@ -333,7 +333,7 @@ if($mybb->input['action'] == "avatar_gallery")
 	echo "</ul>\n";
 	// Build the list of any actual avatars we have
 	echo "<ul id=\"avatars\">\n";
-	if(is_array($avatars))
+	if (is_array($avatars))
 	{
 		foreach($avatars as $avatar)
 		{
@@ -350,11 +350,11 @@ if($mybb->input['action'] == "avatar_gallery")
 	exit;
 }
 
-if($mybb->input['action'] == "activate_user")
+if ($mybb->input['action'] == "activate_user")
 {
 	$plugins->run_hooks("admin_user_users_coppa_activate");
 
-	if(!verify_post_check($mybb->input['my_post_key']))
+	if (!verify_post_check($mybb->input['my_post_key']))
 	{
 		flash_message($lang->invalid_post_verify_key2, 'error');
 		admin_redirect("index.php?module=user-users");
@@ -364,7 +364,7 @@ if($mybb->input['action'] == "activate_user")
 	$user = $db->fetch_array($query);
 
 	// Does the user not exist?
-	if(!$user['uid'] || $user['usergroup'] != 5)
+	if (!$user['uid'] || $user['usergroup'] != 5)
 	{
 		flash_message($lang->error_invalid_user, 'error');
 		admin_redirect("index.php?module=user-users");
@@ -373,7 +373,7 @@ if($mybb->input['action'] == "activate_user")
 	$updated_user['usergroup'] = $user['usergroup'];
 
 	// Update
-	if($user['coppauser'])
+	if ($user['coppauser'])
 	{
 		$updated_user = array(
 			"coppauser" => 0
@@ -385,7 +385,7 @@ if($mybb->input['action'] == "activate_user")
 	}
 
 	// Move out of awaiting activation if they're in it.
-	if($user['usergroup'] == 5)
+	if ($user['usergroup'] == 5)
 	{
 		$updated_user['usergroup'] = 2;
 	}
@@ -397,9 +397,9 @@ if($mybb->input['action'] == "activate_user")
 	// Log admin action
 	log_admin_action($user['uid'], $user['username']);
 
-	if($mybb->input['from'] == "home")
+	if ($mybb->input['from'] == "home")
 	{
-		if($user['coppauser'])
+		if ($user['coppauser'])
 		{
 			$message = $lang->success_coppa_activated;
 		}
@@ -412,7 +412,7 @@ if($mybb->input['action'] == "activate_user")
 	}
 	else
 	{
-		if($user['coppauser'])
+		if ($user['coppauser'])
 		{
 			flash_message($lang->success_coppa_activated, 'success');
 		}
@@ -422,12 +422,12 @@ if($mybb->input['action'] == "activate_user")
 		}
 	}
 
-	if($admin_session['data']['last_users_url'])
+	if ($admin_session['data']['last_users_url'])
 	{
 		$url = $admin_session['data']['last_users_url'];
 		update_admin_session('last_users_url', '');
 
-		if($mybb->input['from'] == "home")
+		if ($mybb->input['from'] == "home")
 		{
 			update_admin_session('from', 'home');
 		}
@@ -440,18 +440,18 @@ if($mybb->input['action'] == "activate_user")
 	admin_redirect($url);
 }
 
-if($mybb->input['action'] == "add")
+if ($mybb->input['action'] == "add")
 {
 	$plugins->run_hooks("admin_user_users_add");
 
-	if($mybb->request_method == "post")
+	if ($mybb->request_method == "post")
 	{
 		// Determine the usergroup stuff
-		if(is_array($mybb->input['additionalgroups']))
+		if (is_array($mybb->input['additionalgroups']))
 		{
 			foreach($mybb->input['additionalgroups'] as $key => $gid)
 			{
-				if($gid == $mybb->input['usergroup'])
+				if ($gid == $mybb->input['usergroup'])
 				{
 					unset($mybb->input['additionalgroups'][$key]);
 				}
@@ -487,7 +487,7 @@ if($mybb->input['action'] == "add")
 		$errors = '';
 
 		// Validate the user and get any errors that might have occurred.
-		if(!$userhandler->validate_user())
+		if (!$userhandler->validate_user())
 		{
 			$errors = $userhandler->get_friendly_errors();
 		}
@@ -520,7 +520,7 @@ if($mybb->input['action'] == "add")
 	$page->output_nav_tabs($sub_tabs, 'create_user');
 
 	// If we have any error messages, show them
-	if($errors)
+	if ($errors)
 	{
 		$page->output_inline_error($errors);
 	}
@@ -560,7 +560,7 @@ if($mybb->input['action'] == "add")
 	$page->output_footer();
 }
 
-if($mybb->input['action'] == "edit")
+if ($mybb->input['action'] == "edit")
 {
 	$plugins->run_hooks("admin_user_users_edit");
 
@@ -568,26 +568,26 @@ if($mybb->input['action'] == "edit")
 	$user = $db->fetch_array($query);
 
 	// Does the user not exist?
-	if(!$user['uid'])
+	if (!$user['uid'])
 	{
 		flash_message($lang->error_invalid_user, 'error');
 		admin_redirect("index.php?module=user-users");
 	}
 
-	if($mybb->request_method == "post")
+	if ($mybb->request_method == "post")
 	{
-		if(is_super_admin($mybb->input['uid']) && $mybb->user['uid'] != $mybb->input['uid'] && !is_super_admin($mybb->user['uid']))
+		if (is_super_admin($mybb->input['uid']) && $mybb->user['uid'] != $mybb->input['uid'] && !is_super_admin($mybb->user['uid']))
 		{
 			flash_message($lang->error_no_perms_super_admin, 'error');
 			admin_redirect("index.php?module=user-users");
 		}
 
 		// Determine the usergroup stuff
-		if(is_array($mybb->input['additionalgroups']))
+		if (is_array($mybb->input['additionalgroups']))
 		{
 			foreach($mybb->input['additionalgroups'] as $key => $gid)
 			{
-				if($gid == $mybb->input['usergroup'])
+				if ($gid == $mybb->input['usergroup'])
 				{
 					unset($mybb->input['additionalgroups'][$key]);
 				}
@@ -636,14 +636,14 @@ if($mybb->input['action'] == "edit")
 			"usernotes" => $mybb->input['usernotes']
 		);
 
-		if($user['usergroup'] == 5 && $mybb->input['usergroup'] != 5)
+		if ($user['usergroup'] == 5 && $mybb->input['usergroup'] != 5)
 		{
-			if($user['coppauser'] == 1)
+			if ($user['coppauser'] == 1)
 			{
 				$updated_user['coppa_user'] = 0;
 			}
 		}
-		if($mybb->input['new_password'])
+		if ($mybb->input['new_password'])
 		{
 			$updated_user['password'] = $mybb->input['new_password'];
 			$updated_user['password2'] = $mybb->input['confirm_new_password'];
@@ -668,12 +668,12 @@ if($mybb->input['action'] == "edit")
 			"showredirect" => $mybb->input['showredirect']
 		);
 
-		if($mybb->settings['usertppoptions'])
+		if ($mybb->settings['usertppoptions'])
 		{
 			$updated_user['options']['tpp'] = intval($mybb->input['tpp']);
 		}
 
-		if($mybb->settings['userpppoptions'])
+		if ($mybb->settings['userpppoptions'])
 		{
 			$updated_user['options']['ppp'] = intval($mybb->input['ppp']);
 		}
@@ -683,14 +683,14 @@ if($mybb->input['action'] == "edit")
 		$errors = '';
 
 		// Validate the user and get any errors that might have occurred.
-		if(!$userhandler->validate_user())
+		if (!$userhandler->validate_user())
 		{
 			$errors = $userhandler->get_friendly_errors();
 		}
 		else
 		{
 			// Are we removing an avatar from this user?
-			if($mybb->input['remove_avatar'])
+			if ($mybb->input['remove_avatar'])
 			{
 				$extra_user_updates = array(
 					"avatar" => "",
@@ -701,16 +701,16 @@ if($mybb->input['action'] == "edit")
 			}
 
 			// Are we uploading a new avatar?
-			if($_FILES['avatar_upload']['name'])
+			if ($_FILES['avatar_upload']['name'])
 			{
 				$avatar = upload_avatar($_FILES['avatar_upload'], $user['uid']);
-				if($avatar['error'])
+				if ($avatar['error'])
 				{
 					$errors = array($avatar['error']);
 				}
 				else
 				{
-					if($avatar['width'] > 0 && $avatar['height'] > 0)
+					if ($avatar['width'] > 0 && $avatar['height'] > 0)
 					{
 						$avatar_dimensions = $avatar['width']."|".$avatar['height'];
 					}
@@ -722,7 +722,7 @@ if($mybb->input['action'] == "edit")
 				}
 			}
 			// Are we setting a new avatar from a URL?
-			else if($mybb->input['avatar_url'] && $mybb->input['avatar_url'] != $user['avatar'])
+			else if ($mybb->input['avatar_url'] && $mybb->input['avatar_url'] != $user['avatar'])
 			{
 				$mybb->input['avatar_url'] = preg_replace("#script:#i", "", $mybb->input['avatar_url']);
 				$mybb->input['avatar_url'] = htmlspecialchars($mybb->input['avatar_url']);
@@ -730,7 +730,7 @@ if($mybb->input['action'] == "edit")
 
 				// Copy the avatar to the local server (work around remote URL access disabled for getimagesize)
 				$file = fetch_remote_file($mybb->input['avatar_url']);
-				if(!$file)
+				if (!$file)
 				{
 					$avatar_error = $lang->error_invalidavatarurl;
 				}
@@ -738,7 +738,7 @@ if($mybb->input['action'] == "edit")
 				{
 					$tmp_name = "../".$mybb->settings['avataruploadpath']."/remote_".md5(random_str());
 					$fp = @fopen($tmp_name, "wb");
-					if(!$fp)
+					if (!$fp)
 					{
 						$avatar_error = $lang->error_invalidavatarurl;
 					}
@@ -749,19 +749,19 @@ if($mybb->input['action'] == "edit")
 						list($width, $height, $type) = @getimagesize($tmp_name);
 						@unlink($tmp_name);
 						echo $type;
-						if(!$type)
+						if (!$type)
 						{
 							$avatar_error = $lang->error_invalidavatarurl;
 						}
 					}
 				}
 
-				if(empty($avatar_error))
+				if (empty($avatar_error))
 				{
-					if($width && $height && $mybb->settings['maxavatardims'] != "")
+					if ($width && $height && $mybb->settings['maxavatardims'] != "")
 					{
 						list($maxwidth, $maxheight) = explode("x", my_strtolower($mybb->settings['maxavatardims']));
-						if(($maxwidth && $width > $maxwidth) || ($maxheight && $height > $maxheight))
+						if (($maxwidth && $width > $maxwidth) || ($maxheight && $height > $maxheight))
 						{
 							$lang->error_avatartoobig = $lang->sprintf($lang->error_avatartoobig, $maxwidth, $maxheight);
 							$avatar_error = $lang->error_avatartoobig;
@@ -769,9 +769,9 @@ if($mybb->input['action'] == "edit")
 					}
 				}
 
-				if(empty($avatar_error))
+				if (empty($avatar_error))
 				{
-					if($width > 0 && $height > 0)
+					if ($width > 0 && $height > 0)
 					{
 						$avatar_dimensions = intval($width)."|".intval($height);
 					}
@@ -816,9 +816,9 @@ if($mybb->input['action'] == "edit")
 			require_once MYBB_ROOT."inc/functions_warnings.php";
 			foreach($moderator_options as $option)
 			{
-				if(!$mybb->input[$option['action']])
+				if (!$mybb->input[$option['action']])
 				{
-					if($user[$option['update_field']] == 1)
+					if ($user[$option['update_field']] == 1)
 					{
 						// We're revoking the suspension
 						$extra_user_updates[$option['update_field']] = 0;
@@ -829,38 +829,38 @@ if($mybb->input['action'] == "edit")
 					continue;
 				}
 
-				if($mybb->input[$option['action']])
+				if ($mybb->input[$option['action']])
 				{
-					if(intval($mybb->input[$option['time']]) == 0 && $mybb->input[$option['period']] != "never" && $user[$option['update_field']] != 1)
+					if (intval($mybb->input[$option['time']]) == 0 && $mybb->input[$option['period']] != "never" && $user[$option['update_field']] != 1)
 					{
 						// User has selected a type of ban, but not entered a valid time frame
 						$string = $option['action']."_error";
 						$errors[] = $lang->$string;
 					}
 
-					if(!is_array($errors))
+					if (!is_array($errors))
 					{
 						$suspend_length = fetch_time_length(intval($mybb->input[$option['time']]), $mybb->input[$option['period']]);
 
-						if($user[$option['update_field']] == 1 && ($mybb->input[$option['time']] || $mybb->input[$option['period']] == "never"))
+						if ($user[$option['update_field']] == 1 && ($mybb->input[$option['time']] || $mybb->input[$option['period']] == "never"))
 						{
 							// We already have a suspension, but entered a new time
-							if($suspend_length == "-1")
+							if ($suspend_length == "-1")
 							{
 								// Permanent ban on action
 								$extra_user_updates[$option['update_length']] = 0;
 							}
-							elseif($suspend_length && $suspend_length != "-1")
+							elseif ($suspend_length && $suspend_length != "-1")
 							{
 								// Temporary ban on action
 								$extra_user_updates[$option['update_length']] = TIME_NOW + $suspend_length;
 							}
 						}
-						elseif(!$user[$option['update_field']])
+						elseif (!$user[$option['update_field']])
 						{
 							// New suspension for this user... bad user!
 							$extra_user_updates[$option['update_field']] = 1;
-							if($suspend_length == "-1")
+							if ($suspend_length == "-1")
 							{
 								$extra_user_updates[$option['update_length']] = 0;
 							}
@@ -873,18 +873,18 @@ if($mybb->input['action'] == "edit")
 				}
 			}
 
-			if($extra_user_updates['moderateposts'] && $extra_user_updates['suspendposting'])
+			if ($extra_user_updates['moderateposts'] && $extra_user_updates['suspendposting'])
 			{
 				$errors[] = $lang->suspendmoderate_error;
 			}
 
-			if(!$errors)
+			if (!$errors)
 			{
 				$user_info = $userhandler->update_user();
 				$db->update_query("users", $extra_user_updates, "uid='{$user['uid']}'");
 
 				// if we're updating the user's signature preferences, do so now
-				if($mybb->input['update_posts'] == 'enable' || $mybb->input['update_posts'] == 'disable')
+				if ($mybb->input['update_posts'] == 'enable' || $mybb->input['update_posts'] == 'disable')
 				{
 					$update_signature = array(
 						'includesig' => ($mybb->input['update_posts'] == 'enable' ? 1 : 0)
@@ -903,7 +903,7 @@ if($mybb->input['action'] == "edit")
 		}
 	}
 
-	if(!$errors)
+	if (!$errors)
 	{
 		$user['usertitle'] = htmlspecialchars_decode($user['usertitle']);
 		$mybb->input = $user;
@@ -913,7 +913,7 @@ if($mybb->input['action'] == "edit")
 		$mybb->input['profile_fields'] = $db->fetch_array($query);
 	}
 
-	if($mybb->input['bday1'] || $mybb->input['bday2'] || $mybb->input['bday3'])
+	if ($mybb->input['bday1'] || $mybb->input['bday2'] || $mybb->input['bday3'])
 	{
 		$mybb->input['bday'][0] = $mybb->input['bday1'];
 		$mybb->input['bday'][1] = $mybb->input['bday2'];
@@ -923,7 +923,7 @@ if($mybb->input['action'] == "edit")
 	{
 		$mybb->input['bday'] = array();
 
-		if($user['birthday'])
+		if ($user['birthday'])
 		{
 			$mybb->input['bday'] = explode('-', $user['birthday']);
 		}
@@ -933,7 +933,7 @@ if($mybb->input['action'] == "edit")
 	$query = $db->simple_select("profilefields", "*", "", array('order_by' => 'disporder'));
 	while($profile_field = $db->fetch_array($query))
 	{
-		if($profile_field['required'] == 1)
+		if ($profile_field['required'] == 1)
 		{
 			$profile_fields['required'][] = $profile_field;
 		}
@@ -957,13 +957,13 @@ if($mybb->input['action'] == "edit")
 	$page->output_nav_tabs($sub_tabs, 'edit_user');
 
 	// If we have any error messages, show them
-	if($errors)
+	if ($errors)
 	{
 		$page->output_inline_error($errors);
 	}
 
 	// Is this user a COPPA user? We show a warning & activate link
-	if($user['coppauser'])
+	if ($user['coppauser'])
 	{
 		echo $lang->sprintf($lang->warning_coppa_user, $user['uid']);
 	}
@@ -988,9 +988,9 @@ if($mybb->input['action'] == "edit")
 
 	// Avatar
 	$avatar_dimensions = explode("|", $user['avatardimensions']);
-	if($user['avatar'])
+	if ($user['avatar'])
 	{
-		if($user['avatardimensions'])
+		if ($user['avatardimensions'])
 		{
 			require_once MYBB_ROOT."inc/functions_image.php";
 			list($width, $height) = explode("|", $user['avatardimensions']);
@@ -1017,7 +1017,7 @@ if($mybb->input['action'] == "edit")
 		);
 	}
 	$avatar_top = ceil((126-$scaled_dimensions['height'])/2);
-	if($user['lastactive'])
+	if ($user['lastactive'])
 	{
 		$last_active = my_date($mybb->settings['dateformat'], $user['lastactive']).", ".my_date($mybb->settings['timeformat'], $user['lastactive']);
 	}
@@ -1026,7 +1026,7 @@ if($mybb->input['action'] == "edit")
 		$last_active = $lang->never;
 	}
 	$reg_date = my_date($mybb->settings['dateformat'], $user['regdate']).", ".my_date($mybb->settings['timeformat'], $user['regdate']);
-	if($user['dst'] == 1)
+	if ($user['dst'] == 1)
 	{
 		$timezone = $user['timezone']+1;
 	}
@@ -1037,17 +1037,17 @@ if($mybb->input['action'] == "edit")
 	$local_time = gmdate($mybb->settings['dateformat'], TIME_NOW + ($timezone * 3600)).", ".gmdate($mybb->settings['timeformat'], TIME_NOW + ($timezone * 3600));
 	$days_registered = (TIME_NOW - $user['regdate']) / (24*3600);
 	$posts_per_day = 0;
-	if($days_registered > 0)
+	if ($days_registered > 0)
 	{
 		$posts_per_day = round($user['postnum'] / $days_registered, 2);
-		if($posts_per_day > $user['postnum'])
+		if ($posts_per_day > $user['postnum'])
 		{
 			$posts_per_day = $user['postnum'];
 		}
 	}
 	$stats = $cache->read("stats");
 	$posts = $stats['numposts'];
-	if($posts == 0)
+	if ($posts == 0)
 	{
 		$percent_posts = "0";
 	}
@@ -1059,7 +1059,7 @@ if($mybb->input['action'] == "edit")
 	$user_permissions = user_permissions($user['uid']);
 
 	// Fetch the reputation for this user
-	if($user_permissions['usereputationsystem'] == 1 && $mybb->settings['enablereputation'] == 1)
+	if ($user_permissions['usereputationsystem'] == 1 && $mybb->settings['enablereputation'] == 1)
 	{
 		$reputation = get_reputation($user['reputation']);
 	}
@@ -1068,10 +1068,10 @@ if($mybb->input['action'] == "edit")
 		$reputation = "-";
 	}
 
-	if($mybb->settings['enablewarningsystem'] != 0 && $user_permissions['canreceivewarnings'] != 0)
+	if ($mybb->settings['enablewarningsystem'] != 0 && $user_permissions['canreceivewarnings'] != 0)
 	{
 		$warning_level = round($user['warningpoints']/$mybb->settings['maxwarningpoints']*100);
-		if($warning_level > 100)
+		if ($warning_level > 100)
 		{
 			$warning_level = 100;
 		}
@@ -1079,7 +1079,7 @@ if($mybb->input['action'] == "edit")
 	}
 
 	$age = $lang->na;
-	if($user['birthday'])
+	if ($user['birthday'])
 	{
 		$age = get_age($user['birthday']);
 	}
@@ -1126,7 +1126,7 @@ if($mybb->input['action'] == "edit")
 		$display_group_options[$usergroup['gid']] = $usergroup['title'];
 	}
 
-	if(!is_array($mybb->input['additionalgroups']))
+	if (!is_array($mybb->input['additionalgroups']))
 	{
 		$mybb->input['additionalgroups'] = explode(',', $mybb->input['additionalgroups']);
 	}
@@ -1197,7 +1197,7 @@ if($mybb->input['action'] == "edit")
 	);
 	$form_container->output_row($lang->login_cookies_privacy, "", "<div class=\"user_settings_bit\">".implode("</div><div class=\"user_settings_bit\">", $login_options)."</div>");
 
-	if($mybb->input['pmnotice'] > 1)
+	if ($mybb->input['pmnotice'] > 1)
 	{
 		$mybb->input['pmnotice'] = 1;
 	}
@@ -1235,14 +1235,14 @@ if($mybb->input['action'] == "edit")
 
 
 	$tpp_options = array($lang->use_default);
-	if($mybb->settings['usertppoptions'])
+	if ($mybb->settings['usertppoptions'])
 	{
 		$explodedtpp = explode(",", $mybb->settings['usertppoptions']);
-		if(is_array($explodedtpp))
+		if (is_array($explodedtpp))
 		{
 			foreach($explodedtpp as $tpp)
 			{
-				if($tpp <= 0) continue;
+				if ($tpp <= 0) continue;
 				$tpp_options[$tpp] = $tpp;
 			}
 		}
@@ -1268,14 +1268,14 @@ if($mybb->input['action'] == "edit")
 	$form_container->output_row($lang->forum_display_options, "", "<div class=\"user_settings_bit\">".implode("</div><div class=\"user_settings_bit\">", $forum_options)."</div>");
 
 	$ppp_options = array($lang->use_default);
-	if($mybb->settings['userpppoptions'])
+	if ($mybb->settings['userpppoptions'])
 	{
 		$explodedppp = explode(",", $mybb->settings['userpppoptions']);
-		if(is_array($explodedppp))
+		if (is_array($explodedppp))
 		{
 			foreach($explodedppp as $ppp)
 			{
-				if($ppp <= 0) continue;
+				if ($ppp <= 0) continue;
 				$ppp_options[$ppp] = $ppp;
 			}
 		}
@@ -1308,23 +1308,23 @@ if($mybb->input['action'] == "edit")
 	//
 	$signature_editor = $form->generate_text_area("signature", $mybb->input['signature'], array('id' => 'signature', 'rows' => 15, 'cols' => '70', 'style' => 'width: 95%'));
 	$sig_smilies = $lang->off;
-	if($mybb->settings['sigsmilies'] == 1)
+	if ($mybb->settings['sigsmilies'] == 1)
 	{
 		$sig_smilies = $lang->on;
 	}
 	$sig_mycode = $lang->off;
-	if($mybb->settings['sigmycode'] == 1)
+	if ($mybb->settings['sigmycode'] == 1)
 	{
 		$sig_mycode = $lang->on;
 		$signature_editor .= build_mycode_inserter("signature");
 	}
 	$sig_html = $lang->off;
-	if($mybb->settings['sightml'] == 1)
+	if ($mybb->settings['sightml'] == 1)
 	{
 		$sig_html = $lang->on;
 	}
 	$sig_imgcode = $lang->off;
-	if($mybb->settings['sigimgcode'] == 1)
+	if ($mybb->settings['sigimgcode'] == 1)
 	{
 		$sig_imgcode = $lang->on;
 	}
@@ -1341,12 +1341,12 @@ if($mybb->input['action'] == "edit")
 	);
 
 	// Are we already suspending the signature?
-	if($mybb->input['suspendsignature'])
+	if ($mybb->input['suspendsignature'])
 	{
 		$sig_checked = 1;
 
 		// Display how much time is left on the ban for the user to extend it
-		if($user['suspendsigtime'] == "0")
+		if ($user['suspendsigtime'] == "0")
 		{
 			// Permanent
 			$lang->suspend_expire_info = $lang->suspend_sig_perm;
@@ -1374,7 +1374,7 @@ if($mybb->input['action'] == "edit")
 
 		function toggleAction()
 		{
-			if($("suspend_action").visible() == TRUE)
+			if ($("suspend_action").visible() == TRUE)
 			{
 				$("suspend_action").hide();
 			}
@@ -1400,7 +1400,7 @@ if($mybb->input['action'] == "edit")
 
 	<script type="text/javascript">
 	<!--
-		if(sig_checked == 0)
+		if (sig_checked == 0)
 		{
 			$("suspend_action").hide();
 		}
@@ -1429,38 +1429,38 @@ if($mybb->input['action'] == "edit")
 
 	$table->construct_cell("<div style=\"width: 126px; height: 126px;\" class=\"user_avatar\"><img src=\"".htmlspecialchars_uni($user['avatar'])."\" width=\"{$scaled_dimensions['width']}\" style=\"margin-top: {$avatar_top}px\" height=\"{$scaled_dimensions['height']}\" alt=\"\" /></div>", array('width' => 1));
 
-	if($user['avatartype'] == "upload" || stristr($user['avatar'], $mybb->settings['avataruploadpath']))
+	if ($user['avatartype'] == "upload" || stristr($user['avatar'], $mybb->settings['avataruploadpath']))
 	{
 		$current_avatar_msg = "<br /><strong>{$lang->user_current_using_uploaded_avatar}</strong>";
 	}
-	else if($user['avatartype'] == "gallery" || stristr($user['avatar'], $mybb->settings['avatardir']))
+	else if ($user['avatartype'] == "gallery" || stristr($user['avatar'], $mybb->settings['avatardir']))
 	{
 		$current_avatar_msg = "<br /><strong>{$lang->user_current_using_gallery_avatar}</strong>";
 	}
-	elseif($user['avatartype'] == "remote" || my_strpos(my_strtolower($user['avatar']), "http://") !== FALSE)
+	elseif ($user['avatartype'] == "remote" || my_strpos(my_strtolower($user['avatar']), "http://") !== FALSE)
 	{
 		$current_avatar_msg = "<br /><strong>{$lang->user_current_using_remote_avatar}</strong>";
 		$avatar_url = $user['avatar'];
 	}
 
-	if($errors)
+	if ($errors)
 	{
 		$avatar_url = $mybb->input['avatar_url'];
 	}
 
-	if($mybb->settings['maxavatardims'] != "")
+	if ($mybb->settings['maxavatardims'] != "")
 	{
 		list($max_width, $max_height) = explode("x", my_strtolower($mybb->settings['maxavatardims']));
 		$max_size = "<br />{$lang->max_dimensions_are} {$max_width}x{$max_height}";
 	}
 
-	if($mybb->settings['avatarsize'])
+	if ($mybb->settings['avatarsize'])
 	{
 		$maximum_size = get_friendly_size($mybb->settings['avatarsize']*1024);
 		$max_size .= "<br />{$lang->avatar_max_size} {$maximum_size}";
 	}
 
-	if($user['avatar'])
+	if ($user['avatar'])
 	{
 		$remove_avatar = "<br /><br />".$form->generate_check_box("remove_avatar", 1, "<strong>{$lang->remove_avatar}</strong>");
 	}
@@ -1471,11 +1471,11 @@ if($mybb->input['action'] == "edit")
 	$table->output($lang->avatar.": {$user['username']}");
 
 	// Custom avatar
-	if($mybb->settings['avatarresizing'] == "auto")
+	if ($mybb->settings['avatarresizing'] == "auto")
 	{
 		$auto_resize = $lang->avatar_auto_resize;
 	}
-	else if($mybb->settings['avatarresizing'] == "user")
+	else if ($mybb->settings['avatarresizing'] == "user")
 	{
 		$auto_resize = "<input type=\"checkbox\" name=\"auto_resize\" value=\"1\" checked=\"checked\" id=\"auto_resize\" /> <label for=\"auto_resize\">{$lang->attempt_to_auto_resize}</label></span>";
 	}
@@ -1511,10 +1511,10 @@ if($mybb->input['action'] == "edit")
 	$modpost_options = $form->generate_select_box('modpost_period', $periods, $mybb->input['modpost_period'], array('id' => 'modpost_period'));
 
 	// Do we have any existing suspensions here?
-	if($user['moderateposts'] || ($mybb->input['moderateposting'] && !empty($errors)))
+	if ($user['moderateposts'] || ($mybb->input['moderateposting'] && !empty($errors)))
 	{
 		$mybb->input['moderateposting'] = 1;
-		if($user['moderationtime'] != 0)
+		if ($user['moderationtime'] != 0)
 		{
 			$expired = my_date($mybb->settings['dateformat'], $user['moderationtime']).", ".my_date($mybb->settings['timeformat'], $user['moderationtime']);
 			$existing_info = $lang->sprintf($lang->moderate_length, $expired);
@@ -1534,11 +1534,11 @@ if($mybb->input['action'] == "edit")
 	$suspost_options = $form->generate_select_box('suspost_period', $periods, $mybb->input['suspost_period'], array('id' => 'suspost_period'));
 
 	// Do we have any existing suspensions here?
-	if($user['suspendposting'] || ($mybb->input['suspendposting'] && !empty($errors)))
+	if ($user['suspendposting'] || ($mybb->input['suspendposting'] && !empty($errors)))
 	{
 		$mybb->input['suspendposting'] = 1;
 
-		if($user['suspensiontime'] == 0 || $mybb->input['suspost_period'] == "never")
+		if ($user['suspensiontime'] == 0 || $mybb->input['suspost_period'] == "never")
 		{
 			$existing_info = $lang->suspended_perm;
 		}
@@ -1567,37 +1567,37 @@ echo '<script type="text/javascript">
 
 function toggleBox(action)
 {
-	if(action == "modpost")
+	if (action == "modpost")
 	{
 		$("suspendposting").checked = FALSE;
 		$("suspost").hide();
 
-		if($("moderateposting").checked == TRUE)
+		if ($("moderateposting").checked == TRUE)
 		{
 			$("modpost").show();
 		}
-		else if($("moderateposting").checked == FALSE)
+		else if ($("moderateposting").checked == FALSE)
 		{
 			$("modpost").hide();
 		}
 	}
-	else if(action == "suspost")
+	else if (action == "suspost")
 	{
 		$("moderateposting").checked = FALSE;
 		$("modpost").hide();
 
-		if($("suspendposting").checked == TRUE)
+		if ($("suspendposting").checked == TRUE)
 		{
 			$("suspost").show();
 		}
-		else if($("suspendposting").checked == FALSE)
+		else if ($("suspendposting").checked == FALSE)
 		{
 			$("suspost").hide();
 		}
 	}
 }
 
-if($("moderateposting").checked == FALSE)
+if ($("moderateposting").checked == FALSE)
 {
 	$("modpost").hide();
 }
@@ -1606,7 +1606,7 @@ else
 	$("modpost").show();
 }
 
-if($("suspendposting").checked == FALSE)
+if ($("suspendposting").checked == FALSE)
 {
 	$("suspost").hide();
 }
@@ -1621,7 +1621,7 @@ else
 	$page->output_footer();
 }
 
-if($mybb->input['action'] == "delete")
+if ($mybb->input['action'] == "delete")
 {
 	$plugins->run_hooks("admin_user_users_delete");
 
@@ -1629,25 +1629,25 @@ if($mybb->input['action'] == "delete")
 	$user = $db->fetch_array($query);
 
 	// Does the user not exist?
-	if(!$user['uid'])
+	if (!$user['uid'])
 	{
 		flash_message($lang->error_invalid_user, 'error');
 		admin_redirect("index.php?module=user-users");
 	}
 
-	if(is_super_admin($mybb->input['uid']) && $mybb->user['uid'] != $mybb->input['uid'] && !is_super_admin($mybb->user['uid']))
+	if (is_super_admin($mybb->input['uid']) && $mybb->user['uid'] != $mybb->input['uid'] && !is_super_admin($mybb->user['uid']))
 	{
 		flash_message($lang->error_no_perms_super_admin, 'error');
 		admin_redirect("index.php?module=user-users");
 	}
 
 	// User clicked no
-	if($mybb->input['no'])
+	if ($mybb->input['no'])
 	{
 		admin_redirect("index.php?module=user-users");
 	}
 
-	if($mybb->request_method == "post")
+	if ($mybb->request_method == "post")
 	{
 		// Delete the user
 		$db->delete_query("userfields", "ufid='{$user['uid']}'");
@@ -1675,14 +1675,14 @@ if($mybb->input['action'] == "delete")
 		$db->update_query("threads", array("lastposteruid" => 0), "lastposteruid = '{$user['uid']}'");
 
 		// Did this user have an uploaded avatar?
-		if($user['avatartype'] == "upload")
+		if ($user['avatartype'] == "upload")
 		{
 			// Removes the ./ at the beginning the timestamp on the end...
 			@unlink("../".substr($user['avatar'], 2, -20));
 		}
 
 		// Was this user a moderator?
-		if(is_moderator($user['uid']))
+		if (is_moderator($user['uid']))
 		{
 			$db->delete_query("moderators", "id='{$user['uid']}' AND isgroup = '0'");
 			$cache->update_moderators();
@@ -1702,7 +1702,7 @@ if($mybb->input['action'] == "delete")
 	}
 }
 
-if($mybb->input['action'] == "referrers")
+if ($mybb->input['action'] == "referrers")
 {
 	$plugins->run_hooks("admin_user_users_referrers");
 
@@ -1719,14 +1719,14 @@ if($mybb->input['action'] == "referrers")
 
 	// Fetch default admin view
 	$default_view = fetch_default_view("user");
-	if(!$default_view)
+	if (!$default_view)
 	{
 		$default_view = "0";
 	}
 	$query = $db->simple_select("adminviews", "*", "type='user' AND (vid='{$default_view}' OR uid=0)", array("order_by" => "uid", "order_dir" => "desc"));
 	$admin_view = $db->fetch_array($query);
 
-	if($mybb->input['type'])
+	if ($mybb->input['type'])
 	{
 		$admin_view['view_type'] = $mybb->input['type'];
 	}
@@ -1739,7 +1739,7 @@ if($mybb->input['action'] == "referrers")
 	$page->output_footer();
 }
 
-if($mybb->input['action'] == "ipaddresses")
+if ($mybb->input['action'] == "ipaddresses")
 {
 	$plugins->run_hooks("admin_user_users_ipaddresses");
 
@@ -1765,7 +1765,7 @@ if($mybb->input['action'] == "ipaddresses")
 	$table->construct_header($lang->ip_address);
 	$table->construct_header($lang->controls, array('width' => 200, 'class' => "align_center"));
 
-	if(empty($user['lastip']))
+	if (empty($user['lastip']))
 	{
 		$user['lastip'] = $lang->unknown;
 		$controls = '';
@@ -1784,7 +1784,7 @@ if($mybb->input['action'] == "ipaddresses")
 	$table->construct_cell($controls, array('class' => "align_center"));
 	$table->construct_row();
 
-	if(empty($user['regip']))
+	if (empty($user['regip']))
 	{
 		$user['regip'] = $lang->unknown;
 		$controls = '';
@@ -1825,39 +1825,39 @@ if($mybb->input['action'] == "ipaddresses")
 	$page->output_footer();
 }
 
-if($mybb->input['action'] == "merge")
+if ($mybb->input['action'] == "merge")
 {
 	$plugins->run_hooks("admin_user_users_merge");
 
-	if($mybb->request_method == "post")
+	if ($mybb->request_method == "post")
 	{
 		$query = $db->simple_select("users", "*", "LOWER(username)='".$db->escape_string(my_strtolower($mybb->input['source_username']))."'");
 		$source_user = $db->fetch_array($query);
-		if(!$source_user['uid'])
+		if (!$source_user['uid'])
 		{
 			$errors[] = $lang->error_invalid_user_source;
 		}
 
 		$query = $db->simple_select("users", "*", "LOWER(username)='".$db->escape_string(my_strtolower($mybb->input['destination_username']))."'");
 		$destination_user = $db->fetch_array($query);
-		if(!$destination_user['uid'])
+		if (!$destination_user['uid'])
 		{
 			$errors[] = $lang->error_invalid_user_destination;
 		}
 
 		// If we're not a super admin and we're merging a source super admin or a destination super admin then dissallow this action
-		if(!is_super_admin($mybb->user['uid']) && (is_super_admin($source_user['uid']) || is_super_admin($destination_user['uid'])))
+		if (!is_super_admin($mybb->user['uid']) && (is_super_admin($source_user['uid']) || is_super_admin($destination_user['uid'])))
 		{
 			flash_message($lang->error_no_perms_super_admin, 'error');
 			admin_redirect("index.php?module=user-users");
 		}
 
-		if($source_user['uid'] == $destination_user['uid'])
+		if ($source_user['uid'] == $destination_user['uid'])
 		{
 			$errors[] = $lang->error_cannot_merge_same_account;
 		}
 
-		if(empty($errors))
+		if (empty($errors))
 		{
 			// Begin to merge the accounts
 			$uid_update = array(
@@ -1867,7 +1867,7 @@ if($mybb->input['action'] == "merge")
 			$existing_admin_options = $db->fetch_field($query, "uid");
 
 			// Only carry over admin options/permissions if we don't already have them
-			if(!$existing_admin_options)
+			if (!$existing_admin_options)
 			{
 				$db->update_query("adminoptions", $uid_update, "uid='{$source_user['uid']}'");
 			}
@@ -1888,7 +1888,7 @@ if($mybb->input['action'] == "merge")
 			$db->delete_query("sessions", "uid='{$source_user['uid']}'");
 
 			// Is the source user a moderator?
-			if($groupscache[$source_user['usergroup']]['canmodcp'])
+			if ($groupscache[$source_user['usergroup']]['canmodcp'])
 			{
 				$db->delete_query("moderators", "id='{$source_user['uid']}' AND isgroup = '0'");
 
@@ -1921,16 +1921,16 @@ if($mybb->input['action'] == "merge")
 			$query = $db->simple_select("reputation", "*", "adduid = '".$destination_user['uid']."'");
 			while($rep = $db->fetch_array($query))
 			{
-				if($rep['pid'] == 0 && $mybb->settings['multirep'] == 0 && $last_result['uid'] == $rep['uid'])
+				if ($rep['pid'] == 0 && $mybb->settings['multirep'] == 0 && $last_result['uid'] == $rep['uid'])
 				{
 					// Multiple reputation is disallowed, and this isn't a post, so let's remove this comment
 					$to_remove[] = $rep['rid'];
 				}
 
 				// Remove comments or posts liked by "me"
-				if($last_result['uid'] == $destination_user['uid'] || $rep['uid'] == $destination_user['uid'])
+				if ($last_result['uid'] == $destination_user['uid'] || $rep['uid'] == $destination_user['uid'])
 				{
-					if(!in_array($rep['rid'], $to_remove))
+					if (!in_array($rep['rid'], $to_remove))
 					{
 						$to_remove[] = $rep['rid'];
 						continue;
@@ -1944,7 +1944,7 @@ if($mybb->input['action'] == "merge")
 			}
 
 			// Remove any reputations we've selected to remove...
-			if(!empty($to_remove))
+			if (!empty($to_remove))
 			{
 				$imp = implode(",", $to_remove);
 				$db->delete_query("reputation", "rid IN (".$imp.")");
@@ -1990,7 +1990,7 @@ if($mybb->input['action'] == "merge")
 			}
 
 			$fids_not_in = '';
-			if(!empty($fids))
+			if (!empty($fids))
 			{
 				$fids_not_in = "AND fid NOT IN(".implode(',', $fids).")";
 			}
@@ -2004,7 +2004,7 @@ if($mybb->input['action'] == "merge")
 			$db->update_query("users", $updated_count, "uid='{$destination_user['uid']}'");
 
 			// Use the earliest registration date
-			if($destination_user['regdate'] > $source_user['regdate'])
+			if ($destination_user['regdate'] > $source_user['regdate'])
 			{
 				$db->update_query("users", array('regdate' => $source_user['regdate']), "uid='{$destination_user['uid']}'");
 			}
@@ -2029,7 +2029,7 @@ if($mybb->input['action'] == "merge")
 	$page->output_nav_tabs($sub_tabs, 'merge_users');
 
 	// If we have any error messages, show them
-	if($errors)
+	if ($errors)
 	{
 		$page->output_inline_error($errors);
 	}
@@ -2058,25 +2058,25 @@ if($mybb->input['action'] == "merge")
 	$page->output_footer();
 }
 
-if($mybb->input['action'] == "search")
+if ($mybb->input['action'] == "search")
 {
 	$plugins->run_hooks("admin_user_users_search");
 
-	if($mybb->request_method == "post" || $mybb->input['results'] == 1)
+	if ($mybb->request_method == "post" || $mybb->input['results'] == 1)
 	{
 		// Build view options from incoming search options
-		if($mybb->input['vid'])
+		if ($mybb->input['vid'])
 		{
 			$query = $db->simple_select("adminviews", "*", "vid='".intval($mybb->input['vid'])."'");
 			$admin_view = $db->fetch_array($query);
 			// View does not exist or this view is private and does not belong to the current user
-			if(!$admin_view['vid'] || ($admin_view['visibility'] == 1 && $admin_view['uid'] != $mybb->user['uid']))
+			if (!$admin_view['vid'] || ($admin_view['visibility'] == 1 && $admin_view['uid'] != $mybb->user['uid']))
 			{
 				unset($admin_view);
 			}
 		}
 
-		if($mybb->input['search_id'] && $admin_session['data']['user_views'][$mybb->input['search_id']])
+		if ($mybb->input['search_id'] && $admin_session['data']['user_views'][$mybb->input['search_id']])
 		{
 			$admin_view = $admin_session['data']['user_views'][$mybb->input['search_id']];
 			unset($admin_view['extra_sql']);
@@ -2084,10 +2084,10 @@ if($mybb->input['action'] == "search")
 		else
 		{
 			// Don't have a view? Fetch the default
-			if(!$admin_view['vid'])
+			if (!$admin_view['vid'])
 			{
 				$default_view = fetch_default_view("user");
-				if(!$default_view)
+				if (!$default_view)
 				{
 					$default_view = "0";
 				}
@@ -2099,44 +2099,44 @@ if($mybb->input['action'] == "search")
 		// Override specific parts of the view
 		unset($admin_view['vid']);
 
-		if($mybb->input['type'])
+		if ($mybb->input['type'])
 		{
 			$admin_view['view_type'] = $mybb->input['type'];
 		}
 
-		if($mybb->input['conditions'])
+		if ($mybb->input['conditions'])
 		{
 			$admin_view['conditions'] = $mybb->input['conditions'];
 		}
 
-		if($mybb->input['sortby'])
+		if ($mybb->input['sortby'])
 		{
 			$admin_view['sortby'] = $mybb->input['sortby'];
 		}
 
-		if(intval($mybb->input['perpage']))
+		if (intval($mybb->input['perpage']))
 		{
 			$admin_view['perpage'] = $mybb->input['perpage'];
 		}
 
-		if($mybb->input['order'])
+		if ($mybb->input['order'])
 		{
 			$admin_view['sortorder'] = $mybb->input['order'];
 		}
 
-		if($mybb->input['displayas'])
+		if ($mybb->input['displayas'])
 		{
 			$admin_view['view_type'] = $mybb->input['displayas'];
 		}
 
-		if($mybb->input['profile_fields'])
+		if ($mybb->input['profile_fields'])
 		{
 			$admin_view['custom_profile_fields'] = $mybb->input['profile_fields'];
 		}
 
 		$results = build_users_view($admin_view);
 
-		if($results)
+		if ($results)
 		{
 			$page->output_header($lang->find_users);
 			echo "<script type=\"text/javascript\" src=\"jscripts/users.js\"></script>";
@@ -2146,7 +2146,7 @@ if($mybb->input['action'] == "search")
 		}
 		else
 		{
-			if($mybb->input['from'] == "home")
+			if ($mybb->input['from'] == "home")
 			{
 				flash_message($lang->error_no_users_found, 'error');
 				admin_redirect("index.php");
@@ -2165,12 +2165,12 @@ if($mybb->input['action'] == "search")
 	$page->output_nav_tabs($sub_tabs, 'find_users');
 
 	// If we have any error messages, show them
-	if($errors)
+	if ($errors)
 	{
 		$page->output_inline_error($errors);
 	}
 
-	if(!$mybb->input['displayas'])
+	if (!$mybb->input['displayas'])
 	{
 		$mybb->input['displayas'] = "card";
 	}
@@ -2196,19 +2196,19 @@ if($mybb->input['action'] == "search")
 	$page->output_footer();
 }
 
-if($mybb->input['action'] == "inline_edit")
+if ($mybb->input['action'] == "inline_edit")
 {
 	$plugins->run_hooks("admin_user_users_inline");
 
-	if($mybb->input['vid'] || $mybb->cookies['acp_view'])
+	if ($mybb->input['vid'] || $mybb->cookies['acp_view'])
 	{
 		// We have a custom view
-		if(!$mybb->cookies['acp_view'])
+		if (!$mybb->cookies['acp_view'])
 		{
 			// Set a cookie
 			my_setcookie("acp_view", $mybb->input['vid'], 60);
 		}
-		elseif($mybb->cookies['acp_view'])
+		elseif ($mybb->cookies['acp_view'])
 		{
 			// We already have a cookie, so let's use it...
 			$mybb->input['vid'] = $mybb->cookies['acp_view'];
@@ -2221,22 +2221,22 @@ if($mybb->input['action'] == "inline_edit")
 	$ids = explode("|", $mybb->cookies['inlinemod_useracp']);
 	foreach($ids as $id)
 	{
-		if($id != '')
+		if ($id != '')
 		{
 			$selected[] = intval($id);
 		}
 	}
 
 	// If there isn't anything to select, then output an error
-	if(!is_array($selected))
+	if (!is_array($selected))
 	{
-		if($mybb->input['inline_action'] != "multilift" && $mybb->request_method != "post")
+		if ($mybb->input['inline_action'] != "multilift" && $mybb->request_method != "post")
 		{
 			$errors[] = $lang->error_inline_no_users_selected;
 		}
 	}
 
-	if($errors)
+	if ($errors)
 	{
 		// Don't show views, but show the user list if there's errors
 		$inline = TRUE;
@@ -2246,7 +2246,7 @@ if($mybb->input['action'] == "inline_edit")
 	{
 		// Let's continue!
 		// Verify incoming POST request
-		if(!verify_post_check($mybb->input['my_post_key']))
+		if (!verify_post_check($mybb->input['my_post_key']))
 		{
 			flash_message($lang->invalid_post_verify_key2, 'error');
 			admin_redirect("index.php?module=user-user");
@@ -2258,7 +2258,7 @@ if($mybb->input['action'] == "inline_edit")
 		);
 		$page->add_breadcrumb_item($lang->manage_users);
 
-		if(!is_array($selected))
+		if (!is_array($selected))
 		{
 			// Not selected any users, show error
 			flash_message($lang->error_inline_no_users_selected, 'error');
@@ -2269,7 +2269,7 @@ if($mybb->input['action'] == "inline_edit")
 		{
 			case 'multiactivate':
 				// Run through the activating users, so that users already registered (but have been selected) aren't affected
-				if(is_array($selected))
+				if (is_array($selected))
 				{
 					$sql_array = implode(",", $selected);
 					$query = $db->simple_select("users", "uid", "usergroup = '5' AND uid IN (".$sql_array.")");
@@ -2279,7 +2279,7 @@ if($mybb->input['action'] == "inline_edit")
 					}
 				}
 
-				if(is_array($to_update))
+				if (is_array($to_update))
 				{
 					$sql_array = implode(",", $to_update);
 					$db->write_query("UPDATE ".TABLE_PREFIX."users SET usergroup = '2' WHERE uid IN (".$sql_array.")");
@@ -2288,7 +2288,7 @@ if($mybb->input['action'] == "inline_edit")
 					$to_update_count = count($to_update);
 					$lang->inline_activated = $lang->sprintf($lang->inline_activated, my_number_format($to_update_count));
 
-					if($to_update_count != count($selected))
+					if ($to_update_count != count($selected))
 					{
 						// The update count is different to how many we selected!
 						$not_updated_count = count($selected) - $to_update_count;
@@ -2312,12 +2312,12 @@ if($mybb->input['action'] == "inline_edit")
 				break;
 			case 'multilift':
 				// Get the users that are banned, and check that they have been selected
-				if($mybb->input['no'])
+				if ($mybb->input['no'])
 				{
 					admin_redirect("index.php?module=user-users".$vid_url); // User clicked on 'No'
 				}
 
-				if($mybb->request_method == "post")
+				if ($mybb->request_method == "post")
 				{
 					$sql_array = implode(",", $selected);
 					$query = $db->simple_select("banned", "*", "uid IN (".$sql_array.")");
@@ -2351,7 +2351,7 @@ if($mybb->input['action'] == "inline_edit")
 
 				break;
 			case 'multiban':
-				if($mybb->input['processed'] == 1)
+				if ($mybb->input['processed'] == 1)
 				{
 					// We've posted ban information!
 					// Build an array of users to ban, =D
@@ -2366,7 +2366,7 @@ if($mybb->input['action'] == "inline_edit")
 					// Collect the users
 					$query = $db->simple_select("users", "uid, username, usergroup, additionalgroups, displaygroup", "uid IN (".$sql_array.")");
 
-					if($mybb->input['bantime'] == '---')
+					if ($mybb->input['bantime'] == '---')
 					{
 						$lifted = 0;
 					}
@@ -2378,13 +2378,13 @@ if($mybb->input['action'] == "inline_edit")
 					$banned_count = 0;
 					while($user = $db->fetch_array($query))
 					{
-						if($user['uid'] == $mybb->user['uid'] || is_super_admin($user['uid']))
+						if ($user['uid'] == $mybb->user['uid'] || is_super_admin($user['uid']))
 						{
 							// We remove ourselves and Super Admins from the mix
 							continue;
 						}
 
-						if(is_array($bannedcache) && in_array("u_".$user['uid'], $bannedcache))
+						if (is_array($bannedcache) && in_array("u_".$user['uid'], $bannedcache))
 						{
 							// User already has a ban, update it!
 							$update_array = array(
@@ -2448,7 +2448,7 @@ if($mybb->input['action'] == "inline_edit")
 				$table->output($lang->important);
 
 				// If there's any errors, display inline
-				if($errors)
+				if ($errors)
 				{
 					$page->output_inline_error($errors);
 				}
@@ -2463,7 +2463,7 @@ if($mybb->input['action'] == "inline_edit")
 				$ban_times = fetch_ban_times();
 				foreach($ban_times as $time => $period)
 				{
-					if($time != '---')
+					if ($time != '---')
 					{
 						$friendly_time = my_date("D, jS M Y @ g:ia", ban_date2timestamp($time));
 						$period = "{$period} ({$friendly_time})";
@@ -2479,13 +2479,13 @@ if($mybb->input['action'] == "inline_edit")
 				$page->output_footer();
 				break;
 			case 'multidelete':
-				if($mybb->input['no'])
+				if ($mybb->input['no'])
 				{
 					admin_redirect("index.php?module=user-users".$vid_url); // User clicked on 'No
 				}
 				else
 				{
-					if($mybb->input['processed'] == 1)
+					if ($mybb->input['processed'] == 1)
 					{
 						// Admin wants these users, gone!
 						$sql_array = implode(",", $selected);
@@ -2493,7 +2493,7 @@ if($mybb->input['action'] == "inline_edit")
 						$to_be_deleted = $db->num_rows($query);
 						while($user = $db->fetch_array($query))
 						{
-							if($user['uid'] == $mybb->user['uid'] || is_super_admin($user['uid']))
+							if ($user['uid'] == $mybb->user['uid'] || is_super_admin($user['uid']))
 							{
 								// Remove me and super admins
 								continue;
@@ -2533,9 +2533,9 @@ if($mybb->input['action'] == "inline_edit")
 				}
 				break;
 			case 'multiprune':
-				if($mybb->input['processed'] == 1)
+				if ($mybb->input['processed'] == 1)
 				{
-					if(($mybb->input['day'] || $mybb->input['month'] || $mybb->input['year']) && $mybb->input['set'])
+					if (($mybb->input['day'] || $mybb->input['month'] || $mybb->input['year']) && $mybb->input['set'])
 					{
 						$errors[] = $lang->multi_selected_dates;
 					}
@@ -2545,34 +2545,34 @@ if($mybb->input['action'] == "inline_edit")
 					$year = intval($mybb->input['year']);
 
 					// Selected a date - check if the date the user entered is valid
-					if($mybb->input['day'] || $mybb->input['month'] || $mybb->input['year'])
+					if ($mybb->input['day'] || $mybb->input['month'] || $mybb->input['year'])
 					{
 						// Is the date sort of valid?
-						if($day < 1 || $day > 31 || $month < 1 || $month > 12 || ($month == 2 && $day > 29))
+						if ($day < 1 || $day > 31 || $month < 1 || $month > 12 || ($month == 2 && $day > 29))
 						{
 							$errors[] = $lang->incorrect_date;
 						}
 
 						// Check the month
 						$months = get_bdays($year);
-						if($day > $months[$month]-1)
+						if ($day > $months[$month]-1)
 						{
 							$errors[] = $lang->incorrect_date;
 						}
 
 						// Check the year
-						if($year != 0 && ($year < (date("Y")-100)) || $year > date("Y"))
+						if ($year != 0 && ($year < (date("Y")-100)) || $year > date("Y"))
 						{
 							$errors[] = $lang->incorrect_date;
 						}
 
-						if(!$errors)
+						if (!$errors)
 						{
 							// No errors, so let's continue and set the date to delete from
 							$date = mktime(date('H'), date('i'), date('s'), $month, $day, $year); // Generate a unix time stamp
 						}
 					}
-					elseif($mybb->input['set'] > 0)
+					elseif ($mybb->input['set'] > 0)
 					{
 						// Set options
 						// For this purpose, 1 month = 31 days
@@ -2600,7 +2600,7 @@ if($mybb->input['action'] == "inline_edit")
 								break;
 						}
 
-						if(!$threshold)
+						if (!$threshold)
 						{
 							// An option was entered that isn't in the dropdown box
 							$errors[] = $lang->no_set_option;
@@ -2615,7 +2615,7 @@ if($mybb->input['action'] == "inline_edit")
 						$errors[] = $lang->no_prune_option;
 					}
 
-					if(!$errors)
+					if (!$errors)
 					{
 						$sql_array = implode(",", $selected);
 						$prune_array = array();
@@ -2623,20 +2623,20 @@ if($mybb->input['action'] == "inline_edit")
 						while($user = $db->fetch_array($query))
 						{
 							// Protect Super Admins
-							if(is_super_admin($user['uid']) && !is_super_admin($mybb->user['uid']))
+							if (is_super_admin($user['uid']) && !is_super_admin($mybb->user['uid']))
 							{
 								continue;
 							}
 
 							$return_array = delete_user_posts($user['uid'], $date); // Delete user posts, and grab a list of threads to delete
-							if($return_array && is_array($return_array))
+							if ($return_array && is_array($return_array))
 							{
 								$prune_array = array_merge_recursive($prune_array, $return_array);
 							}
 						}
 
 						// No posts were found for the user, return error
-						if(!is_array($prune_array) || count($prune_array) == 0)
+						if (!is_array($prune_array) || count($prune_array) == 0)
 						{
 							flash_message($lang->prune_fail, 'error');
 							admin_redirect("index.php?module=user-users".$vid_url);
@@ -2647,7 +2647,7 @@ if($mybb->input['action'] == "inline_edit")
 						require_once MYBB_ROOT.'/inc/functions_rebuild.php';
 
 						// We've finished deleting user's posts, so let's delete the threads
-						if(is_array($prune_array['to_delete']) && count($prune_array['to_delete']) > 0)
+						if (is_array($prune_array['to_delete']) && count($prune_array['to_delete']) > 0)
 						{
 							foreach($prune_array['to_delete'] as $tid)
 							{
@@ -2660,7 +2660,7 @@ if($mybb->input['action'] == "inline_edit")
 						}
 
 						// After deleting threads, rebuild the thread counters for the affected threads
-						if(is_array($prune_array['thread_update']) && count($prune_array['thread_update']) > 0)
+						if (is_array($prune_array['thread_update']) && count($prune_array['thread_update']) > 0)
 						{
 							$sql_array = implode(",", $prune_array['thread_update']);
 							$query = $db->simple_select("threads", "tid", "tid IN (".$sql_array.")", array('order_by' => 'tid', 'order_dir' => 'asc'));
@@ -2671,14 +2671,14 @@ if($mybb->input['action'] == "inline_edit")
 						}
 
 						// After updating thread counters, update the affected forum counters
-						if(is_array($prune_array['forum_update']) && count($prune_array['forum_update']) > 0)
+						if (is_array($prune_array['forum_update']) && count($prune_array['forum_update']) > 0)
 						{
 							$sql_array = implode(",", $prune_array['forum_update']);
 							$query = $db->simple_select("forums", "fid", "fid IN (".$sql_array.")", array('order_by' => 'fid', 'order_dir' => 'asc'));
 							while($forum = $db->fetch_array($query))
 							{
 								// Because we have a recursive array merge, check to see if there isn't a duplicated forum to update
-								if($looped_forum == $forum['fid'])
+								if ($looped_forum == $forum['fid'])
 								{
 									continue;
 								}
@@ -2704,7 +2704,7 @@ if($mybb->input['action'] == "inline_edit")
 				$table->construct_row();
 				$table->output($lang->important);
 
-				if($errors)
+				if ($errors)
 				{
 					$page->output_inline_error($errors);
 				}
@@ -2758,14 +2758,14 @@ if($mybb->input['action'] == "inline_edit")
 				$page->output_footer();
 				break;
 			case 'multiusergroup':
-				if($mybb->input['processed'] == 1)
+				if ($mybb->input['processed'] == 1)
 				{
 					// Determine additional usergroups
-					if(is_array($mybb->input['additionalgroups']))
+					if (is_array($mybb->input['additionalgroups']))
 					{
 						foreach($mybb->input['additionalgroups'] as $key => $gid)
 						{
-							if($gid == $mybb->input['usergroup'])
+							if ($gid == $mybb->input['usergroup'])
 							{
 								unset($mybb->input['additionalgroups'][$key]);
 							}
@@ -2788,14 +2788,14 @@ if($mybb->input['action'] == "inline_edit")
 					// If the a selected user is a super admin, don't update that user
 					foreach($selected as $user)
 					{
-						if(!is_super_admin($user))
+						if (!is_super_admin($user))
 						{
 							$users_to_update[] = $user;
 						}
 					}
 
 					$to_update_count = count($users_to_update);
-					if($to_update_count > 0 && is_array($users_to_update))
+					if ($to_update_count > 0 && is_array($users_to_update))
 					{
 						// Update the users in the database
 						$sql = implode(",", $users_to_update);
@@ -2825,7 +2825,7 @@ if($mybb->input['action'] == "inline_edit")
 				$table->construct_row();
 				$table->output($lang->important);
 
-				if($errors)
+				if ($errors)
 				{
 					$page->output_inline_error($errors);
 				}
@@ -2847,7 +2847,7 @@ if($mybb->input['action'] == "inline_edit")
 					$display_group_options[$usergroup['gid']] = $usergroup['title'];
 				}
 
-				if(!is_array($mybb->input['additionalgroups']))
+				if (!is_array($mybb->input['additionalgroups']))
 				{
 					$mybb->input['additionalgroups'] = explode(',', $mybb->input['additionalgroups']);
 				}
@@ -2867,7 +2867,7 @@ if($mybb->input['action'] == "inline_edit")
 	}
 }
 
-if(!$mybb->input['action'])
+if (!$mybb->input['action'])
 {
 	$plugins->run_hooks("admin_user_users_start");
 
@@ -2876,7 +2876,7 @@ if(!$mybb->input['action'])
 
 	$page->output_nav_tabs($sub_tabs, 'browse_users');
 
-	if($mybb->input['search_id'] && $admin_session['data']['user_views'][$mybb->input['search_id']])
+	if ($mybb->input['search_id'] && $admin_session['data']['user_views'][$mybb->input['search_id']])
 	{
 		$admin_view = $admin_session['data']['user_views'][$mybb->input['search_id']];
 		unset($admin_view['extra_sql']);
@@ -2884,22 +2884,22 @@ if(!$mybb->input['action'])
 	else
 	{
 		// Showing a specific view
-		if($mybb->input['vid'])
+		if ($mybb->input['vid'])
 		{
 			$query = $db->simple_select("adminviews", "*", "vid='".intval($mybb->input['vid'])."'");
 			$admin_view = $db->fetch_array($query);
 			// View does not exist or this view is private and does not belong to the current user
-			if(!$admin_view['vid'] || ($admin_view['visibility'] == 1 && $admin_view['uid'] != $mybb->user['uid']))
+			if (!$admin_view['vid'] || ($admin_view['visibility'] == 1 && $admin_view['uid'] != $mybb->user['uid']))
 			{
 				unset($admin_view);
 			}
 		}
 
 		// Don't have a view? Fetch the default
-		if(!$admin_view)
+		if (!$admin_view)
 		{
 			$default_view = fetch_default_view("user");
-			if(!$default_view)
+			if (!$default_view)
 			{
 				$default_view = "0";
 			}
@@ -2919,17 +2919,17 @@ if(!$mybb->input['action'])
 	$popup->add_item("<em>{$lang->manage_views}</em>", "index.php?module=user-users&amp;action=views");
 	$admin_view['popup'] = $popup->fetch();
 
-	if($mybb->input['type'])
+	if ($mybb->input['type'])
 	{
 		$admin_view['view_type'] = $mybb->input['type'];
 	}
 
 	$results = build_users_view($admin_view);
 
-	if(!$results)
+	if (!$results)
 	{
 		// If we came from the home page and clicked on the "Activate Users" link, send them back to here
-		if($admin_session['data']['from'] == "home")
+		if ($admin_session['data']['from'] == "home")
 		{
 			flash_message($admin_session['data']['flash_message2']['message'], $admin_session['data']['flash_message2']['type']);
 			update_admin_session('flash_message2', '');
@@ -2944,9 +2944,9 @@ if(!$mybb->input['action'])
 	}
 
 	// If we have any error messages, show them
-	if($errors)
+	if ($errors)
 	{
-		if($inline != TRUE)
+		if ($inline != TRUE)
 		{
 			echo "<div style=\"display: inline; float: right;\">{$admin_view['popup']}</div><br />\n";
 		}
@@ -2962,11 +2962,11 @@ function build_users_view($view)
 {
 	global $mybb, $db, $cache, $lang, $user_view_fields, $page;
 
-	if($view['title'])
+	if ($view['title'])
 	{
 		$title_string = "view_title_{$view['vid']}";
 
-		if($lang->$title_string)
+		if ($lang->$title_string)
 		{
 			$view['title'] = $lang->$title_string;
 		}
@@ -2975,27 +2975,27 @@ function build_users_view($view)
 	}
 
 	// Build the URL to this view
-	if(!$view['url'])
+	if (!$view['url'])
 	{
 		$view['url'] = "index.php?module=user-users";
 	}
-	if(!is_array($view['conditions']))
+	if (!is_array($view['conditions']))
 	{
 		$view['conditions'] = unserialize($view['conditions']);
 	}
-	if(!is_array($view['fields']))
+	if (!is_array($view['fields']))
 	{
 		$view['fields'] = unserialize($view['fields']);
 	}
-	if(!is_array($view['custom_profile_fields']))
+	if (!is_array($view['custom_profile_fields']))
 	{
 		$view['custom_profile_fields'] = unserialize($view['custom_profile_fields']);
 	}
-	if($mybb->input['username'])
+	if ($mybb->input['username'])
 	{
 		$view['conditions']['username'] = $mybb->input['username'];
 	}
-	if($view['vid'])
+	if ($view['vid'])
 	{
 		$view['url'] .= "&amp;vid={$view['vid']}";
 	}
@@ -3003,7 +3003,7 @@ function build_users_view($view)
 	{
 		// If this is a custom view we need to save everything ready to pass it on from page to page
 		global $admin_session;
-		if(!$_REQUEST['search_id'])
+		if (!$_REQUEST['search_id'])
 		{
 			$search_id = md5(random_str());
 			$admin_session['data']['user_views'][$search_id] = $view;
@@ -3013,22 +3013,22 @@ function build_users_view($view)
 		$view['url'] .= "&amp;search_id=".htmlspecialchars($_REQUEST['search_id']);
 	}
 
-	if($mybb->input['username'])
+	if ($mybb->input['username'])
 	{
 		$view['url'] .= "&amp;username=".urlencode(htmlspecialchars_uni($mybb->input['username']));
 	}
 
-	if(!isset($admin_session['data']['last_users_view']) || $admin_session['data']['last_users_view'] != str_replace("&amp;", "&", $view['url']))
+	if (!isset($admin_session['data']['last_users_view']) || $admin_session['data']['last_users_view'] != str_replace("&amp;", "&", $view['url']))
 	{
 		update_admin_session('last_users_url', str_replace("&amp;", "&", $view['url']));
 	}
 
-	if(isset($view['conditions']['referrer'])){
+	if (isset($view['conditions']['referrer'])){
 		$view['url'] .= "&amp;action=referrers&amp;uid=".htmlspecialchars($view['conditions']['referrer']);
 	}
 
 	// Do we not have any views?
-	if(empty($view))
+	if (empty($view))
 	{
 		return FALSE;
 	}
@@ -3036,21 +3036,21 @@ function build_users_view($view)
 	$table = new Table;
 
 	// Build header for table based view
-	if($view['view_type'] != "card")
+	if ($view['view_type'] != "card")
 	{
 		foreach($view['fields'] as $field)
 		{
-			if(!$user_view_fields[$field])
+			if (!$user_view_fields[$field])
 			{
 				continue;
 			}
 			$view_field = $user_view_fields[$field];
 			$field_options = array();
-			if($view_field['width'])
+			if ($view_field['width'])
 			{
 				$field_options['width'] = $view_field['width'];
 			}
-			if($view_field['align'])
+			if ($view_field['align'])
 			{
 				$field_options['class'] = "align_".$view_field['align'];
 			}
@@ -3067,11 +3067,11 @@ function build_users_view($view)
 	$user_like_fields = array("username", "email", "website", "icq", "aim", "yahoo", "msn", "signature", "usertitle");
 	foreach($user_like_fields as $search_field)
 	{
-		if($view['conditions'][$search_field] && !$view['conditions'][$search_field.'_blank'])
+		if ($view['conditions'][$search_field] && !$view['conditions'][$search_field.'_blank'])
 		{
 			$search_sql .= " AND u.{$search_field} LIKE '%".$db->escape_string_like($view['conditions'][$search_field])."%'";
 		}
-		else if(isset($view['conditions'][$search_field.'_blank']))
+		else if (isset($view['conditions'][$search_field.'_blank']))
 		{
 			$search_sql .= " AND u.{$search_field} != ''";
 		}
@@ -3081,7 +3081,7 @@ function build_users_view($view)
 	$user_exact_fields = array("referrer");
 	foreach($user_exact_fields as $search_field)
 	{
-		if($view['conditions'][$search_field])
+		if ($view['conditions'][$search_field])
 		{
 			$search_sql .= " AND u.{$search_field}='".$db->escape_string($view['conditions'][$search_field])."'";
 		}
@@ -3092,7 +3092,7 @@ function build_users_view($view)
 	foreach($direction_fields as $search_field)
 	{
 		$direction_field = $search_field."_dir";
-		if(($view['conditions'][$search_field] || $view['conditions'][$search_field] === '0') && $view['conditions'][$direction_field])
+		if (($view['conditions'][$search_field] || $view['conditions'][$search_field] === '0') && $view['conditions'][$direction_field])
 		{
 			switch($view['conditions'][$direction_field])
 			{
@@ -3113,7 +3113,7 @@ function build_users_view($view)
 	$reg_fields = array("regdate");
 	foreach($reg_fields as $search_field)
 	{
-		if(intval($view['conditions'][$search_field]))
+		if (intval($view['conditions'][$search_field]))
 		{
 			$threshold = TIME_NOW - (intval($view['conditions'][$search_field]) * 24 * 60 * 60);
 
@@ -3125,10 +3125,10 @@ function build_users_view($view)
 	$ip_fields = array("regip", "lastip");
 	foreach($ip_fields as $search_field)
 	{
-		if($view['conditions'][$search_field])
+		if ($view['conditions'][$search_field])
 		{
 			// IPv6 IP
-			if(strpos($view['conditions'][$search_field], ":") !== FALSE)
+			if (strpos($view['conditions'][$search_field], ":") !== FALSE)
 			{
 				$view['conditions'][$search_field] = str_replace("*", "%", $view['conditions'][$search_field]);
 				$ip_sql = "{$search_field} LIKE '".$db->escape_string($view['conditions'][$search_field])."'";
@@ -3136,7 +3136,7 @@ function build_users_view($view)
 			else
 			{
 				$ip_range = fetch_longipv4_range($view['conditions'][$search_field]);
-				if(!is_array($ip_range))
+				if (!is_array($ip_range))
 				{
 					$ip_sql = "long{$search_field}='{$ip_range}'";
 				}
@@ -3150,10 +3150,10 @@ function build_users_view($view)
 	}
 
 	// Post IP searching
-	if($view['conditions']['postip'])
+	if ($view['conditions']['postip'])
 	{
 		// IPv6 IP
-		if(strpos($view['conditions']['postip'], ":") !== FALSE)
+		if (strpos($view['conditions']['postip'], ":") !== FALSE)
 		{
 			$view['conditions']['postip'] = str_replace("*", "%", $view['conditions']['postip']);
 			$ip_sql = "ipaddress LIKE '".$db->escape_string($view['conditions']['postip'])."'";
@@ -3161,7 +3161,7 @@ function build_users_view($view)
 		else
 		{
 			$ip_range = fetch_longipv4_range($view['conditions']['postip']);
-			if(!is_array($ip_range))
+			if (!is_array($ip_range))
 			{
 				$ip_sql = "longipaddress='{$ip_range}'";
 			}
@@ -3181,26 +3181,26 @@ function build_users_view($view)
 	}
 
 	// Custom Profile Field searching
-	if($view['custom_profile_fields'])
+	if ($view['custom_profile_fields'])
 	{
 		$userfield_sql = '1=1';
 		foreach($view['custom_profile_fields'] as $column => $input)
 		{
-			if(is_array($input))
+			if (is_array($input))
 			{
 				foreach($input as $value => $text)
 				{
-					if($value == $column)
+					if ($value == $column)
 					{
 						$value = $text;
 					}
 
-					if($value == $lang->na)
+					if ($value == $lang->na)
 					{
 						continue;
 					}
 
-					if(strpos($column, '_blank') !== FALSE)
+					if (strpos($column, '_blank') !== FALSE)
 					{
 						$column = str_replace('_blank', '', $column);
 						$userfield_sql .= ' AND '.$db->escape_string($column)." != ''";
@@ -3211,14 +3211,14 @@ function build_users_view($view)
 					}
 				}
 			}
-			else if(!empty($input))
+			else if (!empty($input))
 			{
-				if($input == $lang->na)
+				if ($input == $lang->na)
 				{
 					continue;
 				}
 
-				if(strpos($column, '_blank') !== FALSE)
+				if (strpos($column, '_blank') !== FALSE)
 				{
 					$column = str_replace('_blank', '', $column);
 					$userfield_sql .= ' AND '.$db->escape_string($column)." != ''";
@@ -3230,7 +3230,7 @@ function build_users_view($view)
 			}
 		}
 
-		if($userfield_sql != '1=1')
+		if ($userfield_sql != '1=1')
 		{
 			$userfield_uids = array(0);
 			$query = $db->simple_select("userfields", "ufid", $userfield_sql);
@@ -3244,9 +3244,9 @@ function build_users_view($view)
 	}
 
 	// Usergroup based searching
-	if($view['conditions']['usergroup'])
+	if ($view['conditions']['usergroup'])
 	{
-		if(!is_array($view['conditions']['usergroup']))
+		if (!is_array($view['conditions']['usergroup']))
 		{
 			$view['conditions']['usergroup'] = array($view['conditions']['usergroup']);
 		}
@@ -3255,7 +3255,7 @@ function build_users_view($view)
 		{
 			$usergroup = intval($usergroup);
 
-			if(!$usergroup)
+			if (!$usergroup)
 			{
 				continue;
 			}
@@ -3275,13 +3275,13 @@ function build_users_view($view)
 	}
 
 	// COPPA users only?
-	if($view['conditions']['coppa'])
+	if ($view['conditions']['coppa'])
 	{
 		$search_sql .= " AND u.coppauser=1 AND u.usergroup=5";
 	}
 
 	// Extra SQL?
-	if($view['extra_sql'])
+	if ($view['extra_sql'])
 	{
 		$search_sql .= $view['extra_sql'];
 	}
@@ -3295,14 +3295,14 @@ function build_users_view($view)
 	$num_results = $db->fetch_field($query, "num_results");
 
 	// No matching results then return FALSE
-	if(!$num_results)
+	if (!$num_results)
 	{
 		return FALSE;
 	}
 	// Generate the list of results
 	else
 	{
-		if(!$view['perpage'])
+		if (!$view['perpage'])
 		{
 			$view['perpage'] = 20;
 		}
@@ -3310,7 +3310,7 @@ function build_users_view($view)
 
 		// Establish which page we're viewing and the starting index for querying
 		$mybb->input['page'] = intval($mybb->input['page']);
-		if($mybb->input['page'])
+		if ($mybb->input['page'])
 		{
 			$start = ($mybb->input['page'] - 1) * $view['perpage'];
 		}
@@ -3321,7 +3321,7 @@ function build_users_view($view)
 		}
 
 		$from_bit = "";
-		if($mybb->input['from'] == "home")
+		if ($mybb->input['from'] == "home")
 		{
 			$from_bit = "&amp;from=home";
 		}
@@ -3344,7 +3344,7 @@ function build_users_view($view)
 				$view['sortby'] = "username";
 		}
 
-		if($view['sortorder'] != "desc")
+		if ($view['sortorder'] != "desc")
 		{
 			$view['sortorder'] = "asc";
 		}
@@ -3370,7 +3370,7 @@ function build_users_view($view)
 				$groups_list .= "{$comma}{$usergroups[$group]['title']}";
 				$comma = $lang->comma;
 			}
-			if(!$groups_list)
+			if (!$groups_list)
 			{
 				$groups_list = $lang->none;
 			}
@@ -3384,9 +3384,9 @@ function build_users_view($view)
 			$popup->add_item($lang->edit_profile_and_settings, "index.php?module=user-users&amp;action=edit&amp;uid={$user['uid']}");
 			$popup->add_item($lang->ban_user, "index.php?module=user-banning&amp;uid={$user['uid']}#username");
 
-			if($user['usergroup'] == 5)
+			if ($user['usergroup'] == 5)
 			{
-				if($user['coppauser'])
+				if ($user['coppauser'])
 				{
 					$popup->add_item($lang->approve_coppa_user, "index.php?module=user-users&amp;action=activate_user&amp;uid={$user['uid']}&amp;my_post_key={$mybb->post_code}{$from_bit}");
 				}
@@ -3403,7 +3403,7 @@ function build_users_view($view)
 			$user['view']['controls'] = $popup->fetch();
 
 			// Fetch the reputation for this user
-			if($usergroups[$user['usergroup']]['usereputationsystem'] == 1 && $mybb->settings['enablereputation'] == 1)
+			if ($usergroups[$user['usergroup']]['usereputationsystem'] == 1 && $mybb->settings['enablereputation'] == 1)
 			{
 				$user['view']['reputation'] = get_reputation($user['reputation']);
 			}
@@ -3412,21 +3412,21 @@ function build_users_view($view)
 				$reputation = "-";
 			}
 
-			if($mybb->settings['enablewarningsystem'] != 0 && $usergroups[$user['usergroup']]['canreceivewarnings'] != 0)
+			if ($mybb->settings['enablewarningsystem'] != 0 && $usergroups[$user['usergroup']]['canreceivewarnings'] != 0)
 			{
 				$warning_level = round($user['warningpoints']/$mybb->settings['maxwarningpoints']*100);
-				if($warning_level > 100)
+				if ($warning_level > 100)
 				{
 					$warning_level = 100;
 				}
 				$user['view']['warninglevel'] = get_colored_warning_level($warning_level);
 			}
 
-			if($user['avatar'] && !stristr($user['avatar'], 'http://'))
+			if ($user['avatar'] && !stristr($user['avatar'], 'http://'))
 			{
 				$user['avatar'] = "../{$user['avatar']}";
 			}
-			if($view['view_type'] == "card")
+			if ($view['view_type'] == "card")
 			{
 				$scaled_avatar = fetch_scaled_avatar($user, 80, 80);
 			}
@@ -3434,13 +3434,13 @@ function build_users_view($view)
 			{
 				$scaled_avatar = fetch_scaled_avatar($user, 34, 34);
 			}
-			if(!$user['avatar'])
+			if (!$user['avatar'])
 			{
 				$user['avatar'] = "styles/{$page->style}/images/default_avatar.gif";
 			}
 			$user['view']['avatar'] = "<img src=\"".htmlspecialchars_uni($user['avatar'])."\" alt=\"\" width=\"{$scaled_avatar['width']}\" height=\"{$scaled_avatar['height']}\" />";
 
-			if($view['view_type'] == "card")
+			if ($view['view_type'] == "card")
 			{
 				$users .= build_user_view_card($user, $view, $i);
 			}
@@ -3451,25 +3451,25 @@ function build_users_view($view)
 		}
 
 		// If card view, we need to output the results
-		if($view['view_type'] == "card")
+		if ($view['view_type'] == "card")
 		{
 			$table->construct_cell($users);
 			$table->construct_row();
 		}
 	}
 
-	if(!$view['table_id'])
+	if (!$view['table_id'])
 	{
 		$view['table_id'] = "users_list";
 	}
 
 	$switch_view = "<div class=\"float_right\">";
 	$switch_url = $view['url'];
-	if($mybb->input['page'] > 0)
+	if ($mybb->input['page'] > 0)
 	{
 		$switch_url .= "&amp;page=".intval($mybb->input['page']);
 	}
-	if($view['view_type'] != "card")
+	if ($view['view_type'] != "card")
 	{
 		$switch_view .= "<strong>{$lang->table_view}</strong> | <a href=\"{$switch_url}&amp;type=card\" style=\"font-weight: normal;\">{$lang->card_view}</a>";
 	}
@@ -3480,7 +3480,7 @@ function build_users_view($view)
 	$switch_view .= "</div>";
 
 	// Do we need to construct the pagination?
-	if($num_results > $view['perpage'])
+	if ($num_results > $view['perpage'])
 	{
 		$pagination = draw_admin_pagination($mybb->input['page'], $view['perpage'], $num_results, $view['url']."&amp;type={$view['view_type']}");
 		$search_class = "float_right";
@@ -3494,7 +3494,7 @@ function build_users_view($view)
 
 	$search_action = $view['url'];
 	// stop &username= in the query string
-	if($view_upos = strpos($search_action, '&amp;username='))
+	if ($view_upos = strpos($search_action, '&amp;username='))
 	{
 		$search_action = substr($search_action, 0, $view_upos);
 	}
@@ -3503,7 +3503,7 @@ function build_users_view($view)
 	$built_view = $search->construct_return;
 	$built_view .= "<div class=\"{$search_class}\" style=\"padding-bottom: 3px; margin-top: -9px; {$search_style}\">";
 	$built_view .= $search->generate_hidden_field('action', 'search')."\n";
-	if($view['conditions']['username'])
+	if ($view['conditions']['username'])
 	{
 		$default_class = '';
 		$value = $view['conditions']['username'];
@@ -3515,7 +3515,7 @@ function build_users_view($view)
 	}
 	$built_view .= $search->generate_text_box('username', $value, array('id' => 'search_keywords', 'class' => "{$default_class} field150 field_small"))."\n";
 	$built_view .= "<input type=\"submit\" class=\"search_button\" value=\"{$lang->search}\" />\n";
-	if($view['popup'])
+	if ($view['popup'])
 	{
 		$built_view .= " <div style=\"display: inline\">{$view['popup']}</div>\n";
 	}
@@ -3523,7 +3523,7 @@ function build_users_view($view)
 		var form = document.getElementById('search_form');
 		form.onsubmit = function() {
 			var search = document.getElementById('search_keywords');
-			if(search.value == '' || search.value == '{$lang->search_for_user}')
+			if (search.value == '' || search.value == '{$lang->search_for_user}')
 			{
 				search.focus();
 				return FALSE;
@@ -3533,7 +3533,7 @@ function build_users_view($view)
 		var search = document.getElementById('search_keywords');
 		search.onfocus = function()
 		{
-			if(this.value == '{$lang->search_for_user}')
+			if (this.value == '{$lang->search_for_user}')
 			{
 				$(this).removeClassName('search_default');
 				this.value = '';
@@ -3541,14 +3541,14 @@ function build_users_view($view)
 		}
 		search.onblur = function()
 		{
-			if(this.value == '')
+			if (this.value == '')
 			{
 				$(this).addClassName('search_default');
 				this.value = '{$lang->search_for_user}';
 			}
 		}
 		// fix the styling used if we have a different default value
-        if(search.value != '{$lang->search_for_user}')
+        if (search.value != '{$lang->search_for_user}')
         {
             $(search).removeClassName('search_default');
         }
@@ -3567,7 +3567,7 @@ function build_users_view($view)
 	$built_view .= $search->end();
 
 	$built_view .= $pagination;
-	if($view['view_type'] != "card")
+	if ($view['view_type'] != "card")
 	{
 		$checkbox = '';
 	}
@@ -3613,7 +3613,7 @@ function build_user_view_card($user, $view, &$i)
 	global $user_view_fields;
 
 	++$i;
-	if($i == 3)
+	if ($i == 3)
 	{
 		$i = 1;
 	}
@@ -3621,7 +3621,7 @@ function build_user_view_card($user, $view, &$i)
 	// Loop through fields user wants to show
 	foreach($view['fields'] as $field)
 	{
-		if(!$user_view_fields[$field])
+		if (!$user_view_fields[$field])
 		{
 			continue;
 		}
@@ -3629,18 +3629,18 @@ function build_user_view_card($user, $view, &$i)
 		$view_field = $user_view_fields[$field];
 
 		// Special conditions for avatar
-		if($field == "avatar")
+		if ($field == "avatar")
 		{
 			$avatar = $user['view']['avatar'];
 		}
-		else if($field == "controls")
+		else if ($field == "controls")
 		{
 			$controls = $user['view']['controls'];
 		}
 		// Otherwise, just user data
-		else if($field != "username")
+		else if ($field != "username")
 		{
-			if($user['view'][$field])
+			if ($user['view'][$field])
 			{
 				$value = $user['view'][$field];
 			}
@@ -3649,7 +3649,7 @@ function build_user_view_card($user, $view, &$i)
 				$value = $user[$field];
 			}
 
-			if($field == "postnum")
+			if ($field == "postnum")
 			{
 				$value = my_number_format($value);
 			}
@@ -3659,7 +3659,7 @@ function build_user_view_card($user, $view, &$i)
 
 	}
 	// Floated to the left or right?
-	if($i == 1)
+	if ($i == 1)
 	{
 		$float = "left";
 	}
@@ -3671,15 +3671,15 @@ function build_user_view_card($user, $view, &$i)
 	// And build the final card
 	$card = "<fieldset id=\"uid_{$user['uid']}\" style=\"width: 47%; float: {$float};\">\n";
 	$card .= "<legend><input type=\"checkbox\" class=\"checkbox\" name=\"inlinemod_{$user['uid']}\" id=\"inlinemod_{$user['uid']}\" value=\"1\" onclick=\"$('uid_{$user['uid']}').toggleClassName('inline_selected');\" /> {$user['view']['username']}</legend>\n";
-	if($avatar)
+	if ($avatar)
 	{
 		$card .= "<div class=\"user_avatar\">{$avatar}</div>\n";
 	}
-	if($user_details)
+	if ($user_details)
 	{
 		$card .= "<div class=\"user_details\">".implode("<br />", $user_details)."</div>\n";
 	}
-	if($controls)
+	if ($controls)
 	{
 		$card .= "<div class=\"float_right\" style=\"padding: 4px;\">{$controls}</div>\n";
 	}
@@ -3694,17 +3694,17 @@ function build_user_view_table($user, $view, &$table)
 
 	foreach($view['fields'] as $field)
 	{
-		if(!$user_view_fields[$field])
+		if (!$user_view_fields[$field])
 		{
 			continue;
 		}
 		$view_field = $user_view_fields[$field];
 		$field_options = array();
-		if($view_field['align'])
+		if ($view_field['align'])
 		{
 			$field_options['class'] = "align_".$view_field['align'];
 		}
-		if($user['view'][$field])
+		if ($user['view'][$field])
 		{
 			$value = $user['view'][$field];
 		}
@@ -3727,9 +3727,9 @@ function fetch_scaled_avatar($user, $max_width=80, $max_height=80)
 		"height" => $max_height,
 	);
 
-	if($user['avatar'])
+	if ($user['avatar'])
 	{
-		if($user['avatardimensions'])
+		if ($user['avatardimensions'])
 		{
 			require_once MYBB_ROOT."inc/functions_image.php";
 			list($width, $height) = explode("|", $user['avatardimensions']);
@@ -3744,7 +3744,7 @@ function output_custom_profile_fields($fields, $values, &$form_container, &$form
 {
 	global $lang;
 
-	if(!is_array($fields))
+	if (!is_array($fields))
 	{
 		return;
 	}
@@ -3758,7 +3758,7 @@ function output_custom_profile_fields($fields, $values, &$form_container, &$form
 		switch($type)
 		{
 			case "multiselect":
-				if(!is_array($values[$field_name]))
+				if (!is_array($values[$field_name]))
 				{
 					$user_options = explode("\n", $values[$field_name]);
 				}
@@ -3774,7 +3774,7 @@ function output_custom_profile_fields($fields, $values, &$form_container, &$form
 
 				$select_options = explode("\n", $options);
 				$options = array();
-				if($search == TRUE)
+				if ($search == TRUE)
 				{
 					$select_options[''] = $lang->na;
 				}
@@ -3784,7 +3784,7 @@ function output_custom_profile_fields($fields, $values, &$form_container, &$form
 					$val = trim($val);
 					$options[$val] = $val;
 				}
-				if(!$profile_field['length'])
+				if (!$profile_field['length'])
 				{
 					$profile_field['length'] = 3;
 				}
@@ -3792,7 +3792,7 @@ function output_custom_profile_fields($fields, $values, &$form_container, &$form
 				break;
 			case "select":
 				$select_options = array();
-				if($search == TRUE)
+				if ($search == TRUE)
 				{
 					$select_options[''] = $lang->na;
 				}
@@ -3803,11 +3803,11 @@ function output_custom_profile_fields($fields, $values, &$form_container, &$form
 					$val = trim($val);
 					$options[$val] = $val;
 				}
-				if(!$profile_field['length'])
+				if (!$profile_field['length'])
 				{
 					$profile_field['length'] = 1;
 				}
-				if($search == TRUE)
+				if ($search == TRUE)
 				{
 					$code = $form->generate_select_box("profile_fields[{$field_name}][{$field_name}]", $options, $values[$field_name], array('id' => "profile_field_{$field_name}", 'size' => $profile_field['length']));
 				}
@@ -3818,7 +3818,7 @@ function output_custom_profile_fields($fields, $values, &$form_container, &$form
 				break;
 			case "radio":
 				$radio_options = array();
-				if($search == TRUE)
+				if ($search == TRUE)
 				{
 					$radio_options[''] = $lang->na;
 				}
@@ -3830,7 +3830,7 @@ function output_custom_profile_fields($fields, $values, &$form_container, &$form
 				}
 				break;
 			case "checkbox":
-				if(!is_array($values[$field_name]))
+				if (!is_array($values[$field_name]))
 				{
 					$user_options = explode("\n", $values[$field_name]);
 				}
@@ -3843,7 +3843,7 @@ function output_custom_profile_fields($fields, $values, &$form_container, &$form
 					$selected_options[$val] = $val;
 				}
 				$select_options = array();
-				if($search == TRUE)
+				if ($search == TRUE)
 				{
 					$select_options[''] = $lang->na;
 				}
@@ -3856,7 +3856,7 @@ function output_custom_profile_fields($fields, $values, &$form_container, &$form
 				break;
 			case "textarea":
 				$extra = '';
-				if($mybb->input['action'] == "search")
+				if ($mybb->input['action'] == "search")
 				{
 					$extra = " {$lang->or} ".$form->generate_check_box("profile_fields[{$field_name}_blank]", 1, $lang->is_not_blank, array('id' => "{$field_name}_blank", 'checked' => $values[$field_name.'_blank']));
 				}
@@ -3865,7 +3865,7 @@ function output_custom_profile_fields($fields, $values, &$form_container, &$form
 				break;
 			default:
 				$extra = '';
-				if($mybb->input['action'] == "search")
+				if ($mybb->input['action'] == "search")
 				{
 					$extra = " {$lang->or} ".$form->generate_check_box("profile_fields[{$field_name}_blank]", 1, $lang->is_not_blank, array('id' => "{$field_name}_blank", 'checked' => $values[$field_name.'_blank']));
 				}
@@ -3883,22 +3883,22 @@ function user_search_conditions($input=array(), &$form)
 {
 	global $mybb, $db, $lang;
 
-	if(!$input)
+	if (!$input)
 	{
 		$input = $mybb->input;
 	}
 
-	if(!is_array($input['conditions']))
+	if (!is_array($input['conditions']))
 	{
 		$input['conditions'] = unserialize($input['conditions']);
 	}
 
-	if(!is_array($input['profile_fields']))
+	if (!is_array($input['profile_fields']))
 	{
 		$input['profile_fields'] = unserialize($input['profile_fields']);
 	}
 
-	if(!is_array($input['fields']))
+	if (!is_array($input['fields']))
 	{
 		$input['fields'] = unserialize($input['fields']);
 	}
@@ -3943,7 +3943,7 @@ function user_search_conditions($input=array(), &$form)
 	$query = $db->simple_select("profilefields", "*", "", array('order_by' => 'disporder'));
 	while($profile_field = $db->fetch_array($query))
 	{
-		if($profile_field['required'] == 1)
+		if ($profile_field['required'] == 1)
 		{
 			$profile_fields['required'][] = $profile_field;
 		}

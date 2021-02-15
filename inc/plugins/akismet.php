@@ -10,7 +10,7 @@
  */
 
 // Disallow direct access to this file for security reasons
-if(!defined("IN_MYBB"))
+if (!defined("IN_MYBB"))
 {
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
@@ -19,10 +19,10 @@ if(!defined("IN_MYBB"))
 // Basically, when we include this from class_plugins.php we can do stuff in init.php, which is before we cache our templates
 // So we won't need an extra call to cache it.
 
-if(my_strpos($_SERVER['PHP_SELF'], 'showthread.php'))
+if (my_strpos($_SERVER['PHP_SELF'], 'showthread.php'))
 {
 	global $templatelist;
-	if(isset($templatelist))
+	if (isset($templatelist))
 	{
 		$templatelist .= ',';
 	}
@@ -83,7 +83,7 @@ function akismet_info()
  * function hello_is_installed()
  * {
  *      global $db;
- *      if($db->table_exists("hello_world"))
+ *      if ($db->table_exists("hello_world"))
  *      {
  *          return TRUE;
  *      }
@@ -121,7 +121,7 @@ function akismet_install()
 {
 	global $db, $mybb, $lang;
 
-	if($db->field_exists('akismetstopped', "users"))
+	if ($db->field_exists('akismetstopped', "users"))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."users DROP akismetstopped");
 	}
@@ -225,7 +225,7 @@ function akismet_is_installed()
 {
 	global $db;
 
-	if($db->field_exists('akismetstopped', "users"))
+	if ($db->field_exists('akismetstopped', "users"))
 	{
 		return TRUE;
 	}
@@ -278,7 +278,7 @@ function akismet_uninstall()
 {
 	global $db;
 
-	if($db->field_exists('akismetstopped', "users"))
+	if ($db->field_exists('akismetstopped', "users"))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."users DROP akismetstopped");
 	}
@@ -301,7 +301,7 @@ function akismet_key()
 {
 	global $installed, $mybb;
 
-	if($installed == FALSE && $mybb->input['plugin'] == "akismet")
+	if ($installed == FALSE && $mybb->input['plugin'] == "akismet")
 	{
 		global $message;
 
@@ -322,7 +322,7 @@ function akismet_show_confirm_page()
 	$post = $db->fetch_array($query);
 	$post['subject'] = htmlspecialchars_uni($post['subject']);
 
-	if(!$post)
+	if (!$post)
 	{
 		error("Invalid Post ID.");
 	}
@@ -361,28 +361,28 @@ function akismet_moderation_start()
 {
 	global $mybb, $db, $akismet, $lang, $cache, $fid, $pid;
 
-	if(!$mybb->settings['akismetswitch'] || $mybb->input['action'] != 'mark_as_spam')
+	if (!$mybb->settings['akismetswitch'] || $mybb->input['action'] != 'mark_as_spam')
 	{
 		return;
 	}
 
 	$lang->load("akismet", FALSE, TRUE);
 
-	if(!$mybb->input['pid'])
+	if (!$mybb->input['pid'])
 	{
 		error("No Post ID specified.");
 	}
 
 	$pid = intval($mybb->input['pid']);
 
-	if(!$mybb->input['fid'])
+	if (!$mybb->input['fid'])
 	{
 		error("No Forum ID specified.");
 	}
 
 	$fid = intval($mybb->input['fid']);
 
-	if(!is_moderator($fid))
+	if (!is_moderator($fid))
 	{
 		error("No Permissions to do this action.");
 	}
@@ -396,12 +396,12 @@ function akismet_moderation_start()
 	");
 	$post = $db->fetch_array($query);
 
-	if(!$post)
+	if (!$post)
 	{
 		error("Invalid Post ID.");
 	}
 
-	if(!$mybb->input['my_post_key'] || $mybb->request_method != "post")
+	if (!$mybb->input['my_post_key'] || $mybb->request_method != "post")
 	{
 		akismet_show_confirm_page();
 	}
@@ -417,7 +417,7 @@ function akismet_moderation_start()
 		'user_ip' => $post['ipaddress']
 	);
 
-	if($post['replyto'] == 0)
+	if ($post['replyto'] == 0)
 	{
 		$db->update_query("threads", array('visible' => '-4'), "tid = '{$post['tid']}'");
 		$db->update_query("posts", array('visible' => '-4'), "tid = '{$post['tid']}'");
@@ -429,7 +429,7 @@ function akismet_moderation_start()
 		$snippit = "post";
 	}
 
-	if(!$akismet)
+	if (!$akismet)
 	{
 		$akismet = new Akismet($mybb->settings['bburl'], $mybb->settings['akismetapikey'],  $akismet_array);
 	}
@@ -438,7 +438,7 @@ function akismet_moderation_start()
 
 	$numakismetthread = $numakismetpost = 0;
 
-	if($snippit == "thread")
+	if ($snippit == "thread")
 	{
 		$query = $db->query("
 			SELECT p.uid, u.usergroup
@@ -450,21 +450,21 @@ function akismet_moderation_start()
 		{
 			++$numakismetpost;
 
-			if($post['usepostcounts'] != 0)
+			if ($post['usepostcounts'] != 0)
 			{
 				$db->write_query("UPDATE ".TABLE_PREFIX."users SET postnum=postnum-1 WHERE uid = '{$post2['uid']}'");
 			}
 
-			if($mybb->settings['akismetuidsignore'])
+			if ($mybb->settings['akismetuidsignore'])
 			{
 				$akismet_uids_ignore = explode(',', $mybb->settings['akismetuidsignore']);
-				if(in_array($post2['usergroup'], $akismet_uids_ignore) || is_super_admin($post2['uid']))
+				if (in_array($post2['usergroup'], $akismet_uids_ignore) || is_super_admin($post2['uid']))
 				{
 					continue;
 				}
 			}
 
-			if(is_super_admin($post2['uid']))
+			if (is_super_admin($post2['uid']))
 			{
 				continue;
 			}
@@ -474,7 +474,7 @@ function akismet_moderation_start()
 			$akismetstopped = $db->fetch_field($query1, 'akismetstopped');
 
 			// Check if the person should be banned
-			if($mybb->settings['akismetnumtillban'] > 0 && $akismetstopped >= $mybb->settings['akismetnumtillban'])
+			if ($mybb->settings['akismetnumtillban'] > 0 && $akismetstopped >= $mybb->settings['akismetnumtillban'])
 			{
 				$banned_user = array(
 					"uid" => $post2['uid'],
@@ -504,22 +504,22 @@ function akismet_moderation_start()
 		$akismetstopped = $db->fetch_field($query, 'akismetstopped');
 		$usergroup = $db->fetch_field($query, 'usergroup');
 
-		if($mybb->settings['akismetuidsignore'])
+		if ($mybb->settings['akismetuidsignore'])
 		{
 			$akismet_uids_ignore = explode(',', $mybb->settings['akismetuidsignore']);
-			if(in_array($usergroup, $akismet_uids_ignore))
+			if (in_array($usergroup, $akismet_uids_ignore))
 			{
 				continue;
 			}
 		}
 
-		if(is_super_admin($post['uid']))
+		if (is_super_admin($post['uid']))
 		{
 			continue;
 		}
 
 		// Check if the person should be banned
-		if($mybb->settings['akismetnumtillban'] > 0 && $akismetstopped >= $mybb->settings['akismetnumtillban'])
+		if ($mybb->settings['akismetnumtillban'] > 0 && $akismetstopped >= $mybb->settings['akismetnumtillban'])
 		{
 			$banned_user = array(
 				"uid" => $post['uid'],
@@ -541,7 +541,7 @@ function akismet_moderation_start()
 
 		++$numakismetpost;
 
-		if($post['usepostcounts'] != 0)
+		if ($post['usepostcounts'] != 0)
 		{
 			$db->write_query("UPDATE ".TABLE_PREFIX."users SET postnum=postnum-1 WHERE uid = '{$post['uid']}'");
 		}
@@ -550,7 +550,7 @@ function akismet_moderation_start()
 	update_thread_counters($post['tid'], array('replies' => '-'.$numakismetpost));
 	update_forum_counters($post['fid'], array('threads' => '-'.$numakismetthread, 'posts' => '-'.$numakismetpost));
 
-	if($snippit == "thread")
+	if ($snippit == "thread")
 	{
 		redirect("./forumdisplay.php?fid={$post['fid']}", $lang->thread_spam_success);
 	}
@@ -564,21 +564,21 @@ function akismet_postbit(&$post)
 {
 	global $templates, $mybb, $theme, $lang;
 
-	if(!$mybb->settings['akismetswitch'] || !is_moderator($post['fid']))
+	if (!$mybb->settings['akismetswitch'] || !is_moderator($post['fid']))
 	{
 		return;
 	}
 
-	if($mybb->settings['akismetuidsignore'])
+	if ($mybb->settings['akismetuidsignore'])
 	{
 		$akismet_uids_ignore = explode(',', $mybb->settings['akismetuidsignore']);
-		if(in_array($usergroup, $akismet_uids_ignore))
+		if (in_array($usergroup, $akismet_uids_ignore))
 		{
 			return;
 		}
 	}
 
-	if(is_super_admin($post['uid']))
+	if (is_super_admin($post['uid']))
 	{
 		return;
 	}
@@ -592,9 +592,9 @@ function akismet_verify(&$post)
 {
 	global $mybb, $isspam, $akismet;
 
-	if($isspam == TRUE && $mybb->settings['akismetswitch'] == 1)
+	if ($isspam == TRUE && $mybb->settings['akismetswitch'] == 1)
 	{
-		if(isset($post->thread_insert_data))
+		if (isset($post->thread_insert_data))
 		{
 			$post->thread_insert_data['visible'] = '-4';
 		}
@@ -609,24 +609,24 @@ function akismet_fake_draft(&$post)
 
 	$exclude_array = explode(',', $mybb->settings['akismetuserstoignore']);
 
-	if(!$mybb->settings['akismetswitch'] || in_array($mybb->user['uid'], $exclude_array) || is_super_admin($mybb->user['uid']))
+	if (!$mybb->settings['akismetswitch'] || in_array($mybb->user['uid'], $exclude_array) || is_super_admin($mybb->user['uid']))
 	{
 		return;
 	}
 
-	if($mybb->settings['akismetfidsignore'])
+	if ($mybb->settings['akismetfidsignore'])
 	{
 		$akismet_fids_ignore = explode(',', $mybb->settings['akismetfidsignore']);
-		if(in_array($post->data['fid'], $akismet_fids_ignore))
+		if (in_array($post->data['fid'], $akismet_fids_ignore))
 		{
 			return;
 		}
 	}
 
-	if($mybb->settings['akismetuidsignore'])
+	if ($mybb->settings['akismetuidsignore'])
 	{
 		$akismet_uids_ignore = explode(',', $mybb->settings['akismetuidsignore']);
-		if(in_array($mybb->user['usergroup'], $akismet_uids_ignore))
+		if (in_array($mybb->user['usergroup'], $akismet_uids_ignore))
 		{
 			return;
 		}
@@ -641,12 +641,12 @@ function akismet_fake_draft(&$post)
 		'user_ip' => $mybb->user['ipaddress']
 	);
 
-	if(!$akismet)
+	if (!$akismet)
 	{
 		$akismet = new Akismet($mybb->settings['bburl'], $mybb->settings['akismetapikey'],  $akismet_array);
 	}
 
-	if($akismet->check())
+	if ($akismet->check())
 	{
 		global $db;
 
@@ -657,7 +657,7 @@ function akismet_fake_draft(&$post)
 		$db->update_query("users", array('akismetstopped' => $mybb->user['akismetstopped']), "uid = '{$mybb->user['uid']}'");
 
 		// Check if the person should be banned
-		if($mybb->settings['akismetnumtillban'] > 0 && $mybb->user['akismetstopped'] >= $mybb->settings['akismetnumtillban'])
+		if ($mybb->settings['akismetnumtillban'] > 0 && $mybb->user['akismetstopped'] >= $mybb->settings['akismetnumtillban'])
 		{
 			$banned_user = array(
 				"uid" => $mybb->user['uid'],
@@ -683,7 +683,7 @@ function akismet_fake_draft(&$post)
 			global $mybbgroups;
 
 			$mybbgroups = $mybb->user['usergroup'];
-			if($mybb->user['additionalgroups'])
+			if ($mybb->user['additionalgroups'])
 			{
 				$mybbgroups .= ','.$mybb->user['additionalgroups'];
 			}
@@ -702,7 +702,7 @@ function akismet_redirect_thread()
 {
 	global $isspam, $url, $lang, $thread, $mybb;
 
-	if($isspam && $mybb->settings['akismetswitch'] == 1)
+	if ($isspam && $mybb->settings['akismetswitch'] == 1)
 	{
 		$lang->load("akismet", FALSE, TRUE);
 
@@ -717,7 +717,7 @@ function akismet_redirect_forum()
 {
 	global $isspam, $url, $lang, $fid, $mybb;
 
-	if($isspam && $mybb->settings['akismetswitch'] == 1)
+	if ($isspam && $mybb->settings['akismetswitch'] == 1)
 	{
 		$lang->load("akismet", FALSE, TRUE);
 
@@ -736,14 +736,14 @@ function akismet_admin_nav(&$sub_menu)
 {
 	global $mybb, $lang;
 
-	if($mybb->settings['akismetswitch'] == 1)
+	if ($mybb->settings['akismetswitch'] == 1)
 	{
 		$lang->load("forum_akismet", FALSE, TRUE);
 
 		end($sub_menu);
 		$key = (key($sub_menu))+10;
 
-		if(!$key)
+		if (!$key)
 		{
 			$key = '50';
 		}
@@ -756,7 +756,7 @@ function akismet_admin_permissions(&$admin_permissions)
 {
 	global $db, $mybb;
 
-	if($mybb->settings['akismetswitch'] == 1)
+	if ($mybb->settings['akismetswitch'] == 1)
 	{
 		global $lang;
 
@@ -770,22 +770,22 @@ function akismet_admin()
 {
 	global $mybb, $db, $page, $lang;
 
-	if($page->active_action != "akismet")
+	if ($page->active_action != "akismet")
 	{
 		return;
 	}
 
 	$page->add_breadcrumb_item($lang->akismet);
 
-	if($mybb->input['delete_all'] && $mybb->request_method == "post")
+	if ($mybb->input['delete_all'] && $mybb->request_method == "post")
 	{
 		// User clicked no
-		if($mybb->input['no'])
+		if ($mybb->input['no'])
 		{
 			admin_redirect("index.php?module=forum-akismet");
 		}
 
-		if($mybb->request_method == "post")
+		if ($mybb->request_method == "post")
 		{
 			// Delete the template
 			$db->delete_query("posts", "visible = '-4'");
@@ -802,11 +802,11 @@ function akismet_admin()
 		}
 	}
 
-	if($mybb->input['unmark'] && $mybb->request_method == "post")
+	if ($mybb->input['unmark'] && $mybb->request_method == "post")
 	{
 		$unmark = $mybb->input['akismet'];
 
-		if(empty($unmark))
+		if (empty($unmark))
 		{
 			flash_message($lang->error_unmark, 'error');
 			admin_redirect("index.php?module=forum-akismet");
@@ -826,7 +826,7 @@ function akismet_admin()
 			$threadp[] = $post['tid'];
 		}
 
-		if(!is_array($threadp))
+		if (!is_array($threadp))
 		{
 			$threadp = array();
 		}
@@ -852,7 +852,7 @@ function akismet_admin()
 			");
 			$lastpost = $db->fetch_array($query2);
 
-			if($post['lastpost'] > $lastpost['lastpost'])
+			if ($post['lastpost'] > $lastpost['lastpost'])
 			{
 				$lastpost['lastpost'] = $post['lastpost'];
 				$lastpost['lastposter'] = $post['lastposter'];
@@ -891,16 +891,16 @@ function akismet_admin()
 			");
 			$firstpost = $db->fetch_array($query2);
 
-			if(!$firstpost['username'])
+			if (!$firstpost['username'])
 			{
 				$firstpost['username'] = $firstpost['postusername'];
 			}
-			if(!$lastpost['username'])
+			if (!$lastpost['username'])
 			{
 				$lastpost['username'] = $lastpost['postusername'];
 			}
 
-			if(!$lastpost['dateline'])
+			if (!$lastpost['dateline'])
 			{
 				$lastpost['username'] = $firstpost['username'];
 				$lastpost['uid'] = $firstpost['uid'];
@@ -913,7 +913,7 @@ function akismet_admin()
 			$query2 = $db->simple_select("users", "akismetstopped", "uid='{$post['uid']}'");
 			$akismetstopped = $db->fetch_field($query2, "akismetstopped")-1;
 
-			if($akismetstopped < 0)
+			if ($akismetstopped < 0)
 			{
 				$akismetstopped = 0;
 			}
@@ -928,14 +928,14 @@ function akismet_admin()
 			);
 			$db->update_query("threads", $update_array, "tid='{$post['tid']}'");
 
-			if($post['usepostcounts'] != 0)
+			if ($post['usepostcounts'] != 0)
 			{
 				$db->write_query("UPDATE ".TABLE_PREFIX."users SET postnum=postnum+1 WHERE uid = '{$post['uid']}'");
 			}
 
 			$newthreads = $newreplies = 0;
 
-			if($post['replyto'] == 0)
+			if ($post['replyto'] == 0)
 			{
 				++$newthreads;
 			}
@@ -952,7 +952,7 @@ function akismet_admin()
 			"visible" => 1,
 		);
 
-		if($thread_list)
+		if ($thread_list)
 		{
 			$db->update_query("threads", $approve, "tid IN ({$thread_list})");
 		}
@@ -966,11 +966,11 @@ function akismet_admin()
 		admin_redirect("index.php?module=forum-akismet");
 	}
 
-	if($mybb->input['delete'] && $mybb->request_method == "post")
+	if ($mybb->input['delete'] && $mybb->request_method == "post")
 	{
 		$deletepost = $mybb->input['akismet'];
 
-		if(empty($deletepost))
+		if (empty($deletepost))
 		{
 			flash_message($lang->error_deletepost, 'error');
 			admin_redirect("index.php?module=forum-akismet");
@@ -990,7 +990,7 @@ function akismet_admin()
 			$threadp[$post['pid']] = $post['tid'];
 		}
 
-		if(!is_array($threadp))
+		if (!is_array($threadp))
 		{
 			$threadp = array();
 		}
@@ -999,7 +999,7 @@ function akismet_admin()
 
 		foreach($deletepost as $pid => $val)
 		{
-			if(array_key_exists($pid, $threadp))
+			if (array_key_exists($pid, $threadp))
 			{
 				$db->delete_query("posts", "pid IN ({$posts_in})");
 				$db->delete_query("attachments", "pid IN ({$posts_in})");
@@ -1030,7 +1030,7 @@ function akismet_admin()
 		admin_redirect("index.php?module=forum-akismet");
 	}
 
-	if(!$mybb->input['action'])
+	if (!$mybb->input['action'])
 	{
 		require MYBB_ROOT."inc/class_parser.php";
 		$parser = new postParser;
@@ -1045,7 +1045,7 @@ function akismet_admin()
 
 		$mybb->input['page'] = intval($mybb->input['page']);
 
-		if($mybb->input['page'] > 0)
+		if ($mybb->input['page'] > 0)
 		{
 			$start = $mybb->input['page'] * 20;
 		}
@@ -1057,12 +1057,12 @@ function akismet_admin()
 		$query = $db->simple_select("posts", "COUNT(pid) as spam", "visible = '-4'");
 		$total_rows = $db->fetch_field($query, 'spam');
 
-		if($start > $total_rows)
+		if ($start > $total_rows)
 		{
 			$start = $total_rows - 20;
 		}
 
-		if($start < 0)
+		if ($start < 0)
 		{
 			$start = 0;
 		}
@@ -1070,7 +1070,7 @@ function akismet_admin()
 		$query = $db->simple_select("posts", "*", "visible = '-4'", array('limit_start' => $start, 'limit' => '20', 'order_by' => 'dateline', 'order_dir' => 'desc'));
 		while($post = $db->fetch_array($query))
 		{
-			if($post['uid'] != 0)
+			if ($post['uid'] != 0)
 			{
 				$username = "<a href=\"../".str_replace("{uid}", $post['uid'], PROFILE_URL)."\" target=\"_blank\">".format_name($post['username'], $post['usergroup'], $post['displaygroup'])."</a>";
 			}
@@ -1099,7 +1099,7 @@ function akismet_admin()
 
 		$num_rows = $table->num_rows();
 
-		if($num_rows == 0)
+		if ($num_rows == 0)
 		{
 			$table->construct_cell($lang->no_spam_found, array("class" => "align_center", "colspan" => 2));
 			$table->construct_row();
@@ -1112,7 +1112,7 @@ function akismet_admin()
 		$buttons[] = $form->generate_submit_button($lang->unmark_selected, array('name' => 'unmark'));
 		$buttons[] = $form->generate_submit_button($lang->deleted_selected, array('name' => 'delete'));
 
-		if($num_rows > 0)
+		if ($num_rows > 0)
 		{
 			$buttons[] = $form->generate_submit_button($lang->delete_all, array('name' => 'delete_all', 'onclick' => "return confirm('{$lang->confirm_spam_deletion}');"));
 		}
@@ -1221,9 +1221,9 @@ class Akismet {
 
 		$this->format_post();
 
-		if(!isset($this->post['user_ip']))
+		if (!isset($this->post['user_ip']))
 		{
-			if($_SERVER['REMOTE_ADDR'] != getenv('SERVER_ADDR'))
+			if ($_SERVER['REMOTE_ADDR'] != getenv('SERVER_ADDR'))
 			{
 				$this->post['user_ip'] = $_SERVER['REMOTE_ADDR'];
 			}
@@ -1233,17 +1233,17 @@ class Akismet {
 			}
 		}
 
-		if(!isset($this->post['permalink']))
+		if (!isset($this->post['permalink']))
 		{
 			$this->post['permalink'] = $_SERVER['HTTP_REFERER'];
 		}
 
-		if(!isset($this->post['user_agent']))
+		if (!isset($this->post['user_agent']))
 		{
 			$this->post['user_agent'] = $_SERVER['HTTP_USER_AGENT'];
 		}
 
-		if(!isset($this->post['referrer']))
+		if (!isset($this->post['referrer']))
 		{
 			$this->post['referrer'] = $_SERVER['HTTP_REFERER'];
 		}
@@ -1251,7 +1251,7 @@ class Akismet {
 		$this->post['blog'] = $url;
 
 		// Check if the API key is valid
-		if(!$this->validate_api_key())
+		if (!$this->validate_api_key())
 		{
 			$this->set_error("invalid_key");
 		}
@@ -1264,7 +1264,7 @@ class Akismet {
 	 */
 	function check()
 	{
-		if($this->fetch_response($this->build_query_string(), 'comment-check') == "TRUE")
+		if ($this->fetch_response($this->build_query_string(), 'comment-check') == "TRUE")
 		{
 			// We have spam!
 			return TRUE;
@@ -1299,7 +1299,7 @@ class Akismet {
 	 */
 	function validate_api_key()
 	{
-		if($this->fetch_response("key=".$this->api_key."&blog=".urlencode($this->url), 'verify-key') == "valid")
+		if ($this->fetch_response("key=".$this->api_key."&blog=".urlencode($this->url), 'verify-key') == "valid")
 		{
 			return TRUE;
 		}
@@ -1324,7 +1324,7 @@ class Akismet {
 		// Basically we're assigning $long to the comment array if $short in the comment array, is not NULL
 		foreach($format as $short => $long)
 		{
-			if(isset($this->post[$short]))
+			if (isset($this->post[$short]))
 			{
 				$this->post[$long] = $this->post[$short];
 				unset($this->post[$short]);
@@ -1341,9 +1341,9 @@ class Akismet {
 	{
 		foreach($_SERVER as $key => $value)
 		{
-			if(in_array($key, $this->required))
+			if (in_array($key, $this->required))
 			{
-				if($key == 'REMOTE_ADDR')
+				if ($key == 'REMOTE_ADDR')
 				{
 					$this->post[$key] = $this->post['user_ip'];
 				}
@@ -1372,7 +1372,7 @@ class Akismet {
 	function connect()
 	{
 		$this->connection = @fsockopen($this->host, 80);
-		if(!$this->connection)
+		if (!$this->connection)
 		{
 			$this->set_error("server_not_found");
 			return FALSE;
@@ -1392,9 +1392,9 @@ class Akismet {
 	{
 		$this->connect();
 
-		if($this->connection == TRUE && !$this->errors['server_not_found'])
+		if ($this->connection == TRUE && !$this->errors['server_not_found'])
 		{
-			if(!empty($this->api_key))
+			if (!empty($this->api_key))
 			{
 				$api_key = $this->api_key.".";
 			}
@@ -1478,7 +1478,7 @@ class Akismet {
 	 */
 	function error_exists($error_code)
 	{
-		if(isset($this->errors[$error_code]))
+		if (isset($this->errors[$error_code]))
 		{
 			return TRUE;
 		}
@@ -1493,7 +1493,7 @@ class Akismet {
 	 */
 	function errors_exist()
 	{
-		if(count($this->errors) > 0)
+		if (count($this->errors) > 0)
 		{
 			return TRUE;
 		}

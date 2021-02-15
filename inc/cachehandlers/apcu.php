@@ -24,10 +24,10 @@ class apcuCacheHandler implements CacheHandlerInterface
 	{
 		global $mybb;
 
-		if(!function_exists('apcu_fetch'))
+		if (!function_exists('apcu_fetch'))
 		{
 			// Check if the APCu extension is loaded
-			if(!extension_loaded('apcu'))
+			if (!extension_loaded('apcu'))
 			{
 				$mybb->trigger_generic_error('apcu_load_error');
 				die;
@@ -56,7 +56,7 @@ class apcuCacheHandler implements CacheHandlerInterface
 	 */
 	function fetch($name)
 	{
-		if(apcu_exists("{$this->unique_id}_{$name}"))
+		if (apcu_exists("{$this->unique_id}_{$name}"))
 		{
 			return apcu_fetch("{$this->unique_id}_{$name}");
 		}
@@ -104,7 +104,7 @@ class apcuCacheHandler implements CacheHandlerInterface
 	 */
 	function size_of($name='')
 	{
-		if(empty($name))
+		if (empty($name))
 		{
 			// get total size of cache, using an APCUIterator
 			$iterator = new APCUIterator("/^{$this->unique_id}_.*/");
@@ -115,7 +115,7 @@ class apcuCacheHandler implements CacheHandlerInterface
 
 		$info = apcu_cache_info();
 
-		if(empty($info['cache_list']))
+		if (empty($info['cache_list']))
 		{
 			return $lang->na;
 		}
@@ -124,7 +124,7 @@ class apcuCacheHandler implements CacheHandlerInterface
 
 		foreach($info['cache_list'] as $entry)
 		{
-			if(isset($entry['info']) && $entry['info'] === $actual_name && isset($entry['mem_size']))
+			if (isset($entry['info']) && $entry['info'] === $actual_name && isset($entry['mem_size']))
 			{
 				return $entry['mem_size'];
 			}

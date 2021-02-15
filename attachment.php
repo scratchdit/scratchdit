@@ -15,7 +15,7 @@ define('THIS_SCRIPT', 'attachment.php');
 require_once "./global.php";
 
 // Find the AID we're looking for
-if($mybb->input['thumbnail'])
+if ($mybb->input['thumbnail'])
 {
 	$aid = intval($mybb->input['thumbnail']);
 }
@@ -29,7 +29,7 @@ $plugins->run_hooks("attachment_start");
 $pid = intval($mybb->input['pid']);
 
 // Select attachment data from database
-if($aid)
+if ($aid)
 {
 	$query = $db->simple_select("attachments", "*", "aid='{$aid}'");
 }
@@ -43,7 +43,7 @@ $pid = $attachment['pid'];
 $post = get_post($pid);
 $thread = get_thread($post['tid']);
 
-if(!$thread['tid'] && !$mybb->input['thumbnail'])
+if (!$thread['tid'] && !$mybb->input['thumbnail'])
 {
 	error($lang->error_invalidthread);
 }
@@ -55,18 +55,18 @@ $forum = get_forum($fid);
 // Permissions
 $forumpermissions = forum_permissions($fid);
 
-if($forumpermissions['canview'] == 0 || $forumpermissions['canviewthreads'] == 0 || ($forumpermissions['candlattachments'] == 0 && !$mybb->input['thumbnail']))
+if ($forumpermissions['canview'] == 0 || $forumpermissions['canviewthreads'] == 0 || ($forumpermissions['candlattachments'] == 0 && !$mybb->input['thumbnail']))
 {
 	error_no_permission();
 }
 
 // Error if attachment is invalid or not visible
-if(!$attachment['aid'] || !$attachment['attachname'] || (!is_moderator($fid) && $attachment['visible'] != 1))
+if (!$attachment['aid'] || !$attachment['attachname'] || (!is_moderator($fid) && $attachment['visible'] != 1))
 {
 	error($lang->error_invalidattachment);
 }
 
-if(!$mybb->input['thumbnail']) // Only increment the download count if this is not a thumbnail
+if (!$mybb->input['thumbnail']) // Only increment the download count if this is not a thumbnail
 {
 	$attachupdate = array(
 		"downloads" => $attachment['downloads']+1,
@@ -79,7 +79,7 @@ $attachment['filename'] = ltrim(basename(' '.$attachment['filename']));
 
 $plugins->run_hooks("attachment_end");
 
-if($mybb->input['thumbnail'])
+if ($mybb->input['thumbnail'])
 {
 	$ext = get_extension($attachment['thumbnail']);
 	switch($ext)
@@ -129,7 +129,7 @@ else
 		default:
 			$filetype = $attachment['filetype'];
 
-			if(!$filetype)
+			if (!$filetype)
 			{
 				$filetype = 'application/force-download';
 			}
@@ -138,7 +138,7 @@ else
 			$disposition = "attachment";
 	}
 
-	if(strpos(strtolower($_SERVER['HTTP_USER_AGENT']), "msie") !== FALSE)
+	if (strpos(strtolower($_SERVER['HTTP_USER_AGENT']), "msie") !== FALSE)
 	{
 		header("Content-disposition: attachment; filename=\"{$attachment['filename']}\"");
 	}
@@ -147,7 +147,7 @@ else
 		header("Content-disposition: {$disposition}; filename=\"{$attachment['filename']}\"");
 	}
 
-	if(strpos(strtolower($_SERVER['HTTP_USER_AGENT']), "msie 6.0") !== FALSE)
+	if (strpos(strtolower($_SERVER['HTTP_USER_AGENT']), "msie 6.0") !== FALSE)
 	{
 		header("Expires: -1");
 	}

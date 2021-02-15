@@ -23,12 +23,12 @@ function modcp_can_manage_user($uid)
 	$user_permissions = user_permissions($uid);
 
 	// Current user is only a local moderator or use with ModCP permissions, cannot manage super mods or admins
-	if($mybb->usergroup['issupermod'] == 0 && ($user_permissions['issupermod'] == 1 || $user_permissions['cancp'] == 1))
+	if ($mybb->usergroup['issupermod'] == 0 && ($user_permissions['issupermod'] == 1 || $user_permissions['cancp'] == 1))
 	{
 		return FALSE;
 	}
 	// Current user is a super mod or is an administrator
-	else if($user_permissions['cancp'] == 1 && ($mybb->usergroup['cancp'] != 1 || (is_super_admin($uid) && !is_super_admin($mybb->user['uid']))))
+	else if ($user_permissions['cancp'] == 1 && ($mybb->usergroup['cancp'] != 1 || (is_super_admin($uid) && !is_super_admin($mybb->user['uid']))))
 	{
 		return FALSE;
 	}
@@ -40,11 +40,11 @@ function fetch_forum_announcements($pid=0, $depth=1)
 	global $mybb, $db, $lang, $theme, $announcements, $templates, $announcements_forum, $moderated_forums, $unviewableforums;
 	static $forums_by_parent, $forum_cache, $parent_forums;
 
-	if(!is_array($forum_cache))
+	if (!is_array($forum_cache))
 	{
 		$forum_cache = cache_forums();
 	}
-	if(!is_array($parent_forums) && $mybb->user['issupermod'] != 1)
+	if (!is_array($parent_forums) && $mybb->user['issupermod'] != 1)
 	{
 		// Get a list of parentforums to show for normal moderators
 		$parent_forums = array();
@@ -53,7 +53,7 @@ function fetch_forum_announcements($pid=0, $depth=1)
 			$parent_forums = array_merge($parent_forums, explode(',', $forum_cache[$mfid]['parentlist']));
 		}
 	}
-	if(!is_array($forums_by_parent))
+	if (!is_array($forums_by_parent))
 	{
 		foreach($forum_cache as $forum)
 		{
@@ -61,7 +61,7 @@ function fetch_forum_announcements($pid=0, $depth=1)
 		}
 	}
 
-	if(!is_array($forums_by_parent[$pid]))
+	if (!is_array($forums_by_parent[$pid]))
 	{
 		return;
 	}
@@ -70,15 +70,15 @@ function fetch_forum_announcements($pid=0, $depth=1)
 	{
 		foreach($children as $forum)
 		{
-			if($forum['linkto'] || ($unviewableforums && in_array($forum['fid'], $unviewableforums)))
+			if ($forum['linkto'] || ($unviewableforums && in_array($forum['fid'], $unviewableforums)))
 			{
 				continue;
 			}
 
-			if($forum['active'] == 0 || !is_moderator($forum['fid']))
+			if ($forum['active'] == 0 || !is_moderator($forum['fid']))
 			{
 				// Check if this forum is a parent of a moderated forum
-				if(in_array($forum['fid'], $parent_forums))
+				if (in_array($forum['fid'], $parent_forums))
 				{
 					// A child is moderated, so print out this forum's title.  RECURSE!
 					$trow = alt_trow();
@@ -99,13 +99,13 @@ function fetch_forum_announcements($pid=0, $depth=1)
 
 				eval("\$announcements_forum .= \"".$templates->get("modcp_announcements_forum")."\";");
 
-				if($announcements[$forum['fid']])
+				if ($announcements[$forum['fid']])
 				{
 					foreach($announcements[$forum['fid']] as $aid => $announcement)
 					{
 						$trow = alt_trow();
 
-						if($announcement['enddate'] < TIME_NOW && $announcement['enddate'] != 0)
+						if ($announcement['enddate'] < TIME_NOW && $announcement['enddate'] != 0)
 						{
 							$icon = "<img src=\"{$theme['imgdir']}/minioff.gif\" alt=\"({$lang->expired})\" title=\"{$lang->expired_announcement}\"  style=\"vertical-align: middle;\" /> ";
 						}
@@ -122,7 +122,7 @@ function fetch_forum_announcements($pid=0, $depth=1)
 			}
 
 			// Build the list for any sub forums of this forum
-			if($forums_by_parent[$forum['fid']])
+			if ($forums_by_parent[$forum['fid']])
 			{
 				fetch_forum_announcements($forum['fid'], $depth+1);
 			}

@@ -10,7 +10,7 @@
  */
 
 // Disallow direct access to this file for security reasons
-if(!defined("IN_MYBB"))
+if (!defined("IN_MYBB"))
 {
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
@@ -38,7 +38,7 @@ class PhpMail extends MailHandler
 
 		// For some reason sendmail/qmail doesn't like \r\n
 		$this->sendmail = @ini_get('sendmail_path');
-		if($this->sendmail)
+		if ($this->sendmail)
 		{
 			$this->headers = str_replace("\r\n", "\n", $this->headers);
 			$this->message = str_replace("\r\n", "\n", $this->message);
@@ -47,13 +47,13 @@ class PhpMail extends MailHandler
 
 		// Some mail providers ignore email's with incorrect return-to path's so try and fix that here
 		$this->sendmail_from = @ini_get('sendmail_from');
-		if($this->sendmail_from != $mybb->settings['adminemail'])
+		if ($this->sendmail_from != $mybb->settings['adminemail'])
 		{
 			@ini_set("sendmail_from", $mybb->settings['adminemail']);
 		}
 
 		// If safe mode is on, don't send the additional parameters as we're not allowed to
-		if(ini_get('safe_mode') == 1 || strtolower(ini_get('safe_mode')) == 'on')
+		if (ini_get('safe_mode') == 1 || strtolower(ini_get('safe_mode')) == 'on')
 		{
 			$sent = @mail($this->to, $this->subject, $this->message, trim($this->headers));
 		}
@@ -63,7 +63,7 @@ class PhpMail extends MailHandler
 		}
 		$function_used = 'mail()';
 
-		if(!$sent)
+		if (!$sent)
 		{
 			$this->fatal_error("MyBB was unable to send the email using the PHP {$function_used} function.");
 			return FALSE;

@@ -9,7 +9,7 @@ messageEditor.prototype = {
 
 	setTheme: function(theme)
 	{
-		if(this.currentTheme != '' || $('editorTheme')) {
+		if (this.currentTheme != '' || $('editorTheme')) {
 			$('editorTheme').remove();
 		}
 
@@ -27,34 +27,34 @@ messageEditor.prototype = {
 		// Sorry Konqueror, but due to a browser bug out of control with textarea values
 		// you do not get to use the fancy editor.
 
-		if(MyBB.browser == "konqueror" || (typeof(mybb_editor_disabled) != "undefined" && mybb_editor_disabled == TRUE))
+		if (MyBB.browser == "konqueror" || (typeof(mybb_editor_disabled) != "undefined" && mybb_editor_disabled == TRUE))
 		{
 			return FALSE;
 		}
 
 		// Establish the base path to this javascript file
 		$$('script').each(function(script) {
-			if(script.src && script.src.indexOf('editor.js') != -1) {
+			if (script.src && script.src.indexOf('editor.js') != -1) {
 				this.baseURL = script.src.replace(/editor\.js(.*?)$/, '');
 			}
 		}, this);
 
 		this.options = options;
 
-		if(this.options)
+		if (this.options)
 		{
-			if(!this.options.lang)
+			if (!this.options.lang)
 			{
 				return FALSE;
 			}
 
-			if(!this.options.rtl)
+			if (!this.options.rtl)
 			{
 				this.options.rtl = 0;
 			}
 		}
 
-		if(this.options && this.options.theme)
+		if (this.options && this.options.theme)
 		{
 			this.setTheme(this.options.theme);
 		}
@@ -139,7 +139,7 @@ messageEditor.prototype = {
 		this.textarea = textarea;
 
 		// Only swap it over once the page has loaded (add event)
-		if(MyBB.page_loaded == 1)
+		if (MyBB.page_loaded == 1)
 		{
 			this.showEditor();
 		}
@@ -169,23 +169,23 @@ messageEditor.prototype = {
 
 		// Determine the overall height and width - messy, but works
 		w = oldTextarea.getDimensions().width+"px";
-		if(!w || parseInt(w) < 400)
+		if (!w || parseInt(w) < 400)
 		{
 			w = "400px";
 		}
-		if(this.options && this.options.height)
+		if (this.options && this.options.height)
 		{
 			h = this.options.height;
 		}
-		else if(oldTextarea.offsetHeight)
+		else if (oldTextarea.offsetHeight)
 		{
 			h = oldTextarea.offsetHeight+"px";
 		}
-		else if(oldTextarea.clientHeight)
+		else if (oldTextarea.clientHeight)
 		{
 			h = oldTextarea.clientHeight+"px";
 		}
-		else if(oldTextarea.style.height)
+		else if (oldTextarea.style.height)
 		{
 			h = oldTextarea.style.height;
 		}
@@ -266,12 +266,12 @@ messageEditor.prototype = {
 		textInput.style.height = parseInt(areaContainer.style.height)+"px";
 		textInput.style.width = parseInt(areaContainer.style.width)+"px";
 
-		if(oldTextarea.value != '')
+		if (oldTextarea.value != '')
 		{
 			textInput.value = oldTextarea.value;
 		}
 
-		if(oldTextarea.tabIndex)
+		if (oldTextarea.tabIndex)
 		{
 			textInput.tabIndex = oldTextarea.tabIndex;
 		}
@@ -279,7 +279,7 @@ messageEditor.prototype = {
 		areaContainer.appendChild(textInput);
 		this.editor.appendChild(areaContainer);
 
-		if(oldTextarea.form)
+		if (oldTextarea.form)
 		{
 			Event.observe(oldTextarea.form, "submit", this.closeTags.bindAsEventListener(this));
 			Event.observe(oldTextarea.form, "submit", this.updateOldArea.bindAsEventListener(this));
@@ -295,7 +295,7 @@ messageEditor.prototype = {
 		this.editor.style.display = "";
 		Event.observe(textInput, "keyup", this.updateOldArea.bindAsEventListener(this));
 
-		if(MyBB.browser == 'ie') {
+		if (MyBB.browser == 'ie') {
 			Event.observe($(this.textarea), 'focus', function() {
 				this.trackingCaret = TRUE;
 			}.bindAsEventListener(this));
@@ -322,7 +322,7 @@ messageEditor.prototype = {
 
 	createToolbarContainer: function(name)
 	{
-		if($('editor_toolbar_container_'+name)) return;
+		if ($('editor_toolbar_container_'+name)) return;
 
 		var container = document.createElement("div");
 		container.id = 'editor_toolbar_container_'+name;
@@ -337,16 +337,16 @@ messageEditor.prototype = {
 
 	createToolbar: function(name, options)
 	{
-		if(typeof(options.container) == 'undefined')
+		if (typeof(options.container) == 'undefined')
 		{
 			options.container = this.createToolbarContainer('auto_'+name);
 		}
 		else {
 			options.container = $('editor_toolbar_container_'+options.container);
-			if(!options.container) return;
+			if (!options.container) return;
 		}
 
-		if($('editor_toolbar_'+name)) return;
+		if ($('editor_toolbar_'+name)) return;
 
 		var toolbar = document.createElement('div');
 		toolbar.id = 'editor_toolbar_'+name;
@@ -356,39 +356,39 @@ messageEditor.prototype = {
 		clear.style.clear = 'both';
 		toolbar.appendChild(clear);
 
-		if(options.alignment && options.alignment == 'right') {
+		if (options.alignment && options.alignment == 'right') {
 			toolbar.className += ' float_right';
 		}
 		options.container.appendChild(toolbar);
-		if(typeof(options.items) == 'object') {
+		if (typeof(options.items) == 'object') {
 			for(var i = 0; i < options.items.length; ++i) {
 				this.addToolbarItem(toolbar, options.items[i]);
 			}
 		}
 		// add closing item
-		if(toolbar.lastChild.previousSibling)
+		if (toolbar.lastChild.previousSibling)
 			toolbar.lastChild.previousSibling.className += ' toolbar_button_group_last';
 	},
 
 	setElementState: function(element, state) {
 		element.addClassName('toolbar_'+state);
 
-		if(element.hasClassName('toolbar_button_group_first')) {
-			if(state == 'clicked') {
+		if (element.hasClassName('toolbar_button_group_first')) {
+			if (state == 'clicked') {
 				append = 'toolbar_clicked';
 			}
-			else if(state == 'hover') {
+			else if (state == 'hover') {
 				append = 'toolbar_hover';
 			}
 			append += '_button_group_first';
 			element.addClassName(append);
 		}
 
-		if(element.hasClassName('toolbar_button_group_last')) {
-			if(state == 'clicked') {
+		if (element.hasClassName('toolbar_button_group_last')) {
+			if (state == 'clicked') {
 				append = 'toolbar_clicked';
 			}
-			else if(state == 'hover') {
+			else if (state == 'hover') {
 				append = 'toolbar_hover';
 			}
 			append += '_button_group_last';
@@ -400,22 +400,22 @@ messageEditor.prototype = {
 	{
 		element.removeClassName('toolbar_'+state);
 
-		if(element.hasClassName('toolbar_button_group_first')) {
-			if(state == 'clicked') {
+		if (element.hasClassName('toolbar_button_group_first')) {
+			if (state == 'clicked') {
 				append = 'toolbar_clicked';
 			}
-			else if(state == 'hover') {
+			else if (state == 'hover') {
 				append = 'toolbar_hover';
 			}
 			append += '_button_group_first';
 			element.removeClassName(append);
 		}
 
-		if(element.hasClassName('toolbar_button_group_last')) {
-			if(state == 'clicked') {
+		if (element.hasClassName('toolbar_button_group_last')) {
+			if (state == 'clicked') {
 				append = 'toolbar_clicked';
 			}
-			else if(state == 'hover') {
+			else if (state == 'hover') {
 				append = 'toolbar_hover';
 			}
 			append += '_button_group_last';
@@ -428,38 +428,38 @@ messageEditor.prototype = {
 		this.restartEditorSelection();
 		element = Event.element(e);
 
-		if(!element)
+		if (!element)
 			return;
 
-		if(!element.extra)
+		if (!element.extra)
 			element = element.up('li');
 
 		var mnu = element.up('ul');
 		var dropdown = this.getElementToolbarItem(mnu);
 		var label = dropdown.down('.editor_dropdown_label');
 
-		if(!dropdown.insertText || (dropdown.insertText != "video" && mnu.activeItem && mnu.activeItem == element))
+		if (!dropdown.insertText || (dropdown.insertText != "video" && mnu.activeItem && mnu.activeItem == element))
 			return;
 
 		mnu.lastItemValue = element.extra;
 
-		if(this.getSelectedText($(this.textarea)))
+		if (this.getSelectedText($(this.textarea)))
 		{
 			this.setDropDownMenuActiveItem(dropdown, 0);
 		}
 		else
 		{
-			if(label)
+			if (label)
 			{
 				label.innerHTML = element.innerHTML;
 				label.style.overflow = 'hidden';
 			}
 			var sel_color = dropdown.down('.editor_button_color_selected')
-			if(sel_color)
+			if (sel_color)
 			{
 				sel_color.style.backgroundColor = element.extra;
 				var use_default = dropdown.down('.editor_dropdown_color_item_default');
-				if(use_default) use_default.style.display = '';
+				if (use_default) use_default.style.display = '';
 			}
 			mnu.activeItem = element;
 			element.addClassName('editor_dropdown_menu_item_active');
@@ -472,52 +472,52 @@ messageEditor.prototype = {
 
 	setDropDownMenuActiveItem: function(element, index)
 	{
-		if(element == NULL)
+		if (element == NULL)
 		{
 			return;
 		}
 		var mnu = element.down('ul');
 		var label = element.down('.editor_dropdown_label');
 
-		if(mnu.activeItem)
+		if (mnu.activeItem)
 		{
 			mnu.activeItem.removeClassName('editor_dropdown_menu_item_active');
 			mnu.activeItem = NULL;
 		}
 
-		if(index > 0)
+		if (index > 0)
 		{
 			var item = mnu.childNodes[index];
-			if(!item) return;
+			if (!item) return;
 			mnu.activeItem = item;
-			if(label)
+			if (label)
 			{
 				label.innerHTML = item.innerHTML;
 			}
 
 			var sel_color = element.down('.editor_dropdown_color_selected')
-			if(sel_color)
+			if (sel_color)
 			{
 				sel_color.style.backgroundColor = item.style.backgroundColor;
 				mnu.lastItemValue = item.insertExtra;
 				var use_default = element.down('.editor_dropdown_color_item_default');
-				if(use_default) use_default.style.display = '';
+				if (use_default) use_default.style.display = '';
 			}
 			item.addClassName('editor_dropdown_menu_item_active');
 		}
 		else
 		{
-			if(label)
+			if (label)
 			{
 				label.innerHTML = mnu.childNodes[0].innerHTML;
 			}
 
 			var sel_color = element.down('.editor_button_color_selected')
-			if(sel_color)
+			if (sel_color)
 			{
 				//sel_color.style.backgroundColor = '';
 				var use_default = element.down('.editor_dropdown_color_item_default');
-				if(use_default) use_default.style.display = 'none';
+				if (use_default) use_default.style.display = 'none';
 			}
 			this.removeElementState(element, 'clicked');
 		}
@@ -527,7 +527,7 @@ messageEditor.prototype = {
 	{
 		var dropdown = document.createElement('div');
 		dropdown.elementType = options.type;
-		if(options.image || options.sprite)
+		if (options.image || options.sprite)
 			dropdown.className = 'toolbar_dropdown_image';
 		else
 			dropdown.className = 'toolbar_dropdown';
@@ -550,7 +550,7 @@ messageEditor.prototype = {
 		// create the dropdown label container
 		var label = document.createElement('div');
 		label.className = 'editor_dropdown_label';
-		if(options.title)
+		if (options.title)
 		{
 			label.innerHTML = options.title;
 		}
@@ -580,7 +580,7 @@ messageEditor.prototype = {
 		mnu.style.display = 'none';
 
 		// create the first item
-		if(options.title)
+		if (options.title)
 		{
 			var item = document.createElement('li');
 			item.className = 'editor_dropdown_menu_title';
@@ -588,7 +588,7 @@ messageEditor.prototype = {
 			mnu.appendChild(item);
 			Event.observe(item, 'click', function()
 			{
-				if(mnu.activeItem)
+				if (mnu.activeItem)
 				{
 					this.restartEditorSelection();
 					this.insertMyCode(dropdown.insertText, '-');
@@ -599,7 +599,7 @@ messageEditor.prototype = {
 
 		$H(options.options).each(function(option)
 		{
-			if(options.draw_option)
+			if (options.draw_option)
 			{
 				item = options.draw_option(option)
 			}
@@ -629,15 +629,15 @@ messageEditor.prototype = {
 	toggleDropDownMenu: function(e)
 	{
 		element = Event.element(e);
-		if(!element)
+		if (!element)
 			return;
-		if(!element.elementType)
+		if (!element.elementType)
 			element = this.getElementToolbarItem(element);
 
 		var mnu = $(element).down('ul');
 
 		// This menu is already open, close it
-		if(mnu.style.display != 'none')
+		if (mnu.style.display != 'none')
 		{
 			mnu.style.display = 'none';
 			element.removeClassName('editor_dropdown_menu_open');
@@ -668,7 +668,7 @@ messageEditor.prototype = {
 
 	hideOpenDropDownMenu: function()
 	{
-		if(!this.openDropDownMenu) return;
+		if (!this.openDropDownMenu) return;
 		this.openDropDownMenu.style.display = 'none';
 		this.getElementToolbarItem(this.openDropDownMenu).removeClassName('editor_dropdown_menu_open');
 		var dropDown = this.getElementToolbarItem(this.openDropDownMenu);
@@ -682,7 +682,7 @@ messageEditor.prototype = {
 	{
 		var parent = elem;
 		do {
-			if(parent.insertText) return parent;
+			if (parent.insertText) return parent;
 			parent = parent.parentNode;
 		} while($(parent));
 
@@ -691,7 +691,7 @@ messageEditor.prototype = {
 
 	storeCaret: function()
 	{
-		if(MyBB.browser != 'ie' || !this.trackingCaret)
+		if (MyBB.browser != 'ie' || !this.trackingCaret)
 		{
 			return;
 		}
@@ -716,7 +716,7 @@ messageEditor.prototype = {
 
 	restartEditorSelection: function()
 	{
-		if(MyBB.browser != 'ie')
+		if (MyBB.browser != 'ie')
 		{
 			return;
 		}
@@ -730,44 +730,44 @@ messageEditor.prototype = {
 
 	addToolbarItem: function(toolbar, options)
 	{
-		if(typeof(toolbar) == 'string')
+		if (typeof(toolbar) == 'string')
 		{
 			toolbar = $('editor_toolbar_'+toolbar);
 		}
 
-		if(!$(toolbar)) return;
+		if (!$(toolbar)) return;
 
 		// Does this item already exist?
-		if($('editor_item_'+options.name)) return;
+		if ($('editor_item_'+options.name)) return;
 
 		insert_first_class = FALSE;
 
 		// Is this the first item? childnodes = 1 (closing br) or lastchild.previousSibling = sep
-		if(toolbar.childNodes.length == 1 || (toolbar.lastChild.previousSibling && toolbar.lastChild.previousSibling.className.indexOf('toolbar_sep') > -1 || (toolbar.lastChild.previousSibling.className.indexOf('editor_dropdown') > -1 && options.type != 'dropdown')))
+		if (toolbar.childNodes.length == 1 || (toolbar.lastChild.previousSibling && toolbar.lastChild.previousSibling.className.indexOf('toolbar_sep') > -1 || (toolbar.lastChild.previousSibling.className.indexOf('editor_dropdown') > -1 && options.type != 'dropdown')))
 		{
 			insert_first_class = TRUE;
 		}
 
-		if(options.type == "dropdown")
+		if (options.type == "dropdown")
 		{
 			var dropdown = this.createDropDownMenu(options);
-			if(dropdown)
+			if (dropdown)
 				toolbar.insertBefore(dropdown, toolbar.lastChild);
 
-			if(insert_first_class == TRUE)
+			if (insert_first_class == TRUE)
 				dropdown.className += ' toolbar_dropdown_group_first';
 		}
-		else if(options.type == 'button')
+		else if (options.type == 'button')
 		{
 			var button = this.createToolbarButton(options)
 			toolbar.insertBefore(button, toolbar.lastChild);
 
-			if(insert_first_class == TRUE)
+			if (insert_first_class == TRUE)
 				button.className += ' toolbar_button_group_first';
 		}
-		else if(options.type == 'separator')
+		else if (options.type == 'separator')
 		{
-			if(toolbar.lastChild.previousSibling && !$(toolbar.lastChild.previousSibling).hasClassName('toolbar_dropdown'))
+			if (toolbar.lastChild.previousSibling && !$(toolbar.lastChild.previousSibling).hasClassName('toolbar_dropdown'))
 			{
 				toolbar.lastChild.previousSibling.className += ' toolbar_button_group_last';
 			}
@@ -783,13 +783,13 @@ messageEditor.prototype = {
 		var button = document.createElement('span');
 		button.elementType = options.type;
 		button.id = 'editor_item_'+options.name;
-		if(typeof(options.title) != 'undefined')
+		if (typeof(options.title) != 'undefined')
 		{
 			button.title = options.title;
 		}
 		button.className = 'toolbar_button toolbar_normal toolbar_button_'+options.name;
 
-		if(typeof(options.style) == 'object')
+		if (typeof(options.style) == 'object')
 		{
 			$H(options.style).each(function(item) {
 				eval('button.style.'+item.key+' = "'+item.value+'";');
@@ -797,10 +797,10 @@ messageEditor.prototype = {
 		}
 		button.insertText = options.insert;
 		button.insertExtra = '';
-		if(typeof(options.extra) != 'undefined')
+		if (typeof(options.extra) != 'undefined')
 			button.insertExtra = options.extra;
 
-		if(typeof(options.sprite) != 'undefined')
+		if (typeof(options.sprite) != 'undefined')
 		{
 			var img = document.createElement('span');
 			img.className = 'toolbar_sprite toolbar_sprite_'+options.sprite;
@@ -812,9 +812,9 @@ messageEditor.prototype = {
 		}
 		button.appendChild(img);
 
-		if(options.dropdown)
+		if (options.dropdown)
 		{
-			if(options.color_select == TRUE)
+			if (options.color_select == TRUE)
 			{
 				var sel = document.createElement('em');
 				sel.className = 'editor_button_color_selected';
@@ -831,7 +831,7 @@ messageEditor.prototype = {
 		button.appendChild(end);
 
 		// Create the actual drop down menu
-		if(options.dropdown)
+		if (options.dropdown)
 		{
 			// create the menu item container
 			var mnu = this.buildDropDownMenu(options);
@@ -841,13 +841,13 @@ messageEditor.prototype = {
 			Event.observe(arrow, 'mouseover', function(e)
 			{
 				elem = Event.element(e);
-				if(!elem) return;
+				if (!elem) return;
 				elem.parentNode.addClassName('toolbar_button_over_arrow');
 			});
 			Event.observe(arrow, 'mouseout', function(e)
 			{
 				elem = Event.element(e);
-				if(!elem) return;
+				if (!elem) return;
 				elem.parentNode.removeClassName('toolbar_button_over_arrow');
 			});
 			button.appendChild(mnu);
@@ -856,13 +856,13 @@ messageEditor.prototype = {
 		}
 
 		// Does this button have enabled/disabled states?
-		if(options.disabled_img || options.disabled_sprite)
+		if (options.disabled_img || options.disabled_sprite)
 		{
 			button.disable = function()
 			{
-				if(button.disabled == TRUE) return;
+				if (button.disabled == TRUE) return;
 
-				if(options.disabled_sprite)
+				if (options.disabled_sprite)
 				{
 					img.removeClassName('toolbar_sprite_'+options.sprite);
 					img.addClassName('toolbar_sprite_disabled_'+options.disabled_sprite);
@@ -875,9 +875,9 @@ messageEditor.prototype = {
 
 			button.enable = function()
 			{
-				if(!button.disabled) return;
+				if (!button.disabled) return;
 
-				if(options.disabled_sprite)
+				if (options.disabled_sprite)
 				{
 					img.removeClassName('toolbar_sprite_disabled_'+options.disabled_sprite);
 					img.addClassName('toolbar_sprite_'+options.sprite);
@@ -888,7 +888,7 @@ messageEditor.prototype = {
 				button.enabled = TRUE;
 			};
 
-			if(options.disabled && options.disabled == TRUE)
+			if (options.disabled && options.disabled == TRUE)
 			{
 				button.disable();
 				button.disabled = TRUE;
@@ -900,7 +900,7 @@ messageEditor.prototype = {
 		Event.observe(button, "mouseover", this.toolbarItemHover.bindAsEventListener(this));
 		Event.observe(button, "mouseout", this.toolbarItemOut.bindAsEventListener(this));
 
-		if(!options.dropdown)
+		if (!options.dropdown)
 		{
 			// Dropdown event listener is above...
 			Event.observe(button, "click", this.toolbarItemClick.bindAsEventListener(this));
@@ -918,18 +918,18 @@ messageEditor.prototype = {
 		this.storeCaret();
 		element = Event.element(e);
 
-		if(!element)
+		if (!element)
 			return FALSE;
 
-		if(!element.elementType)
+		if (!element.elementType)
 			element = 	this.getElementToolbarItem(element);
 
-		if(element.disabled)
+		if (element.disabled)
 			return;
 
-		if(typeof(element.insertText) != 'undefined')
+		if (typeof(element.insertText) != 'undefined')
 		{
-			if(element.insertExtra)
+			if (element.insertExtra)
 			{
 				insertCode = element.insertText+"_"+element.insertExtra;
 			}
@@ -938,7 +938,7 @@ messageEditor.prototype = {
 				insertCode = element.insertText;
 			}
 
-			if(this.openTags.indexOf(insertCode) != -1 || element.className.indexOf('editor_dropdown_menu_open') > -1)
+			if (this.openTags.indexOf(insertCode) != -1 || element.className.indexOf('editor_dropdown_menu_open') > -1)
 			{
 				this.setElementState(element, 'clicked');
 			}
@@ -950,16 +950,16 @@ messageEditor.prototype = {
 	{
 		this.storeCaret();
 		element = Event.element(e);
-		if(!element)
+		if (!element)
 			return FALSE;
 
-		if(!element.elementType)
+		if (!element.elementType)
 			element = this.getElementToolbarItem(element);
 
-		if(element.disabled)
+		if (element.disabled)
 			return;
 
-		if(!element.className || element.className.indexOf('toolbar_clicked') == -1)
+		if (!element.className || element.className.indexOf('toolbar_clicked') == -1)
 			this.setElementState(element, 'hover');
 	},
 
@@ -967,21 +967,21 @@ messageEditor.prototype = {
 	{
 		element = Event.element(e);
 
-		if(!element)
+		if (!element)
 			return FALSE;
 
-		if(!element.elementType)
+		if (!element.elementType)
 			element = this.getElementToolbarItem(element);
 
-		if(element.disabled)
+		if (element.disabled)
 			return;
 
-		if(element.dropdown && element.menu)
+		if (element.dropdown && element.menu)
 		{
-			if(typeof(element.menu.activeItem) != "undefined")
+			if (typeof(element.menu.activeItem) != "undefined")
 			{
 				Event.stop(e);
-				if(!element.menu.lastItemValue)
+				if (!element.menu.lastItemValue)
 				{
 					this.showDropDownMenu(element.menu);
 				}
@@ -994,13 +994,13 @@ messageEditor.prototype = {
 			}
 		}
 
-		if(element.id == "editor_item_close_tags")
+		if (element.id == "editor_item_close_tags")
 		{
 			this.closeTags();
 		}
 		else
 		{
-			if(typeof(element.insertExtra) != 'undefined')
+			if (typeof(element.insertExtra) != 'undefined')
 				this.insertMyCode(element.insertText, element.insertExtra);
 			else
 				this.insertMyCode(element.insertText);
@@ -1015,19 +1015,19 @@ messageEditor.prototype = {
 		{
 			listItem = prompt(this.options.lang.enter_list_item, "");
 
-			if(listItem != "" && listItem != NULL)
+			if (listItem != "" && listItem != NULL)
 			{
 				list = list+"[*]"+listItem+"\n";
 			}
 		}
 		while(listItem != "" && listItem != NULL);
 
-		if(list == "")
+		if (list == "")
 		{
 			return FALSE;
 		}
 
-		if(type)
+		if (type)
 		{
 			list = "[list="+type+"]\n"+list;
 		}
@@ -1045,9 +1045,9 @@ messageEditor.prototype = {
 		selectedText = this.getSelectedText($(this.textarea));
 		url = prompt(this.options.lang.enter_url, "http://");
 
-		if(url)
+		if (url)
 		{
-			if(!selectedText)
+			if (!selectedText)
 			{
 				title = prompt(this.options.lang.enter_url_title, "");
 			}
@@ -1056,7 +1056,7 @@ messageEditor.prototype = {
 				title = selectedText;
 			}
 
-			if(title)
+			if (title)
 			{
 				this.performInsert("[url="+url+"]"+title+"[/url]", "", TRUE, FALSE);
 			}
@@ -1072,9 +1072,9 @@ messageEditor.prototype = {
 		selectedText = this.getSelectedText($(this.textarea));
 		email = prompt(this.options.lang.enter_email, "");
 
-		if(email)
+		if (email)
 		{
-			if(!selectedText)
+			if (!selectedText)
 			{
 				title = prompt(this.options.lang.enter_email_title, "");
 			}
@@ -1083,7 +1083,7 @@ messageEditor.prototype = {
 				title = selectedText;
 			}
 
-			if(title)
+			if (title)
 			{
 				this.performInsert("[email="+email+"]"+title+"[/email]", "", TRUE, FALSE);
 			}
@@ -1098,7 +1098,7 @@ messageEditor.prototype = {
 	{
 		image = prompt(this.options.lang.enter_image, "http://");
 
-		if(image)
+		if (image)
 		{
 			this.performInsert("[img]"+image+"[/img]", "", TRUE);
 		}
@@ -1108,7 +1108,7 @@ messageEditor.prototype = {
 	{
 		selectedText = this.getSelectedText($(this.textarea));
 
-		if(!selectedText)
+		if (!selectedText)
 		{
 			url = prompt(this.options.lang.enter_video_url, "http://");
 		}
@@ -1117,7 +1117,7 @@ messageEditor.prototype = {
 			url = selectedText;
 		}
 
-		if(url)
+		if (url)
 		{
 			this.performInsert("[video="+type+"]"+url+"[/video]", "", TRUE, FALSE);
 		}
@@ -1148,7 +1148,7 @@ messageEditor.prototype = {
 			default:
 				var already_open = FALSE;
 				var no_insert = FALSE;
-				if(extra)
+				if (extra)
 				{
 					var full_tag = code+"_"+extra;
 				}
@@ -1161,23 +1161,23 @@ messageEditor.prototype = {
 				this.openTags.each(function(tag)
 				{
 					exploded_tag = tag.split("_");
-					if(exploded_tag[0] == code)
+					if (exploded_tag[0] == code)
 					{
 						already_open = TRUE;
 						this.performInsert("[/"+exploded_tag[0]+"]", "", FALSE);
 						var elem = $('editor_item_'+exploded_tag[0]);
 
-						if(elem)
+						if (elem)
 						{
 							this.removeElementState(elem, 'clicked');
 						}
 
-						if(elem && (elem.elementType == "dropdown" || elem.dropdown || elem.menu))
+						if (elem && (elem.elementType == "dropdown" || elem.dropdown || elem.menu))
 						{
 							this.setDropDownMenuActiveItem(elem, 0);
 						}
 
-						if(tag == full_tag)
+						if (tag == full_tag)
 						{
 							no_insert = TRUE;
 						}
@@ -1191,40 +1191,40 @@ messageEditor.prototype = {
 				this.openTags = newTags;
 				var do_insert = FALSE;
 
-				if(extra != "" && extra != "-" && no_insert == FALSE)
+				if (extra != "" && extra != "-" && no_insert == FALSE)
 				{
 					start_tag = "["+code+"="+extra+"]";
 					end_tag = "[/"+code+"]";
 					do_insert = TRUE;
 				}
-				else if(!extra && already_open == FALSE)
+				else if (!extra && already_open == FALSE)
 				{
 					start_tag = "["+code+"]";
 					end_tag = "[/"+code+"]";
 					do_insert = TRUE;
 				}
 
-				if(do_insert == TRUE)
+				if (do_insert == TRUE)
 				{
-					if(!this.performInsert(start_tag, end_tag, TRUE))
+					if (!this.performInsert(start_tag, end_tag, TRUE))
 					{
 						this.openTags.push(full_tag);
 						$('editor_item_close_tags').style.visibility = '';
 					}
-					else if($('editor_item_'+full_tag))
+					else if ($('editor_item_'+full_tag))
 					{
 						this.removeElementState($('editor_item_'+full_tag), 'clicked');
 					}
-					else if($('editor_item_'+code))
+					else if ($('editor_item_'+code))
 					{
 						elem = $('editor_item_'+code);
-						if(elem.type == "dropdown" || elem.dropdown || elem.menu)
+						if (elem.type == "dropdown" || elem.dropdown || elem.menu)
 							this.setDropDownMenuActiveItem($('editor_item_'+start_tag), 0);
 					}
 				}
 		}
 
-		if(this.openTags.length == 0)
+		if (this.openTags.length == 0)
 		{
 			$('editor_item_close_tags').style.visibility = 'hidden';
 		}
@@ -1233,21 +1233,21 @@ messageEditor.prototype = {
 	getSelectedText: function(element)
 	{
 		element.focus();
-		if(document.selection)
+		if (document.selection)
 		{
 			var selection = document.selection;
 			var range = selection.createRange();
 
-			if((selection.type == "Text" || selection.type == "None") && range != NULL)
+			if ((selection.type == "Text" || selection.type == "None") && range != NULL)
 			{
 				return range.text;
 			}
 		}
-		else if(element.selectionEnd)
+		else if (element.selectionEnd)
 		{
 			var select_start = element.selectionStart;
 			var select_end = element.selectionEnd;
-			if(select_end <= 0)
+			if (select_end <= 0)
 			{
 				select_end = element.textLength;
 			}
@@ -1261,31 +1261,31 @@ messageEditor.prototype = {
 	{
 		var is_closed = TRUE;
 
-		if(!ignore_selection)
+		if (!ignore_selection)
 		{
 			var ignore_selection = FALSE;
 		}
 
-		if(!close_tag)
+		if (!close_tag)
 		{
 			var close_tag = "";
 		}
 		var textarea = $(this.textarea);
 		textarea.focus();
 
-		if(document.selection)
+		if (document.selection)
 		{
 			var selection = document.selection;
 			var range = selection.createRange();
 
-			if(ignore_selection != FALSE)
+			if (ignore_selection != FALSE)
 			{
 				selection.collapse;
 			}
 
-			if((selection.type == "Text" || selection.type == "None") && range != NULL && ignore_selection != TRUE)
+			if ((selection.type == "Text" || selection.type == "None") && range != NULL && ignore_selection != TRUE)
 			{
-				if(close_tag != "" && range.text.length > 0)
+				if (close_tag != "" && range.text.length > 0)
 				{
 					var keep_selected = TRUE;
 					range.text = open_tag+range.text+close_tag;
@@ -1294,7 +1294,7 @@ messageEditor.prototype = {
 				{
 					var keep_selected = FALSE;
 
-					if(is_single)
+					if (is_single)
 					{
 						is_closed = FALSE;
 					}
@@ -1307,7 +1307,7 @@ messageEditor.prototype = {
 				textarea.value += open_tag;
 			}
 		}
-		else if(typeof(textarea.selectionEnd) != 'undefined')
+		else if (typeof(textarea.selectionEnd) != 'undefined')
 		{
 			var select_start = textarea.selectionStart;
 			var select_end = textarea.selectionEnd;
@@ -1317,7 +1317,7 @@ messageEditor.prototype = {
 			var middle = textarea.value.substring(select_start, select_end);
 			var end = textarea.value.substring(select_end, textarea.textLength);
 
-			if(select_end - select_start > 0 && ignore_selection != TRUE && close_tag != "")
+			if (select_end - select_start > 0 && ignore_selection != TRUE && close_tag != "")
 			{
 				var keep_selected = TRUE;
 				middle = open_tag+middle+close_tag;
@@ -1325,7 +1325,7 @@ messageEditor.prototype = {
 			else
 			{
 				var keep_selected = FALSE;
-				if(is_single)
+				if (is_single)
 				{
 					is_closed = FALSE;
 				}
@@ -1334,12 +1334,12 @@ messageEditor.prototype = {
 
 			textarea.value = start+middle+end;
 
-			if(keep_selected == TRUE && ignore_selection != TRUE)
+			if (keep_selected == TRUE && ignore_selection != TRUE)
 			{
 				textarea.selectionStart = select_start;
 				textarea.selectionEnd = select_start + middle.length;
 			}
-			else if(ignore_selection != TRUE)
+			else if (ignore_selection != TRUE)
 			{
 				textarea.selectionStart = select_start + middle.length;
 				textarea.selectionEnd = textarea.selectionStart;
@@ -1350,7 +1350,7 @@ messageEditor.prototype = {
 		{
 			textarea.value += open_tag;
 
-			if(is_single)
+			if (is_single)
 			{
 				is_closed = FALSE;
 			}
@@ -1365,7 +1365,7 @@ messageEditor.prototype = {
 
 	closeTags: function()
 	{
-		if(this.openTags[0])
+		if (this.openTags[0])
 		{
 			while(this.openTags[0])
 			{
@@ -1373,7 +1373,7 @@ messageEditor.prototype = {
 				exploded_tag = tag.split("_");
 				this.performInsert("[/"+exploded_tag[0]+"]", "", FALSE);
 
-				if($('editor_item_'+exploded_tag[0]))
+				if ($('editor_item_'+exploded_tag[0]))
 				{
 					tag = $('editor_item_'+exploded_tag[0]);
 				}
@@ -1381,9 +1381,9 @@ messageEditor.prototype = {
 				{
 					tag = $('editor_item_'+tag);
 				}
-				if(tag)
+				if (tag)
 				{
-					if(tag.elementType == "dropdown" || tag.dropdown || tag.menu)
+					if (tag.elementType == "dropdown" || tag.dropdown || tag.menu)
 					{
 						this.setDropDownMenuActiveItem(tag, 0);
 					}
@@ -1401,14 +1401,14 @@ messageEditor.prototype = {
 
 	bindSmilieInserter: function(id)
 	{
-		if(!$(id))
+		if (!$(id))
 		{
 			return FALSE;
 		}
 
 		var smilies = $(id).select('.smilie');
 
-		if(smilies.length > 0)
+		if (smilies.length > 0)
 		{
 			smilies.each(function(smilie)
 			{
@@ -1427,7 +1427,7 @@ messageEditor.prototype = {
 	{
 		element = Event.element(e);
 
-		if(!element || !element.alt)
+		if (!element || !element.alt)
 		{
 			return FALSE;
 		}

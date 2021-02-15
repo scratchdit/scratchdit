@@ -36,7 +36,7 @@ $bantimes = fetch_ban_times();
 // Load global language phrases
 $lang->load("modcp");
 
-if($mybb->user['uid'] == 0 || $mybb->usergroup['canmodcp'] != 1)
+if ($mybb->user['uid'] == 0 || $mybb->usergroup['canmodcp'] != 1)
 {
 	error_no_permission();
 }
@@ -44,7 +44,7 @@ if($mybb->user['uid'] == 0 || $mybb->usergroup['canmodcp'] != 1)
 $errors = '';
 // SQL for fetching items only related to forums this user moderates
 $moderated_forums = array();
-if($mybb->usergroup['issupermod'] != 1)
+if ($mybb->usergroup['issupermod'] != 1)
 {
 	$query = $db->simple_select("moderators", "*", "(id='{$mybb->user['uid']}' AND isgroup = '0') OR (id='{$mybb->user['usergroup']}' AND isgroup = '1')");
 	while($forum = $db->fetch_array($query))
@@ -52,13 +52,13 @@ if($mybb->usergroup['issupermod'] != 1)
 		$flist .= ",'{$forum['fid']}'";
 
 		$children = get_child_list($forum['fid']);
-		if(!empty($children))
+		if (!empty($children))
 		{
 			$flist .= ",'".implode("','", $children)."'";
 		}
 		$moderated_forums[] = $forum['fid'];
 	}
-	if($flist)
+	if ($flist)
 	{
 		$tflist = " AND t.fid IN (0{$flist})";
 		$flist = " AND fid IN (0{$flist})";
@@ -72,7 +72,7 @@ else
 // Retrieve a list of unviewable forums
 $unviewableforums = get_unviewable_forums();
 
-if($unviewableforums && !is_super_admin($mybb->user['uid']))
+if ($unviewableforums && !is_super_admin($mybb->user['uid']))
 {
 	$flist .= " AND fid NOT IN ({$unviewableforums})";
 	$tflist .= " AND t.fid NOT IN ({$unviewableforums})";
@@ -89,18 +89,18 @@ $plugins->run_hooks("modcp_start");
 // Make navigation
 add_breadcrumb($lang->nav_modcp, "modcp.php");
 
-if($mybb->input['action'] == "do_reports")
+if ($mybb->input['action'] == "do_reports")
 {
 	// Verify incoming POST request
 	verify_post_check($mybb->input['my_post_key']);
 
-	if(!is_array($mybb->input['reports']))
+	if (!is_array($mybb->input['reports']))
 	{
 		error($lang->error_noselected_reports);
 	}
 
 	$sql = '1=1';
-	if(!$mybb->input['allbox'])
+	if (!$mybb->input['allbox'])
 	{
 		$mybb->input['reports'] = array_map("intval", $mybb->input['reports']);
 		$rids = implode($mybb->input['reports'], "','");
@@ -119,18 +119,18 @@ if($mybb->input['action'] == "do_reports")
 	redirect("modcp.php?action=reports&page={$page}", $lang->redirect_reportsmarked);
 }
 
-if($mybb->input['action'] == "reports")
+if ($mybb->input['action'] == "reports")
 {
 	add_breadcrumb($lang->mcp_nav_reported_posts, "modcp.php?action=reports");
 
-	if(!$mybb->settings['threadsperpage'])
+	if (!$mybb->settings['threadsperpage'])
 	{
 		$mybb->settings['threadsperpage'] = 20;
 	}
 
 	// Figure out if we need to display multiple pages.
 	$perpage = $mybb->settings['threadsperpage'];
-	if($mybb->input['page'] != "last")
+	if ($mybb->input['page'] != "last")
 	{
 		$page = intval($mybb->input['page']);
 	}
@@ -140,11 +140,11 @@ if($mybb->input['action'] == "reports")
 
 	$mybb->input['rid'] = intval($mybb->input['rid']);
 
-	if($mybb->input['rid'])
+	if ($mybb->input['rid'])
 	{
 		$query = $db->simple_select("reportedposts", "COUNT(rid) AS count", "rid <= '".$mybb->input['rid']."'");
 		$result = $db->fetch_field($query, "count");
-		if(($result % $perpage) == 0)
+		if (($result % $perpage) == 0)
 		{
 			$page = $result / $perpage;
 		}
@@ -157,17 +157,17 @@ if($mybb->input['action'] == "reports")
 	$pages = $postcount / $perpage;
 	$pages = ceil($pages);
 
-	if($mybb->input['page'] == "last")
+	if ($mybb->input['page'] == "last")
 	{
 		$page = $pages;
 	}
 
-	if($page > $pages || $page <= 0)
+	if ($page > $pages || $page <= 0)
 	{
 		$page = 1;
 	}
 
-	if($page && $page > 0)
+	if ($page && $page > 0)
 	{
 		$start = ($page-1) * $perpage;
 	}
@@ -179,7 +179,7 @@ if($mybb->input['action'] == "reports")
 	$upper = $start+$perpage;
 
 	$multipage = multipage($postcount, $perpage, $page, "modcp.php?action=reports");
-	if($postcount > $perpage)
+	if ($postcount > $perpage)
 	{
 		eval("\$reportspages = \"".$templates->get("modcp_reports_multipage")."\";");
 	}
@@ -205,7 +205,7 @@ if($mybb->input['action'] == "reports")
 		LIMIT {$start}, {$perpage}
 	");
 
-	if(!$db->num_rows($query))
+	if (!$db->num_rows($query))
 	{
 		eval("\$reports = \"".$templates->get("modcp_reports_noreports")."\";");
 	}
@@ -214,7 +214,7 @@ if($mybb->input['action'] == "reports")
 		while($report = $db->fetch_array($query))
 		{
 			$trow = alt_trow();
-			if(is_moderator($report['fid']))
+			if (is_moderator($report['fid']))
 			{
 				$trow = 'trow_shaded';
 			}
@@ -237,18 +237,18 @@ if($mybb->input['action'] == "reports")
 	output_page($reportedposts);
 }
 
-if($mybb->input['action'] == "allreports")
+if ($mybb->input['action'] == "allreports")
 {
 	add_breadcrumb($lang->mcp_nav_all_reported_posts, "modcp.php?action=allreports");
 
-	if(!$mybb->settings['threadsperpage'])
+	if (!$mybb->settings['threadsperpage'])
 	{
 		$mybb->settings['threadsperpage'] = 20;
 	}
 
 	// Figure out if we need to display multiple pages.
 	$perpage = $mybb->settings['threadsperpage'];
-	if($mybb->input['page'] != "last")
+	if ($mybb->input['page'] != "last")
 	{
 		$page = intval($mybb->input['page']);
 	}
@@ -256,12 +256,12 @@ if($mybb->input['action'] == "allreports")
 	$query = $db->simple_select("reportedposts", "COUNT(rid) AS count");
 	$warnings = $db->fetch_field($query, "count");
 
-	if($mybb->input['rid'])
+	if ($mybb->input['rid'])
 	{
 		$mybb->input['rid'] = intval($mybb->input['rid']);
 		$query = $db->simple_select("reportedposts", "COUNT(rid) AS count", "rid <= '".$mybb->input['rid']."'");
 		$result = $db->fetch_field($query, "count");
-		if(($result % $perpage) == 0)
+		if (($result % $perpage) == 0)
 		{
 			$page = $result / $perpage;
 		}
@@ -274,17 +274,17 @@ if($mybb->input['action'] == "allreports")
 	$pages = $postcount / $perpage;
 	$pages = ceil($pages);
 
-	if($mybb->input['page'] == "last")
+	if ($mybb->input['page'] == "last")
 	{
 		$page = $pages;
 	}
 
-	if($page > $pages || $page <= 0)
+	if ($page > $pages || $page <= 0)
 	{
 		$page = 1;
 	}
 
-	if($page)
+	if ($page)
 	{
 		$start = ($page-1) * $perpage;
 	}
@@ -296,7 +296,7 @@ if($mybb->input['action'] == "allreports")
 	$upper = $start+$perpage;
 
 	$multipage = multipage($postcount, $perpage, $page, "modcp.php?action=allreports");
-	if($postcount > $perpage)
+	if ($postcount > $perpage)
 	{
 		eval("\$allreportspages = \"".$templates->get("modcp_reports_multipage")."\";");
 	}
@@ -315,7 +315,7 @@ if($mybb->input['action'] == "allreports")
 	");
 
 	$allreports = '';
-	if(!$db->num_rows($query))
+	if (!$db->num_rows($query))
 	{
 		eval("\$allreports = \"".$templates->get("modcp_reports_allnoreports")."\";");
 	}
@@ -335,12 +335,12 @@ if($mybb->input['action'] == "allreports")
 			$reportdate = my_date($mybb->settings['dateformat'], $report['dateline']);
 			$reporttime = my_date($mybb->settings['timeformat'], $report['dateline']);
 
-			if($report['reportstatus'] == 0)
+			if ($report['reportstatus'] == 0)
 			{
 				$trow = "trow_shaded";
 			}
 
-			if($report['threadsubject'])
+			if ($report['threadsubject'])
 			{
 				$report['threadsubject'] = htmlspecialchars_uni($parser->parse_badwords($report['threadsubject']));
 				$report['threadsubject'] = "<a href=\"".get_thread_link($report['tid'])."\" target=\"_blank\">{$report['threadsubject']}</a>";
@@ -356,12 +356,12 @@ if($mybb->input['action'] == "allreports")
 	output_page($allreportedposts);
 }
 
-if($mybb->input['action'] == "modlogs")
+if ($mybb->input['action'] == "modlogs")
 {
 	add_breadcrumb($lang->mcp_nav_modlogs, "modcp.php?action=modlogs");
 
 	$perpage = intval($mybb->input['perpage']);
-	if(!$perpage || $perpage <= 0)
+	if (!$perpage || $perpage <= 0)
 	{
 		$perpage = $mybb->settings['threadsperpage'];
 	}
@@ -369,13 +369,13 @@ if($mybb->input['action'] == "modlogs")
 	$where = '';
 
 	// Searching for entries by a particular user
-	if($mybb->input['uid'])
+	if ($mybb->input['uid'])
 	{
 		$where .= " AND l.uid='".intval($mybb->input['uid'])."'";
 	}
 
 	// Searching for entries in a specific forum
-	if($mybb->input['fid'])
+	if ($mybb->input['fid'])
 	{
 		$where .= " AND t.fid='".intval($mybb->input['fid'])."'";
 	}
@@ -396,7 +396,7 @@ if($mybb->input['action'] == "modlogs")
 			$sortby = "l.dateline";
 	}
 	$order = $mybb->input['order'];
-	if($order != "asc")
+	if ($order != "asc")
 	{
 		$order = "desc";
 	}
@@ -413,7 +413,7 @@ if($mybb->input['action'] == "modlogs")
 	$rescount = $db->fetch_field($query, "count");
 
 	// Figure out if we need to display multiple pages.
-	if($mybb->input['page'] != "last")
+	if ($mybb->input['page'] != "last")
 	{
 		$page = intval($mybb->input['page']);
 	}
@@ -422,17 +422,17 @@ if($mybb->input['action'] == "modlogs")
 	$pages = $postcount / $perpage;
 	$pages = ceil($pages);
 
-	if($mybb->input['page'] == "last")
+	if ($mybb->input['page'] == "last")
 	{
 		$page = $pages;
 	}
 
-	if($page > $pages || $page <= 0)
+	if ($page > $pages || $page <= 0)
 	{
 		$page = 1;
 	}
 
-	if($page)
+	if ($page)
 	{
 		$start = ($page-1) * $perpage;
 	}
@@ -443,7 +443,7 @@ if($mybb->input['action'] == "modlogs")
 	}
 
 	$multipage = multipage($postcount, $perpage, $page, "modcp.php?action=modlogs&amp;perpage=$perpage&amp;uid={$mybb->input['uid']}&amp;fid={$mybb->input['fid']}&amp;sortby={$mybb->input['sortby']}&amp;order={$mybb->input['order']}");
-	if($postcount > $perpage)
+	if ($postcount > $perpage)
 	{
 		eval("\$resultspages = \"".$templates->get("modcp_modlogs_multipage")."\";");
 	}
@@ -467,24 +467,24 @@ if($mybb->input['action'] == "modlogs")
 		$trow = alt_trow();
 		$username = format_name($logitem['username'], $logitem['usergroup'], $logitem['displaygroup']);
 		$logitem['profilelink'] = build_profile_link($username, $logitem['uid']);
-		if($logitem['tsubject'])
+		if ($logitem['tsubject'])
 		{
 			$information = "<strong>{$lang->thread}</strong> <a href=\"".get_thread_link($logitem['tid'])."\" target=\"_blank\">".htmlspecialchars_uni($logitem['tsubject'])."</a><br />";
 		}
-		if($logitem['fname'])
+		if ($logitem['fname'])
 		{
 			$information .= "<strong>{$lang->forum}</strong> <a href=\"".get_forum_link($logitem['fid'])."\" target=\"_blank\">{$logitem['fname']}</a><br />";
 		}
-		if($logitem['psubject'])
+		if ($logitem['psubject'])
 		{
 			$information .= "<strong>{$lang->post}</strong> <a href=\"".get_post_link($logitem['pid'])."#pid{$logitem['pid']}\">".htmlspecialchars_uni($logitem['psubject'])."</a>";
 		}
 
 		// Edited a user?
-		if(!$logitem['tsubject'] || !$logitem['fname'] || !$logitem['psubject'])
+		if (!$logitem['tsubject'] || !$logitem['fname'] || !$logitem['psubject'])
 		{
 			$data = unserialize($logitem['data']);
-			if($data['uid'])
+			if ($data['uid'])
 			{
 				$information = $lang->sprintf($lang->edited_user_info, htmlspecialchars_uni($data['username']), get_profile_link($data['uid']));
 			}
@@ -493,7 +493,7 @@ if($mybb->input['action'] == "modlogs")
 		eval("\$results .= \"".$templates->get("modcp_modlogs_result")."\";");
 	}
 
-	if(!$results)
+	if (!$results)
 	{
 		eval("\$results = \"".$templates->get("modcp_modlogs_noresults")."\";");
 	}
@@ -512,13 +512,13 @@ if($mybb->input['action'] == "modlogs")
 	while($user = $db->fetch_array($query))
 	{
 		// Deleted Users
-		if(!$user['username'])
+		if (!$user['username'])
 		{
 			$user['username'] = $lang->na_deleted;
 		}
 
 		$selected = '';
-		if($mybb->input['uid'] == $user['uid'])
+		if ($mybb->input['uid'] == $user['uid'])
 		{
 			$selected = " selected=\"selected\"";
 		}
@@ -531,7 +531,7 @@ if($mybb->input['action'] == "modlogs")
 	output_page($modlogs);
 }
 
-if($mybb->input['action'] == "do_delete_announcement")
+if ($mybb->input['action'] == "do_delete_announcement")
 {
 	verify_post_check($mybb->input['my_post_key']);
 
@@ -539,11 +539,11 @@ if($mybb->input['action'] == "do_delete_announcement")
 	$query = $db->simple_select("announcements", "aid, subject, fid", "aid='{$aid}'");
 	$announcement = $db->fetch_array($query);
 
-	if(!$announcement['aid'])
+	if (!$announcement['aid'])
 	{
 		error($lang->error_invalid_announcement);
 	}
-	if(($mybb->usergroup['issupermod'] != 1 && $announcement['fid'] == -1) || ($announcement['fid'] != -1 && !is_moderator($announcement['fid'])) || ($unviewableforums && in_array($announcement['fid'], $unviewableforums)))
+	if (($mybb->usergroup['issupermod'] != 1 && $announcement['fid'] == -1) || ($announcement['fid'] != -1 && !is_moderator($announcement['fid'])) || ($unviewableforums && in_array($announcement['fid'], $unviewableforums)))
 	{
 		error_no_permission();
 	}
@@ -556,7 +556,7 @@ if($mybb->input['action'] == "do_delete_announcement")
 	redirect("modcp.php?action=announcements", $lang->redirect_delete_announcement);
 }
 
-if($mybb->input['action'] == "delete_announcement")
+if ($mybb->input['action'] == "delete_announcement")
 {
 	$aid = intval($mybb->input['aid']);
 	$query = $db->simple_select("announcements", "aid, subject, fid", "aid='{$aid}'");
@@ -564,12 +564,12 @@ if($mybb->input['action'] == "delete_announcement")
 	$announcement = $db->fetch_array($query);
 	$announcement['subject'] = htmlspecialchars_uni($announcement['subject']);
 
-	if(!$announcement['aid'])
+	if (!$announcement['aid'])
 	{
 		error($lang->error_invalid_announcement);
 	}
 
-	if(($mybb->usergroup['issupermod'] != 1 && $announcement['fid'] == -1) || ($announcement['fid'] != -1 && !is_moderator($announcement['fid'])) || ($unviewableforums && in_array($announcement['fid'], $unviewableforums)))
+	if (($mybb->usergroup['issupermod'] != 1 && $announcement['fid'] == -1) || ($announcement['fid'] != -1 && !is_moderator($announcement['fid'])) || ($unviewableforums && in_array($announcement['fid'], $unviewableforums)))
 	{
 		error_no_permission();
 	}
@@ -580,27 +580,27 @@ if($mybb->input['action'] == "delete_announcement")
 	output_page($announcements);
 }
 
-if($mybb->input['action'] == "do_new_announcement")
+if ($mybb->input['action'] == "do_new_announcement")
 {
 	verify_post_check($mybb->input['my_post_key']);
 
 	$announcement_fid = intval($mybb->input['fid']);
-	if(($mybb->usergroup['issupermod'] != 1 && $announcement_fid == -1) || ($announcement_fid != -1 && !is_moderator($announcement_fid)) || ($unviewableforums && in_array($announcement['fid'], $unviewableforums)))
+	if (($mybb->usergroup['issupermod'] != 1 && $announcement_fid == -1) || ($announcement_fid != -1 && !is_moderator($announcement_fid)) || ($unviewableforums && in_array($announcement['fid'], $unviewableforums)))
 	{
 		error_no_permission();
 	}
 
-	if(!trim($mybb->input['title']))
+	if (!trim($mybb->input['title']))
 	{
 		$errors[] = $lang->error_missing_title;
 	}
 
-	if(!trim($mybb->input['message']))
+	if (!trim($mybb->input['message']))
 	{
 		$errors[] = $lang->error_missing_message;
 	}
 
-	if(!trim($mybb->input['fid']))
+	if (!trim($mybb->input['fid']))
 	{
 		$errors[] = $lang->error_missing_forum;
 	}
@@ -610,53 +610,53 @@ if($mybb->input['action'] == "do_new_announcement")
 	$enddate = @explode(" ", $mybb->input['endtime_time']);
 	$enddate = @explode(":", $enddate[0]);
 
-	if(stristr($mybb->input['starttime_time'], "pm"))
+	if (stristr($mybb->input['starttime_time'], "pm"))
 	{
 		$startdate[0] = 12+$startdate[0];
-		if($startdate[0] >= 24)
+		if ($startdate[0] >= 24)
 		{
 			$startdate[0] = "00";
 		}
 	}
 
-	if(stristr($mybb->input['endtime_time'], "pm"))
+	if (stristr($mybb->input['endtime_time'], "pm"))
 	{
 		$enddate[0] = 12+$enddate[0];
-		if($enddate[0] >= 24)
+		if ($enddate[0] >= 24)
 		{
 			$enddate[0] = "00";
 		}
 	}
 
 	$months = array('01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12');
-	if(!in_array($mybb->input['starttime_month'], $months))
+	if (!in_array($mybb->input['starttime_month'], $months))
 	{
 		$mybb->input['starttime_month'] = 1;
 	}
 
 	$startdate = gmmktime(intval($startdate[0]), intval($startdate[1]), 0, (int)$mybb->input['starttime_month'], intval($mybb->input['starttime_day']), intval($mybb->input['starttime_year']));
 
-	if($startdate < 0 || $startdate == FALSE)
+	if ($startdate < 0 || $startdate == FALSE)
 	{
 		$errors[] = $lang->error_invalid_start_date;
 	}
 
-	if($mybb->input['endtime_type'] == "2")
+	if ($mybb->input['endtime_type'] == "2")
 	{
 		$enddate = '0';
 	}
 	else
 	{
-		if(!in_array($mybb->input['endtime_month'], $months))
+		if (!in_array($mybb->input['endtime_month'], $months))
 		{
 			$mybb->input['endtime_month'] = 1;
 		}
 		$enddate = gmmktime(intval($enddate[0]), intval($enddate[1]), 0, (int)$mybb->input['endtime_month'], intval($mybb->input['endtime_day']), intval($mybb->input['endtime_year']));
-		if($enddate < 0 || $enddate == FALSE)
+		if ($enddate < 0 || $enddate == FALSE)
 		{
 			$errors[] = $lang->error_invalid_end_date;
 		}
-		elseif($enddate < $startdate)
+		elseif ($enddate < $startdate)
 		{
 			$errors[] = $lang->error_end_before_start;
 		}
@@ -664,7 +664,7 @@ if($mybb->input['action'] == "do_new_announcement")
 
 	$plugins->run_hooks("modcp_do_new_announcement_start");
 
-	if(!$errors)
+	if (!$errors)
 	{
 		$insert_announcement = array(
 			'fid' => $announcement_fid,
@@ -691,20 +691,20 @@ if($mybb->input['action'] == "do_new_announcement")
 	}
 }
 
-if($mybb->input['action'] == "new_announcement")
+if ($mybb->input['action'] == "new_announcement")
 {
 	add_breadcrumb($lang->mcp_nav_announcements, "modcp.php?action=announcements");
 	add_breadcrumb($lang->add_announcement, "modcp.php?action=new_announcements");
 
 	$announcement_fid = intval($mybb->input['fid']);
 
-	if(($mybb->usergroup['issupermod'] != 1 && $announcement_fid == -1) || ($announcement_fid != -1 && !is_moderator($announcement_fid)) || ($unviewableforums && in_array($announcement['fid'], $unviewableforums)))
+	if (($mybb->usergroup['issupermod'] != 1 && $announcement_fid == -1) || ($announcement_fid != -1 && !is_moderator($announcement_fid)) || ($unviewableforums && in_array($announcement['fid'], $unviewableforums)))
 	{
 		error_no_permission();
 	}
 
 	// Deal with inline errors
-	if(is_array($errors))
+	if (is_array($errors))
 	{
 		$errors = inline_error($errors);
 
@@ -716,12 +716,12 @@ if($mybb->input['action'] == "new_announcement")
 		$announcement['allowsmilies'] = $mybb->input['allowsmilies'];
 
 		$months = array('01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12');
-		if(!in_array($mybb->input['starttime_month'], $months))
+		if (!in_array($mybb->input['starttime_month'], $months))
 		{
 			$mybb->input['starttime_month'] = 1;
 		}
 
-		if(!in_array($mybb->input['endtime_month'], $months))
+		if (!in_array($mybb->input['endtime_month'], $months))
 		{
 			$mybb->input['endtime_month'] = 1;
 		}
@@ -750,7 +750,7 @@ if($mybb->input['action'] == "new_announcement")
 	// Generate form elements
 	for($i = 1; $i <= 31; ++$i)
 	{
-		if($startday == $i)
+		if ($startday == $i)
 		{
 			$startdateday .= "<option value=\"$i\" selected=\"selected\">$i</option>\n";
 		}
@@ -759,7 +759,7 @@ if($mybb->input['action'] == "new_announcement")
 			$startdateday .= "<option value=\"$i\">$i</option>\n";
 		}
 
-		if($endday == $i)
+		if ($endday == $i)
 		{
 			$enddateday .= "<option value=\"$i\" selected=\"selected\">$i</option>\n";
 		}
@@ -802,7 +802,7 @@ if($mybb->input['action'] == "new_announcement")
 	$message = htmlspecialchars_uni($announcement['message']);
 
 	$html_sel = $mycode_sel = $smilies_sel = array();
-	if($mybb->input['allowhtml'] || !isset($mybb->input['allowhtml']))
+	if ($mybb->input['allowhtml'] || !isset($mybb->input['allowhtml']))
 	{
 		$html_sel['yes'] = ' checked="checked"';
 	}
@@ -811,7 +811,7 @@ if($mybb->input['action'] == "new_announcement")
 		$html_sel['no'] = ' checked="checked"';
 	}
 
-	if($mybb->input['allowmycode'] || !isset($mybb->input['allowmycode']))
+	if ($mybb->input['allowmycode'] || !isset($mybb->input['allowmycode']))
 	{
 		$mycode_sel['yes'] = ' checked="checked"';
 	}
@@ -820,7 +820,7 @@ if($mybb->input['action'] == "new_announcement")
 		$mycode_sel['no'] = ' checked="checked"';
 	}
 
-	if($mybb->input['allowsmilies'] || !isset($mybb->input['allowsmilies']))
+	if ($mybb->input['allowsmilies'] || !isset($mybb->input['allowsmilies']))
 	{
 		$smilies_sel['yes'] = ' checked="checked"';
 	}
@@ -829,7 +829,7 @@ if($mybb->input['action'] == "new_announcement")
 		$smilies_sel['no'] = ' checked="checked"';
 	}
 
-	if($mybb->input['endtime_type'] == 2 || !isset($mybb->input['endtime_type']))
+	if ($mybb->input['endtime_type'] == 2 || !isset($mybb->input['endtime_type']))
 	{
 		$end_type_sel['infinite'] = ' checked="checked"';
 	}
@@ -848,7 +848,7 @@ if($mybb->input['action'] == "new_announcement")
 	output_page($announcements);
 }
 
-if($mybb->input['action'] == "do_edit_announcement")
+if ($mybb->input['action'] == "do_edit_announcement")
 {
 	verify_post_check($mybb->input['my_post_key']);
 
@@ -858,29 +858,29 @@ if($mybb->input['action'] == "do_edit_announcement")
 	$announcement = $db->fetch_array($query);
 
 	// Check that it exists
-	if(!$announcement['aid'])
+	if (!$announcement['aid'])
 	{
 		error($lang->error_invalid_announcement);
 	}
 
 	// Mod has permissions to edit this announcement
-	if(($mybb->usergroup['issupermod'] != 1 && $announcement['fid'] == -1) || ($announcement['fid'] != -1 && !is_moderator($announcement['fid'])) || ($unviewableforums && in_array($announcement['fid'], $unviewableforums)))
+	if (($mybb->usergroup['issupermod'] != 1 && $announcement['fid'] == -1) || ($announcement['fid'] != -1 && !is_moderator($announcement['fid'])) || ($unviewableforums && in_array($announcement['fid'], $unviewableforums)))
 	{
 		error_no_permission();
 	}
 
 	// Basic error checking
-	if(!trim($mybb->input['title']))
+	if (!trim($mybb->input['title']))
 	{
 		$errors[] = $lang->error_missing_title;
 	}
 
-	if(!trim($mybb->input['message']))
+	if (!trim($mybb->input['message']))
 	{
 		$errors[] = $lang->error_missing_message;
 	}
 
-	if(!trim($mybb->input['fid']))
+	if (!trim($mybb->input['fid']))
 	{
 		$errors[] = $lang->error_missing_forum;
 	}
@@ -890,52 +890,52 @@ if($mybb->input['action'] == "do_edit_announcement")
 	$enddate = @explode(" ", $mybb->input['endtime_time']);
 	$enddate = @explode(":", $enddate[0]);
 
-	if(stristr($mybb->input['starttime_time'], "pm"))
+	if (stristr($mybb->input['starttime_time'], "pm"))
 	{
 		$startdate[0] = 12+$startdate[0];
-		if($startdate[0] >= 24)
+		if ($startdate[0] >= 24)
 		{
 			$startdate[0] = "00";
 		}
 	}
 
-	if(stristr($mybb->input['endtime_time'], "pm"))
+	if (stristr($mybb->input['endtime_time'], "pm"))
 	{
 		$enddate[0] = 12+$enddate[0];
-		if($enddate[0] >= 24)
+		if ($enddate[0] >= 24)
 		{
 			$enddate[0] = "00";
 		}
 	}
 
 	$months = array('01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12');
-	if(!in_array($mybb->input['starttime_month'], $months))
+	if (!in_array($mybb->input['starttime_month'], $months))
 	{
 		$mybb->input['starttime_month'] = 1;
 	}
 
 	$startdate = gmmktime(intval($startdate[0]), intval($startdate[1]), 0, (int)$mybb->input['starttime_month'], intval($mybb->input['starttime_day']), intval($mybb->input['starttime_year']));
-	if($startdate < 0 || $startdate == FALSE)
+	if ($startdate < 0 || $startdate == FALSE)
 	{
 		$errors[] = $lang->error_invalid_start_date;
 	}
 
-	if($mybb->input['endtime_type'] == "2")
+	if ($mybb->input['endtime_type'] == "2")
 	{
 		$enddate = '0';
 	}
 	else
 	{
-		if(!in_array($mybb->input['endtime_month'], $months))
+		if (!in_array($mybb->input['endtime_month'], $months))
 		{
 			$mybb->input['endtime_month'] = 1;
 		}
 		$enddate = gmmktime(intval($enddate[0]), intval($enddate[1]), 0, (int)$mybb->input['endtime_month'], intval($mybb->input['endtime_day']), intval($mybb->input['endtime_year']));
-		if($enddate < 0 || $enddate == FALSE)
+		if ($enddate < 0 || $enddate == FALSE)
 		{
 			$errors[] = $lang->error_invalid_end_date;
 		}
-		elseif($enddate < $startdate)
+		elseif ($enddate < $startdate)
 		{
 			$errors[] = $lang->error_end_before_start;
 		}
@@ -944,7 +944,7 @@ if($mybb->input['action'] == "do_edit_announcement")
 	$plugins->run_hooks("modcp_do_edit_announcement_start");
 
 	// Proceed to update if no errors
-	if(!$errors)
+	if (!$errors)
 	{
 		$update_announcement = array(
 			'uid' => $mybb->user['uid'],
@@ -970,7 +970,7 @@ if($mybb->input['action'] == "do_edit_announcement")
 	}
 }
 
-if($mybb->input['action'] == "edit_announcement")
+if ($mybb->input['action'] == "edit_announcement")
 {
 	$announcement_fid = intval($mybb->input['fid']);
 	$aid = intval($mybb->input['aid']);
@@ -982,27 +982,27 @@ if($mybb->input['action'] == "edit_announcement")
 	$query = $db->simple_select("announcements", "*", "aid='{$aid}'");
 	$announcement = $db->fetch_array($query);
 
-	if(!$announcement['fid'])
+	if (!$announcement['fid'])
 	{
 		error($lang->error_invalid_announcement);
 	}
-	if(($mybb->usergroup['issupermod'] != 1 && $announcement['fid'] == -1) || ($announcement['fid'] != -1 && !is_moderator($announcement['fid'])) || ($unviewableforums && in_array($announcement['fid'], $unviewableforums)))
+	if (($mybb->usergroup['issupermod'] != 1 && $announcement['fid'] == -1) || ($announcement['fid'] != -1 && !is_moderator($announcement['fid'])) || ($unviewableforums && in_array($announcement['fid'], $unviewableforums)))
 	{
 		error_no_permission();
 	}
 
-	if(!$announcement['startdate'])
+	if (!$announcement['startdate'])
 	{
 		// No start date? Make it now.
 		$announcement['startdate'] = TIME_NOW;
 	}
 
 	$makeshift_end = FALSE;
-	if(!$announcement['enddate'])
+	if (!$announcement['enddate'])
 	{
 		$makeshift_end = TRUE;
 		$makeshift_time = TIME_NOW;
-		if($announcement['startdate'])
+		if ($announcement['startdate'])
 		{
 			$makeshift_time = $announcement['startdate'];
 		}
@@ -1012,7 +1012,7 @@ if($mybb->input['action'] == "edit_announcement")
 	}
 
 	// Deal with inline errors
-	if(is_array($errors))
+	if (is_array($errors))
 	{
 		$errors = inline_error($errors);
 
@@ -1024,12 +1024,12 @@ if($mybb->input['action'] == "edit_announcement")
 		$announcement['allowsmilies'] = $mybb->input['allowsmilies'];
 
 		$months = array('01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12');
-		if(!in_array($mybb->input['starttime_month'], $months))
+		if (!in_array($mybb->input['starttime_month'], $months))
 		{
 			$mybb->input['starttime_month'] = 1;
 		}
 
-		if(!in_array($mybb->input['endtime_month'], $months))
+		if (!in_array($mybb->input['endtime_month'], $months))
 		{
 			$mybb->input['endtime_month'] = 1;
 		}
@@ -1066,7 +1066,7 @@ if($mybb->input['action'] == "edit_announcement")
 	// Generate form elements
 	for($i = 1; $i <= 31; ++$i)
 	{
-		if($startday == $i)
+		if ($startday == $i)
 		{
 			$startdateday .= "<option value=\"$i\" selected=\"selected\">$i</option>\n";
 		}
@@ -1075,7 +1075,7 @@ if($mybb->input['action'] == "edit_announcement")
 			$startdateday .= "<option value=\"$i\">$i</option>\n";
 		}
 
-		if($endday == $i)
+		if ($endday == $i)
 		{
 			$enddateday .= "<option value=\"$i\" selected=\"selected\">$i</option>\n";
 		}
@@ -1118,7 +1118,7 @@ if($mybb->input['action'] == "edit_announcement")
 	$message = htmlspecialchars_uni($announcement['message']);
 
 	$html_sel = $mycode_sel = $smilies_sel = array();
-	if($announcement['allowhtml'])
+	if ($announcement['allowhtml'])
 	{
 		$html_sel['yes'] = ' checked="checked"';
 	}
@@ -1127,7 +1127,7 @@ if($mybb->input['action'] == "edit_announcement")
 		$html_sel['no'] = ' checked="checked"';
 	}
 
-	if($announcement['allowmycode'])
+	if ($announcement['allowmycode'])
 	{
 		$mycode_sel['yes'] = ' checked="checked"';
 	}
@@ -1136,7 +1136,7 @@ if($mybb->input['action'] == "edit_announcement")
 		$mycode_sel['no'] = ' checked="checked"';
 	}
 
-	if($announcement['allowsmilies'])
+	if ($announcement['allowsmilies'])
 	{
 		$smilies_sel['yes'] = ' checked="checked"';
 	}
@@ -1145,7 +1145,7 @@ if($mybb->input['action'] == "edit_announcement")
 		$smilies_sel['no'] = ' checked="checked"';
 	}
 
-	if(($errored && $mybb->input['endtime_type'] == 2) || (!$errored && intval($announcement['enddate']) == 0) || $makeshift_end == TRUE)
+	if (($errored && $mybb->input['endtime_type'] == 2) || (!$errored && intval($announcement['enddate']) == 0) || $makeshift_end == TRUE)
 	{
 		$end_type_sel['infinite'] = ' checked="checked"';
 	}
@@ -1164,7 +1164,7 @@ if($mybb->input['action'] == "edit_announcement")
 	output_page($announcements);
 }
 
-if($mybb->input['action'] == "announcements")
+if ($mybb->input['action'] == "announcements")
 {
 	add_breadcrumb($lang->mcp_nav_announcements, "modcp.php?action=announcements");
 
@@ -1172,7 +1172,7 @@ if($mybb->input['action'] == "announcements")
 	$query = $db->simple_select("announcements", "aid, fid, subject, enddate");
 	while($announcement = $db->fetch_array($query))
 	{
-		if($announcement['fid'] == -1)
+		if ($announcement['fid'] == -1)
 		{
 			$global_announcements[$announcement['aid']] = $announcement;
 			continue;
@@ -1180,15 +1180,15 @@ if($mybb->input['action'] == "announcements")
 		$announcements[$announcement['fid']][$announcement['aid']] = $announcement;
 	}
 
-	if($mybb->usergroup['issupermod'] == 1)
+	if ($mybb->usergroup['issupermod'] == 1)
 	{
-		if($global_announcements && $mybb->usergroup['issupermod'] == 1)
+		if ($global_announcements && $mybb->usergroup['issupermod'] == 1)
 		{
 			// Get the global announcements
 			foreach($global_announcements as $aid => $announcement)
 			{
 				$trow = alt_trow();
-				if($announcement['startdate'] > TIME_NOW || ($announcement['enddate'] < TIME_NOW && $announcement['enddate'] != 0))
+				if ($announcement['startdate'] > TIME_NOW || ($announcement['enddate'] < TIME_NOW && $announcement['enddate'] != 0))
 				{
 					$icon = "<img src=\"{$theme['imgdir']}/minioff.gif\" alt=\"({$lang->expired})\" title=\"{$lang->expired_announcement}\"  style=\"vertical-align: middle;\" /> ";
 				}
@@ -1217,7 +1217,7 @@ if($mybb->input['action'] == "announcements")
 
 	fetch_forum_announcements();
 
-	if(!$announcements_forum)
+	if (!$announcements_forum)
 	{
 		eval("\$announcements_forum = \"".$templates->get("modcp_no_announcements_forum")."\";");
 	}
@@ -1228,7 +1228,7 @@ if($mybb->input['action'] == "announcements")
 	output_page($announcements);
 }
 
-if($mybb->input['action'] == "do_modqueue")
+if ($mybb->input['action'] == "do_modqueue")
 {
 	require_once MYBB_ROOT."inc/class_moderation.php";
 	$moderation = new Moderation;
@@ -1238,28 +1238,28 @@ if($mybb->input['action'] == "do_modqueue")
 
 	$plugins->run_hooks("modcp_do_modqueue_start");
 
-	if(is_array($mybb->input['threads']))
+	if (is_array($mybb->input['threads']))
 	{
 		// Fetch threads
 		$query = $db->simple_select("threads", "tid", "tid IN (".implode(",", array_map("intval", array_keys($mybb->input['threads'])))."){$flist}");
 		while($thread = $db->fetch_array($query))
 		{
 			$action = $mybb->input['threads'][$thread['tid']];
-			if($action == "approve")
+			if ($action == "approve")
 			{
 				$threads_to_approve[] = $thread['tid'];
 			}
-			else if($action == "delete")
+			else if ($action == "delete")
 			{
 				$threads_to_delete[] = $thread['tid'];
 			}
 		}
-		if(!empty($threads_to_approve))
+		if (!empty($threads_to_approve))
 		{
 			$moderation->approve_threads($threads_to_approve);
 			log_moderator_action(array('tids' => $threads_to_approve), $lang->multi_approve_threads);
 		}
-		if(!empty($threads_to_delete))
+		if (!empty($threads_to_delete))
 		{
 			foreach($threads_to_delete as $tid)
 			{
@@ -1272,23 +1272,23 @@ if($mybb->input['action'] == "do_modqueue")
 
 		redirect("modcp.php?action=modqueue", $lang->redirect_threadsmoderated);
 	}
-	else if(is_array($mybb->input['posts']))
+	else if (is_array($mybb->input['posts']))
 	{
 		// Fetch posts
 		$query = $db->simple_select("posts", "pid", "pid IN (".implode(",", array_map("intval", array_keys($mybb->input['posts'])))."){$flist}");
 		while($post = $db->fetch_array($query))
 		{
 			$action = $mybb->input['posts'][$post['pid']];
-			if($action == "approve")
+			if ($action == "approve")
 			{
 				$posts_to_approve[] = $post['pid'];
 			}
-			else if($action == "delete")
+			else if ($action == "delete")
 			{
 				$moderation->delete_post($post['pid']);
 			}
 		}
-		if(is_array($posts_to_approve))
+		if (is_array($posts_to_approve))
 		{
 			$moderation->approve_posts($posts_to_approve);
 		}
@@ -1298,7 +1298,7 @@ if($mybb->input['action'] == "do_modqueue")
 
 		redirect("modcp.php?action=modqueue&type=posts", $lang->redirect_postsmoderated);
 	}
-	else if(is_array($mybb->input['attachments']))
+	else if (is_array($mybb->input['attachments']))
 	{
 		$query = $db->query("
 			SELECT a.pid, a.aid
@@ -1310,11 +1310,11 @@ if($mybb->input['action'] == "do_modqueue")
 		while($attachment = $db->fetch_array($query))
 		{
 			$action = $mybb->input['attachments'][$attachment['aid']];
-			if($action == "approve")
+			if ($action == "approve")
 			{
 				$db->update_query("attachments", array("visible" => 1), "aid='{$attachment['aid']}'");
 			}
-			else if($action == "delete")
+			else if ($action == "delete")
 			{
 				remove_attachment($attachment['pid'], '', $attachment['aid']);
 			}
@@ -1326,9 +1326,9 @@ if($mybb->input['action'] == "do_modqueue")
 	}
 }
 
-if($mybb->input['action'] == "modqueue")
+if ($mybb->input['action'] == "modqueue")
 {
-	if($mybb->input['type'] == "threads" || !$mybb->input['type'])
+	if ($mybb->input['type'] == "threads" || !$mybb->input['type'])
 	{
 		$forum_cache = $cache->read("forums");
 
@@ -1336,7 +1336,7 @@ if($mybb->input['action'] == "modqueue")
 		$unapproved_threads = $db->fetch_field($query, "unapprovedthreads");
 
 		// Figure out if we need to display multiple pages.
-		if($mybb->input['page'] != "last")
+		if ($mybb->input['page'] != "last")
 		{
 			$page = intval($mybb->input['page']);
 		}
@@ -1345,17 +1345,17 @@ if($mybb->input['action'] == "modqueue")
 		$pages = $unapproved_threads / $perpage;
 		$pages = ceil($pages);
 
-		if($mybb->input['page'] == "last")
+		if ($mybb->input['page'] == "last")
 		{
 			$page = $pages;
 		}
 
-		if($page > $pages || $page <= 0)
+		if ($page > $pages || $page <= 0)
 		{
 			$page = 1;
 		}
 
-		if($page)
+		if ($page)
 		{
 			$start = ($page-1) * $perpage;
 		}
@@ -1391,12 +1391,12 @@ if($mybb->input['action'] == "modqueue")
 			eval("\$threads .= \"".$templates->get("modcp_modqueue_threads_thread")."\";");
 		}
 
-		if(!$threads && $mybb->input['type'] == "threads")
+		if (!$threads && $mybb->input['type'] == "threads")
 		{
 			eval("\$threads = \"".$templates->get("modcp_modqueue_threads_empty")."\";");
 		}
 
-		if($threads)
+		if ($threads)
 		{
 			add_breadcrumb($lang->mcp_nav_modqueue_threads, "modcp.php?action=modqueue&amp;type=threads");
 
@@ -1409,7 +1409,7 @@ if($mybb->input['action'] == "modqueue")
 		$type = 'threads';
 	}
 
-	if($mybb->input['type'] == "posts" || (!$mybb->input['type'] && !$threadqueue))
+	if ($mybb->input['type'] == "posts" || (!$mybb->input['type'] && !$threadqueue))
 	{
 		$forum_cache = $cache->read("forums");
 
@@ -1422,7 +1422,7 @@ if($mybb->input['action'] == "modqueue")
 		$unapproved_posts = $db->fetch_field($query, "unapprovedposts");
 
 		// Figure out if we need to display multiple pages.
-		if($mybb->input['page'] != "last")
+		if ($mybb->input['page'] != "last")
 		{
 			$page = intval($mybb->input['page']);
 		}
@@ -1431,17 +1431,17 @@ if($mybb->input['action'] == "modqueue")
 		$pages = $unapproved_posts / $perpage;
 		$pages = ceil($pages);
 
-		if($mybb->input['page'] == "last")
+		if ($mybb->input['page'] == "last")
 		{
 			$page = $pages;
 		}
 
-		if($page > $pages || $page <= 0)
+		if ($page > $pages || $page <= 0)
 		{
 			$page = 1;
 		}
 
-		if($page)
+		if ($page)
 		{
 			$start = ($page-1) * $perpage;
 		}
@@ -1479,12 +1479,12 @@ if($mybb->input['action'] == "modqueue")
 			eval("\$posts .= \"".$templates->get("modcp_modqueue_posts_post")."\";");
 		}
 
-		if(!$posts && $mybb->input['type'] == "posts")
+		if (!$posts && $mybb->input['type'] == "posts")
 		{
 			eval("\$posts = \"".$templates->get("modcp_modqueue_posts_empty")."\";");
 		}
 
-		if($posts)
+		if ($posts)
 		{
 			add_breadcrumb($lang->mcp_nav_modqueue_posts, "modcp.php?action=modqueue&amp;type=posts");
 
@@ -1496,7 +1496,7 @@ if($mybb->input['action'] == "modqueue")
 		}
 	}
 
-	if($mybb->input['type'] == "attachments" || (!$mybb->input['type'] && !$postqueue && !$threadqueue))
+	if ($mybb->input['type'] == "attachments" || (!$mybb->input['type'] && !$postqueue && !$threadqueue))
 	{
 		$query = $db->query("
 			SELECT COUNT(aid) AS unapprovedattachments
@@ -1508,7 +1508,7 @@ if($mybb->input['action'] == "modqueue")
 		$unapproved_attachments = $db->fetch_field($query, "unapprovedattachments");
 
 		// Figure out if we need to display multiple pages.
-		if($mybb->input['page'] != "last")
+		if ($mybb->input['page'] != "last")
 		{
 			$page = intval($mybb->input['page']);
 		}
@@ -1517,17 +1517,17 @@ if($mybb->input['action'] == "modqueue")
 		$pages = $unapproved_attachments / $perpage;
 		$pages = ceil($pages);
 
-		if($mybb->input['page'] == "last")
+		if ($mybb->input['page'] == "last")
 		{
 			$page = $pages;
 		}
 
-		if($page > $pages || $page <= 0)
+		if ($page > $pages || $page <= 0)
 		{
 			$page = 1;
 		}
 
-		if($page)
+		if ($page)
 		{
 			$start = ($page-1) * $perpage;
 		}
@@ -1553,7 +1553,7 @@ if($mybb->input['action'] == "modqueue")
 		{
 			$altbg = alt_trow();
 
-			if(!$attachment['dateuploaded'])
+			if (!$attachment['dateuploaded'])
 			{
 				$attachment['dateuploaded'] = $attachment['dateline'];
 			}
@@ -1573,12 +1573,12 @@ if($mybb->input['action'] == "modqueue")
 			eval("\$attachments .= \"".$templates->get("modcp_modqueue_attachments_attachment")."\";");
 		}
 
-		if(!$attachments && $mybb->input['type'] == "attachments")
+		if (!$attachments && $mybb->input['type'] == "attachments")
 		{
 			eval("\$attachments = \"".$templates->get("modcp_modqueue_attachments_empty")."\";");
 		}
 
-		if($attachments)
+		if ($attachments)
 		{
 			add_breadcrumb($lang->mcp_nav_modqueue_attachments, "modcp.php?action=modqueue&amp;type=attachments");
 
@@ -1591,7 +1591,7 @@ if($mybb->input['action'] == "modqueue")
 	}
 
 	// Still nothing? All queues are empty! :-D
-	if(!$threadqueue && !$postqueue && !$attachmentqueue)
+	if (!$threadqueue && !$postqueue && !$attachmentqueue)
 	{
 		add_breadcrumb($lang->mcp_nav_modqueue, "modcp.php?action=modqueue");
 
@@ -1602,19 +1602,19 @@ if($mybb->input['action'] == "modqueue")
 	}
 }
 
-if($mybb->input['action'] == "do_editprofile")
+if ($mybb->input['action'] == "do_editprofile")
 {
 	// Verify incoming POST request
 	verify_post_check($mybb->input['my_post_key']);
 
 	$user = get_user($mybb->input['uid']);
-	if(!$user['uid'])
+	if (!$user['uid'])
 	{
 		error($lang->invalid_user);
 	}
 
 	// Check if the current user has permission to edit this user
-	if(!modcp_can_manage_user($user['uid']))
+	if (!modcp_can_manage_user($user['uid']))
 	{
 		error_no_permission();
 	}
@@ -1645,16 +1645,16 @@ if($mybb->input['action'] == "do_editprofile")
 		"year" => $mybb->input['birthday_year']
 	);
 
-	if($mybb->input['usertitle'] != '')
+	if ($mybb->input['usertitle'] != '')
 	{
 		$updated_user['usertitle'] = $mybb->input['usertitle'];
 	}
-	else if($mybb->input['reverttitle'])
+	else if ($mybb->input['reverttitle'])
 	{
 		$updated_user['usertitle'] = '';
 	}
 
-	if($mybb->input['remove_avatar'])
+	if ($mybb->input['remove_avatar'])
 	{
 		$updated_user['avatarurl'] = '';
 	}
@@ -1664,7 +1664,7 @@ if($mybb->input['action'] == "do_editprofile")
 	$errors = '';
 
 	// Validate the user and get any errors that might have occurred.
-	if(!$userhandler->validate_user())
+	if (!$userhandler->validate_user())
 	{
 		$errors = $userhandler->get_friendly_errors();
 		$mybb->input['action'] = "editprofile";
@@ -1672,7 +1672,7 @@ if($mybb->input['action'] == "do_editprofile")
 	else
 	{
 		// Are we removing an avatar from this user?
-		if($mybb->input['remove_avatar'])
+		if ($mybb->input['remove_avatar'])
 		{
 			$extra_user_updates = array(
 				"avatar" => "",
@@ -1710,9 +1710,9 @@ if($mybb->input['action'] == "do_editprofile")
 		require_once MYBB_ROOT."inc/functions_warnings.php";
 		foreach($moderator_options as $option)
 		{
-			if(!$mybb->input[$option['action']])
+			if (!$mybb->input[$option['action']])
 			{
-				if($user[$option['update_field']] == 1)
+				if ($user[$option['update_field']] == 1)
 				{
 					// We're revoking the suspension
 					$extra_user_updates[$option['update_field']] = 0;
@@ -1723,38 +1723,38 @@ if($mybb->input['action'] == "do_editprofile")
 				continue;
 			}
 
-			if($mybb->input[$option['action']])
+			if ($mybb->input[$option['action']])
 			{
-				if(intval($mybb->input[$option['time']]) == 0 && $mybb->input[$option['period']] != "never" && $user[$option['update_field']] != 1)
+				if (intval($mybb->input[$option['time']]) == 0 && $mybb->input[$option['period']] != "never" && $user[$option['update_field']] != 1)
 				{
 					// User has selected a type of ban, but not entered a valid time frame
 					$string = $option['action']."_error";
 					$errors[] = $lang->$string;
 				}
 
-				if(!is_array($errors))
+				if (!is_array($errors))
 				{
 					$suspend_length = fetch_time_length(intval($mybb->input[$option['time']]), $mybb->input[$option['period']]);
 
-					if($user[$option['update_field']] == 1 && ($mybb->input[$option['time']] || $mybb->input[$option['period']] == "never"))
+					if ($user[$option['update_field']] == 1 && ($mybb->input[$option['time']] || $mybb->input[$option['period']] == "never"))
 					{
 						// We already have a suspension, but entered a new time
-						if($suspend_length == "-1")
+						if ($suspend_length == "-1")
 						{
 							// Permanent ban on action
 							$extra_user_updates[$option['update_length']] = 0;
 						}
-						elseif($suspend_length && $suspend_length != "-1")
+						elseif ($suspend_length && $suspend_length != "-1")
 						{
 							// Temporary ban on action
 							$extra_user_updates[$option['update_length']] = TIME_NOW + $suspend_length;
 						}
 					}
-					elseif(!$user[$option['update_field']])
+					elseif (!$user[$option['update_field']])
 					{
 						// New suspension for this user... bad user!
 						$extra_user_updates[$option['update_field']] = 1;
-						if($suspend_length == "-1")
+						if ($suspend_length == "-1")
 						{
 							$extra_user_updates[$option['update_length']] = 0;
 						}
@@ -1769,12 +1769,12 @@ if($mybb->input['action'] == "do_editprofile")
 
 		// Those with javascript turned off will be able to select both - cheeky!
 		// Check to make sure we're not moderating AND suspending posting
-		if($extra_user_updates['moderateposts'] && $extra_user_updates['suspendposting'])
+		if ($extra_user_updates['moderateposts'] && $extra_user_updates['suspendposting'])
 		{
 			$errors[] = $lang->suspendmoderate_error;
 		}
 
-		if(is_array($errors))
+		if (is_array($errors))
 		{
 			$mybb->input['action'] = "editprofile";
 		}
@@ -1794,37 +1794,37 @@ if($mybb->input['action'] == "do_editprofile")
 	}
 }
 
-if($mybb->input['action'] == "editprofile")
+if ($mybb->input['action'] == "editprofile")
 {
 	add_breadcrumb($lang->mcp_nav_editprofile, "modcp.php?action=editprofile");
 
 	$user = get_user($mybb->input['uid']);
-	if(!$user['uid'])
+	if (!$user['uid'])
 	{
 		error($lang->invalid_user);
 	}
 
 	// Check if the current user has permission to edit this user
-	if(!modcp_can_manage_user($user['uid']))
+	if (!modcp_can_manage_user($user['uid']))
 	{
 		error_no_permission();
 	}
 
-	if($user['website'] == "" || $user['website'] == "http://")
+	if ($user['website'] == "" || $user['website'] == "http://")
 	{
 		$user['website'] = "http://";
 	}
 
-	if($user['icq'] != "0")
+	if ($user['icq'] != "0")
 	{
 		$user['icq'] = intval($user['icq']);
 	}
-	if($user['icq'] == 0)
+	if ($user['icq'] == 0)
 	{
 		$user['icq'] = "";
 	}
 
-	if(!$errors)
+	if (!$errors)
 	{
 		$mybb->input = array_merge($user, $mybb->input);
 		list($mybb->input['birthday_day'], $mybb->input['birthday_month'], $mybb->input['birthday_year']) = explode("-", $user['birthday']);
@@ -1840,7 +1840,7 @@ if($mybb->input['action'] == "editprofile")
 		$mybb->input[$field] = htmlspecialchars_uni($mybb->input[$field]);
 	}
 
-	if($user['usertitle'] == "")
+	if ($user['usertitle'] == "")
 	{
 		$query = $db->simple_select("usertitles", "*", "posts <='".$user['postnum']."'", array('order_by' => 'posts', 'order_dir' => 'DESC', 'limit' => 1));
 		$utitle = $db->fetch_array($query);
@@ -1848,7 +1848,7 @@ if($mybb->input['action'] == "editprofile")
 	}
 	else
 	{
-		if(!$user['displaygroup'])
+		if (!$user['displaygroup'])
 		{
 			$user['displaygroup'] = $user['usergroup'];
 		}
@@ -1859,7 +1859,7 @@ if($mybb->input['action'] == "editprofile")
 		$display_group = usergroup_displaygroup($user['displaygroup']);
 		$defaulttitle = $display_group['usertitle'];
 	}
-	if(empty($user['usertitle']))
+	if (empty($user['usertitle']))
 	{
 		$lang->current_custom_usertitle = '';
 	}
@@ -1867,7 +1867,7 @@ if($mybb->input['action'] == "editprofile")
 	$bdaysel = '';
 	for($i = 1; $i <= 31; ++$i)
 	{
-		if($mybb->input['birthday_day'] == $i)
+		if ($mybb->input['birthday_day'] == $i)
 		{
 			$bdaydaysel .= "<option value=\"$i\" selected=\"selected\">$i</option>\n";
 		}
@@ -1896,7 +1896,7 @@ if($mybb->input['action'] == "editprofile")
 		$options = $thing[1];
 		$field = "fid{$profilefield['fid']}";
 		$select = '';
-		if($errors)
+		if ($errors)
 		{
 			$userfield = $mybb->input['profile_fields'][$field];
 		}
@@ -1904,9 +1904,9 @@ if($mybb->input['action'] == "editprofile")
 		{
 			$userfield = $user_fields[$field];
 		}
-		if($type == "multiselect")
+		if ($type == "multiselect")
 		{
-			if($errors)
+			if ($errors)
 			{
 				$useropts = $userfield;
 			}
@@ -1914,7 +1914,7 @@ if($mybb->input['action'] == "editprofile")
 			{
 				$useropts = explode("\n", $userfield);
 			}
-			if(is_array($useropts))
+			if (is_array($useropts))
 			{
 				foreach($useropts as $key => $val)
 				{
@@ -1922,7 +1922,7 @@ if($mybb->input['action'] == "editprofile")
 				}
 			}
 			$expoptions = explode("\n", $options);
-			if(is_array($expoptions))
+			if (is_array($expoptions))
 			{
 				foreach($expoptions as $key => $val)
 				{
@@ -1930,51 +1930,51 @@ if($mybb->input['action'] == "editprofile")
 					$val = str_replace("\n", "\\n", $val);
 
 					$sel = "";
-					if($val == $seloptions[$val])
+					if ($val == $seloptions[$val])
 					{
 						$sel = " selected=\"selected\"";
 					}
 					$select .= "<option value=\"$val\"$sel>$val</option>\n";
 				}
-				if(!$profilefield['length'])
+				if (!$profilefield['length'])
 				{
 					$profilefield['length'] = 3;
 				}
 				$code = "<select name=\"profile_fields[$field][]\" size=\"{$profilefield['length']}\" multiple=\"multiple\">$select</select>";
 			}
 		}
-		elseif($type == "select")
+		elseif ($type == "select")
 		{
 			$expoptions = explode("\n", $options);
-			if(is_array($expoptions))
+			if (is_array($expoptions))
 			{
 				foreach($expoptions as $key => $val)
 				{
 					$val = trim($val);
 					$val = str_replace("\n", "\\n", $val);
 					$sel = "";
-					if($val == $userfield)
+					if ($val == $userfield)
 					{
 						$sel = " selected=\"selected\"";
 					}
 					$select .= "<option value=\"$val\"$sel>$val</option>";
 				}
-				if(!$profilefield['length'])
+				if (!$profilefield['length'])
 				{
 					$profilefield['length'] = 1;
 				}
 				$code = "<select name=\"profile_fields[$field]\" size=\"{$profilefield['length']}\">$select</select>";
 			}
 		}
-		elseif($type == "radio")
+		elseif ($type == "radio")
 		{
 			$expoptions = explode("\n", $options);
-			if(is_array($expoptions))
+			if (is_array($expoptions))
 			{
 				foreach($expoptions as $key => $val)
 				{
 					$checked = "";
-					if($val == $userfield)
+					if ($val == $userfield)
 					{
 						$checked = " checked=\"checked\"";
 					}
@@ -1982,9 +1982,9 @@ if($mybb->input['action'] == "editprofile")
 				}
 			}
 		}
-		elseif($type == "checkbox")
+		elseif ($type == "checkbox")
 		{
-			if($errors)
+			if ($errors)
 			{
 				$useropts = $userfield;
 			}
@@ -1992,7 +1992,7 @@ if($mybb->input['action'] == "editprofile")
 			{
 				$useropts = explode("\n", $userfield);
 			}
-			if(is_array($useropts))
+			if (is_array($useropts))
 			{
 				foreach($useropts as $key => $val)
 				{
@@ -2000,12 +2000,12 @@ if($mybb->input['action'] == "editprofile")
 				}
 			}
 			$expoptions = explode("\n", $options);
-			if(is_array($expoptions))
+			if (is_array($expoptions))
 			{
 				foreach($expoptions as $key => $val)
 				{
 					$checked = "";
-					if($val == $seloptions[$val])
+					if ($val == $seloptions[$val])
 					{
 						$checked = " checked=\"checked\"";
 					}
@@ -2013,7 +2013,7 @@ if($mybb->input['action'] == "editprofile")
 				}
 			}
 		}
-		elseif($type == "textarea")
+		elseif ($type == "textarea")
 		{
 			$value = htmlspecialchars_uni($userfield);
 			$code = "<textarea name=\"profile_fields[$field]\" rows=\"6\" cols=\"30\" style=\"width: 95%\">$value</textarea>";
@@ -2022,13 +2022,13 @@ if($mybb->input['action'] == "editprofile")
 		{
 			$value = htmlspecialchars_uni($userfield);
 			$maxlength = "";
-			if($profilefield['maxlength'] > 0)
+			if ($profilefield['maxlength'] > 0)
 			{
 				$maxlength = " maxlength=\"{$profilefield['maxlength']}\"";
 			}
 			$code = "<input type=\"text\" name=\"profile_fields[$field]\" class=\"textbox\" size=\"{$profilefield['length']}\"{$maxlength} value=\"$value\" />";
 		}
-		if($profilefield['required'] == 1)
+		if ($profilefield['required'] == 1)
 		{
 			eval("\$requiredfields .= \"".$templates->get("usercp_profile_customfield")."\";");
 		}
@@ -2045,7 +2045,7 @@ if($mybb->input['action'] == "editprofile")
 		$useropts = "";
 		$seloptions = "";
 	}
-	if($customfields)
+	if ($customfields)
 	{
 		eval("\$customfields = \"".$templates->get("usercp_profile_profilefields")."\";");
 	}
@@ -2056,7 +2056,7 @@ if($mybb->input['action'] == "editprofile")
 	$codebuttons = build_mycode_inserter("signature");
 
 	// Do we mark the suspend signature box?
-	if($user['suspendsignature'] || ($mybb->input['suspendsignature'] && !empty($errors)))
+	if ($user['suspendsignature'] || ($mybb->input['suspendsignature'] && !empty($errors)))
 	{
 		$checked = 1;
 		$checked_item = "checked=\"checked\"";
@@ -2067,7 +2067,7 @@ if($mybb->input['action'] == "editprofile")
 	}
 
 	// Do we mark the moderate posts box?
-	if($user['moderateposts'] || ($mybb->input['moderateposting'] && !empty($errors)))
+	if ($user['moderateposts'] || ($mybb->input['moderateposting'] && !empty($errors)))
 	{
 		$modpost_check = 1;
 		$modpost_checked = "checked=\"checked\"";
@@ -2078,7 +2078,7 @@ if($mybb->input['action'] == "editprofile")
 	}
 
 	// Do we mark the suspend posts box?
-	if($user['suspendposting'] || ($mybb->input['suspendposting'] && !empty($errors)))
+	if ($user['suspendposting'] || ($mybb->input['suspendposting'] && !empty($errors)))
 	{
 		$suspost_check = 1;
 		$suspost_checked = "checked=\"checked\"";
@@ -2120,9 +2120,9 @@ if($mybb->input['action'] == "editprofile")
 	foreach($moderator_options as $option)
 	{
 		// Display the suspension info, if this user has this option suspended
-		if($user[$option['option']])
+		if ($user[$option['option']])
 		{
-			if($user[$option['length']] == 0)
+			if ($user[$option['length']] == 0)
 			{
 				// User has a permanent ban
 				$string = $option['option']."_perm";
@@ -2156,7 +2156,7 @@ if($mybb->input['action'] == "editprofile")
 		foreach($periods as $key => $value)
 		{
 			$string = $option['select_option']."_period";
-			if($mybb->input[$string] == $key)
+			if ($mybb->input[$string] == $key)
 			{
 				$selected = "selected=\"selected\"";
 			}
@@ -2191,18 +2191,18 @@ if($mybb->input['action'] == "editprofile")
 	output_page($edituser);
 }
 
-if($mybb->input['action'] == "finduser")
+if ($mybb->input['action'] == "finduser")
 {
 	add_breadcrumb($lang->mcp_nav_users, "modcp.php?action=finduser");
 
 	$perpage = intval($mybb->input['perpage']);
-	if(!$perpage || $perpage <= 0)
+	if (!$perpage || $perpage <= 0)
 	{
 		$perpage = $mybb->settings['threadsperpage'];
 	}
 	$where = '';
 
-	if($mybb->input['username'])
+	if ($mybb->input['username'])
 	{
 		$where = " AND LOWER(username) LIKE '%".my_strtolower($db->escape_string_like($mybb->input['username']))."%'";
 	}
@@ -2223,7 +2223,7 @@ if($mybb->input['action'] == "finduser")
 			$sortby = "regdate";
 	}
 	$order = $mybb->input['order'];
-	if($order != "asc")
+	if ($order != "asc")
 	{
 		$order = "desc";
 	}
@@ -2232,7 +2232,7 @@ if($mybb->input['action'] == "finduser")
 	$user_count = $db->fetch_field($query, "count");
 
 	// Figure out if we need to display multiple pages.
-	if($mybb->input['page'] != "last")
+	if ($mybb->input['page'] != "last")
 	{
 		$page = intval($mybb->input['page']);
 	}
@@ -2240,16 +2240,16 @@ if($mybb->input['action'] == "finduser")
 	$pages = $user_count / $perpage;
 	$pages = ceil($pages);
 
-	if($mybb->input['page'] == "last")
+	if ($mybb->input['page'] == "last")
 	{
 		$page = $pages;
 	}
 
-	if($page > $pages || $page <= 0)
+	if ($page > $pages || $page <= 0)
 	{
 		$page = 1;
 	}
-	if($page)
+	if ($page)
 	{
 		$start = ($page-1) * $perpage;
 	}
@@ -2262,7 +2262,7 @@ if($mybb->input['action'] == "finduser")
 	$page_url = 'modcp.php?action=finduser';
 	foreach(array('username', 'sortby', 'order') as $field)
 	{
-		if($mybb->input[$field])
+		if ($mybb->input[$field])
 		{
 			$page_url .= "&amp;{$field}=".htmlspecialchars_uni($mybb->input[$field]);
 			$mybb->input[$field] = htmlspecialchars_uni($mybb->input[$field]);
@@ -2291,7 +2291,7 @@ if($mybb->input['action'] == "finduser")
 	}
 
 	// No results?
-	if(!$users)
+	if (!$users)
 	{
 		eval("\$users = \"".$templates->get("modcp_finduser_noresults")."\";");
 	}
@@ -2302,47 +2302,47 @@ if($mybb->input['action'] == "finduser")
 	output_page($finduser);
 }
 
-if($mybb->input['action'] == "warninglogs")
+if ($mybb->input['action'] == "warninglogs")
 {
 	add_breadcrumb($lang->mcp_nav_warninglogs, "modcp.php?action=warninglogs");
 
 	// Filter options
 	$where_sql = '';
-	if($mybb->input['filter']['username'])
+	if ($mybb->input['filter']['username'])
 	{
 		$search['username'] = $db->escape_string($mybb->input['filter']['username']);
 		$query = $db->simple_select("users", "uid", "username='{$search['username']}'");
 		$mybb->input['filter']['uid'] = $db->fetch_field($query, "uid");
 		$mybb->input['filter']['username'] = htmlspecialchars_uni($mybb->input['filter']['username']);
 	}
-	if($mybb->input['filter']['uid'])
+	if ($mybb->input['filter']['uid'])
 	{
 		$search['uid'] = intval($mybb->input['filter']['uid']);
 		$where_sql .= " AND w.uid='{$search['uid']}'";
-		if(!isset($mybb->input['search']['username']))
+		if (!isset($mybb->input['search']['username']))
 		{
 			$user = get_user($mybb->input['search']['uid']);
 			$mybb->input['search']['username'] = htmlspecialchars_uni($user['username']);
 		}
 	}
-	if($mybb->input['filter']['mod_username'])
+	if ($mybb->input['filter']['mod_username'])
 	{
 		$search['mod_username'] = $db->escape_string($mybb->input['filter']['mod_username']);
 		$query = $db->simple_select("users", "uid", "username='{$search['mod_username']}'");
 		$mybb->input['filter']['mod_uid'] = $db->fetch_field($query, "uid");
 		$mybb->input['filter']['mod_username'] = htmlspecialchars_uni($mybb->input['filter']['mod_username']);
 	}
-	if($mybb->input['filter']['mod_uid'])
+	if ($mybb->input['filter']['mod_uid'])
 	{
 		$search['mod_uid'] = intval($mybb->input['filter']['mod_uid']);
 		$where_sql .= " AND w.issuedby='{$search['mod_uid']}'";
-		if(!isset($mybb->input['search']['mod_username']))
+		if (!isset($mybb->input['search']['mod_username']))
 		{
 			$mod_user = get_user($mybb->input['search']['uid']);
 			$mybb->input['search']['mod_username'] = htmlspecialchars_uni($mod_user['username']);
 		}
 	}
-	if($mybb->input['filter']['reason'])
+	if ($mybb->input['filter']['reason'])
 	{
 		$search['reason'] = $db->escape_string($mybb->input['filter']['reason']);
 		$where_sql .= " AND (w.notes LIKE '%{$search['reason']}%' OR t.title LIKE '%{$search['reason']}%' OR w.title LIKE '%{$search['reason']}%')";
@@ -2369,7 +2369,7 @@ if($mybb->input['action'] == "warninglogs")
 	}
 	$order = $mybb->input['filter']['order'];
 	$ordersel = array();
-	if($order != "asc")
+	if ($order != "asc")
 	{
 		$order = "desc";
 		$ordersel['desc'] = ' selected="selected"';
@@ -2393,19 +2393,19 @@ if($mybb->input['action'] == "warninglogs")
 	$query = $db->query($sql);
 	$total_warnings = $db->fetch_field($query, 'count');
 	$page = 1;
-	if(isset($mybb->input['page']) && intval($mybb->input['page']) > 0)
+	if (isset($mybb->input['page']) && intval($mybb->input['page']) > 0)
 	{
 		$page = intval($mybb->input['page']);
 	}
 	$per_page = 20;
-	if(isset($mybb->input['filter']['per_page']) && intval($mybb->input['filter']['per_page']) > 0)
+	if (isset($mybb->input['filter']['per_page']) && intval($mybb->input['filter']['per_page']) > 0)
 	{
 		$per_page = intval($mybb->input['filter']['per_page']);
 	}
 	$start = ($page-1) * $per_page;
 	// Build the base URL for pagination links
 	$url = 'modcp.php?action=warninglogs';
-	if(is_array($mybb->input['filter']) && count($mybb->input['filter']))
+	if (is_array($mybb->input['filter']) && count($mybb->input['filter']))
 	{
 		foreach($mybb->input['filter'] as $field => $value)
 		{
@@ -2444,12 +2444,12 @@ if($mybb->input['action'] == "warninglogs")
 		$mod_username_link = build_profile_link($mod_username, $row['mod_uid']);
 		$issued_date = my_date($mybb->settings['dateformat'], $row['dateline']).' '.my_date($mybb->settings['timeformat'], $row['dateline']);
 		$revoked_text = '';
-		if($row['daterevoked'] > 0)
+		if ($row['daterevoked'] > 0)
 		{
 			$revoked_date = my_date($mybb->settings['dateformat'], $row['daterevoked']).' '.my_date($mybb->settings['timeformat'], $row['daterevoked']);
 			eval("\$revoked_text = \"".$templates->get("modcp_warninglogs_warning_revoked")."\";");
 		}
-		if($row['expires'] > 0)
+		if ($row['expires'] > 0)
 		{
 			$expire_date = my_date($mybb->settings['dateformat'], $row['expires']).' '.my_date($mybb->settings['timeformat'], $row['expires']);
 		}
@@ -2458,12 +2458,12 @@ if($mybb->input['action'] == "warninglogs")
 			$expire_date = $lang->never;
 		}
 		$title = $row['title'];
-		if(empty($row['title']))
+		if (empty($row['title']))
 		{
 			$title = $row['custom_title'];
 		}
 		$title = htmlspecialchars_uni($title);
-		if($row['points'] >= 0)
+		if ($row['points'] >= 0)
 		{
 			$points = '+'.$row['points'];
 		}
@@ -2471,7 +2471,7 @@ if($mybb->input['action'] == "warninglogs")
 		eval("\$warning_list .= \"".$templates->get("modcp_warninglogs_warning")."\";");
 	}
 
-	if(!$warning_list)
+	if (!$warning_list)
 	{
 		eval("\$warning_list = \"".$templates->get("modcp_warninglogs_nologs")."\";");
 	}
@@ -2482,13 +2482,13 @@ if($mybb->input['action'] == "warninglogs")
 	output_page($warninglogs);
 }
 
-if($mybb->input['action'] == "ipsearch")
+if ($mybb->input['action'] == "ipsearch")
 {
 	add_breadcrumb($lang->mcp_nav_ipsearch, "modcp.php?action=ipsearch");
 
-	if($mybb->input['ipaddress'])
+	if ($mybb->input['ipaddress'])
 	{
-		if(!is_array($groupscache))
+		if (!is_array($groupscache))
 		{
 			$groupscache = $cache->read("usergroups");
 		}
@@ -2496,10 +2496,10 @@ if($mybb->input['action'] == "ipsearch")
 		$ipaddressvalue = htmlspecialchars_uni($mybb->input['ipaddress']);
 
 		// Searching post IP addresses
-		if($mybb->input['search_posts'])
+		if ($mybb->input['search_posts'])
 		{
 			// IPv6 IP
-			if(strpos($mybb->input['ipaddress'], ":") !== FALSE)
+			if (strpos($mybb->input['ipaddress'], ":") !== FALSE)
 			{
 				$post_ip_sql = "ipaddress LIKE '".$db->escape_string(str_replace("*", "%", $mybb->input['ipaddress']))."'";
 			}
@@ -2507,9 +2507,9 @@ if($mybb->input['action'] == "ipsearch")
 			{
 				$ip_range = fetch_longipv4_range($mybb->input['ipaddress']);
 
-				if($ip_range)
+				if ($ip_range)
 				{
-					if(!is_array($ip_range))
+					if (!is_array($ip_range))
 					{
 						$post_ip_sql = "longipaddress='{$ip_range}'";
 					}
@@ -2522,7 +2522,7 @@ if($mybb->input['action'] == "ipsearch")
 
 			$plugins->run_hooks("modcp_ipsearch_posts_start");
 
-			if($post_ip_sql)
+			if ($post_ip_sql)
 			{
 				$query = $db->query("
 					SELECT COUNT(pid) AS count
@@ -2535,10 +2535,10 @@ if($mybb->input['action'] == "ipsearch")
 		}
 
 		// Searching user IP addresses
-		if($mybb->input['search_users'])
+		if ($mybb->input['search_users'])
 		{
 			// IPv6 IP
-			if(strpos($mybb->input['ipaddress'], ":") !== FALSE)
+			if (strpos($mybb->input['ipaddress'], ":") !== FALSE)
 			{
 				$user_ip_sql = "regip LIKE '".$db->escape_string(str_replace("*", "%", $mybb->input['ipaddress']))."' OR lastip LIKE '".$db->escape_string(str_replace("*", "%", $mybb->input['ipaddress']))."'";
 			}
@@ -2546,9 +2546,9 @@ if($mybb->input['action'] == "ipsearch")
 			{
 				$ip_range = fetch_longipv4_range($mybb->input['ipaddress']);
 
-				if($ip_range)
+				if ($ip_range)
 				{
-					if(!is_array($ip_range))
+					if (!is_array($ip_range))
 					{
 						$user_ip_sql = "longregip='{$ip_range}' OR longlastip='{$ip_range}'";
 					}
@@ -2561,7 +2561,7 @@ if($mybb->input['action'] == "ipsearch")
 
 			$plugins->run_hooks("modcp_ipsearch_users_start");
 
-			if($user_ip_sql)
+			if ($user_ip_sql)
 			{
 				$query = $db->query("
 					SELECT COUNT(uid) AS count
@@ -2575,20 +2575,20 @@ if($mybb->input['action'] == "ipsearch")
 
 		$total_results = $post_results+$user_results;
 
-		if(!$total_results)
+		if (!$total_results)
 		{
 			$total_results = 1;
 		}
 
 		// Now we have the result counts, paginate
 		$perpage = intval($mybb->input['perpage']);
-		if(!$perpage || $perpage <= 0)
+		if (!$perpage || $perpage <= 0)
 		{
 			$perpage = $mybb->settings['threadsperpage'];
 		}
 
 		// Figure out if we need to display multiple pages.
-		if($mybb->input['page'] != "last")
+		if ($mybb->input['page'] != "last")
 		{
 			$page = intval($mybb->input['page']);
 		}
@@ -2596,17 +2596,17 @@ if($mybb->input['action'] == "ipsearch")
 		$pages = $total_results / $perpage;
 		$pages = ceil($pages);
 
-		if($mybb->input['page'] == "last")
+		if ($mybb->input['page'] == "last")
 		{
 			$page = $pages;
 		}
 
-		if($page > $pages || $page <= 0)
+		if ($page > $pages || $page <= 0)
 		{
 			$page = 1;
 		}
 
-		if($page)
+		if ($page)
 		{
 			$start = ($page-1) * $perpage;
 		}
@@ -2619,13 +2619,13 @@ if($mybb->input['action'] == "ipsearch")
 		$page_url = "modcp.php?action=ipsearch&amp;perpage={$perpage}";
 		foreach(array('ipaddress', 'search_users', 'search_posts') as $input)
 		{
-			if(!$mybb->input[$input]) continue;
+			if (!$mybb->input[$input]) continue;
 			$page_url .= "&amp;{$input}=".htmlspecialchars_uni($mybb->input[$input]);
 		}
 		$multipage = multipage($total_results, $perpage, $page, $page_url);
 
 		$post_limit = $perpage;
-		if($mybb->input['search_users'] && $user_results && $start <= $user_results)
+		if ($mybb->input['search_users'] && $user_results && $start <= $user_results)
 		{
 			$query = $db->query("
 				SELECT username, uid, regip, lastip
@@ -2641,7 +2641,7 @@ if($mybb->input['action'] == "ipsearch")
 				$trow = alt_trow();
 				$regexp_ip = str_replace("\*", "(.*)", preg_quote($mybb->input['ipaddress'], "#"));
 				// Reg IP matches
-				if(preg_match("#{$regexp_ip}#i", $ipaddress['regip']))
+				if (preg_match("#{$regexp_ip}#i", $ipaddress['regip']))
 				{
 					$ip = $ipaddress['regip'];
 					$subject = "<strong>{$lang->ipresult_regip}</strong> {$profile_link}";
@@ -2649,7 +2649,7 @@ if($mybb->input['action'] == "ipsearch")
 					$result = TRUE;
 				}
 				// Last known IP matches
-				if(preg_match("#{$regexp_ip}#i", $ipaddress['lastip']))
+				if (preg_match("#{$regexp_ip}#i", $ipaddress['lastip']))
 				{
 					$ip = $ipaddress['lastip'];
 					$subject = "<strong>{$lang->ipresult_lastip}</strong> {$profile_link}";
@@ -2657,22 +2657,22 @@ if($mybb->input['action'] == "ipsearch")
 					$result = TRUE;
 				}
 
-				if($result)
+				if ($result)
 				{
 					--$post_limit;
 				}
 			}
 		}
 		$post_start = 0;
-		if($total_results > $user_results && $post_limit)
+		if ($total_results > $user_results && $post_limit)
 		{
 			$post_start = $start-$user_results;
-			if($post_start < 0)
+			if ($post_start < 0)
 			{
 				$post_start = 0;
 			}
 		}
-		if($mybb->input['search_posts'] && $post_results && (!$mybb->input['search_users'] || ($mybb->input['search_users'] && $post_limit > 0)))
+		if ($mybb->input['search_posts'] && $post_results && (!$mybb->input['search_users'] || ($mybb->input['search_users'] && $post_limit > 0)))
 		{
 			$ipaddresses = $tids = $uids = array();
 			$query = $db->query("
@@ -2689,7 +2689,7 @@ if($mybb->input['action'] == "ipsearch")
 				$ipaddresses[$ipaddress['pid']] = $ipaddress;
 			}
 
-			if(!empty($ipaddresses))
+			if (!empty($ipaddresses))
 			{
 				$query = $db->simple_select("threads", "subject, tid", "tid IN(".implode(',', array_keys($tids)).")");
 				while($thread = $db->fetch_array($query))
@@ -2708,9 +2708,9 @@ if($mybb->input['action'] == "ipsearch")
 				foreach($ipaddresses as $ipaddress)
 				{
 					$ip = $ipaddress['ipaddress'];
-					if(!$ipaddress['username']) $ipaddress['username'] = $ipaddress['postusername']; // Guest username support
+					if (!$ipaddress['username']) $ipaddress['username'] = $ipaddress['postusername']; // Guest username support
 					$trow = alt_trow();
-					if(!$ipaddress['subject'])
+					if (!$ipaddress['subject'])
 					{
 						$ipaddress['subject'] = "RE: {$ipaddress['threadsubject']}";
 					}
@@ -2720,12 +2720,12 @@ if($mybb->input['action'] == "ipsearch")
 			}
 		}
 
-		if(!$results)
+		if (!$results)
 		{
 			eval("\$results = \"".$templates->get("modcp_ipsearch_noresults")."\";");
 		}
 
-		if($ipaddressvalue)
+		if ($ipaddressvalue)
 		{
 			$lang->ipsearch_results = $lang->sprintf($lang->ipsearch_results, $ipaddressvalue);
 		}
@@ -2734,7 +2734,7 @@ if($mybb->input['action'] == "ipsearch")
 			$lang->ipsearch_results = $lang->ipsearch;
 		}
 
-		if(!strstr($mybb->input['ipaddress'], "*") && !strstr($mybb->input['ipaddress'], ":"))
+		if (!strstr($mybb->input['ipaddress'], "*") && !strstr($mybb->input['ipaddress'], ":"))
 		{
 			$misc_info_link = "<div class=\"float_right\">(<a href=\"modcp.php?action=iplookup&ipaddress=".htmlspecialchars_uni($mybb->input['ipaddress'])."\" onclick=\"MyBB.popupWindow('{$mybb->settings['bburl']}/modcp.php?action=iplookup&ipaddress=".urlencode($mybb->input['ipaddress'])."', 'iplookup', 500, 250); return FALSE;\">{$lang->info_on_ip}</a>)</div>";
 		}
@@ -2743,16 +2743,16 @@ if($mybb->input['action'] == "ipsearch")
 	}
 
 	// Fetch filter options
-	if(!$mybb->input['ipaddress'])
+	if (!$mybb->input['ipaddress'])
 	{
 		$mybb->input['search_posts'] = 1;
 		$mybb->input['search_users'] = 1;
 	}
-	if($mybb->input['search_posts'])
+	if ($mybb->input['search_posts'])
 	{
 		$postsearchselect = "checked=\"checked\"";
 	}
-	if($mybb->input['search_users'])
+	if ($mybb->input['search_users'])
 	{
 		$usersearchselect = "checked=\"checked\"";
 	}
@@ -2763,22 +2763,22 @@ if($mybb->input['action'] == "ipsearch")
 	output_page($ipsearch);
 }
 
-if($mybb->input['action'] == "iplookup")
+if ($mybb->input['action'] == "iplookup")
 {
 	$lang->ipaddress_misc_info = $lang->sprintf($lang->ipaddress_misc_info, htmlspecialchars_uni($mybb->input['ipaddress']));
 	$ipaddress_location = $lang->na;
 	$ipaddress_host_name = $lang->na;
 	$modcp_ipsearch_misc_info = '';
-	if(!strstr($mybb->input['ipaddress'], "*") && !strstr($mybb->input['ipaddress'], ":"))
+	if (!strstr($mybb->input['ipaddress'], "*") && !strstr($mybb->input['ipaddress'], ":"))
 	{
 		// Return GeoIP information if it is available to us
-		if(function_exists('geoip_record_by_name'))
+		if (function_exists('geoip_record_by_name'))
 		{
 			$ip_record = @geoip_record_by_name($mybb->input['ipaddress']);
-			if($ip_record)
+			if ($ip_record)
 			{
 				$ipaddress_location = htmlspecialchars_uni($ip_record['country_name']);
-				if($ip_record['city'])
+				if ($ip_record['city'])
 				{
 					$ipaddress_location .= $lang->comma.htmlspecialchars_uni($ip_record['city']);
 				}
@@ -2788,7 +2788,7 @@ if($mybb->input['action'] == "iplookup")
 		$ipaddress_host_name = htmlspecialchars_uni(@gethostbyaddr($mybb->input['ipaddress']));
 
 		// gethostbyaddr returns the same ip on failure
-		if($ipaddress_host_name == $mybb->input['ipaddress'])
+		if ($ipaddress_host_name == $mybb->input['ipaddress'])
 		{
 			$ipaddress_host_name = $lang->na;
 		}
@@ -2800,18 +2800,18 @@ if($mybb->input['action'] == "iplookup")
 	output_page($iplookup);
 }
 
-if($mybb->input['action'] == "banning")
+if ($mybb->input['action'] == "banning")
 {
 	add_breadcrumb($lang->mcp_nav_banning, "modcp.php?action=banning");
 
-	if(!$mybb->settings['threadsperpage'])
+	if (!$mybb->settings['threadsperpage'])
 	{
 		$mybb->settings['threadsperpage'] = 20;
 	}
 
 	// Figure out if we need to display multiple pages.
 	$perpage = $mybb->settings['threadsperpage'];
-	if($mybb->input['page'] != "last")
+	if ($mybb->input['page'] != "last")
 	{
 		$page = intval($mybb->input['page']);
 	}
@@ -2823,17 +2823,17 @@ if($mybb->input['action'] == "banning")
 	$pages = $postcount / $perpage;
 	$pages = ceil($pages);
 
-	if($mybb->input['page'] == "last")
+	if ($mybb->input['page'] == "last")
 	{
 		$page = $pages;
 	}
 
-	if($page > $pages || $page <= 0)
+	if ($page > $pages || $page <= 0)
 	{
 		$page = 1;
 	}
 
-	if($page)
+	if ($page)
 	{
 		$start = ($page-1) * $perpage;
 	}
@@ -2845,7 +2845,7 @@ if($mybb->input['action'] == "banning")
 	$upper = $start+$perpage;
 
 	$multipage = multipage($postcount, $perpage, $page, "modcp.php?action=banning");
-	if($postcount > $perpage)
+	if ($postcount > $perpage)
 	{
 		eval("\$allbannedpages = \"".$templates->get("modcp_banning_multipage")."\";");
 	}
@@ -2868,7 +2868,7 @@ if($mybb->input['action'] == "banning")
 
 		// Only show the edit & lift links if current user created ban, or is super mod/admin
 		$edit_link = '';
-		if($mybb->user['uid'] == $banned['admin'] || !$banned['adminuser'] || $mybb->usergroup['issupermod'] == 1 || $mybb->usergroup['cancp'] == 1)
+		if ($mybb->user['uid'] == $banned['admin'] || !$banned['adminuser'] || $mybb->usergroup['issupermod'] == 1 || $mybb->usergroup['cancp'] == 1)
 		{
 			$edit_link = "<br /><span class=\"smalltext\"><a href=\"modcp.php?action=banuser&amp;uid={$banned['uid']}\">{$lang->edit_ban}</a> | <a href=\"modcp.php?action=liftban&amp;uid={$banned['uid']}&amp;my_post_key={$mybb->post_code}\">{$lang->lift_ban}</a></span>";
 		}
@@ -2877,7 +2877,7 @@ if($mybb->input['action'] == "banning")
 
 		$trow = alt_trow();
 
-		if($banned['reason'])
+		if ($banned['reason'])
 		{
 			$banned['reason'] = htmlspecialchars_uni($parser->parse_badwords($banned['reason']));
 		}
@@ -2886,7 +2886,7 @@ if($mybb->input['action'] == "banning")
 			$banned['reason'] = $lang->na;
 		}
 
-		if($banned['lifted'] == 'perm' || $banned['lifted'] == '' || $banned['bantime'] == 'perm' || $banned['bantime'] == '---')
+		if ($banned['lifted'] == 'perm' || $banned['lifted'] == '' || $banned['bantime'] == 'perm' || $banned['bantime'] == '---')
 		{
 			$banlength = $lang->permanent;
 			$timeremaining = $lang->na;
@@ -2898,15 +2898,15 @@ if($mybb->input['action'] == "banning")
 
 			$timeremaining = nice_time($remaining, array('short' => 1, 'seconds' => FALSE))."";
 
-			if($remaining < 3600)
+			if ($remaining < 3600)
 			{
 				$timeremaining = "<span style=\"color: red;\">({$timeremaining} {$lang->ban_remaining})</span>";
 			}
-			else if($remaining < 86400)
+			else if ($remaining < 86400)
 			{
 				$timeremaining = "<span style=\"color: maroon;\">({$timeremaining} {$lang->ban_remaining})</span>";
 			}
-			else if($remaining < 604800)
+			else if ($remaining < 604800)
 			{
 				$timeremaining = "<span style=\"color: green;\">({$timeremaining} {$lang->ban_remaining})</span>";
 			}
@@ -2919,7 +2919,7 @@ if($mybb->input['action'] == "banning")
 		eval("\$bannedusers .= \"".$templates->get("modcp_banning_ban")."\";");
 	}
 
-	if(!$bannedusers)
+	if (!$bannedusers)
 	{
 		eval("\$bannedusers = \"".$templates->get("modcp_banning_nobanned")."\";");
 	}
@@ -2930,7 +2930,7 @@ if($mybb->input['action'] == "banning")
 	output_page($bannedpage);
 }
 
-if($mybb->input['action'] == "liftban")
+if ($mybb->input['action'] == "liftban")
 {
 	// Verify incoming POST request
 	verify_post_check($mybb->input['my_post_key']);
@@ -2938,13 +2938,13 @@ if($mybb->input['action'] == "liftban")
 	$query = $db->simple_select("banned", "*", "uid='".intval($mybb->input['uid'])."'");
 	$ban = $db->fetch_array($query);
 
-	if(!$ban['uid'])
+	if (!$ban['uid'])
 	{
 		error($lang->error_invalidban);
 	}
 
 	// Permission to edit this ban?
-	if($mybb->user['uid'] != $ban['admin'] && $mybb->usergroup['issupermod'] != 1 && $mybb->usergroup['cancp'] != 1)
+	if ($mybb->user['uid'] != $ban['admin'] && $mybb->usergroup['issupermod'] != 1 && $mybb->usergroup['cancp'] != 1)
 	{
 		error_no_permission();
 	}
@@ -2971,13 +2971,13 @@ if($mybb->input['action'] == "liftban")
 	redirect("modcp.php?action=banning", $lang->redirect_banlifted);
 }
 
-if($mybb->input['action'] == "do_banuser" && $mybb->request_method == "post")
+if ($mybb->input['action'] == "do_banuser" && $mybb->request_method == "post")
 {
 	// Verify incoming POST request
 	verify_post_check($mybb->input['my_post_key']);
 
 	// Editing an existing ban
-	if($mybb->input['uid'])
+	if ($mybb->input['uid'])
 	{
 		// Get the users info from their uid
 		$query = $db->query("
@@ -2987,13 +2987,13 @@ if($mybb->input['action'] == "do_banuser" && $mybb->request_method == "post")
 			WHERE b.uid='{$mybb->input['uid']}'
 		");
 		$user = $db->fetch_array($query);
-		if(!$user['uid'])
+		if (!$user['uid'])
 		{
 			error($lang->error_invalidban);
 		}
 
 		// Permission to edit this ban?
-		if($mybb->user['uid'] != $user['admin'] && $mybb->usergroup['issupermod'] != 1 && $mybb->usergroup['cancp'] != 1)
+		if ($mybb->user['uid'] != $user['admin'] && $mybb->usergroup['issupermod'] != 1 && $mybb->usergroup['cancp'] != 1)
 		{
 			error_no_permission();
 		}
@@ -3004,41 +3004,41 @@ if($mybb->input['action'] == "do_banuser" && $mybb->request_method == "post")
 		// Get the users info from their Username
 		$query = $db->simple_select("users", "uid, username, usergroup, additionalgroups, displaygroup", "username = '".$db->escape_string($mybb->input['username'])."'", array('limit' => 1));
 		$user = $db->fetch_array($query);
-		if(!$user['uid'])
+		if (!$user['uid'])
 		{
 			$errors[] = $lang->invalid_username;
 		}
 	}
 
-	if($user['uid'] == $mybb->user['uid'])
+	if ($user['uid'] == $mybb->user['uid'])
 	{
 		$errors[] = $lang->error_cannotbanself;
 	}
 
 	// Have permissions to ban this user?
-	if(!modcp_can_manage_user($user['uid']))
+	if (!modcp_can_manage_user($user['uid']))
 	{
 		$errors[] = $lang->error_cannotbanuser;
 	}
 
 	// Check for an incoming reason
-	if(!$mybb->input['banreason'])
+	if (!$mybb->input['banreason'])
 	{
 		$errors[] = $lang->error_nobanreason;
 	}
 
 	// Check banned group
 	$query = $db->simple_select("usergroups", "gid", "isbannedgroup=1 AND gid='".intval($mybb->input['usergroup'])."'");
-	if(!$db->fetch_field($query, "gid"))
+	if (!$db->fetch_field($query, "gid"))
 	{
 		$errors[] = $lang->error_nobangroup;
 	}
 
 	// If this is a new ban, we check the user isn't already part of a banned group
-	if(!$mybb->input['uid'] && $user['uid'])
+	if (!$mybb->input['uid'] && $user['uid'])
 	{
 		$query = $db->simple_select("banned", "uid", "uid='{$user['uid']}'");
-		if($db->fetch_field($query, "uid"))
+		if ($db->fetch_field($query, "uid"))
 		{
 			$errors[] = $lang->error_useralreadybanned;
 		}
@@ -3047,10 +3047,10 @@ if($mybb->input['action'] == "do_banuser" && $mybb->request_method == "post")
 	$plugins->run_hooks("modcp_do_banuser_start");
 
 	// Still no errors? Ban the user
-	if(!$errors)
+	if (!$errors)
 	{
 		// Ban the user
-		if($mybb->input['liftafter'] == '---')
+		if ($mybb->input['liftafter'] == '---')
 		{
 			$lifted = 0;
 		}
@@ -3059,7 +3059,7 @@ if($mybb->input['action'] == "do_banuser" && $mybb->request_method == "post")
 			$lifted = ban_date2timestamp($mybb->input['liftafter'], $user['dateline']);
 		}
 
-		if($mybb->input['uid'])
+		if ($mybb->input['uid'])
 		{
 			$update_array = array(
 				'gid' => intval($mybb->input['usergroup']),
@@ -3103,7 +3103,7 @@ if($mybb->input['action'] == "do_banuser" && $mybb->request_method == "post")
 
 		$plugins->run_hooks("modcp_do_banuser_end");
 
-		if($mybb->input['uid'])
+		if ($mybb->input['uid'])
 		{
 			redirect("modcp.php?action=banning", $lang->redirect_banuser_updated);
 		}
@@ -3119,11 +3119,11 @@ if($mybb->input['action'] == "do_banuser" && $mybb->request_method == "post")
 	}
 }
 
-if($mybb->input['action'] == "banuser")
+if ($mybb->input['action'] == "banuser")
 {
 	add_breadcrumb($lang->mcp_nav_banning, "modcp.php?action=banning");
 
-	if($mybb->input['uid'])
+	if ($mybb->input['uid'])
 	{
 		add_breadcrumb($lang->mcp_nav_ban_user);
 	}
@@ -3135,7 +3135,7 @@ if($mybb->input['action'] == "banuser")
 	$plugins->run_hooks("modcp_banuser_start");
 
 	// If incoming user ID, we are editing a ban
-	if($mybb->input['uid'])
+	if ($mybb->input['uid'])
 	{
 		$query = $db->query("
 			SELECT b.*, u.username, u.uid
@@ -3144,7 +3144,7 @@ if($mybb->input['action'] == "banuser")
 			WHERE b.uid='{$mybb->input['uid']}'
 		");
 		$banned = $db->fetch_array($query);
-		if($banned['username'])
+		if ($banned['username'])
 		{
 			$username = htmlspecialchars_uni($banned['username']);
 			$banreason = htmlspecialchars_uni($banned['reason']);
@@ -3156,9 +3156,9 @@ if($mybb->input['action'] == "banuser")
 	}
 
 	// New ban!
-	if(!$banuser_username)
+	if (!$banuser_username)
 	{
-		if($mybb->input['uid'])
+		if ($mybb->input['uid'])
 		{
 			$user = get_user($mybb->input['uid']);
 			$username = $user['username'];
@@ -3171,7 +3171,7 @@ if($mybb->input['action'] == "banuser")
 	}
 
 	// Coming back to this page from an error?
-	if($errors)
+	if ($errors)
 	{
 		$errors = inline_error($errors);
 		$banned = array(
@@ -3186,12 +3186,12 @@ if($mybb->input['action'] == "banuser")
 	foreach($bantimes as $time => $title)
 	{
 		$liftlist .= "<option value=\"{$time}\"";
-		if($banned['bantime'] == $time)
+		if ($banned['bantime'] == $time)
 		{
 			$liftlist .= " selected=\"selected\"";
 		}
 		$thatime = my_date("D, jS M Y @ g:ia", ban_date2timestamp($time, $banned['dateline']));
-		if($time == '---')
+		if ($time == '---')
 		{
 			$liftlist .= ">{$title}</option>\n";
 		}
@@ -3206,7 +3206,7 @@ if($mybb->input['action'] == "banuser")
 	while($item = $db->fetch_array($query))
 	{
 		$selected = "";
-		if($banned['gid'] == $item['gid'])
+		if ($banned['gid'] == $item['gid'])
 		{
 			$selected = " selected=\"selected\"";
 		}
@@ -3221,7 +3221,7 @@ if($mybb->input['action'] == "banuser")
 	output_page($banuser);
 }
 
-if($mybb->input['action'] == "do_modnotes")
+if ($mybb->input['action'] == "do_modnotes")
 {
 	// Verify incoming POST request
 	verify_post_check($mybb->input['my_post_key']);
@@ -3239,7 +3239,7 @@ if($mybb->input['action'] == "do_modnotes")
 	redirect("modcp.php", $lang->redirect_modnotes);
 }
 
-if(!$mybb->input['action'])
+if (!$mybb->input['action'])
 {
 	$query = $db->query("
 		SELECT COUNT(aid) AS unapprovedattachments
@@ -3250,7 +3250,7 @@ if(!$mybb->input['action'])
 	");
 	$unapproved_attachments = $db->fetch_field($query, "unapprovedattachments");
 
-	if($unapproved_attachments > 0)
+	if ($unapproved_attachments > 0)
 	{
 		$query = $db->query("
 			SELECT t.tid, p.pid, p.uid, t.username, a.filename, a.dateuploaded
@@ -3283,7 +3283,7 @@ if(!$mybb->input['action'])
 	");
 	$unapproved_posts = $db->fetch_field($query, "unapprovedposts");
 
-	if($unapproved_posts > 0)
+	if ($unapproved_posts > 0)
 	{
 		$query = $db->query("
 			SELECT p.pid, p.tid, p.subject, p.uid, p.username, p.dateline
@@ -3299,7 +3299,7 @@ if(!$mybb->input['action'])
 		$post['profilelink'] = build_profile_link($post['username'], $post['uid']);
 		$post['link'] = get_post_link($post['pid'], $post['tid']);
 		$post['subject'] = $post['fullsubject'] = $parser->parse_badwords($post['subject']);
-		if(my_strlen($post['subject']) > 25)
+		if (my_strlen($post['subject']) > 25)
 		{
 			$post['subject'] = my_substr($post['subject'], 0, 25)."...";
 		}
@@ -3316,7 +3316,7 @@ if(!$mybb->input['action'])
 	$query = $db->simple_select("threads", "COUNT(tid) AS unapprovedthreads", "visible=0 {$flist}");
 	$unapproved_threads = $db->fetch_field($query, "unapprovedthreads");
 
-	if($unapproved_threads > 0)
+	if ($unapproved_threads > 0)
 	{
 		$query = $db->simple_select("threads", "tid, subject, uid, username, dateline", "visible=0 {$flist}", array('order_by' =>  'dateline', 'order_dir' => 'DESC', 'limit' => 1));
 		$thread = $db->fetch_array($query);
@@ -3325,7 +3325,7 @@ if(!$mybb->input['action'])
 		$thread['profilelink'] = build_profile_link($thread['username'], $thread['uid']);
 		$thread['link'] = get_thread_link($thread['tid']);
 		$thread['subject'] = $thread['fullsubject'] = $parser->parse_badwords($thread['subject']);
-		if(my_strlen($thread['subject']) > 25)
+		if (my_strlen($thread['subject']) > 25)
 		{
 			$post['subject'] = my_substr($thread['subject'], 0, 25)."...";
 		}
@@ -3340,7 +3340,7 @@ if(!$mybb->input['action'])
 	}
 
 	$where = '';
-	if($tflist)
+	if ($tflist)
 	{
 		$where = "WHERE (t.fid <> 0 {$tflist}) OR (!l.fid)";
 	}
@@ -3366,24 +3366,24 @@ if(!$mybb->input['action'])
 		$trow = alt_trow();
 		$username = format_name($logitem['username'], $logitem['usergroup'], $logitem['displaygroup']);
 		$logitem['profilelink'] = build_profile_link($username, $logitem['uid']);
-		if($logitem['tsubject'])
+		if ($logitem['tsubject'])
 		{
 			$information = "<strong>{$lang->thread}</strong> <a href=\"".get_thread_link($logitem['tid'])."\" target=\"_blank\">".htmlspecialchars_uni($logitem['tsubject'])."</a><br />";
 		}
-		if($logitem['fname'])
+		if ($logitem['fname'])
 		{
 			$information .= "<strong>{$lang->forum}</strong> <a href=\"".get_forum_link($logitem['fid'])."\" target=\"_blank\">".htmlspecialchars_uni($logitem['fname'])."</a><br />";
 		}
-		if($logitem['psubject'])
+		if ($logitem['psubject'])
 		{
 			$information .= "<strong>{$lang->post}</strong> <a href=\"".get_post_link($logitem['pid'])."#pid{$logitem['pid']}\">".htmlspecialchars_uni($logitem['psubject'])."</a>";
 		}
 
 		// Edited a user?
-		if(!$logitem['tsubject'] || !$logitem['fname'] || !$logitem['psubject'])
+		if (!$logitem['tsubject'] || !$logitem['fname'] || !$logitem['psubject'])
 		{
 			$data = unserialize($logitem['data']);
-			if($data['uid'])
+			if ($data['uid'])
 			{
 				$information = $lang->sprintf($lang->edited_user_info, htmlspecialchars_uni($data['username']), get_profile_link($data['uid']));
 			}
@@ -3392,7 +3392,7 @@ if(!$mybb->input['action'])
 		eval("\$modlogresults .= \"".$templates->get("modcp_modlogs_result")."\";");
 	}
 
-	if(!$modlogresults)
+	if (!$modlogresults)
 	{
 		eval("\$modlogresults = \"".$templates->get("modcp_modlogs_noresults")."\";");
 	}
@@ -3414,7 +3414,7 @@ if(!$mybb->input['action'])
 
 		// Only show the edit & lift links if current user created ban, or is super mod/admin
 		$edit_link = '';
-		if($mybb->user['uid'] == $banned['admin'] || !$banned['adminuser'] || $mybb->usergroup['issupermod'] == 1 || $mybb->usergroup['cancp'] == 1)
+		if ($mybb->user['uid'] == $banned['admin'] || !$banned['adminuser'] || $mybb->usergroup['issupermod'] == 1 || $mybb->usergroup['cancp'] == 1)
 		{
 			$edit_link = "<br /><span class=\"smalltext\"><a href=\"modcp.php?action=banuser&amp;uid={$banned['uid']}\">{$lang->edit_ban}</a> | <a href=\"modcp.php?action=liftban&amp;uid={$banned['uid']}&amp;my_post_key={$mybb->post_code}\">{$lang->lift_ban}</a></span>";
 		}
@@ -3423,7 +3423,7 @@ if(!$mybb->input['action'])
 
 		$trow = alt_trow();
 
-		if($banned['reason'])
+		if ($banned['reason'])
 		{
 			$banned['reason'] = htmlspecialchars_uni($parser->parse_badwords($banned['reason']));
 		}
@@ -3432,7 +3432,7 @@ if(!$mybb->input['action'])
 			$banned['reason'] = $lang->na;
 		}
 
-		if($banned['lifted'] == 'perm' || $banned['lifted'] == '' || $banned['bantime'] == 'perm' || $banned['bantime'] == '---')
+		if ($banned['lifted'] == 'perm' || $banned['lifted'] == '' || $banned['bantime'] == 'perm' || $banned['bantime'] == '---')
 		{
 			$banlength = $lang->permanent;
 			$timeremaining = $lang->na;
@@ -3444,19 +3444,19 @@ if(!$mybb->input['action'])
 
 			$timeremaining = nice_time($remaining, array('short' => 1, 'seconds' => FALSE))."";
 
-			if($remaining <= 0)
+			if ($remaining <= 0)
 			{
 				$timeremaining = "<span style=\"color: red;\">({$lang->ban_ending_imminently})</span>";
 			}
-			else if($remaining < 3600)
+			else if ($remaining < 3600)
 			{
 				$timeremaining = "<span style=\"color: red;\">({$timeremaining} {$lang->ban_remaining})</span>";
 			}
-			else if($remaining < 86400)
+			else if ($remaining < 86400)
 			{
 				$timeremaining = "<span style=\"color: maroon;\">({$timeremaining} {$lang->ban_remaining})</span>";
 			}
-			else if($remaining < 604800)
+			else if ($remaining < 604800)
 			{
 				$timeremaining = "<span style=\"color: green;\">({$timeremaining} {$lang->ban_remaining})</span>";
 			}
@@ -3469,7 +3469,7 @@ if(!$mybb->input['action'])
 		eval("\$bannedusers .= \"".$templates->get("modcp_banning_ban")."\";");
 	}
 
-	if(!$bannedusers)
+	if (!$bannedusers)
 	{
 		eval("\$bannedusers = \"".$templates->get("modcp_banning_nobanned")."\";");
 	}

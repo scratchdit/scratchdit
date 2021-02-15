@@ -10,17 +10,17 @@
  */
 
 // Disallow direct access to this file for security reasons
-if(!defined("IN_MYBB"))
+if (!defined("IN_MYBB"))
 {
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
 
-if(function_exists("unicode_decode"))
+if (function_exists("unicode_decode"))
 {
     // Unicode extension introduced in 6.0
     error_reporting(E_ALL ^ E_DEPRECATED ^ E_NOTICE ^ E_STRICT);
 }
-elseif(defined("E_DEPRECATED"))
+elseif (defined("E_DEPRECATED"))
 {
     // E_DEPRECATED introduced in 5.3
     error_reporting(E_ALL ^ E_DEPRECATED ^ E_NOTICE);
@@ -43,14 +43,14 @@ else
 //define('MYBB_ROOT', "./");
 
 // Attempt autodetection
-if(!defined('MYBB_ROOT'))
+if (!defined('MYBB_ROOT'))
 {
 	define('MYBB_ROOT', dirname(dirname(__FILE__))."/");
 }
 
 define("TIME_NOW", time());
 
-if(function_exists('date_default_timezone_set') && !ini_get('date.timezone'))
+if (function_exists('date_default_timezone_set') && !ini_get('date.timezone'))
 {
 	date_default_timezone_set('GMT');
 }
@@ -68,7 +68,7 @@ $maintimer = new timer();
 require_once MYBB_ROOT."inc/class_core.php";
 $mybb = new MyBB;
 
-if(!file_exists(MYBB_ROOT."inc/config.php"))
+if (!file_exists(MYBB_ROOT."inc/config.php"))
 {
 	$mybb->trigger_generic_error("board_not_installed");
 }
@@ -77,23 +77,23 @@ if(!file_exists(MYBB_ROOT."inc/config.php"))
 require_once MYBB_ROOT."inc/config.php";
 $mybb->config = &$config;
 
-if(!isset($config['database']))
+if (!isset($config['database']))
 {
 	$mybb->trigger_generic_error("board_not_installed");
 }
 
-if(!is_array($config['database']))
+if (!is_array($config['database']))
 {
 	$mybb->trigger_generic_error("board_not_upgraded");
 }
 
-if(empty($config['admin_dir']))
+if (empty($config['admin_dir']))
 {
 	$config['admin_dir'] = "admin";
 }
 
 // Trigger an error if the installation directory exists
-if(is_dir(MYBB_ROOT."install") && !file_exists(MYBB_ROOT."install/lock"))
+if (is_dir(MYBB_ROOT."install") && !file_exists(MYBB_ROOT."install/lock"))
 {
 	$mybb->trigger_generic_error("install_directory");
 }
@@ -116,7 +116,7 @@ switch($config['database']['type'])
 }
 
 // Check if our DB engine is loaded
-if(!extension_loaded($db->engine))
+if (!extension_loaded($db->engine))
 {
 	// Throw our super awesome db loading error
 	$mybb->trigger_generic_error("sql_load_error");
@@ -129,7 +129,7 @@ require_once MYBB_ROOT."inc/class_datacache.php";
 $cache = new datacache;
 
 require_once MYBB_ROOT."inc/class_plugins.php";
-$plugins = new pluginSystem;
+$plugins = PluginSystem;
 
 // Include our base data handler class
 require_once MYBB_ROOT."inc/datahandler.php";
@@ -149,14 +149,14 @@ $lang->set_path(MYBB_ROOT."inc/languages");
 $cache->cache();
 
 // Load Settings
-if(file_exists(MYBB_ROOT."inc/settings.php"))
+if (file_exists(MYBB_ROOT."inc/settings.php"))
 {
 	require_once MYBB_ROOT."inc/settings.php";
 }
 
-if(!file_exists(MYBB_ROOT."inc/settings.php") || !isset($settings))
+if (!file_exists(MYBB_ROOT."inc/settings.php") || !isset($settings))
 {
-	if(function_exists('rebuild_settings'))
+	if (function_exists('rebuild_settings'))
 	{
 		rebuild_settings();
 	}
@@ -183,14 +183,14 @@ $settings['bbname'] = strip_tags($settings['bbname']);
 $settings['orig_bblanguage'] = $settings['bblanguage'];
 
 // Fix for people who for some specify a trailing slash on the board URL
-if(substr($settings['bburl'], -1) == "/")
+if (substr($settings['bburl'], -1) == "/")
 {
 	$settings['bburl'] = my_substr($settings['bburl'], 0, -1);
 }
 
 // Setup our internal settings and load our encryption key
 $settings['internal'] = $cache->read("internal_settings");
-if(!$settings['internal']['encryption_key'])
+if (!$settings['internal']['encryption_key'])
 {
 	$cache->update("internal_settings", array('encryption_key' => random_str(32)));
 	$settings['internal'] = $cache->read("internal_settings");
@@ -200,24 +200,24 @@ $mybb->settings = &$settings;
 $mybb->parse_cookies();
 $mybb->cache = &$cache;
 
-if($mybb->use_shutdown == TRUE)
+if ($mybb->use_shutdown == TRUE)
 {
 	register_shutdown_function('run_shutdown');
 }
 
 // Did we just upgrade to a new version and haven't run the upgrade scripts yet?
 $version = $cache->read("version");
-if(!defined("IN_INSTALL") && !defined("IN_UPGRADE") && $version['version_code'] < $mybb->version_code)
+if (!defined("IN_INSTALL") && !defined("IN_UPGRADE") && $version['version_code'] < $mybb->version_code)
 {
 	$version_history = $cache->read("version_history");
-	if(empty($version_history) || file_exists(MYBB_ROOT."install/resources/upgrade".intval(end($version_history)+1).".php"))
+	if (empty($version_history) || file_exists(MYBB_ROOT."install/resources/upgrade".intval(end($version_history)+1).".php"))
 	{
 		$mybb->trigger_generic_error("board_not_upgraded");
 	}
 }
 
 // Load plugins
-if(!defined("NO_PLUGINS") && !($mybb->settings['no_plugins'] == 1))
+if (!defined("NO_PLUGINS") && !($mybb->settings['no_plugins'] == 1))
 {
 	$plugins->load();
 }
@@ -226,7 +226,7 @@ if(!defined("NO_PLUGINS") && !($mybb->settings['no_plugins'] == 1))
 add_shutdown('send_mail_queue');
 
 /* URL Definitions */
-if($mybb->settings['seourls'] == "yes" || ($mybb->settings['seourls'] == "auto" && $_SERVER['SEO_SUPPORT'] == 1))
+if ($mybb->settings['seourls'] == "yes" || ($mybb->settings['seourls'] == "auto" && $_SERVER['SEO_SUPPORT'] == 1))
 {
 	define('FORUM_URL', "forum-{fid}.html");
 	define('FORUM_URL_PAGED', "forum-{fid}-page-{page}.html");

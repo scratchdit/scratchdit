@@ -17,7 +17,7 @@ require_once "./inc/init.php";
 
 $stylesheet = intval($mybb->input['stylesheet']);
 
-if($stylesheet)
+if ($stylesheet)
 {
 	$options = array(
 		"limit" => 1

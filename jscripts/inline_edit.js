@@ -3,7 +3,7 @@ var inlineEditor = Class.create();
 inlineEditor.prototype = {
 	initialize: function(url, options)
 	{
-		if(use_xmlhttprequest != 1)
+		if (use_xmlhttprequest != 1)
 		{
 			return FALSE;
 		}
@@ -13,23 +13,23 @@ inlineEditor.prototype = {
 		this.currentElement = '';
 
 		this.options = options;
-		if(!options.className)
+		if (!options.className)
 		{
 			alert('You need to specify a className in the options.');
 			return FALSE;
 		}
 
 		this.className = options.className;
-		if(options.spinnerImage)
+		if (options.spinnerImage)
 		{
 			this.spinnerImage = options.spinnerImage;
 		}
 
 		this.elements = $$('.'+options.className);
-		if(this.elements)
+		if (this.elements)
 		{
 			this.elements.each(function(element) {
-				if(element.id)
+				if (element.id)
 				{
 					this.makeEditable(element);
 				}
@@ -40,12 +40,12 @@ inlineEditor.prototype = {
 
 	makeEditable: function(element)
 	{
-		if(element.title != "")
+		if (element.title != "")
 		{
 			element.title = element.title+" ";
 		}
 
-		if(!this.options.lang_click_edit)
+		if (!this.options.lang_click_edit)
 		{
 			this.options.lang_click_edit = "(Click and hold to edit)";
 		}
@@ -60,13 +60,13 @@ inlineEditor.prototype = {
 		var element = Event.element(e);
 		Event.stop(e);
 
-		if(this.currentElement != '')
+		if (this.currentElement != '')
 		{
 			return FALSE;
 		}
 
 		// Fix for konqueror which likes to set event element as the text not the link
-		if(typeof(element.id) == "undefined" && typeof(element.parentNode.id) != "undefined")
+		if (typeof(element.id) == "undefined" && typeof(element.parentNode.id) != "undefined")
 		{
 			element.id = element.parentNode.id;
 		}
@@ -86,7 +86,7 @@ inlineEditor.prototype = {
 
 	onButtonClick: function(id)
 	{
-		if($(id))
+		if ($(id))
 		{
 			this.currentElement = id;
 			this.showTextbox();
@@ -98,7 +98,7 @@ inlineEditor.prototype = {
 	{
 		this.element = $(this.currentElement);
 
-		if(typeof(this.element.parentNode) == "undefined" || typeof(this.element.id) == "undefined")
+		if (typeof(this.element.parentNode) == "undefined" || typeof(this.element.id) == "undefined")
 		{
 			return FALSE;
 		}
@@ -106,7 +106,7 @@ inlineEditor.prototype = {
 		this.oldValue = this.element.innerHTML;
 		this.testNode = this.element.parentNode;
 
-		if(!this.testNode)
+		if (!this.testNode)
 		{
 			return FALSE;
 		}
@@ -140,11 +140,11 @@ inlineEditor.prototype = {
 
 	onKeyUp: function(e)
 	{
-		if(e.keyCode == Event.KEY_RETURN)
+		if (e.keyCode == Event.KEY_RETURN)
 		{
 			this.hideTextbox();
 		}
-		else if(e.keyCode == Event.KEY_ESC)
+		else if (e.keyCode == Event.KEY_ESC)
 		{
 			this.cancelEdit();
 		}
@@ -159,12 +159,12 @@ inlineEditor.prototype = {
 
 	hideTextbox: function()
 	{
-		if(!this.currentElement)
+		if (!this.currentElement)
 			return;
 		Event.stopObserving(this.textbox, "blur", this.onBlur.bindAsEventListener(this));
 		var newValue = this.textbox.value;
 
-		if(typeof(newValue) != "undefined" && newValue != '' && MyBB.HTMLchars(newValue) != this.oldValue)
+		if (typeof(newValue) != "undefined" && newValue != '' && MyBB.HTMLchars(newValue) != this.oldValue)
 		{
 			this.testNode.innerHTML = this.cache;
 
@@ -174,13 +174,13 @@ inlineEditor.prototype = {
 			this.lastElement = this.currentElement;
 			postData = "value="+encodeURIComponent(newValue);
 
-			if(this.spinnerImage)
+			if (this.spinnerImage)
 			{
 				this.showSpinner();
 			}
 
 			idInfo = this.element.id.split("_");
-			if(idInfo[0] && idInfo[1])
+			if (idInfo[0] && idInfo[1])
 			{
 				postData = postData+"&"+idInfo[0]+"="+idInfo[1];
 			}
@@ -208,29 +208,29 @@ inlineEditor.prototype = {
 
 	onComplete: function(request)
 	{
-		if(request.responseText.match(/<error>(.*)<\/error>/))
+		if (request.responseText.match(/<error>(.*)<\/error>/))
 		{
 			message = request.responseText.match(/<error>(.*)<\/error>/);
 			this.element.innerHTML = this.oldValue;
 
-			if(!message[1])
+			if (!message[1])
 			{
 				message[1] = "An unknown error occurred.";
 			}
 
-			if(this.spinnerImage)
+			if (this.spinnerImage)
 			{
 				this.hideSpinner();
 			}
 
 			alert('There was an error performing the update.\n\n'+message[1]);
 		}
-		else if(request.responseText)
+		else if (request.responseText)
 		{
 			this.element.innerHTML = MyBB.HTMLchars(request.responseText);
 		}
 
-		if(this.spinnerImage)
+		if (this.spinnerImage)
 		{
 			this.hideSpinner();
 		}
@@ -240,17 +240,17 @@ inlineEditor.prototype = {
 
 	showSpinner: function()
 	{
-		if(!this.spinnerImage)
+		if (!this.spinnerImage)
 		{
 			return FALSE;
 		}
 
-		if(!this.spinner)
+		if (!this.spinner)
 		{
 			this.spinner = document.createElement("img");
 			this.spinner.src = this.spinnerImage;
 
-			if(saving_changes)
+			if (saving_changes)
 			{
 				this.spinner.alt = saving_changes;
 			}
@@ -268,7 +268,7 @@ inlineEditor.prototype = {
 
 	hideSpinner: function()
 	{
-		if(!this.spinnerImage)
+		if (!this.spinnerImage)
 		{
 			return FALSE;
 		}

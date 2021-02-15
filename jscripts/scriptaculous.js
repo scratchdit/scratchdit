@@ -45,7 +45,7 @@ var Scriptaculous = {
       return versionString.indexOf('_') > -1 ? v-1 : v;
     }
 
-    if((typeof Prototype=='undefined') ||
+    if ((typeof Prototype=='undefined') ||
        (typeof Element == 'undefined') ||
        (typeof Element.Methods=='undefined') ||
        (convertVersionString(Prototype.Version) <

@@ -23,10 +23,10 @@ class eacceleratorCacheHandler
 	{
 		global $mybb;
 
-		if(!function_exists("eaccelerator_get"))
+		if (!function_exists("eaccelerator_get"))
 		{
 			// Check if our DB engine is loaded
-			if(!extension_loaded("Eaccelerator"))
+			if (!extension_loaded("Eaccelerator"))
 			{
 				// Throw our super awesome cache loading error
 				$mybb->trigger_generic_error("eaccelerator_load_error");
@@ -62,7 +62,7 @@ class eacceleratorCacheHandler
 	function fetch($name, $hard_refresh=FALSE)
 	{
 		$data = eaccelerator_get($this->unique_id."_".$name);
-		if($data === FALSE)
+		if ($data === FALSE)
 		{
 			return FALSE;
 		}

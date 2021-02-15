@@ -24,10 +24,10 @@ class apcCacheHandler implements CacheHandlerInterface
 	{
 		global $mybb;
 
-		if(!function_exists("apc_fetch"))
+		if (!function_exists("apc_fetch"))
 		{
 			// Check if our DB engine is loaded
-			if(!extension_loaded("apc"))
+			if (!extension_loaded("apc"))
 			{
 				// Throw our super awesome cache loading error
 				$mybb->trigger_generic_error("apc_load_error");
@@ -57,7 +57,7 @@ class apcCacheHandler implements CacheHandlerInterface
 	 */
 	function fetch($name)
 	{
-		if(apc_exists($this->unique_id."_".$name))
+		if (apc_exists($this->unique_id."_".$name))
 		{
 			$data = apc_fetch($this->unique_id."_".$name);
 			return unserialize($data);

@@ -33,7 +33,7 @@ function find_replace_templatesets($title, $find, $replace, $autocreate=1)
 	{
 		// Update the template if there is a replacement term or a change
 		$new_template = preg_replace($find, $replace, $template['template']);
-		if($new_template == $template['template'])
+		if ($new_template == $template['template'])
 		{
 			continue;
 		}
@@ -54,7 +54,7 @@ function find_replace_templatesets($title, $find, $replace, $autocreate=1)
 
 		// Update the template if there is a replacement term or a change
 		$new_template = preg_replace($find, $replace, $template['template']);
-		if($new_template == $template['template'])
+		if ($new_template == $template['template'])
 		{
 			continue;
 		}
@@ -69,14 +69,14 @@ function find_replace_templatesets($title, $find, $replace, $autocreate=1)
 	}
 
 	// Add any new templates if we need to and are allowed to
-	if($autocreate != 0)
+	if ($autocreate != 0)
 	{
 		// Select our master template with that title
 		$query = $db->simple_select("templates", "title, template", "title='".$db->escape_string($title)."' AND sid='-2'", array('limit' => 1));
 		$master_template = $db->fetch_array($query);
 		$master_template['new_template'] = preg_replace($find, $replace, $master_template['template']);
 
-		if($master_template['new_template'] != $master_template['template'])
+		if ($master_template['new_template'] != $master_template['template'])
 		{
 			// Update the rest of our template sets that are currently inheriting this template from our master set
 			$query = $db->simple_select("templatesets", "sid", "sid NOT IN (".implode(',', $template_sets).")");

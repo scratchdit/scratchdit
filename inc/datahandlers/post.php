@@ -10,7 +10,7 @@
  */
 
 // Disallow direct access to this file for security reasons
-if(!defined("IN_MYBB"))
+if (!defined("IN_MYBB"))
 {
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
@@ -22,7 +22,7 @@ $post = get from POST data
 $thread = get from DB using POST data id
 
 $postHandler = new postDataHandler();
-if($postHandler->validate_post($post))
+if ($postHandler->validate_post($post))
 {
 	$postHandler->insert_post($post);
 }
@@ -111,20 +111,20 @@ class PostDataHandler extends DataHandler
 		$post = &$this->data;
 
 		// Don't have a user ID at all - not good (note, a user id of 0 will still work).
-		if(!isset($post['uid']))
+		if (!isset($post['uid']))
 		{
 			$this->set_error("invalid_user_id");
 			return FALSE;
 		}
 		// If we have a user id but no username then fetch the username.
-		else if($post['uid'] > 0 && $post['username'] == '')
+		else if ($post['uid'] > 0 && $post['username'] == '')
 		{
 			$user = get_user($post['uid']);
 			$post['username'] = $user['username'];
 		}
 
 		// After all of this, if we still don't have a username, force the username as "Guest" (Note, this is not translatable as it is always a fallback)
-		if(!$post['username'])
+		if (!$post['username'])
 		{
 			$post['username'] = "Guest";
 		}
@@ -148,9 +148,9 @@ class PostDataHandler extends DataHandler
 		$subject = trim_blank_chrs($subject);
 
 		// Are we editing an existing thread or post?
-		if($this->method == "update" && $post['pid'])
+		if ($this->method == "update" && $post['pid'])
 		{
-			if(!$post['tid'])
+			if (!$post['tid'])
 			{
 				$query = $db->simple_select("posts", "tid", "pid='".intval($post['pid'])."'");
 				$post['tid'] = $db->fetch_field($query, "tid");
@@ -164,7 +164,7 @@ class PostDataHandler extends DataHandler
 			);
 			$query = $db->simple_select("posts", "pid", "tid='".$post['tid']."'", $options);
 			$first_check = $db->fetch_array($query);
-			if($first_check['pid'] == $post['pid'])
+			if ($first_check['pid'] == $post['pid'])
 			{
 				$first_post = TRUE;
 			}
@@ -174,12 +174,12 @@ class PostDataHandler extends DataHandler
 			}
 
 			// If this is the first post there needs to be a subject, else make it the default one.
-			if(my_strlen($subject) == 0 && $first_post)
+			if (my_strlen($subject) == 0 && $first_post)
 			{
 				$this->set_error("firstpost_no_subject");
 				return FALSE;
 			}
-			elseif(my_strlen($subject) == 0)
+			elseif (my_strlen($subject) == 0)
 			{
 				$thread = get_thread($post['tid']);
 				$subject = "RE: ".$thread['subject'];
@@ -187,9 +187,9 @@ class PostDataHandler extends DataHandler
 		}
 
 		// This is a new post
-		else if($this->action == "post")
+		else if ($this->action == "post")
 		{
-			if(my_strlen($subject) == 0)
+			if (my_strlen($subject) == 0)
 			{
 				$thread = get_thread($post['tid']);
 				$subject = "RE: ".$thread['subject'];
@@ -199,14 +199,14 @@ class PostDataHandler extends DataHandler
 		// This is a new thread and we require that a subject is present.
 		else
 		{
-			if(my_strlen($subject) == 0)
+			if (my_strlen($subject) == 0)
 			{
 				$this->set_error("missing_subject");
 				return FALSE;
 			}
 		}
 
-		if(my_strlen($subject) > 85)
+		if (my_strlen($subject) > 85)
 		{
 			// Subject is too long
 			$this->set_error('subject_too_long', my_strlen($subject));
@@ -230,21 +230,21 @@ class PostDataHandler extends DataHandler
 		$post['message'] = trim_blank_chrs($post['message']);
 
 		// Do we even have a message at all?
-		if(my_strlen($post['message']) == 0)
+		if (my_strlen($post['message']) == 0)
 		{
 			$this->set_error("missing_message");
 			return FALSE;
 		}
 
 		// If this board has a maximum message length check if we're over it. Use strlen because SQL limits are in bytes
-		else if(strlen($post['message']) > $mybb->settings['maxmessagelength'] && $mybb->settings['maxmessagelength'] > 0 && !is_moderator($post['fid'], "", $post['uid']))
+		else if (strlen($post['message']) > $mybb->settings['maxmessagelength'] && $mybb->settings['maxmessagelength'] > 0 && !is_moderator($post['fid'], "", $post['uid']))
 		{
 			$this->set_error("message_too_long", array($mybb->settings['maxmessagelength'], strlen($post['message'])));
 			return FALSE;
 		}
 
 		// And if we've got a minimum message length do we meet that requirement too?
-		else if(my_strlen($post['message']) < $mybb->settings['minmessagelength'] && $mybb->settings['minmessagelength'] > 0 && !is_moderator($post['fid'], "", $post['uid']))
+		else if (my_strlen($post['message']) < $mybb->settings['minmessagelength'] && $mybb->settings['minmessagelength'] > 0 && !is_moderator($post['fid'], "", $post['uid']))
 		{
 			$this->set_error("message_too_short", array($mybb->settings['minmessagelength']));
 			return FALSE;
@@ -280,9 +280,9 @@ class PostDataHandler extends DataHandler
 		$post = &$this->data;
 
 		// Check if post flooding is enabled within MyBB or if the admin override option is specified.
-		if($mybb->settings['postfloodcheck'] == 1 && $post['uid'] != 0 && $this->admin_override == FALSE)
+		if ($mybb->settings['postfloodcheck'] == 1 && $post['uid'] != 0 && $this->admin_override == FALSE)
 		{
-			if($this->verify_post_merge(TRUE) !== TRUE)
+			if ($this->verify_post_merge(TRUE) !== TRUE)
 			{
 				return TRUE;
 			}
@@ -291,11 +291,11 @@ class PostDataHandler extends DataHandler
 			$user = get_user($post['uid']);
 
 			// A little bit of calculation magic and moderator status checking.
-			if(TIME_NOW-$user['lastpost'] <= $mybb->settings['postfloodsecs'] && !is_moderator($post['fid'], "", $user['uid']))
+			if (TIME_NOW-$user['lastpost'] <= $mybb->settings['postfloodsecs'] && !is_moderator($post['fid'], "", $user['uid']))
 			{
 				// Oops, user has been flooding - throw back error message.
 				$time_to_wait = ($mybb->settings['postfloodsecs'] - (TIME_NOW-$user['lastpost'])) + 1;
-				if($time_to_wait == 1)
+				if ($time_to_wait == 1)
 				{
 					$this->set_error("post_flooding_one_second");
 				}
@@ -317,32 +317,32 @@ class PostDataHandler extends DataHandler
 		$post = &$this->data;
 
 		// Are we starting a new thread?
-		if(!$post['tid'])
+		if (!$post['tid'])
 		{
 			return TRUE;
 		}
 
 		// Are we even turned on?
-		if(empty($mybb->settings['postmergemins']))
+		if (empty($mybb->settings['postmergemins']))
 		{
 			return TRUE;
 		}
 
 		// Assign a default separator if none is specified
-		if(trim($mybb->settings['postmergesep']) == "")
+		if (trim($mybb->settings['postmergesep']) == "")
 		{
 			$mybb->settings['postmergesep'] = "[hr]";
 		}
 
 		// Check to see if this person is in a usergroup that is excluded
-		if(trim($mybb->settings['postmergeuignore']) != "")
+		if (trim($mybb->settings['postmergeuignore']) != "")
 		{
 			$gids = explode(',', $mybb->settings['postmergeuignore']);
 			$gids = array_map('intval', $gids);
 
 
 			$user_usergroups = explode(',', $mybb->user['usergroup'].",".$mybb->user['additionalgroups']);
-			if(count(array_intersect($user_usergroups, $gids)) > 0)
+			if (count(array_intersect($user_usergroups, $gids)) > 0)
 			{
 				return TRUE;
 			}
@@ -353,12 +353,12 @@ class PostDataHandler extends DataHandler
 		$thread = $db->fetch_array($query);
 
 		// Check to see if the same author has posted within the merge post time limit
-		if((intval($mybb->settings['postmergemins']) != 0 && trim($mybb->settings['postmergemins']) != "") && (TIME_NOW-$thread['lastpost']) > (intval($mybb->settings['postmergemins'])*60))
+		if ((intval($mybb->settings['postmergemins']) != 0 && trim($mybb->settings['postmergemins']) != "") && (TIME_NOW-$thread['lastpost']) > (intval($mybb->settings['postmergemins'])*60))
 		{
 			return TRUE;
 		}
 
-		if(strstr($mybb->settings['postmergefignore'], ','))
+		if (strstr($mybb->settings['postmergefignore'], ','))
 		{
 			$fids = explode(',', $mybb->settings['postmergefignore']);
 			foreach($fids as $key => $forumid)
@@ -366,23 +366,23 @@ class PostDataHandler extends DataHandler
 				$fid[] = intval($forumid);
 			}
 
-			if(in_array($thread['fid'], $fid))
+			if (in_array($thread['fid'], $fid))
 			{
 				return TRUE;
 			}
 
 		}
-		else if(trim($mybb->settings['postmergefignore']) != "" && $thread['fid'] == intval($mybb->settings['postmergefignore']))
+		else if (trim($mybb->settings['postmergefignore']) != "" && $thread['fid'] == intval($mybb->settings['postmergefignore']))
 		{
 			return TRUE;
 		}
 
-		if($simple_mode == TRUE)
+		if ($simple_mode == TRUE)
 		{
 			return FALSE;
 		}
 
-		if($post['uid'])
+		if ($post['uid'])
 		{
 			$user_check = "uid='".$post['uid']."'";
 		}
@@ -410,7 +410,7 @@ class PostDataHandler extends DataHandler
 		$permissions = user_permissions($post['uid']);
 
 		// Fetch the forum this post is being made in
-		if(!$post['fid'])
+		if (!$post['fid'])
 		{
 			$query = $db->simple_select('posts', 'fid', "pid = '{$post['pid']}'");
 			$post['fid'] = $db->fetch_field($query, 'fid');
@@ -418,7 +418,7 @@ class PostDataHandler extends DataHandler
 		$forum = get_forum($post['fid']);
 
 		// Check if this post contains more images than the forum allows
-		if($post['savedraft'] != 1 && $mybb->settings['maxpostimages'] != 0 && $permissions['cancp'] != 1)
+		if ($post['savedraft'] != 1 && $mybb->settings['maxpostimages'] != 0 && $permissions['cancp'] != 1)
 		{
 			require_once MYBB_ROOT."inc/class_parser.php";
 			$parser = new postParser;
@@ -432,7 +432,7 @@ class PostDataHandler extends DataHandler
 				"filter_badwords" => 1
 			);
 
-			if($post['options']['disablesmilies'] != 1)
+			if ($post['options']['disablesmilies'] != 1)
 			{
 				$parser_options['allow_smilies'] = $forum['allowsmilies'];
 			}
@@ -445,7 +445,7 @@ class PostDataHandler extends DataHandler
 
 			// And count the number of image tags in the message.
 			$image_count = substr_count($image_check, "<img");
-			if($image_count > $mybb->settings['maxpostimages'])
+			if ($image_count > $mybb->settings['maxpostimages'])
 			{
 				// Throw back a message if over the count with the number of images as well as the maximum number of images per post.
 				$this->set_error("too_many_images", array(1 => $image_count, 2 => $mybb->settings['maxpostimages']));
@@ -469,11 +469,11 @@ class PostDataHandler extends DataHandler
 		$permissions = user_permissions($post['uid']);
 
 		// Check if this post contains more videos than the forum allows
-		if($post['savedraft'] != 1 && $mybb->settings['maxpostvideos'] != 0 && $permissions['cancp'] != 1)
+		if ($post['savedraft'] != 1 && $mybb->settings['maxpostvideos'] != 0 && $permissions['cancp'] != 1)
 		{
 			// And count the number of video tags in the message.
 			$video_count = substr_count($post['message'], "[video]");
-			if($video_count > $mybb->settings['maxpostvideos'])
+			if ($video_count > $mybb->settings['maxpostvideos'])
 			{
 				// Throw back a message if over the count with the number of images as well as the maximum number of images per post.
 				$this->set_error("too_many_videos", array(1 => $video_count, 2 => $mybb->settings['maxpostvideos']));
@@ -493,11 +493,11 @@ class PostDataHandler extends DataHandler
 		$post = &$this->data;
 
 		// Check if the post being replied to actually exists in this thread.
-		if($post['replyto'])
+		if ($post['replyto'])
 		{
 			$query = $db->simple_select("posts", "pid", "pid='".intval($post['replyto'])."'");
 			$valid_post = $db->fetch_array($query);
-			if(!$valid_post['pid'])
+			if (!$valid_post['pid'])
 			{
 				$post['replyto'] = 0;
 			}
@@ -508,7 +508,7 @@ class PostDataHandler extends DataHandler
 		}
 
 		// If this post isn't a reply to a specific post, attach it to the first post.
-		if(!$post['replyto'])
+		if (!$post['replyto'])
 		{
 			$options = array(
 				"limit_start" => 0,
@@ -536,7 +536,7 @@ class PostDataHandler extends DataHandler
 		$post = &$this->data;
 
 		// If we don't assign it as 0.
-		if(!$post['icon'] || $post['icon'] < 0)
+		if (!$post['icon'] || $post['icon'] < 0)
 		{
 			$post['icon'] = 0;
 		}
@@ -553,7 +553,7 @@ class PostDataHandler extends DataHandler
 		$dateline = &$this->data['dateline'];
 
 		// The date has to be numeric and > 0.
-		if($dateline < 0 || is_numeric($dateline) == FALSE)
+		if ($dateline < 0 || is_numeric($dateline) == FALSE)
 		{
 			$dateline = TIME_NOW;
 		}
@@ -569,7 +569,7 @@ class PostDataHandler extends DataHandler
 		$prefix = &$this->data['prefix'];
 
 		// If a valid prefix isn't supplied, don't assign one.
-		if(!$prefix || $prefix < 1)
+		if (!$prefix || $prefix < 1)
 		{
 			$prefix = 0;
 		}
@@ -591,46 +591,46 @@ class PostDataHandler extends DataHandler
 
 		$this->action = "post";
 
-		if($this->method != "update" && !$post['savedraft'])
+		if ($this->method != "update" && !$post['savedraft'])
 		{
 			$this->verify_post_flooding();
 		}
 
 		// Verify all post assets.
 
-		if($this->method == "insert" || array_key_exists('uid', $post))
+		if ($this->method == "insert" || array_key_exists('uid', $post))
 		{
 			$this->verify_author();
 		}
 
-		if($this->method == "insert" || array_key_exists('subject', $post))
+		if ($this->method == "insert" || array_key_exists('subject', $post))
 		{
 			$this->verify_subject();
 		}
 
-		if($this->method == "insert" || array_key_exists('message', $post))
+		if ($this->method == "insert" || array_key_exists('message', $post))
 		{
 			$this->verify_message();
 			$this->verify_image_count();
 			$this->verify_video_count();
 		}
 
-		if($this->method == "insert" || array_key_exists('dateline', $post))
+		if ($this->method == "insert" || array_key_exists('dateline', $post))
 		{
 			$this->verify_dateline();
 		}
 
-		if($this->method == "insert" || array_key_exists('replyto', $post))
+		if ($this->method == "insert" || array_key_exists('replyto', $post))
 		{
 			$this->verify_reply_to();
 		}
 
-		if($this->method == "insert" || array_key_exists('icon', $post))
+		if ($this->method == "insert" || array_key_exists('icon', $post))
 		{
 			$this->verify_post_icon();
 		}
 
-		if($this->method == "insert" || array_key_exists('options', $post))
+		if ($this->method == "insert" || array_key_exists('options', $post))
 		{
 			$this->verify_options();
 		}
@@ -639,7 +639,7 @@ class PostDataHandler extends DataHandler
 
 		// We are done validating, return.
 		$this->set_validated(TRUE);
-		if(count($this->get_errors()) > 0)
+		if (count($this->get_errors()) > 0)
 		{
 			return FALSE;
 		}
@@ -662,11 +662,11 @@ class PostDataHandler extends DataHandler
 		$post = &$this->data;
 
 		// Yes, validating is required.
-		if(!$this->get_validated())
+		if (!$this->get_validated())
 		{
 			die("The post needs to be validated before inserting it into the DB.");
 		}
-		if(count($this->get_errors()) > 0)
+		if (count($this->get_errors()) > 0)
 		{
 			die("The post is not valid.");
 		}
@@ -675,7 +675,7 @@ class PostDataHandler extends DataHandler
 		$thread = get_thread($post['tid']);
 
 		// This post is being saved as a draft.
-		if($post['savedraft'])
+		if ($post['savedraft'])
 		{
 			$visible = -2;
 		}
@@ -684,7 +684,7 @@ class PostDataHandler extends DataHandler
 		else
 		{
 			// Automatic subscription to the thread
-			if($post['options']['subscriptionmethod'] != "" && $post['uid'] > 0)
+			if ($post['options']['subscriptionmethod'] != "" && $post['uid'] > 0)
 			{
 				switch($post['options']['subscriptionmethod'])
 				{
@@ -700,7 +700,7 @@ class PostDataHandler extends DataHandler
 			}
 
 			// Perform any selected moderation tools.
-			if(is_moderator($post['fid'], "", $post['uid']))
+			if (is_moderator($post['fid'], "", $post['uid']))
 			{
 				$lang->load($this->language_file, TRUE);
 
@@ -709,39 +709,39 @@ class PostDataHandler extends DataHandler
 				$modlogdata['tid'] = $thread['tid'];
 
 				// Close the thread.
-				if($modoptions['closethread'] == 1 && $thread['closed'] != 1)
+				if ($modoptions['closethread'] == 1 && $thread['closed'] != 1)
 				{
 					$newclosed = "closed=1";
 					log_moderator_action($modlogdata, $lang->thread_closed);
 				}
 
 				// Open the thread.
-				if($modoptions['closethread'] != 1 && $thread['closed'] == 1)
+				if ($modoptions['closethread'] != 1 && $thread['closed'] == 1)
 				{
 					$newclosed = "closed=0";
 					log_moderator_action($modlogdata, $lang->thread_opened);
 				}
 
 				// Stick the thread.
-				if($modoptions['stickthread'] == 1 && $thread['sticky'] != 1)
+				if ($modoptions['stickthread'] == 1 && $thread['sticky'] != 1)
 				{
 					$newstick = "sticky='1'";
 					log_moderator_action($modlogdata, $lang->thread_stuck);
 				}
 
 				// Unstick the thread.
-				if($modoptions['stickthread'] != 1 && $thread['sticky'])
+				if ($modoptions['stickthread'] != 1 && $thread['sticky'])
 				{
 					$newstick = "sticky='0'";
 					log_moderator_action($modlogdata, $lang->thread_unstuck);
 				}
 
 				// Execute moderation options.
-				if($newstick && $newclosed)
+				if ($newstick && $newclosed)
 				{
 					$sep = ",";
 				}
-				if($newstick || $newclosed)
+				if ($newstick || $newclosed)
 				{
 					$db->write_query("
 						UPDATE ".TABLE_PREFIX."threads
@@ -755,7 +755,7 @@ class PostDataHandler extends DataHandler
 			$forum = get_forum($post['fid']);
 
 			// Decide on the visibility of this post.
-			if($forum['modposts'] == 1 && !is_moderator($thread['fid'], "", $post['uid']))
+			if ($forum['modposts'] == 1 && !is_moderator($thread['fid'], "", $post['uid']))
 			{
 				$visible = 0;
 			}
@@ -765,7 +765,7 @@ class PostDataHandler extends DataHandler
 			}
 
 			// Are posts from this user being moderated? Change visibility
-			if($mybb->user['uid'] == $post['uid'] && $mybb->user['moderateposts'] == 1)
+			if ($mybb->user['uid'] == $post['uid'] && $mybb->user['moderateposts'] == 1)
 			{
 				$visible = 0;
 			}
@@ -774,7 +774,7 @@ class PostDataHandler extends DataHandler
 		$post['pid'] = intval($post['pid']);
 		$post['uid'] = intval($post['uid']);
 
-		if($post['pid'] > 0)
+		if ($post['pid'] > 0)
 		{
 			$query = $db->simple_select("posts", "tid", "pid='{$post['pid']}' AND uid='{$post['uid']}' AND visible='-2'");
 			$draft_check = $db->fetch_field($query, "tid");
@@ -784,12 +784,12 @@ class PostDataHandler extends DataHandler
 			$draft_check = FALSE;
 		}
 
-		if($this->method != "update" && $visible == 1)
+		if ($this->method != "update" && $visible == 1)
 		{
 			$double_post = $this->verify_post_merge();
 
 			// Only combine if they are both invisible (mod queue'd forum) or both visible
-			if($double_post !== TRUE && $double_post['visible'] == $visible)
+			if ($double_post !== TRUE && $double_post['visible'] == $visible)
 			{
 				$this->pid = $double_post['pid'];
 
@@ -801,13 +801,13 @@ class PostDataHandler extends DataHandler
 				$update_query['edittime'] = TIME_NOW;
 				$query = $db->update_query("posts", $update_query, "pid='".$double_post['pid']."'");
 
-				if($draft_check)
+				if ($draft_check)
 				{
 					$db->delete_query("posts", "pid='".$post['pid']."'");
 				}
 
 				// Assign any uploaded attachments with the specific posthash to the merged post.
-				if($double_post['posthash'])
+				if ($double_post['posthash'])
 				{
 					$post['posthash'] = $db->escape_string($post['posthash']);
 					$double_post['posthash'] = $db->escape_string($double_post['posthash']);
@@ -815,7 +815,7 @@ class PostDataHandler extends DataHandler
 					$query = $db->simple_select("attachments", "COUNT(aid) AS attachmentcount", "pid='0' AND visible='1' AND posthash='{$post['posthash']}'");
 					$attachmentcount = $db->fetch_field($query, "attachmentcount");
 
-					if($attachmentcount > 0)
+					if ($attachmentcount > 0)
 					{
 						// Update forum count
 						update_thread_counters($post['tid'], array('attachmentcount' => "+{$attachmentcount}"));
@@ -838,7 +838,7 @@ class PostDataHandler extends DataHandler
 			}
 		}
 
-		if($visible == 1 && $thread['visible'] == 1)
+		if ($visible == 1 && $thread['visible'] == 1)
 		{
 			$now = TIME_NOW;
 
@@ -846,7 +846,7 @@ class PostDataHandler extends DataHandler
 			$update_array = array(
 				'lastpost' => "'{$now}'"
 			);
-			if($forum['usepostcounts'] != 0)
+			if ($forum['usepostcounts'] != 0)
 			{
 				$update_array['postnum'] = 'postnum+1';
 			}
@@ -855,7 +855,7 @@ class PostDataHandler extends DataHandler
 		}
 
 		// Are we updating a post which is already a draft? Perhaps changing it into a visible post?
-		if($draft_check)
+		if ($draft_check)
 		{
 			// Update a post that is a draft
 			$this->post_update_data = array(
@@ -905,7 +905,7 @@ class PostDataHandler extends DataHandler
 		}
 
 		// Assign any uploaded attachments with the specific posthash to the newly created post.
-		if($post['posthash'])
+		if ($post['posthash'])
 		{
 			$post['posthash'] = $db->escape_string($post['posthash']);
 			$attachmentassign = array(
@@ -914,7 +914,7 @@ class PostDataHandler extends DataHandler
 			$db->update_query("attachments", $attachmentassign, "posthash='{$post['posthash']}'");
 		}
 
-		if($visible == 1 && $thread['visible'] == 1)
+		if ($visible == 1 && $thread['visible'] == 1)
 		{
 			$thread = get_thread($post['tid']);
 			require_once MYBB_ROOT.'inc/class_parser.php';
@@ -937,29 +937,29 @@ class PostDataHandler extends DataHandler
 			");
 			while($subscribedmember = $db->fetch_array($query))
 			{
-				if($done_users[$subscribedmember['uid']])
+				if ($done_users[$subscribedmember['uid']])
 				{
 					continue;
 				}
 				$done_users[$subscribedmember['uid']] = 1;
 
 				$forumpermissions = forum_permissions($thread['fid'], $subscribedmember['uid']);
-				if($forumpermissions['canview'] == 0 || $forumpermissions['canviewthreads'] == 0)
+				if ($forumpermissions['canview'] == 0 || $forumpermissions['canviewthreads'] == 0)
 				{
 				    continue;
 				}
 
-				if($thread['uid'] != $subscribedmember['uid'] && $forumpermissions['canonlyviewownthread'] == 1 && !is_moderator($thread['fid'], "", $subscribedmember['uid']))
+				if ($thread['uid'] != $subscribedmember['uid'] && $forumpermissions['canonlyviewownthread'] == 1 && !is_moderator($thread['fid'], "", $subscribedmember['uid']))
 				{
 					// User isn't a moderator or the author of the thread...
 					continue;
 				}
 
-				if($subscribedmember['language'] != '' && $lang->language_exists($subscribedmember['language']))
+				if ($subscribedmember['language'] != '' && $lang->language_exists($subscribedmember['language']))
 				{
 					$uselang = $subscribedmember['language'];
 				}
-				elseif($mybb->settings['orig_bblanguage'])
+				elseif ($mybb->settings['orig_bblanguage'])
 				{
 					$uselang = $mybb->settings['orig_bblanguage'];
 				}
@@ -968,14 +968,14 @@ class PostDataHandler extends DataHandler
 					$uselang = "english";
 				}
 
-				if($uselang == $mybb->settings['bblanguage'])
+				if ($uselang == $mybb->settings['bblanguage'])
 				{
 					$emailsubject = $lang->emailsubject_subscription;
 					$emailmessage = $lang->email_subscription;
 				}
 				else
 				{
-					if(!isset($langcache[$uselang]['emailsubject_subscription']))
+					if (!isset($langcache[$uselang]['emailsubject_subscription']))
 					{
 						$userlang = new MyLanguage;
 						$userlang->set_path(MYBB_ROOT."inc/languages");
@@ -1004,7 +1004,7 @@ class PostDataHandler extends DataHandler
 				$queued_email = 1;
 			}
 			// Have one or more emails been queued? Update the queue count
-			if($queued_email == 1)
+			if ($queued_email == 1)
 			{
 				$cache->update_mailqueue();
 			}
@@ -1015,13 +1015,13 @@ class PostDataHandler extends DataHandler
 			update_forum_counters($post['fid'], array("posts" => "+1"));
 		}
 		// Post is stuck in moderation queue
-		else if($visible == 0)
+		else if ($visible == 0)
 		{
 			// Update the unapproved posts count for the current thread and current forum
 			update_thread_counters($post['tid'], array("unapprovedposts" => "+1"));
 			update_forum_counters($post['fid'], array("unapprovedposts" => "+1"));
 		}
-		else if($thread['visible'] == 0)
+		else if ($thread['visible'] == 0)
 		{
 			// Update the unapproved posts count for the current forum
 			update_thread_counters($post['tid'], array("replies" => "+1"));
@@ -1048,44 +1048,44 @@ class PostDataHandler extends DataHandler
 
 		// Validate all thread assets.
 
-		if(!$thread['savedraft'])
+		if (!$thread['savedraft'])
 		{
 			$this->verify_post_flooding();
 		}
 
-		if($this->method == "insert" || array_key_exists('uid', $thread))
+		if ($this->method == "insert" || array_key_exists('uid', $thread))
 		{
 			$this->verify_author();
 		}
 
-		if($this->method == "insert" || array_key_exists('prefix', $thread))
+		if ($this->method == "insert" || array_key_exists('prefix', $thread))
 		{
 			$this->verify_prefix();
 		}
 
-		if($this->method == "insert" || array_key_exists('subject', $thread))
+		if ($this->method == "insert" || array_key_exists('subject', $thread))
 		{
 			$this->verify_subject();
 		}
 
-		if($this->method == "insert" || array_key_exists('message', $thread))
+		if ($this->method == "insert" || array_key_exists('message', $thread))
 		{
 			$this->verify_message();
 			$this->verify_image_count();
 			$this->verify_video_count();
 		}
 
-		if($this->method == "insert" || array_key_exists('dateline', $thread))
+		if ($this->method == "insert" || array_key_exists('dateline', $thread))
 		{
 			$this->verify_dateline();
 		}
 
-		if($this->method == "insert" || array_key_exists('icon', $thread))
+		if ($this->method == "insert" || array_key_exists('icon', $thread))
 		{
 			$this->verify_post_icon();
 		}
 
-		if($this->method == "insert" || array_key_exists('options', $thread))
+		if ($this->method == "insert" || array_key_exists('options', $thread))
 		{
 			$this->verify_options();
 		}
@@ -1094,7 +1094,7 @@ class PostDataHandler extends DataHandler
 
 		// We are done validating, return.
 		$this->set_validated(TRUE);
-		if(count($this->get_errors()) > 0)
+		if (count($this->get_errors()) > 0)
 		{
 			return FALSE;
 		}
@@ -1114,11 +1114,11 @@ class PostDataHandler extends DataHandler
 		global $db, $mybb, $plugins, $cache, $lang;
 
 		// Yes, validating is required.
-		if(!$this->get_validated())
+		if (!$this->get_validated())
 		{
 			die("The thread needs to be validated before inserting it into the DB.");
 		}
-		if(count($this->get_errors()) > 0)
+		if (count($this->get_errors()) > 0)
 		{
 			die("The thread is not valid.");
 		}
@@ -1129,7 +1129,7 @@ class PostDataHandler extends DataHandler
 		$forum = get_forum($thread['fid']);
 
 		// This thread is being saved as a draft.
-		if($thread['savedraft'])
+		if ($thread['savedraft'])
 		{
 			$visible = -2;
 		}
@@ -1139,7 +1139,7 @@ class PostDataHandler extends DataHandler
 		{
 
 			// Decide on the visibility of this post.
-			if(($forum['modthreads'] == 1 || $forum['modposts'] == 1) && !is_moderator($thread['fid'], "", $thread['uid']))
+			if (($forum['modthreads'] == 1 || $forum['modposts'] == 1) && !is_moderator($thread['fid'], "", $thread['uid']))
 			{
 				$visible = 0;
 			}
@@ -1149,20 +1149,20 @@ class PostDataHandler extends DataHandler
 			}
 
 			// Are posts from this user being moderated? Change visibility
-			if($mybb->user['uid'] == $thread['uid'] && $mybb->user['moderateposts'] == 1)
+			if ($mybb->user['uid'] == $thread['uid'] && $mybb->user['moderateposts'] == 1)
 			{
 				$visible = 0;
 			}
 		}
 
 		// Have a post ID but not a thread ID - fetch thread ID
-		if($thread['pid'] && !$thread['tid'])
+		if ($thread['pid'] && !$thread['tid'])
 		{
 			$query = $db->simple_select("posts", "tid", "pid='{$thread['pid']}");
 			$thread['tid'] = $db->fetch_field($query, "tid");
 		}
 
-		if($thread['pid'] > 0)
+		if ($thread['pid'] > 0)
 		{
 			$query = $db->simple_select("posts", "pid", "pid='{$thread['pid']}' AND uid='{$thread['uid']}' AND visible='-2'");
 			$draft_check = $db->fetch_field($query, "pid");
@@ -1173,7 +1173,7 @@ class PostDataHandler extends DataHandler
 		}
 
 		// Are we updating a post which is already a draft? Perhaps changing it into a visible post?
-		if($draft_check)
+		if ($draft_check)
 		{
 			$this->thread_insert_data = array(
 				"subject" => $db->escape_string($thread['subject']),
@@ -1257,9 +1257,9 @@ class PostDataHandler extends DataHandler
 		}
 
 		// If we're not saving a draft there are some things we need to check now
-		if(!$thread['savedraft'])
+		if (!$thread['savedraft'])
 		{
-			if($thread['options']['subscriptionmethod'] != "" && $thread['uid'] > 0)
+			if ($thread['options']['subscriptionmethod'] != "" && $thread['uid'] > 0)
 			{
 				switch($thread['options']['subscriptionmethod'])
 				{
@@ -1275,7 +1275,7 @@ class PostDataHandler extends DataHandler
 			}
 
 			// Perform any selected moderation tools.
-			if(is_moderator($thread['fid'], "", $thread['uid']) && is_array($thread['modoptions']))
+			if (is_moderator($thread['fid'], "", $thread['uid']) && is_array($thread['modoptions']))
 			{
 				$lang->load($this->language_file, TRUE);
 
@@ -1284,25 +1284,25 @@ class PostDataHandler extends DataHandler
 				$modlogdata['tid'] = $thread['tid'];
 
 				// Close the thread.
-				if($modoptions['closethread'] == 1)
+				if ($modoptions['closethread'] == 1)
 				{
 					$newclosed = "closed=1";
 					log_moderator_action($modlogdata, $lang->thread_closed);
 				}
 
 				// Stick the thread.
-				if($modoptions['stickthread'] == 1)
+				if ($modoptions['stickthread'] == 1)
 				{
 					$newstick = "sticky='1'";
 					log_moderator_action($modlogdata, $lang->thread_stuck);
 				}
 
 				// Execute moderation options.
-				if($newstick && $newclosed)
+				if ($newstick && $newclosed)
 				{
 					$sep = ",";
 				}
-				if($newstick || $newclosed)
+				if ($newstick || $newclosed)
 				{
 					$db->write_query("
 						UPDATE ".TABLE_PREFIX."threads
@@ -1311,33 +1311,33 @@ class PostDataHandler extends DataHandler
 					");
 				}
 			}
-			if($visible == 1)
+			if ($visible == 1)
 			{
 				// If we have a registered user then update their post count and last post times.
-				if($thread['uid'] > 0)
+				if ($thread['uid'] > 0)
 				{
 					$user = get_user($thread['uid']);
 					$update_query = array();
 					// Only update the lastpost column of the user if the date of the thread is newer than their last post.
-					if($thread['dateline'] > $user['lastpost'])
+					if ($thread['dateline'] > $user['lastpost'])
 					{
 						// Yes this has a single quote within a double quote. It's not a bug.
 						$update_query['lastpost'] = "'{$thread['dateline']}'";
 					}
 					// Update the post count if this forum allows post counts to be tracked
-					if($forum['usepostcounts'] != 0)
+					if ($forum['usepostcounts'] != 0)
 					{
 						$update_query['postnum'] = "postnum+1";
 					}
 
 					// Only update the table if we need to.
-					if(!empty($update_query))
+					if (!empty($update_query))
 					{
 						$db->update_query("users", $update_query, "uid='{$thread['uid']}'", 1, TRUE);
 					}
 				}
 
-				if(!$forum['lastpost'])
+				if (!$forum['lastpost'])
 				{
 					$forum['lastpost'] = 0;
 				}
@@ -1364,30 +1364,30 @@ class PostDataHandler extends DataHandler
 				");
 				while($subscribedmember = $db->fetch_array($query))
 				{
-					if($done_users[$subscribedmember['uid']])
+					if ($done_users[$subscribedmember['uid']])
 					{
 						continue;
 					}
 					$done_users[$subscribedmember['uid']] = 1;
 
 					$forumpermissions = forum_permissions($thread['fid'], $subscribedmember['uid']);
-					if($forumpermissions['canview'] == 0 || $forumpermissions['canviewthreads'] == 0)
+					if ($forumpermissions['canview'] == 0 || $forumpermissions['canviewthreads'] == 0)
 					{
 					    continue;
 					}
 
-					if(!is_moderator($thread['fid'], "", $subscribedmember['uid']) && $forumpermissions['canonlyviewownthreads'] == 1)
+					if (!is_moderator($thread['fid'], "", $subscribedmember['uid']) && $forumpermissions['canonlyviewownthreads'] == 1)
 					{
 						// In a 'view own only' forum and not a moderator
 						continue;
 					}
 
 					// Determine the language pack we'll be using to send this email in and load it if it isn't already.
-					if($subscribedmember['language'] != '' && $lang->language_exists($subscribedmember['language']))
+					if ($subscribedmember['language'] != '' && $lang->language_exists($subscribedmember['language']))
 					{
 						$uselang = $subscribedmember['language'];
 					}
-					else if($mybb->settings['bblanguage'])
+					else if ($mybb->settings['bblanguage'])
 					{
 						$uselang = $mybb->settings['bblanguage'];
 					}
@@ -1396,14 +1396,14 @@ class PostDataHandler extends DataHandler
 						$uselang = "english";
 					}
 
-					if($uselang == $mybb->settings['bblanguage'])
+					if ($uselang == $mybb->settings['bblanguage'])
 					{
 						$emailsubject = $lang->emailsubject_forumsubscription;
 						$emailmessage = $lang->email_forumsubscription;
 					}
 					else
 					{
-						if(!isset($langcache[$uselang]['emailsubject_forumsubscription']))
+						if (!isset($langcache[$uselang]['emailsubject_forumsubscription']))
 						{
 							$userlang = new MyLanguage;
 							$userlang->set_path(MYBB_ROOT."inc/languages");
@@ -1432,7 +1432,7 @@ class PostDataHandler extends DataHandler
 					$queued_email = 1;
 				}
 				// Have one or more emails been queued? Update the queue count
-				if($queued_email == 1)
+				if ($queued_email == 1)
 				{
 					$cache->update_mailqueue();
 				}
@@ -1440,7 +1440,7 @@ class PostDataHandler extends DataHandler
 		}
 
 		// Assign any uploaded attachments with the specific posthash to the newly created post.
-		if($thread['posthash'])
+		if ($thread['posthash'])
 		{
 			$thread['posthash'] = $db->escape_string($thread['posthash']);
 			$attachmentassign = array(
@@ -1449,12 +1449,12 @@ class PostDataHandler extends DataHandler
 			$db->update_query("attachments", $attachmentassign, "posthash='{$thread['posthash']}'");
 		}
 
-		if($visible == 1)
+		if ($visible == 1)
 		{
 			update_thread_data($this->tid);
 			update_forum_counters($thread['fid'], array("threads" => "+1", "posts" => "+1"));
 		}
-		else if($visible == 0)
+		else if ($visible == 0)
 		{
 			update_thread_data($this->tid);
 			update_thread_counters($this->tid, array("replies" => 0));
@@ -1463,7 +1463,7 @@ class PostDataHandler extends DataHandler
 
 		$query = $db->simple_select("attachments", "COUNT(aid) AS attachmentcount", "pid='{$this->pid}' AND visible='1'");
 		$attachmentcount = $db->fetch_field($query, "attachmentcount");
-		if($attachmentcount > 0)
+		if ($attachmentcount > 0)
 		{
 			update_thread_counters($this->tid, array("attachmentcount" => "+{$attachmentcount}"));
 		}
@@ -1485,11 +1485,11 @@ class PostDataHandler extends DataHandler
 		global $db, $mybb, $plugins;
 
 		// Yes, validating is required.
-		if($this->get_validated() != TRUE)
+		if ($this->get_validated() != TRUE)
 		{
 			die("The post needs to be validated before inserting it into the DB.");
 		}
-		if(count($this->get_errors()) > 0)
+		if (count($this->get_errors()) > 0)
 		{
 			die("The post is not valid.");
 		}
@@ -1505,11 +1505,11 @@ class PostDataHandler extends DataHandler
 		$forum = get_forum($post['fid']);
 
 		// Decide on the visibility of this post.
-		if(isset($post['visible']) && $post['visible'] != $existing_post['visible'])
+		if (isset($post['visible']) && $post['visible'] != $existing_post['visible'])
         {
-            if($forum['mod_edit_posts'] == 1 && !is_moderator($post['fid'], "", $post['uid']))
+            if ($forum['mod_edit_posts'] == 1 && !is_moderator($post['fid'], "", $post['uid']))
             {
-                if($existing_post['visible'] == 1)
+                if ($existing_post['visible'] == 1)
                 {
                     update_thread_data($existing_post['tid']);
                     update_thread_counters($existing_post['tid'], array('replies' => '-1', 'unapprovedposts' => '+1'));
@@ -1517,7 +1517,7 @@ class PostDataHandler extends DataHandler
 
                     // Subtract from the users post count
                     // Update the post count if this forum allows post counts to be tracked
-                    if($forum['usepostcounts'] != 0)
+                    if ($forum['usepostcounts'] != 0)
                     {
                         $db->write_query("UPDATE ".TABLE_PREFIX."users SET postnum=postnum-1 WHERE uid='{$existing_post['uid']}'");
                     }
@@ -1526,14 +1526,14 @@ class PostDataHandler extends DataHandler
             }
             else
             {
-                if($existing_post['visible'] == 0)
+                if ($existing_post['visible'] == 0)
                 {
                     update_thread_data($existing_post['tid']);
                     update_thread_counters($existing_post['tid'], array('replies' => '+1', 'unapprovedposts' => '-1'));
                     update_forum_counters($existing_post['fid'], array('unapprovedthreads' => '-1', 'unapprovedposts' => '-1'));
 
                     // Update the post count if this forum allows post counts to be tracked
-                    if($forum['usepostcounts'] != 0)
+                    if ($forum['usepostcounts'] != 0)
                     {
                         $db->write_query("UPDATE ".TABLE_PREFIX."users SET postnum=postnum+1 WHERE uid='{$existing_post['uid']}'");
                     }
@@ -1544,7 +1544,7 @@ class PostDataHandler extends DataHandler
         else
         {
 			$visible = 0;
-			if($forum['mod_edit_posts'] != 1 || is_moderator($post['fid'], "", $post['uid']))
+			if ($forum['mod_edit_posts'] != 1 || is_moderator($post['fid'], "", $post['uid']))
 			{
 				$visible = 1;
 			}
@@ -1559,7 +1559,7 @@ class PostDataHandler extends DataHandler
 		);
 		$query = $db->simple_select("posts", "pid", "tid='".intval($post['tid'])."'", $options);
 		$first_post_check = $db->fetch_array($query);
-		if($first_post_check['pid'] == $post['pid'])
+		if ($first_post_check['pid'] == $post['pid'])
 		{
 			$first_post = TRUE;
 		}
@@ -1568,33 +1568,33 @@ class PostDataHandler extends DataHandler
 			$first_post = FALSE;
 		}
 
-		if($existing_post['visible'] == 0)
+		if ($existing_post['visible'] == 0)
 		{
 			$visible = 0;
 		}
 
 		// Update the thread details that might have been changed first.
-		if($first_post)
+		if ($first_post)
 		{
 			$this->tid = $post['tid'];
 
 			$this->thread_update_data['visible'] = $visible;
 
-			if(isset($post['prefix']))
+			if (isset($post['prefix']))
 			{
 				$this->thread_update_data['prefix'] = intval($post['prefix']);
 			}
 
-			if(isset($post['subject']))
+			if (isset($post['subject']))
 			{
 				$this->thread_update_data['subject'] = $db->escape_string($post['subject']);
 			}
 
-			if(isset($post['icon']))
+			if (isset($post['icon']))
 			{
 				$this->thread_update_data['icon'] = intval($post['icon']);
 			}
-			if(count($this->thread_update_data) > 0)
+			if (count($this->thread_update_data) > 0)
 			{
 				$plugins->run_hooks("datahandler_post_update_thread", $this);
 
@@ -1606,35 +1606,35 @@ class PostDataHandler extends DataHandler
 
 		$this->pid = $post['pid'];
 
-		if(isset($post['subject']))
+		if (isset($post['subject']))
 		{
 			$this->post_update_data['subject'] = $db->escape_string($post['subject']);
 		}
 
-		if(isset($post['message']))
+		if (isset($post['message']))
 		{
 			$this->post_update_data['message'] = $db->escape_string($post['message']);
 		}
 
-		if(isset($post['icon']))
+		if (isset($post['icon']))
 		{
 			$this->post_update_data['icon'] = intval($post['icon']);
 		}
 
-		if(isset($post['options']))
+		if (isset($post['options']))
 		{
-			if(isset($post['options']['disablesmilies']))
+			if (isset($post['options']['disablesmilies']))
 			{
 				$this->post_update_data['smilieoff'] = $db->escape_string($post['options']['disablesmilies']);
 			}
-			if(isset($post['options']['signature']))
+			if (isset($post['options']['signature']))
 			{
 				$this->post_update_data['includesig'] = $db->escape_string($post['options']['signature']);
 			}
 		}
 
 		// If we need to show the edited by, let's do so.
-		if(($mybb->settings['showeditedby'] == 1 && !is_moderator($post['fid'], "caneditposts", $post['edit_uid'])) || ($mybb->settings['showeditedbyadmin'] == 1 && is_moderator($post['fid'], "caneditposts", $post['edit_uid'])))
+		if (($mybb->settings['showeditedby'] == 1 && !is_moderator($post['fid'], "caneditposts", $post['edit_uid'])) || ($mybb->settings['showeditedbyadmin'] == 1 && is_moderator($post['fid'], "caneditposts", $post['edit_uid'])))
 		{
 			$this->post_update_data['edituid'] = intval($post['edit_uid']);
 			$this->post_update_data['edittime'] = TIME_NOW;
@@ -1647,7 +1647,7 @@ class PostDataHandler extends DataHandler
 		$db->update_query("posts", $this->post_update_data, "pid='".intval($post['pid'])."'");
 
 		// Automatic subscription to the thread
-		if($post['options']['subscriptionmethod'] != "" && $post['uid'] > 0)
+		if ($post['options']['subscriptionmethod'] != "" && $post['uid'] > 0)
 		{
 			switch($post['options']['subscriptionmethod'])
 			{

@@ -1440,7 +1440,7 @@ ul.thread_tools li.subscription_remove {
 	var checked = FALSE;
 	function selectReportedPosts()
 	{
-		if(checked == FALSE)
+		if (checked == FALSE)
 		{
 			checked = TRUE;
 			$$('input[type="checkbox"]').invoke('writeAttribute', 'checked', 'checked');
@@ -3023,7 +3023,7 @@ body {
 <script type="text/javascript" src="jscripts/autocomplete.js?ver=1400"></script>
 <script type="text/javascript">
 <!--
-	if(use_xmlhttprequest == "1")
+	if (use_xmlhttprequest == "1")
 	{
 		new autoComplete("referrer", "xmlhttp.php?action=get_users", {valueSpan: "username"});
 	}
@@ -3682,14 +3682,14 @@ body {
 {$footer}
 <script type="text/javascript">
 <!--
-	if($('bcc_area') && $('bcc').value == "")
+	if ($('bcc_area') && $('bcc').value == "")
 	{
 		$('bcc_area').style.display = 'none';
 	}
 
 	function showBcc()
 	{
-		if($('bcc_area').style.display == 'none')
+		if ($('bcc_area').style.display == 'none')
 		{
 			$('bcc_area').style.display = '';
 		}
@@ -3798,7 +3798,7 @@ body {
 <div id="edit_post_{$post['pid']}_popup" class="popup_menu" style="display: none;"><div class="popup_item_container"><a href="javascript:;" onclick="Thread.quickEdit({$post['pid']});" class="popup_item">{$lang->postbit_quick_edit}</a></div><div class="popup_item_container"><a href="editpost.php?pid={$post['pid']}" class="popup_item">{$lang->postbit_full_edit}</a></div></div>
 <script type="text/javascript">
 // <!--
-	if(use_xmlhttprequest == "1")
+	if (use_xmlhttprequest == "1")
 	{
 		new PopupMenu("edit_post_{$post['pid']}");
 	}
@@ -4379,7 +4379,7 @@ body {
 <!--
 	{$editor_language}
 	var clickableEditor = new messageEditor("{$bind}", {lang: editor_language, rtl: {$lang->settings['rtl']}, theme: "{$theme['editortheme']}"});
-	if(clickableEditor)
+	if (clickableEditor)
 	{
 		clickableEditor.bindSmilieInserter("clickable_smilies");
 	}
@@ -4534,7 +4534,7 @@ body {
 <script type="text/javascript" src="jscripts/autocomplete.js?ver=1400"></script>
 <script type="text/javascript">
 <!--
-	if(use_xmlhttprequest == "1")
+	if (use_xmlhttprequest == "1")
 	{
 		new autoComplete("username", "xmlhttp.php?action=get_users", {valueSpan: "username"});
 	}
@@ -4631,7 +4631,7 @@ body {
 <script type="text/javascript" src="jscripts/autocomplete.js?ver=1400"></script>
 <script type="text/javascript">
 <!--
-	if(use_xmlhttprequest == "1")
+	if (use_xmlhttprequest == "1")
 	{
 		new autoComplete("username", "xmlhttp.php?action=get_users", {valueSpan: "username"});
 	}
@@ -4669,7 +4669,7 @@ body {
 <tr>
 <td class="thead" colspan="6">
 	<div class="float_right">
-	<input type="text" name="keywords" value="{$lang->enter_keywords}" onfocus="if(this.value == '{$lang->enter_keywords}') { this.value = ''; }" onblur="if(this.value=='') { this.value='{$lang->enter_keywords}'; }" class="textbox" size="25" />
+	<input type="text" name="keywords" value="{$lang->enter_keywords}" onfocus="if (this.value == '{$lang->enter_keywords}') { this.value = ''; }" onblur="if (this.value=='') { this.value='{$lang->enter_keywords}'; }" class="textbox" size="25" />
 	<input type="submit" class="button" name="quick_search" value="{$lang->search_pms}" />
 	(<a href="private.php?action=advanced_search">{$lang->advanced_search}</a>)</div>
 	<strong>{$lang->pms_in_folder}</strong></td>
@@ -4722,7 +4722,7 @@ body {
 <tr>
 <td class="thead" colspan="7">
 	<div class="float_right">
-	<input type="text" name="keywords" value="{$lang->enter_keywords}" onfocus="if(this.value == '{$lang->enter_keywords}') { this.value = ''; }" onblur="if(this.value=='') { this.value='{$lang->enter_keywords}'; }" class="textbox" size="25" />
+	<input type="text" name="keywords" value="{$lang->enter_keywords}" onfocus="if (this.value == '{$lang->enter_keywords}') { this.value = ''; }" onblur="if (this.value=='') { this.value='{$lang->enter_keywords}'; }" class="textbox" size="25" />
 	<input type="submit" class="button" name="quick_search" value="{$lang->search_pms}" />
 	(<a href="private.php?action=advanced_search">{$lang->advanced_search}</a>)</div>
 	<strong>{$lang->pm_search_results}</strong></td>
@@ -5081,7 +5081,7 @@ body {
 <script type="text/javascript" src="jscripts/autocomplete.js?ver=1400"></script>
 <script type="text/javascript">
 <!--
-	if(use_xmlhttprequest == "1")
+	if (use_xmlhttprequest == "1")
 	{
 		new autoComplete("author", "xmlhttp.php?action=get_users", {valueSpan: "username"});
 	}
@@ -5138,7 +5138,7 @@ body {
 </body>
 </html>]]></template>
 		<template name="announcement_edit" version="1600"><![CDATA[<a href="modcp.php?action=edit_announcement&amp;aid={$post['aid']}&amp;fid={$fid}"><img src="{$theme['imglangdir']}/postbit_edit.gif" alt="{$lang->announcement_edit}" title="{$lang->announcement_edit}" /></a>]]></template>
-		<template name="announcement_quickdelete" version="1600"><![CDATA[<a href="modcp.php?action=delete_announcement&amp;aid={$post['aid']}&amp;my_post_key={$mybb->post_code}" onclick="if(confirm(&quot;{$lang->announcement_quickdelete_confirm}&quot;))window.location=this.href.replace('action=delete_announcement','action=do_delete_announcement');return FALSE;"><img src="{$theme['imglangdir']}/postbit_delete.gif" alt="{$lang->announcement_qdelete}" title="{$lang->announcement_qdelete}" /></a>]]></template>
+		<template name="announcement_quickdelete" version="1600"><![CDATA[<a href="modcp.php?action=delete_announcement&amp;aid={$post['aid']}&amp;my_post_key={$mybb->post_code}" onclick="if (confirm(&quot;{$lang->announcement_quickdelete_confirm}&quot;))window.location=this.href.replace('action=delete_announcement','action=do_delete_announcement');return FALSE;"><img src="{$theme['imglangdir']}/postbit_delete.gif" alt="{$lang->announcement_qdelete}" title="{$lang->announcement_qdelete}" /></a>]]></template>
 		<template name="member_emailuser" version="1400"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->email_user}</title>
@@ -5495,8 +5495,8 @@ body {
 <form action="member.php" method="post">
 	<input type="hidden" name="action" value="do_login" />
 	<span class="smalltext"><strong>{$lang->quick_login}</strong></span>
-	<input type="text" class="textbox" name="username" title="{$login_username}" value="{$lang->login_username}" onfocus="if(this.value == '{$lang->login_username}') { this.value=''; }" onblur="if(this.value=='') { this.value='{$lang->login_username}'; }" />
-	<input type="password" class="textbox" name="password" title="{$lang->login_password}" value="{$lang->login_password}" onfocus="if(this.value == '{$lang->login_password}') { this.value=''; }" onblur="if(this.value=='') { this.value='{$lang->login_password}'; }" />
+	<input type="text" class="textbox" name="username" title="{$login_username}" value="{$lang->login_username}" onfocus="if (this.value == '{$lang->login_username}') { this.value=''; }" onblur="if (this.value=='') { this.value='{$lang->login_username}'; }" />
+	<input type="password" class="textbox" name="password" title="{$lang->login_password}" value="{$lang->login_password}" onfocus="if (this.value == '{$lang->login_password}') { this.value=''; }" onblur="if (this.value=='') { this.value='{$lang->login_password}'; }" />
 	{$gobutton}
 </form>]]></template>
 		<template name="multipage_breadcrumb" version="1600"><![CDATA[<div id="breadcrumb_multipage_popup" class="pagination pagination_breadcrumb" style="display: none;">
@@ -5504,7 +5504,7 @@ body {
 </div>
 <script type="text/javascript">
 // <!--
-	if(use_xmlhttprequest == "1")
+	if (use_xmlhttprequest == "1")
 	{
 		new PopupMenu("breadcrumb_multipage");
 	}
@@ -6553,7 +6553,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 	var editor = eval('opener.' + '{$editor}');
 	function insertSmilie(code)
 	{
-		if(editor)
+		if (editor)
 		{
 			editor.performInsert(code, "", TRUE, FALSE);
 		}
@@ -7384,7 +7384,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 							<script type="text/javascript" src="jscripts/autocomplete.js?ver=1400"></script>
 							<script type="text/javascript">
 							<!--
-								if(use_xmlhttprequest == "1")
+								if (use_xmlhttprequest == "1")
 								{
 									new autoComplete("buddy_add_username", "xmlhttp.php?action=get_users", {valueSpan: "username", delimChar: ","});
 								}
@@ -7419,7 +7419,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 							<div style="margin-left: 130px;"><input type="text" name="add_username" id="ignored_add_username" style="width: 60%;" class="textbox" /> <input type="submit" value="{$lang->ignore_users}" id="ignored_submit" class="button" /></div>
 							<script type="text/javascript">
 							<!--
-								if(use_xmlhttprequest == "1")
+								if (use_xmlhttprequest == "1")
 								{
 									new autoComplete("ignored_add_username", "xmlhttp.php?action=get_users", {valueSpan: "username", delimChar: ","});
 								}
@@ -7892,14 +7892,14 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <!--
 	function toggleType()
 	{
-		if($('type_merge'))
+		if ($('type_merge'))
 		{
-			if($('type_movecopythread').checked == TRUE)
+			if ($('type_movecopythread').checked == TRUE)
 			{
 				Element.hide('type_merge_expanded');
 				Element.show('type_movecopythread_expanded');
 			}
-			else if($('type_merge').checked == TRUE)
+			else if ($('type_merge').checked == TRUE)
 			{
 				Element.hide('type_movecopythread_expanded');
 				Element.show('type_merge_expanded');
@@ -7912,7 +7912,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 		}
 		else
 		{
-			if($('type_movecopythread').checked == TRUE)
+			if ($('type_movecopythread').checked == TRUE)
 			{
 				Element.show('type_movecopythread_expanded');
 			}
@@ -7965,7 +7965,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <td rowspan="2" align="center"><img src="captcha.php?action=regimage&amp;imagehash={$imagehash}" alt="{$lang->image_verification}" title="{$lang->image_verification}" id="captcha_img" /><br /><span style="color: red;" class="smalltext">{$lang->verification_subnote}</span>
 <script type="text/javascript">
 <!--
-	if(use_xmlhttprequest == "1")
+	if (use_xmlhttprequest == "1")
 	{
 		document.write('<br \/><br \/><input type="button" class="button" tabindex="10000" name="refresh" value="{$lang->refresh}" onclick="return captcha.refresh();" \/>');
 	}
@@ -8173,10 +8173,10 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 		<template name="private_send_autocomplete" version="1400"><![CDATA[<script type="text/javascript" src="jscripts/autocomplete.js?ver=1400"></script>
 <script type="text/javascript">
 <!--
-	if(use_xmlhttprequest == "1")
+	if (use_xmlhttprequest == "1")
 	{
 		new autoComplete("to", "xmlhttp.php?action=get_users", {valueSpan: "username", delimChar: ","});
-		if($('bcc'))
+		if ($('bcc'))
 		{
 			new autoComplete("bcc", "xmlhttp.php?action=get_users", {valueSpan: "username", delimChar: ","});
 		}
@@ -8186,7 +8186,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 		<template name="forumdisplay_threadlist_inlineedit_js" version="1400"><![CDATA[<script type="text/javascript" src="jscripts/inline_edit.js?ver=1400"></script>
 <script type="text/javascript">
 <!--
-	if(use_xmlhttprequest == "1")
+	if (use_xmlhttprequest == "1")
 	{
 		new inlineEditor("xmlhttp.php?action=edit_subject&my_post_key="+my_post_key, {className: "subject_editable", spinnerImage: "{$theme['imgdir']}/spinner.gif", lang_click_edit: "{$lang->click_hold_edit}"});
 	}
@@ -8234,7 +8234,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 					<script type="text/javascript">
 					<!--
 						var showBack = {$show_back};
-						if(showBack == 1)
+						if (showBack == 1)
 						{
 							document.write('[<a href="javascript:history.go(-1);">{$lang->go_back}</a>]');
 						}
@@ -8309,7 +8309,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 		<td rowspan="2" style="vertical-align: middle;"><img src="captcha.php?imagehash={$imagehash}" alt="{$lang->image_verification}" title="{$lang->image_verification}" id="captcha_img" /><br /><span style="color: red;" class="smalltext">{$lang->verification_subnote}</span>
 		<script type="text/javascript">
 		<!--
-			if(use_xmlhttprequest == "1")
+			if (use_xmlhttprequest == "1")
 			{
 				document.write('<br \/><br \/><input type="button" class="button" name="refresh" value="{$lang->refresh}" onclick="return captcha.refresh();" \/>');
 			}
@@ -8371,7 +8371,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 		<form action="search.php" method="post">
 			<input type="hidden" name="action" value="thread" />
 			<input type="hidden" name="tid" value="{$thread['tid']}" />
-			<input type="text" name="keywords" value="{$lang->enter_keywords}" onfocus="if(this.value == '{$lang->enter_keywords}') { this.value = ''; }" onblur="if(this.value=='') { this.value='{$lang->enter_keywords}'; }" class="textbox" size="25" />
+			<input type="text" name="keywords" value="{$lang->enter_keywords}" onfocus="if (this.value == '{$lang->enter_keywords}') { this.value = ''; }" onblur="if (this.value=='') { this.value='{$lang->enter_keywords}'; }" class="textbox" size="25" />
 			<input type="submit" class="button" value="{$lang->search_thread}" />
 		</form>
 	</div>]]></template>
@@ -8614,7 +8614,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 				<!--
 					function toggleType()
 					{
-						if($('type_single').checked == TRUE)
+						if ($('type_single').checked == TRUE)
 						{
 							Element.hide('ranged_selects');
 							Element.show('single_selects');
@@ -8634,7 +8634,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 						{
 							Element.hide(e);
 						});
-						if($('repeats_type_'+repeats))
+						if ($('repeats_type_'+repeats))
 						{
 							Element.show('repeats_type_'+repeats);
 						}
@@ -9042,7 +9042,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 				<!--
 					function toggleType()
 					{
-						if($('type_single').checked == TRUE)
+						if ($('type_single').checked == TRUE)
 						{
 							Element.hide('ranged_selects');
 							Element.show('single_selects');
@@ -9062,7 +9062,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 						{
 							Element.hide(e);
 						});
-						if($('repeats_type_'+repeats))
+						if ($('repeats_type_'+repeats))
 						{
 							Element.show('repeats_type_'+repeats);
 						}
@@ -9428,7 +9428,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 		<template name="calendar_event_modoptions" version="1604"><![CDATA[				<form method="post" action="calendar.php">
 					<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 					<input type="hidden" name="eid" value="{$event['eid']}">
-					<select name="action" onchange="if(this.options[this.selectedIndex].value != '') { window.location=('calendar.php?action='+this.options[this.selectedIndex].value+'&amp;eid={$event['eid']}&amp;my_post_key={$mybb->post_code}') }">
+					<select name="action" onchange="if (this.options[this.selectedIndex].value != '') { window.location=('calendar.php?action='+this.options[this.selectedIndex].value+'&amp;eid={$event['eid']}&amp;my_post_key={$mybb->post_code}') }">
 						<option value="" style="font-weight: bold;">{$lang->moderator_options}</option>
 						<option value="{$approve_value}">{$approve}</option>
 						<option value="move">{$lang->move_event}</option>
@@ -9648,7 +9648,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 						var checked = '';
 						$$('.types_check').each(function(e)
 						{
-							if(e.checked == TRUE)
+							if (e.checked == TRUE)
 							{
 								checked = e.value;
 							}
@@ -9657,7 +9657,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 						{
 							Element.hide(e);
 						});
-						if($('type_'+checked))
+						if ($('type_'+checked))
 						{
 							Element.show('type_'+checked);
 						}
@@ -9733,15 +9733,15 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 					var clickableEditor = '';
 					function togglePM()
 					{
-						if($('send_pm').checked == TRUE)
+						if ($('send_pm').checked == TRUE)
 						{
 							$('pm_input').show();
 							$('pm_smilie_insert').show();
-							if(mybb_editor_disabled == TRUE && editor_language)
+							if (mybb_editor_disabled == TRUE && editor_language)
 							{
 								mybb_editor_disabled = FALSE;
 								clickableEditor = new messageEditor("message", {lang: editor_language, rtl: {$lang->settings['rtl']}, theme: "{$theme['editortheme']}"});
-								if(clickableEditor)
+								if (clickableEditor)
 								{
 									clickableEditor.bindSmilieInserter("clickable_smilies");
 								}
@@ -10527,12 +10527,12 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 	{$footer}
 <script type="text/javascript">
 <!--
-	if(mod_posts == 0)
+	if (mod_posts == 0)
 	{
 		$('modposts_action').hide();
 	}
 
-	if(susp_posts == 0)
+	if (susp_posts == 0)
 	{
 		$('susposts_action').hide();
 	}
@@ -10541,12 +10541,12 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 	{
 		var item = action + "_action";
 
-		if(action == "modposts")
+		if (action == "modposts")
 		{
 			$('susposts_action').hide();
 			$('suspost').checked = FALSE;
 
-			if($("modpost").checked == FALSE)
+			if ($("modpost").checked == FALSE)
 			{
 				$("modpost").checked = FALSE;
 				$("modposts_action").hide();
@@ -10558,12 +10558,12 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 			}
 		}
 
-		if(action == "susposts")
+		if (action == "susposts")
 		{
 			$('modposts_action').hide();
 			$('modpost').checked = FALSE;
 
-			if($("suspost").checked == FALSE)
+			if ($("suspost").checked == FALSE)
 			{
 				$("suspost").checked = FALSE;
 				$("susposts_action").hide();
@@ -10587,7 +10587,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 
 	function toggleAction()
 	{
-		if($("suspend_action").visible() == TRUE)
+		if ($("suspend_action").visible() == TRUE)
 		{
 			$("suspend_action").hide();
 		}
@@ -10612,7 +10612,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 </dl>
 <script type="text/javascript">
 <!--
-	if(sig_checked == 0)
+	if (sig_checked == 0)
 	{
 		$("suspend_action").hide();
 	}
@@ -10692,7 +10692,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 <script type="text/javascript" src="jscripts/autocomplete.js?ver=1400"></script>
 <script type="text/javascript">
 <!--
-	if(use_xmlhttprequest == "1")
+	if (use_xmlhttprequest == "1")
 	{
 		new autoComplete("username", "xmlhttp.php?action=get_users", {valueSpan: "username"});
 	}
@@ -10792,7 +10792,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 <script type="text/javascript" src="jscripts/autocomplete.js?ver=1400"></script>
 <script type="text/javascript">
 <!--
-	if(use_xmlhttprequest == "1")
+	if (use_xmlhttprequest == "1")
 	{
 		new autoComplete("username", "xmlhttp.php?action=get_users", {valueSpan: "username"});
 	}
@@ -10947,7 +10947,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 <script type="text/javascript" src="jscripts/autocomplete.js?ver=1400"></script>
 <script type="text/javascript">
 <!--
-	if(use_xmlhttprequest == "1")
+	if (use_xmlhttprequest == "1")
 	{
 		new autoComplete("username", "xmlhttp.php?action=get_users", {valueSpan: "username"});
 	}

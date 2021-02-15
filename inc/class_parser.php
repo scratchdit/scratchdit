@@ -86,9 +86,9 @@ class postParser
 		// Set base URL for parsing smilies
 		$this->base_url = $mybb->settings['bburl'];
 
-		if($this->base_url != "")
+		if ($this->base_url != "")
 		{
-			if(my_substr($this->base_url, my_strlen($this->base_url) -1) != "/")
+			if (my_substr($this->base_url, my_strlen($this->base_url) -1) != "/")
 			{
 				$this->base_url = $this->base_url."/";
 			}
@@ -103,12 +103,12 @@ class postParser
 		$message = str_replace("\r", "", $message);
 
 		// Filter bad words if requested.
-		if($this->options['filter_badwords'])
+		if ($this->options['filter_badwords'])
 		{
 			$message = $this->parse_badwords($message);
 		}
 
-		if($this->options['allow_html'] != 1)
+		if ($this->options['allow_html'] != 1)
 		{
 			$message = $this->parse_html($message);
 		}
@@ -123,7 +123,7 @@ class postParser
 		}
 
 		// If MyCode needs to be replaced, first filter out [code] and [php] tags.
-		if($this->options['allow_mycode'])
+		if ($this->options['allow_mycode'])
 		{
 			preg_match_all("#\[(code|php)\](.*?)\[/\\1\](\r\n?|\n?)#si", $message, $code_matches, PREG_SET_ORDER);
 			$message = preg_replace("#\[(code|php)\](.*?)\[/\\1\](\r\n?|\n?)#si", "<mybb-code>\n", $message);
@@ -133,7 +133,7 @@ class postParser
 		$message = $this->fix_javascript($message);
 
 		// Replace "me" code and slaps if we have a username
-		if($this->options['me_username'])
+		if ($this->options['me_username'])
 		{
 			global $lang;
 
@@ -142,19 +142,19 @@ class postParser
 		}
 
 		// If we can, parse smilies
-		if($this->options['allow_smilies'])
+		if ($this->options['allow_smilies'])
 		{
 			$message = $this->parse_smilies($message, $this->options['allow_html']);
 		}
 
 		// Replace MyCode if requested.
-		if($this->options['allow_mycode'])
+		if ($this->options['allow_mycode'])
 		{
 			$message = $this->parse_mycode($message, $this->options);
 		}
 
 		// Parse Highlights
-		if($this->options['highlight'])
+		if ($this->options['highlight'])
 		{
 			$message = $this->highlight_message($message, $this->options['highlight']);
 		}
@@ -162,24 +162,24 @@ class postParser
 		// Run plugin hooks
 		$message = $plugins->run_hooks("parse_message", $message);
 
-		if($this->options['allow_mycode'])
+		if ($this->options['allow_mycode'])
 		{
 			// Now that we're done, if we split up any code tags, parse them and glue it all back together
-			if(count($code_matches) > 0)
+			if (count($code_matches) > 0)
 			{
 				foreach($code_matches as $text)
 				{
 					// Fix up HTML inside the code tags so it is clean
-					if($options['allow_html'] != 0)
+					if ($options['allow_html'] != 0)
 					{
 						$text[2] = $this->parse_html($text[2]);
 					}
 
-					if(my_strtolower($text[1]) == "code")
+					if (my_strtolower($text[1]) == "code")
 					{
 						$code = $this->mycode_parse_code($text[2]);
 					}
-					elseif(my_strtolower($text[1]) == "php")
+					elseif (my_strtolower($text[1]) == "php")
 					{
 						$code = $this->mycode_parse_php($text[2]);
 					}
@@ -189,7 +189,7 @@ class postParser
 		}
 
 		// Replace meta and base tags in our post - these are > dangerous <
-		if($this->options['allow_html'])
+		if ($this->options['allow_html'])
 		{
 			$message = preg_replace_callback("#<((m[^a])|(b[^diloru>])|(s[^aemptu>]))(\s*[^>]*)>#si", create_function(
 				'$matches',
@@ -197,7 +197,7 @@ class postParser
 			), $message);
 		}
 
-		if($options['nl2br'] !== 0)
+		if ($options['nl2br'] !== 0)
 		{
 			$message = nl2br($message);
 			// Fix up new lines and block level elements
@@ -296,7 +296,7 @@ class postParser
 		$custom_mycode = $cache->read("mycode");
 
 		// If there is custom MyCode, load it.
-		if(is_array($custom_mycode))
+		if (is_array($custom_mycode))
 		{
 			foreach($custom_mycode as $key => $mycode)
 			{
@@ -336,7 +336,7 @@ class postParser
 		global $lang;
 
 		// Cache the MyCode globally if needed.
-		if($this->mycode_cache == 0)
+		if ($this->mycode_cache == 0)
 		{
 			$this->cache_mycode();
 		}
@@ -373,7 +373,7 @@ class postParser
 		}
 
 		// Convert images when allowed.
-		if($options['allow_imgcode'] != 0)
+		if ($options['allow_imgcode'] != 0)
 		{
 			$message = preg_replace("#\[img\](\r\n?|\n?)(https?://([^<>\"']+?))\[/img\]#ise", "\$this->mycode_parse_img('$2')\n", $message);
 			$message = preg_replace("#\[img=([0-9]{1,3})x([0-9]{1,3})\](\r\n?|\n?)(https?://([^<>\"']+?))\[/img\]#ise", "\$this->mycode_parse_img('$4', array('$1', '$2'));", $message);
@@ -382,7 +382,7 @@ class postParser
 		}
 
 		// Convert videos when allow.
-		if($options['allow_videocode'] != 0)
+		if ($options['allow_videocode'] != 0)
 		{
 			$message = preg_replace("#\[video=(.*?)\](.*?)\[/video\]#ei", "\$this->mycode_parse_video('$1', '$2');", $message);
 		}
@@ -401,11 +401,11 @@ class postParser
 		$this->smilies_cache = array();
 
 		$smilies = $cache->read("smilies");
-		if(is_array($smilies))
+		if (is_array($smilies))
 		{
 			foreach($smilies as $sid => $smilie)
 			{
-				if(defined("IN_ARCHIVE") && substr($smilie['image'], 0, 4) != "http")
+				if (defined("IN_ARCHIVE") && substr($smilie['image'], 0, 4) != "http")
 				{
 					// We're in the archive and not using an outside image, add in our address
 					$smilie['image'] = $mybb->settings['bburl']."/".$smilie['image'];
@@ -426,7 +426,7 @@ class postParser
 	 */
 	function parse_smilies($message, $allow_html=0)
 	{
-		if($this->smilies_cache == 0)
+		if ($this->smilies_cache == 0)
 		{
 			$this->cache_smilies();
 		}
@@ -440,7 +440,7 @@ class postParser
 		// Impose a hard limit of 500 smilies per message as to not overload the parser
 		$remaining = 500;
 
-		if(is_array($this->smilies_cache))
+		if (is_array($this->smilies_cache))
 		{
 			foreach($this->smilies_cache as $find => $replace)
 			{
@@ -452,20 +452,20 @@ class postParser
 
 				// Fix issues for smileys starting with a ";"
 				$orig_find = $find;
-				if(substr($find, 0, 1) == ";")
+				if (substr($find, 0, 1) == ";")
 				{
 					$find = "(?<!&gt|&lt|&amp)".$find;
 				}
 
 				$message = @preg_replace("#(?<=[^\"])".$find."(?=.\W|\"|\W.|\W$)#si", $replace, $message, $remaining, $replacements);
 
-				if($message == NULL)
+				if ($message == NULL)
 				{
 					$message = preg_replace("#(?<=[^&;\"])".$orig_find."(?=.\W|\"|\W.|\W$)#si", $replace, $orig_message, $remaining);
 				}
 
 				$remaining -= $replacements;
-				if($remaining <= 0)
+				if ($remaining <= 0)
 				{
 					break; // Reached the limit
 				}
@@ -474,7 +474,7 @@ class postParser
 		}
 
 		// If we matched any tags previously, swap them back in
-		if(count($bad_matches[0]) > 0)
+		if (count($bad_matches[0]) > 0)
 		{
 			foreach($bad_matches[0] as $match)
 			{
@@ -507,16 +507,16 @@ class postParser
 	 */
 	function parse_badwords($message, $options=array())
 	{
-		if($this->badwords_cache == 0)
+		if ($this->badwords_cache == 0)
 		{
 			$this->cache_badwords();
 		}
-		if(is_array($this->badwords_cache))
+		if (is_array($this->badwords_cache))
 		{
 			reset($this->badwords_cache);
 			foreach($this->badwords_cache as $bid => $badword)
 			{
-				if(!$badword['replacement'])
+				if (!$badword['replacement'])
 				{
 					$badword['replacement'] = "*****";
 				}
@@ -533,7 +533,7 @@ class postParser
 				}
 			}
 		}
-		if($options['strip_tags'] == 1)
+		if ($options['strip_tags'] == 1)
 		{
 			$message = strip_tags($message);
 		}
@@ -583,7 +583,7 @@ class postParser
 	{
 		$size = intval($size)+10;
 
-		if($size > 50)
+		if ($size > 50)
 		{
 			$size = 50;
 		}
@@ -610,7 +610,7 @@ class postParser
 			"#\[quote\](.*?)\[\/quote\](\r\n?|\n?)#si"
 		);
 
-		if($text_only == FALSE)
+		if ($text_only == FALSE)
 		{
 			$replace = array(
 				"\$this->mycode_parse_post_quotes('$4','$2$3')",
@@ -631,12 +631,12 @@ class postParser
 			$message = preg_replace($pattern, $replace, $message, -1, $count);
 		} while($count);
 
-		if(!$message)
+		if (!$message)
 		{
 			$message = $previous_message;
 		}
 
-		if($text_only == FALSE)
+		if ($text_only == FALSE)
 		{
 			$find = array(
 				"#(\r\n*|\n*)<\/cite>(\r\n*|\n*)#",
@@ -669,18 +669,18 @@ class postParser
 		$message = trim($message);
 		$message = preg_replace("#(^<br(\s?)(\/?)>|<br(\s?)(\/?)>$)#i", "", $message);
 
-		if(!$message) return '';
+		if (!$message) return '';
 
 		$message = str_replace('\"', '"', $message);
 		$username = str_replace('\"', '"', $username)."'";
 		$delete_quote = TRUE;
 
 		preg_match("#pid=(?:&quot;|\"|')?([0-9]+)[\"']?(?:&quot;|\"|')?#i", $username, $match);
-		if(intval($match[1]))
+		if (intval($match[1]))
 		{
 			$pid = intval($match[1]);
 			$url = $mybb->settings['bburl']."/".get_post_link($pid)."#pid$pid";
-			if(defined("IN_ARCHIVE"))
+			if (defined("IN_ARCHIVE"))
 			{
 				$linkback = " <a href=\"{$url}\">[ -> ]</a>";
 			}
@@ -695,9 +695,9 @@ class postParser
 
 		unset($match);
 		preg_match("#dateline=(?:&quot;|\"|')?([0-9]+)(?:&quot;|\"|')?#i", $username, $match);
-		if(intval($match[1]))
+		if (intval($match[1]))
 		{
-			if($match[1] < TIME_NOW)
+			if ($match[1] < TIME_NOW)
 			{
 				$postdate = my_date($mybb->settings['dateformat'], intval($match[1]));
 				$posttime = my_date($mybb->settings['timeformat'], intval($match[1]));
@@ -707,19 +707,19 @@ class postParser
 			$delete_quote = FALSE;
 		}
 
-		if($delete_quote)
+		if ($delete_quote)
 		{
 			$username = my_substr($username, 0, my_strlen($username)-1);
 		}
 
-		if($text_only)
+		if ($text_only)
 		{
 			return "\n".htmlspecialchars_uni($username)." $lang->wrote{$date}\n--\n{$message}\n--\n";
 		}
 		else
 		{
 			$span = "";
-			if(!$delete_quote)
+			if (!$delete_quote)
 			{
 				$span = "<span>{$date}</span>";
 			}
@@ -739,7 +739,7 @@ class postParser
 	{
 		global $lang;
 
-		if($text_only == TRUE)
+		if ($text_only == TRUE)
 		{
 			return "\n{$lang->code}\n--\n{$code}\n--\n";
 		}
@@ -749,7 +749,7 @@ class postParser
 		$code = rtrim($code);
 		$original = preg_replace('#^\t*#', '', $code);
 
-		if(empty($original))
+		if (empty($original))
 		{
 			return;
 		}
@@ -775,7 +775,7 @@ class postParser
 	{
 		global $lang;
 
-		if($text_only == TRUE)
+		if ($text_only == TRUE)
 		{
 			return "\n{$lang->php_code}\n--\n$str\n--\n";
 		}
@@ -786,7 +786,7 @@ class postParser
 
 		$original = preg_replace('#^\t*#', '', $str);
 
-		if(empty($original))
+		if (empty($original))
 		{
 			return;
 		}
@@ -797,14 +797,14 @@ class postParser
 
 		// See if open and close tags are provided.
 		$added_open_tag = FALSE;
-		if(!preg_match("#^\s*<\?#si", $str))
+		if (!preg_match("#^\s*<\?#si", $str))
 		{
 			$added_open_tag = TRUE;
 			$str = "<?php \n".$str;
 		}
 
 		$added_end_tag = FALSE;
-		if(!preg_match("#\?>\s*$#si", $str))
+		if (!preg_match("#\?>\s*$#si", $str))
 		{
 			$added_end_tag = TRUE;
 			$str = $str." \n?>";
@@ -820,12 +820,12 @@ class postParser
 		$code = str_replace('$', '&#36;', $code);
 		$code = preg_replace("#&amp;\#([0-9]+);#si", "&#$1;", $code);
 
-		if($added_open_tag)
+		if ($added_open_tag)
 		{
 			$code = preg_replace("#<code><span style=\"color: \#([A-Z0-9]{6})\">&lt;\?php( |&nbsp;)(<br />?)#", "<code><span style=\"color: #$1\">", $code);
 		}
 
-		if($added_end_tag)
+		if ($added_end_tag)
 		{
 			$code = str_replace("?&gt;</span></code>", "</span></code>", $code);
 			// Wait a minute. It fails highlighting? Stupid highlighter.
@@ -837,7 +837,7 @@ class postParser
 		$code = str_replace("</code>", "</code></div>", $code);
 		$code = preg_replace("# *$#", "", $code);
 
-		if($bare_return)
+		if ($bare_return)
 		{
 			return $code;
 		}
@@ -855,7 +855,7 @@ class postParser
 	*/
 	function mycode_parse_url($url, $name="")
 	{
-		if(!preg_match("#^[a-z0-9]+://#i", $url))
+		if (!preg_match("#^[a-z0-9]+://#i", $url))
 		{
 			$url = "http://".$url;
 		}
@@ -864,7 +864,7 @@ class postParser
 		$url = str_replace('&amp;', '&', $url);
 		$name = str_replace('&amp;', '&', $name);
 
-		if(!$name)
+		if (!$name)
 		{
 			$name = $url;
 		}
@@ -873,16 +873,16 @@ class postParser
 		$url = str_replace("\'", "'", $url);
 		$fullurl = str_replace("\'", "'", $fullurl);
 
-		if($name == $url && (!isset($this->options['shorten_urls']) || $this->options['shorten_urls'] != 0))
+		if ($name == $url && (!isset($this->options['shorten_urls']) || $this->options['shorten_urls'] != 0))
 		{
-			if(my_strlen($url) > 55)
+			if (my_strlen($url) > 55)
 			{
 				$name = my_substr($url, 0, 40)."...".my_substr($url, -10);
 			}
 		}
 
 		$nofollow = '';
-		if(isset($this->options['nofollow_on']))
+		if (isset($this->options['nofollow_on']))
 		{
 			$nofollow = " rel=\"nofollow\"";
 		}
@@ -908,21 +908,21 @@ class postParser
 		$url = trim($url);
 		$url = str_replace("\n", "", $url);
 		$url = str_replace("\r", "", $url);
-		if($align == "right")
+		if ($align == "right")
 		{
 			$css_align = " style=\"float: right;\"";
 		}
-		else if($align == "left")
+		else if ($align == "left")
 		{
 			$css_align = " style=\"float: left;\"";
 		}
 		$alt = htmlspecialchars_uni(basename($url));
-		if(my_strlen($alt) > 55)
+		if (my_strlen($alt) > 55)
 		{
 			$alt = my_substr($alt, 0, 40)."...".my_substr($alt, -10);
 		}
 		$alt = $lang->sprintf($lang->posted_image, $alt);
-		if($dimensions[0] > 0 && $dimensions[1] > 0)
+		if ($dimensions[0] > 0 && $dimensions[1] > 0)
 		{
 			return "<img src=\"{$url}\" width=\"{$dimensions[0]}\" height=\"{$dimensions[1]}\" border=\"0\" alt=\"{$alt}\"{$css_align} />";
 		}
@@ -943,11 +943,11 @@ class postParser
 	{
 		$name = str_replace("\\'", "'", $name);
 		$email = str_replace("\\'", "'", $email);
-		if(!$name)
+		if (!$name)
 		{
 			$name = $email;
 		}
-		if(preg_match("/^([a-zA-Z0-9-_\+\.]+?)@[a-zA-Z0-9-]+\.[a-zA-Z0-9\.-]+$/si", $email))
+		if (preg_match("/^([a-zA-Z0-9-_\+\.]+?)@[a-zA-Z0-9-]+\.[a-zA-Z0-9\.-]+$/si", $email))
 		{
 			return "<a href=\"mailto:$email\">".$name."</a>";
 		}
@@ -961,19 +961,19 @@ class postParser
 	{
 		global $templates;
 
-		if(empty($video) || empty($url))
+		if (empty($video) || empty($url))
 		{
 			return "[video={$video}]{$url}[/video]";
 		}
 
 		$parsed_url = @parse_url(urldecode($url));
-		if($parsed_url == FALSE)
+		if ($parsed_url == FALSE)
 		{
 			return "[video={$video}]{$url}[/video]";;
 		}
 
 		$fragments = array();
-		if($parsed_url['fragment'])
+		if ($parsed_url['fragment'])
 		{
 			$fragments = explode("&", $parsed_url['fragment']);
 		}
@@ -1010,11 +1010,11 @@ class postParser
 				$id = $path[1]; // http://vimeo.com/fds123
 				break;
 			case "youtube":
-				if($fragments[0])
+				if ($fragments[0])
 				{
 					$id = str_replace('!v=', '', $fragments[0]); // http://www.youtube.com/watch#!v=fds123
 				}
-				elseif($input['v'])
+				elseif ($input['v'])
 				{
 					$id = $input['v']; // http://www.youtube.com/watch?v=fds123
 				}
@@ -1027,7 +1027,7 @@ class postParser
 				return "[video={$video}]{$url}[/video]";
 		}
 
-		if(empty($id) || ($video == "yahoo" && empty($vid)))
+		if (empty($id) || ($video == "yahoo" && empty($vid)))
 		{
 			return "[video={$video}]{$url}[/video]";
 		}
@@ -1069,7 +1069,7 @@ class postParser
 		$message = preg_replace("#\s*\[\*\]\s*#", "</li>\n<li>", $message);
 		$message .= "</li>";
 
-		if($type)
+		if ($type)
 		{
 			$list = "\n<ol type=\"$type\">$message</ol>\n";
 		}
@@ -1089,11 +1089,11 @@ class postParser
 	 */
 	function strip_smilies($message)
 	{
-		if($this->smilies_cache == 0)
+		if ($this->smilies_cache == 0)
 		{
 			$this->cache_smilies();
 		}
-		if(is_array($this->smilies_cache))
+		if (is_array($this->smilies_cache))
 		{
 			$message = str_replace($this->smilies_cache, array_keys($this->smilies_cache), $message);
 		}
@@ -1109,12 +1109,12 @@ class postParser
 	 */
 	function highlight_message($message, $highlight)
 	{
-		if(empty($this->highlight_cache))
+		if (empty($this->highlight_cache))
 		{
 			$this->highlight_cache = build_highlight_array($highlight);
 		}
 
-		if(is_array($this->highlight_cache) && !empty($this->highlight_cache))
+		if (is_array($this->highlight_cache) && !empty($this->highlight_cache))
 		{
 			$message = preg_replace(array_keys($this->highlight_cache), $this->highlight_cache, $message);
 		}
@@ -1133,7 +1133,7 @@ class postParser
 		global $plugins;
 
 		// Filter bad words if requested.
-		if($options['filter_badwords'] != 0)
+		if ($options['filter_badwords'] != 0)
 		{
 			$message = $this->parse_badwords($message);
 		}
@@ -1161,7 +1161,7 @@ class postParser
 		$message = preg_replace($find, $replace, $message);
 
 		// Replace "me" code and slaps if we have a username
-		if($options['me_username'])
+		if ($options['me_username'])
 		{
 			global $lang;
 

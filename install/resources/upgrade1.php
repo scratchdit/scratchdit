@@ -28,7 +28,7 @@ function upgrade1_dbchanges()
 
 	$contents .= "<p>Making necessary database modifications...";
 
-	if($db->field_exists('regip', "users"))
+	if ($db->field_exists('regip', "users"))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."users DROP regid;");
 	}
@@ -36,19 +36,19 @@ function upgrade1_dbchanges()
 
 	$db->write_query("ALTER TABLE banned CHANGE lifted lifted varchar(40) NOT NULL;");
 
-	if($db->field_exists('posthash', "attachments"))
+	if ($db->field_exists('posthash', "attachments"))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."attachments DROP posthash;");
 	}
 	$db->write_query("ALTER TABLE attachments ADD posthash varchar(50) NOT NULL AFTER pid;");
 
-	if($db->field_exists('thumbnail', "attachments"))
+	if ($db->field_exists('thumbnail', "attachments"))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."attachments DROP thumbnail;");
 	}
 	$db->write_query("ALTER TABLE attachments ADD thumbnail blob NOT NULL");
 
-	if($db->field_exists('thumbnailsm', "attachments"))
+	if ($db->field_exists('thumbnailsm', "attachments"))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."attachments DROP thumbnailsm;");
 	}
@@ -65,122 +65,122 @@ function upgrade1_dbchanges()
 	$db->write_query("INSERT INTO attachtypes VALUES(NULL,'Microsoft Word Document','','doc rtf','1024');");
 	$db->write_query("INSERT INTO attachtypes VALUES(NULL,'Executable','','exe com bat','1024');");
 
-	if($db->field_exists('small', "themes"))
+	if ($db->field_exists('small', "themes"))
 	{
 		$db->write_query("ALTER TABLE themes DROP small;");
 	}
-	if($db->field_exists('smallend', "themes"))
+	if ($db->field_exists('smallend', "themes"))
 	{
 		$db->write_query("ALTER TABLE themes DROP smallend;");
 	}
-	if($db->field_exists('font', "themes"))
+	if ($db->field_exists('font', "themes"))
 	{
 		$db->write_query("ALTER TABLE themes DROP font;");
 	}
-	if($db->field_exists('frontend', "themes"))
+	if ($db->field_exists('frontend', "themes"))
 	{
 		$db->write_query("ALTER TABLE themes DROP fontend;");
 	}
-	if($db->field_exists('large', "themes"))
+	if ($db->field_exists('large', "themes"))
 	{
 		$db->write_query("ALTER TABLE themes DROP large;");
 	}
-	if($db->field_exists('largeend', "themes"))
+	if ($db->field_exists('largeend', "themes"))
 	{
 		$db->write_query("ALTER TABLE themes DROP largeend;");
 	}
 
-	if($db->field_exists('smallfont', "themes"))
+	if ($db->field_exists('smallfont', "themes"))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."themes DROP smallfont;");
 	}
 	$db->write_query("ALTER TABLE themes ADD smallfont varchar(150) NOT NULL;");
 
-	if($db->field_exists('smallfontsize', "themes"))
+	if ($db->field_exists('smallfontsize', "themes"))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."themes DROP smallfontsize;");
 	}
 	$db->write_query("ALTER TABLE themes ADD smallfontsize varchar(20) NOT NULL;");
 
-	if($db->field_exists('normalfont', "themes"))
+	if ($db->field_exists('normalfont', "themes"))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."themes DROP normalfont;");
 	}
 	$db->write_query("ALTER TABLE themes ADD normalfont varchar(150) NOT NULL;");
 
-	if($db->field_exists('normalfontsize', "themes"))
+	if ($db->field_exists('normalfontsize', "themes"))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."themes DROP normalfontsize;");
 	}
 	$db->write_query("ALTER TABLE themes ADD normalfontsize varchar(20) NOT NULL;");
 
-	if($db->field_exists('largefont', "themes"))
+	if ($db->field_exists('largefont', "themes"))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."themes DROP largefont;");
 	}
 	$db->write_query("ALTER TABLE themes ADD largefont varchar(150) NOT NULL;");
 
-	if($db->field_exists('largefontsize', "themes"))
+	if ($db->field_exists('largefontsize', "themes"))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."themes DROP largefontsize;");
 	}
 	$db->write_query("ALTER TABLE themes ADD largefontsize varchar(20) NOT NULL;");
 
-	if($db->field_exists('menubgcolor', "themes"))
+	if ($db->field_exists('menubgcolor', "themes"))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."themes DROP menubgcolor;");
 	}
 	$db->write_query("ALTER TABLE themes ADD menubgcolor varchar(15) NOT NULL;");
 
-	if($db->field_exists('menubgimage', "themes"))
+	if ($db->field_exists('menubgimage', "themes"))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."themes DROP menubgimage;");
 	}
 	$db->write_query("ALTER TABLE themes ADD menubgimage varchar(100) NOT NULL;");
 
-	if($db->field_exists('menucolor', "themes"))
+	if ($db->field_exists('menucolor', "themes"))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."themes DROP menucolor;");
 	}
 	$db->write_query("ALTER TABLE themes ADD menucolor varchar(15) NOT NULL;");
 
-	if($db->field_exists('menuhoverbgcolor', "themes"))
+	if ($db->field_exists('menuhoverbgcolor', "themes"))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."themes DROP menuhoverbgcolor;");
 	}
 	$db->write_query("ALTER TABLE themes ADD menuhoverbgcolor varchar(15) NOT NULL;");
 
-	if($db->field_exists('menuhoverbgimage', "themes"))
+	if ($db->field_exists('menuhoverbgimage', "themes"))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."themes DROP menuhoverbgimage;");
 	}
 	$db->write_query("ALTER TABLE themes ADD menuhoverbgimage varchar(100) NOT NULL;");
 
-	if($db->field_exists('menuhovercolor', "themes"))
+	if ($db->field_exists('menuhovercolor', "themes"))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."themes DROP menuhovercolor;");
 	}
 	$db->write_query("ALTER TABLE themes ADD menuhovercolor varchar(15) NOT NULL;");
 
-	if($db->field_exists('panelbgcolor', "themes"))
+	if ($db->field_exists('panelbgcolor', "themes"))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."themes DROP panelbgcolor;");
 	}
 	$db->write_query("ALTER TABLE themes ADD panelbgcolor varchar(15) NOT NULL;");
 
-	if($db->field_exists('panelbgimage', "themes"))
+	if ($db->field_exists('panelbgimage', "themes"))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."themes DROP panelbgimage;");
 	}
 	$db->write_query("ALTER TABLE themes ADD panelbgimage varchar(100) NOT NULL;");
 
-	if($db->field_exists('linkhover', "themes"))
+	if ($db->field_exists('linkhover', "themes"))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."themes DROP linkhover;");
 	}
 	$db->write_query("ALTER TABLE themes ADD linkhover varchar(15) NOT NULL AFTER link;");
 
-	if($db->field_exists('extracss', "themes"))
+	if ($db->field_exists('extracss', "themes"))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."themes DROP extracss;");
 	}
@@ -243,7 +243,7 @@ function upgrade1_dbchanges2()
 	foreach($themefile as $key => $val)
 	{
 		list($item, $value) = explode("|#*!!**!!*#|", $val);
-		if($db->field_exists($item, "themes"))
+		if ($db->field_exists($item, "themes"))
 		{
 			$themebits[$item] = $value;
 		}
@@ -256,7 +256,7 @@ function upgrade1_dbchanges2()
 	unset($themebits['templateset']);
 	foreach($themebits as $key => $val)
 	{
-		if($key && $val)
+		if ($key && $val)
 		{
 			$tquery1 .= ",$key";
 			$tquery2 .= ",'$val'";

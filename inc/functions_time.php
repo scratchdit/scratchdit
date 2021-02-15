@@ -120,7 +120,7 @@ Thursday, October 4, 1582 (Julian) was followed immediately by Friday, October 1
 	} else
 		$greg_correction = 0;
 
-	if($month > 2)
+	if ($month > 2)
 	    $month -= 2;
 	else {
 	    $month += 10;
@@ -719,7 +719,7 @@ function adodb_mktime($hr,$min,$sec,$mon=FALSE,$day=FALSE,$year=FALSE,$is_dst=FA
 	$_month_table_leaf = array("",31,29,31,30,31,30,31,31,30,31,30,31);
 
 	$_total_date = 0;
-	if($year > 9999) {
+	if ($year > 9999) {
 		return time();
 	} else if ($year >= 1970) {
 		for ($a = 1970 ; $a <= $year; $a++) {

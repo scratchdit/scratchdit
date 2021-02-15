@@ -38,7 +38,7 @@ $fid = $thread['fid'];
 $tid = $thread['tid'];
 
 // Is the currently logged in user a moderator of this forum?
-if(is_moderator($fid))
+if (is_moderator($fid))
 {
 	$ismod = TRUE;
 }
@@ -48,14 +48,14 @@ else
 }
 
 // Make sure we are looking at a real thread here.
-if(!$tid || ($thread['visible'] == 0 && $ismod == FALSE) || ($thread['visible'] > 1 && $ismod == TRUE))
+if (!$tid || ($thread['visible'] == 0 && $ismod == FALSE) || ($thread['visible'] > 1 && $ismod == TRUE))
 {
 	error($lang->error_invalidthread);
 }
 
 // Get forum info
 $forum = get_forum($fid);
-if(!$forum)
+if (!$forum)
 {
 	error($lang->error_invalidforum);
 }
@@ -71,11 +71,11 @@ for($i = 0; $i < $numparents; ++$i)
 }
 $forumpermissions = forum_permissions($forum['fid']);
 
-if($forum['type'] != "f")
+if ($forum['type'] != "f")
 {
 	error($lang->error_invalidforum);
 }
-if($forumpermissions['canview'] == 0 || $forumpermissions['canviewthreads'] == 0)
+if ($forumpermissions['canview'] == 0 || $forumpermissions['canviewthreads'] == 0)
 {
 	error_no_permission();
 }
@@ -90,11 +90,11 @@ $perpage = $mybb->settings['postsperpage'];
 $postcount = intval($thread['replies'])+1;
 $pages = ceil($postcount/$perpage);
 
-if($page > $pages)
+if ($page > $pages)
 {
 	$page = 1;
 }
-if($page > 0)
+if ($page > 0)
 {
 	$start = ($page-1) * $perpage;
 }
@@ -104,7 +104,7 @@ else
 	$page = 1;
 }
 
-if($postcount > $perpage)
+if ($postcount > $perpage)
 {
 	$multipage = printthread_multipage($postcount, $perpage, $page, "printthread.php?tid={$tid}");
 }
@@ -112,7 +112,7 @@ if($postcount > $perpage)
 $thread['threadlink'] = get_thread_link($tid);
 
 $postrows = '';
-if(is_moderator($forum['fid']))
+if (is_moderator($forum['fid']))
 {
     $visible = "AND (p.visible='0' OR p.visible='1')";
 }
@@ -130,7 +130,7 @@ $query = $db->query("
 ");
 while($postrow = $db->fetch_array($query))
 {
-	if($postrow['userusername'])
+	if ($postrow['userusername'])
 	{
 		$postrow['username'] = $postrow['userusername'];
 	}
@@ -148,7 +148,7 @@ while($postrow = $db->fetch_array($query))
 		"shorten_urls" => 0,
 		"filter_badwords" => 1
 	);
-	if($postrow['smilieoff'] == 1)
+	if ($postrow['smilieoff'] == 1)
 	{
 		$parser_options['allow_smilies'] = 0;
 	}
@@ -166,7 +166,7 @@ output_page($printable);
 function makeprintablenav($pid="0", $depth="--")
 {
 	global $db, $pforumcache, $fid, $forum, $lang;
-	if(!is_array($pforumcache))
+	if (!is_array($pforumcache))
 	{
 		$parlist = build_parent_list($fid, "fid", "OR", $forum['parentlist']);
 		$query = $db->simple_select("forums", "name, fid, pid", "$parlist", array('order_by' => 'pid, disporder'));
@@ -176,12 +176,12 @@ function makeprintablenav($pid="0", $depth="--")
 		}
 		unset($forumnav);
 	}
-	if(is_array($pforumcache[$pid]))
+	if (is_array($pforumcache[$pid]))
 	{
 		foreach($pforumcache[$pid] as $key => $forumnav)
 		{
 			$forums .= "+".$depth." $lang->forum {$forumnav['name']} (<i>".$mybb->settings['bburl']."/".get_forum_link($forumnav['fid'])."</i>)<br />\n";
-			if($pforumcache[$forumnav['fid']])
+			if ($pforumcache[$forumnav['fid']])
 			{
 				$newdepth = $depth."-";
 				$forums .= makeprintablenav($forumnav['fid'], $newdepth);
@@ -203,14 +203,14 @@ function printthread_multipage($count, $perpage, $page, $url)
 {
 	global $lang;
 	$multipage = "";
-	if($count > $perpage)
+	if ($count > $perpage)
 	{
 		$pages = $count / $perpage;
 		$pages = ceil($pages);
 
 		for($i = 1; $i <= $pages; ++$i)
 		{
-			if($i == $page)
+			if ($i == $page)
 			{
 				$mppage .= "<strong>$i</strong> ";
 			}

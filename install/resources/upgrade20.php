@@ -30,7 +30,7 @@ function upgrade20_dbchanges()
 	echo "<p>Performing necessary upgrade queries...</p>";
 
 	// Update the sequences for pgSQL - #1094, #1248
-	if($mybb->config['database']['type'] == "pgsql")
+	if ($mybb->config['database']['type'] == "pgsql")
 	{
 		$db->query("SELECT setval('{$mybb->config['database']['table_prefix']}attachtypes_atid_seq', (SELECT max(atid) FROM {$mybb->config['database']['table_prefix']}attachtypes));");
 		$db->query("SELECT setval('{$mybb->config['database']['table_prefix']}forums_fid_seq', (SELECT max(fid) FROM {$mybb->config['database']['table_prefix']}forums));");

@@ -21,7 +21,7 @@ class diskCacheHandler
 	 */
 	function connect($silent=FALSE)
 	{
-		if(!@is_writable(MYBB_ROOT."cache"))
+		if (!@is_writable(MYBB_ROOT."cache"))
 		{
 			return FALSE;
 		}
@@ -39,12 +39,12 @@ class diskCacheHandler
 
 	function fetch($name, $hard_refresh=FALSE)
 	{
-		if(!@file_exists(MYBB_ROOT."/cache/{$name}.php"))
+		if (!@file_exists(MYBB_ROOT."/cache/{$name}.php"))
 		{
 			return FALSE;
 		}
 
-		if(!isset($this->cache[$name]) || $hard_refresh == TRUE)
+		if (!isset($this->cache[$name]) || $hard_refresh == TRUE)
 		{
 			@include(MYBB_ROOT."/cache/{$name}.php");
 		}
@@ -67,7 +67,7 @@ class diskCacheHandler
 	function put($name, $contents)
 	{
 		global $mybb;
-		if(!is_writable(MYBB_ROOT."cache"))
+		if (!is_writable(MYBB_ROOT."cache"))
 		{
 			$mybb->trigger_generic_error("cache_no_write");
 			return FALSE;
@@ -111,7 +111,7 @@ class diskCacheHandler
 	 */
 	function size_of($name='')
 	{
-		if($name != '')
+		if ($name != '')
 		{
 			return @filesize(MYBB_ROOT."/cache/{$name}.php");
 		}
@@ -121,7 +121,7 @@ class diskCacheHandler
 			$dir = opendir(MYBB_ROOT."/cache");
 			while(($file = readdir($dir)) !== FALSE)
 			{
-				if($file == "." || $file == ".." || $file == ".svn" || !is_file(MYBB_ROOT."/cache/{$file}"))
+				if ($file == "." || $file == ".." || $file == ".svn" || !is_file(MYBB_ROOT."/cache/{$file}"))
 				{
 					continue;
 				}

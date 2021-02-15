@@ -52,7 +52,7 @@ class MyLanguage
 	function language_exists($language)
 	{
 		$language = preg_replace("#[^a-z0-9\-_]#i", "", $language);
-		if(file_exists($this->path."/".$language.".php"))
+		if (file_exists($this->path."/".$language.".php"))
 		{
 			return TRUE;
 		}
@@ -75,13 +75,13 @@ class MyLanguage
 		$language = preg_replace("#[^a-z0-9\-_]#i", "", $language);
 
 		// Default language is English.
-		if($language == "")
+		if ($language == "")
 		{
 			$language = "english";
 		}
 
 		// Check if the language exists.
-		if(!$this->language_exists($language))
+		if (!$this->language_exists($language))
 		{
 			die("Language $language ($this->path/$language) is not installed");
 		}
@@ -91,13 +91,13 @@ class MyLanguage
 		$this->settings = $langinfo;
 
 		// Load the admin language files as well, if needed.
-		if($area == "admin")
+		if ($area == "admin")
 		{
-			if(!is_dir($this->path."/".$language."/{$area}"))
+			if (!is_dir($this->path."/".$language."/{$area}"))
 			{
-				if(!is_dir($this->path."/".$mybb->settings['cplanguage']."/{$area}"))
+				if (!is_dir($this->path."/".$mybb->settings['cplanguage']."/{$area}"))
 				{
-					if(!is_dir($this->path."/english/{$area}"))
+					if (!is_dir($this->path."/english/{$area}"))
 					{
 						die("Your forum does not contain an Administration set. Please reupload the english language administration pack.");
 					}
@@ -126,23 +126,23 @@ class MyLanguage
 	{
 		// Assign language variables.
 		// Datahandlers are never in admin lang directory.
-		if($isdatahandler === TRUE)
+		if ($isdatahandler === TRUE)
 		{
 			$this->language = str_replace('/admin', '', $this->language);
 		}
 		$lfile = $this->path."/".$this->language."/".$section.".lang.php";
 
-		if(file_exists($lfile))
+		if (file_exists($lfile))
 		{
 			require_once $lfile;
 		}
-		elseif(file_exists($this->path."/english/".$section.".lang.php"))
+		elseif (file_exists($this->path."/english/".$section.".lang.php"))
 		{
 			require_once $this->path."/english/".$section.".lang.php";
 		}
 		else
 		{
-			if($supress_error != TRUE)
+			if ($supress_error != TRUE)
 			{
 				die("$lfile does not exist");
 			}
@@ -151,11 +151,11 @@ class MyLanguage
 		// We must unite and protect our language variables!
 		$lang_keys_ignore = array('language', 'path', 'settings');
 
-		if(is_array($l))
+		if (is_array($l))
 		{
 			foreach($l as $key => $val)
 			{
-				if((empty($this->$key) || $this->$key != $val) && !in_array($key, $lang_keys_ignore))
+				if ((empty($this->$key) || $this->$key != $val) && !in_array($key, $lang_keys_ignore))
 				{
 					$this->$key = $val;
 				}
@@ -188,11 +188,11 @@ class MyLanguage
 		while($lang = readdir($dir))
 		{
 			$ext = my_strtolower(get_extension($lang));
-			if($lang != "." && $lang != ".." && $ext == "php")
+			if ($lang != "." && $lang != ".." && $ext == "php")
 			{
 				$lname = str_replace(".".$ext, "", $lang);
 				require $this->path."/".$lang;
-				if(!$admin || ($admin && $langinfo['admin']))
+				if (!$admin || ($admin && $langinfo['admin']))
 				{
 					$languages[$lname] = $langinfo['name'];
 				}

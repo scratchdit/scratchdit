@@ -29,10 +29,10 @@ $parser = new postParser;
 $lang->load("showthread");
 
 // If there is no tid but a pid, trick the system into thinking there was a tid anyway.
-if($mybb->input['pid'] && !$mybb->input['tid'])
+if ($mybb->input['pid'] && !$mybb->input['tid'])
 {
 	// see if we already have the post information
-	if(isset($style) && $style['pid'] == $mybb->input['pid'] && $style['tid'])
+	if (isset($style) && $style['pid'] == $mybb->input['pid'] && $style['tid'])
 	{
 		$mybb->input['tid'] = $style['tid'];
 		unset($style['tid']); // stop the thread caching code from being tricked
@@ -54,18 +54,18 @@ $thread = get_thread($mybb->input['tid']);
 // Get thread prefix if there is one.
 $thread['threadprefix'] = '';
 $thread['displayprefix'] = '';
-if($thread['prefix'] != 0)
+if ($thread['prefix'] != 0)
 {
 	$threadprefix = build_prefixes($thread['prefix']);
 
-	if($threadprefix['prefix'])
+	if ($threadprefix['prefix'])
 	{
 		$thread['threadprefix'] = $threadprefix['prefix'].'&nbsp;';
 		$thread['displayprefix'] = $threadprefix['displaystyle'].'&nbsp;';
 	}
 }
 
-if(substr($thread['closed'], 0, 6) == "moved|")
+if (substr($thread['closed'], 0, 6) == "moved|")
 {
 	$thread['tid'] = 0;
 }
@@ -74,7 +74,7 @@ $thread['subject'] = htmlspecialchars_uni($parser->parse_badwords($thread['subje
 $tid = $thread['tid'];
 $fid = $thread['fid'];
 
-if(!$thread['username'])
+if (!$thread['username'])
 {
 	$thread['username'] = $lang->guest;
 }
@@ -83,7 +83,7 @@ $visibleonly = "AND visible='1'";
 $visibleonly2 = "AND p.visible='1' AND t.visible='1'";
 
 // Is the currently logged in user a moderator of this forum?
-if(is_moderator($fid))
+if (is_moderator($fid))
 {
 	$visibleonly = " AND (visible='1' OR visible='0')";
 	$visibleonly2 = "AND (p.visible='1' OR p.visible='0') AND (t.visible='1' OR t.visible='0')";
@@ -95,7 +95,7 @@ else
 }
 
 // Make sure we are looking at a real thread here.
-if(!$thread['tid'] || ($thread['visible'] == 0 && $ismod == FALSE) || ($thread['visible'] > 1 && $ismod == TRUE))
+if (!$thread['tid'] || ($thread['visible'] == 0 && $ismod == FALSE) || ($thread['visible'] > 1 && $ismod == TRUE))
 {
 	error($lang->error_invalidthread);
 }
@@ -103,12 +103,12 @@ if(!$thread['tid'] || ($thread['visible'] == 0 && $ismod == FALSE) || ($thread['
 $forumpermissions = forum_permissions($thread['fid']);
 
 // Does the user have permission to view this thread?
-if($forumpermissions['canview'] != 1 || $forumpermissions['canviewthreads'] != 1)
+if ($forumpermissions['canview'] != 1 || $forumpermissions['canviewthreads'] != 1)
 {
 	error_no_permission();
 }
 
-if($forumpermissions['canonlyviewownthreads'] == 1 && $thread['uid'] != $mybb->user['uid'])
+if ($forumpermissions['canonlyviewownthreads'] == 1 && $thread['uid'] != $mybb->user['uid'])
 {
 	error_no_permission();
 }
@@ -117,7 +117,7 @@ $archive_url = build_archive_link("thread", $tid);
 
 // Does the thread belong to a valid forum?
 $forum = get_forum($fid);
-if(!$forum || $forum['type'] != "f")
+if (!$forum || $forum['type'] != "f")
 {
 	error($lang->error_invalidforum);
 }
@@ -126,10 +126,10 @@ if(!$forum || $forum['type'] != "f")
 $forum_stats = $cache->read("forumsdisplay");
 
 $breadcrumb_multipage = array();
-if($mybb->settings['showforumpagesbreadcrumb'])
+if ($mybb->settings['showforumpagesbreadcrumb'])
 {
 	// How many pages are there?
-	if(!$mybb->settings['threadsperpage'])
+	if (!$mybb->settings['threadsperpage'])
 	{
 		$mybb->settings['threadsperpage'] = 20;
 	}
@@ -138,14 +138,14 @@ if($mybb->settings['showforumpagesbreadcrumb'])
 	$forum_threads = $db->fetch_array($query);
 	$threadcount = $forum_threads['threads'];
 
-	if($ismod == TRUE)
+	if ($ismod == TRUE)
 	{
 		$threadcount += $forum_threads['unapprovedthreads'];
 	}
 
 	// Limit to only our own threads
 	$uid_only = '';
-	if($forumpermissions['canonlyviewownthreads'] == 1)
+	if ($forumpermissions['canonlyviewownthreads'] == 1)
 	{
 		$uid_only = " AND uid = '".$mybb->user['uid']."'";
 
@@ -154,14 +154,14 @@ if($mybb->settings['showforumpagesbreadcrumb'])
 	}
 
 	// If we have 0 threads double check there aren't any "moved" threads
-	if($threadcount == 0)
+	if ($threadcount == 0)
 	{
 		$query = $db->simple_select("threads", "COUNT(tid) AS threads", "fid = '$fid' $visibleonly $uid_only", array('limit' => 1));
 		$threadcount = $db->fetch_field($query, "threads");
 	}
 
 	$stickybit = " OR sticky=1";
-	if($thread['sticky'] == 1)
+	if ($thread['sticky'] == 1)
 	{
 		$stickybit = " AND sticky=1";
 	}
@@ -199,25 +199,25 @@ add_breadcrumb($thread['displayprefix'].$thread['subject'], get_thread_link($thr
 check_forum_password($forum['fid']);
 
 // If there is no specific action, we must be looking at the thread.
-if(!$mybb->input['action'])
+if (!$mybb->input['action'])
 {
 	$mybb->input['action'] = "thread";
 }
 
 // Jump to the unread posts.
-if($mybb->input['action'] == "newpost")
+if ($mybb->input['action'] == "newpost")
 {
 	// First, figure out what time the thread or forum were last read
 	$query = $db->simple_select("threadsread", "dateline", "uid='{$mybb->user['uid']}' AND tid='{$thread['tid']}'");
 	$thread_read = $db->fetch_field($query, "dateline");
 
-	if($mybb->settings['threadreadcut'] > 0 && $mybb->user['uid'])
+	if ($mybb->settings['threadreadcut'] > 0 && $mybb->user['uid'])
 	{
 		$query = $db->simple_select("forumsread", "dateline", "fid='{$fid}' AND uid='{$mybb->user['uid']}'");
 		$forum_read = $db->fetch_field($query, "dateline");
 
 		$read_cutoff = TIME_NOW-$mybb->settings['threadreadcut']*60*60*24;
-		if($forum_read == 0 || $forum_read < $read_cutoff)
+		if ($forum_read == 0 || $forum_read < $read_cutoff)
 		{
 			$forum_read = $read_cutoff;
 		}
@@ -227,12 +227,12 @@ if($mybb->input['action'] == "newpost")
 		$forum_read = intval(my_get_array_cookie("forumread", $fid));
 	}
 
-	if($mybb->settings['threadreadcut'] > 0 && $mybb->user['uid'] && $thread['lastpost'] > $forum_read)
+	if ($mybb->settings['threadreadcut'] > 0 && $mybb->user['uid'] && $thread['lastpost'] > $forum_read)
 	{
 		$cutoff = TIME_NOW-$mybb->settings['threadreadcut']*60*60*24;
-		if($thread['lastpost'] > $cutoff)
+		if ($thread['lastpost'] > $cutoff)
 		{
-			if($thread_read)
+			if ($thread_read)
 			{
 				$lastread = $thread_read;
 			}
@@ -244,10 +244,10 @@ if($mybb->input['action'] == "newpost")
 		}
 	}
 
-	if(!$lastread)
+	if (!$lastread)
 	{
 		$readcookie = $threadread = intval(my_get_array_cookie("threadread", $thread['tid']));
-		if($readcookie > $forum_read)
+		if ($readcookie > $forum_read)
 		{
 			$lastread = $readcookie;
 		}
@@ -257,7 +257,7 @@ if($mybb->input['action'] == "newpost")
 		}
 	}
 
-   if($cutoff && $lastread < $cutoff)
+   if ($cutoff && $lastread < $cutoff)
    {
 		  $lastread = $cutoff;
    }
@@ -274,13 +274,13 @@ if($mybb->input['action'] == "newpost")
 	$query = $db->simple_select("posts", "pid", "tid='{$tid}' AND dateline > '{$lastread}' {$visibleonly}", $options);
 	$newpost = $db->fetch_array($query);
 
-	if($newpost['pid'] && $lastread)
+	if ($newpost['pid'] && $lastread)
 	{
 		$highlight = '';
-		if($mybb->input['highlight'])
+		if ($mybb->input['highlight'])
 		{
 			$string = "&";
-			if($mybb->settings['seourls'] == "yes" || ($mybb->settings['seourls'] == "auto" && $_SERVER['SEO_SUPPORT'] == 1))
+			if ($mybb->settings['seourls'] == "yes" || ($mybb->settings['seourls'] == "auto" && $_SERVER['SEO_SUPPORT'] == 1))
 			{
 				$string = "?";
 			}
@@ -298,9 +298,9 @@ if($mybb->input['action'] == "newpost")
 }
 
 // Jump to the last post.
-if($mybb->input['action'] == "lastpost")
+if ($mybb->input['action'] == "lastpost")
 {
-	if(my_strpos($thread['closed'], "moved|"))
+	if (my_strpos($thread['closed'], "moved|"))
 	{
 		$query = $db->query("
 			SELECT p.pid
@@ -328,7 +328,7 @@ if($mybb->input['action'] == "lastpost")
 }
 
 // Jump to the next newest posts.
-if($mybb->input['action'] == "nextnewest")
+if ($mybb->input['action'] == "nextnewest")
 {
 	$options = array(
 		"limit_start" => 0,
@@ -339,7 +339,7 @@ if($mybb->input['action'] == "nextnewest")
 	$nextthread = $db->fetch_array($query);
 
 	// Are there actually next newest posts?
-	if(!$nextthread['tid'])
+	if (!$nextthread['tid'])
 	{
 		error($lang->error_nonextnewest);
 	}
@@ -358,7 +358,7 @@ if($mybb->input['action'] == "nextnewest")
 }
 
 // Jump to the next oldest posts.
-if($mybb->input['action'] == "nextoldest")
+if ($mybb->input['action'] == "nextoldest")
 {
 	$options = array(
 		"limit" => 1,
@@ -370,7 +370,7 @@ if($mybb->input['action'] == "nextoldest")
 	$nextthread = $db->fetch_array($query);
 
 	// Are there actually next oldest posts?
-	if(!$nextthread['tid'])
+	if (!$nextthread['tid'])
 	{
 		error($lang->error_nonextoldest);
 	}
@@ -388,7 +388,7 @@ if($mybb->input['action'] == "nextoldest")
 	exit;
 }
 
-if($mybb->input['pid'])
+if ($mybb->input['pid'])
 {
 	$pid = $mybb->input['pid'];
 }
@@ -396,15 +396,15 @@ if($mybb->input['pid'])
 $plugins->run_hooks("showthread_start");
 
 // Show the entire thread (taking into account pagination).
-if($mybb->input['action'] == "thread")
+if ($mybb->input['action'] == "thread")
 {
-	if($thread['firstpost'] == 0)
+	if ($thread['firstpost'] == 0)
 	{
 		update_first_post($tid);
 	}
 
 	// Does this thread have a poll?
-	if($thread['poll'])
+	if ($thread['poll'])
 	{
 		$options = array(
 			"limit" => 1
@@ -416,13 +416,13 @@ if($mybb->input['action'] == "thread")
 		$now = TIME_NOW;
 
 		// If the poll or the thread is closed or if the poll is expired, show the results.
-		if($poll['closed'] == 1 || $thread['closed'] == 1 || ($expiretime < $now && $poll['timeout'] > 0))
+		if ($poll['closed'] == 1 || $thread['closed'] == 1 || ($expiretime < $now && $poll['timeout'] > 0))
 		{
 			$showresults = 1;
 		}
 
 		// If the user is not a guest, check if he already voted.
-		if($mybb->user['uid'] != 0)
+		if ($mybb->user['uid'] != 0)
 		{
 			$query = $db->simple_select("pollvotes", "*", "uid='".$mybb->user['uid']."' AND pid='".$poll['pid']."'");
 			while($votecheck = $db->fetch_array($query))
@@ -433,7 +433,7 @@ if($mybb->input['action'] == "thread")
 		}
 		else
 		{
-			if(isset($mybb->cookies['pollvotes'][$poll['pid']]) && $mybb->cookies['pollvotes'][$poll['pid']] !== "")
+			if (isset($mybb->cookies['pollvotes'][$poll['pid']]) && $mybb->cookies['pollvotes'][$poll['pid']] !== "")
 			{
 				$alreadyvoted = 1;
 			}
@@ -468,7 +468,7 @@ if($mybb->input['action'] == "thread")
 			$number = $i;
 
 			// Mark the option the user voted for.
-			if($votedfor[$number])
+			if ($votedfor[$number])
 			{
 				$optionbg = "trow2";
 				$votestar = "*";
@@ -480,9 +480,9 @@ if($mybb->input['action'] == "thread")
 			}
 
 			// If the user already voted or if the results need to be shown, do so; else show voting screen.
-			if($alreadyvoted || $showresults)
+			if ($alreadyvoted || $showresults)
 			{
-				if(intval($votes) == "0")
+				if (intval($votes) == "0")
 				{
 					$percent = "0";
 				}
@@ -496,7 +496,7 @@ if($mybb->input['action'] == "thread")
 			}
 			else
 			{
-				if($poll['multiple'] == 1)
+				if ($poll['multiple'] == 1)
 				{
 					eval("\$polloptions .= \"".$templates->get("showthread_poll_option_multiple")."\";");
 				}
@@ -508,7 +508,7 @@ if($mybb->input['action'] == "thread")
 		}
 
 		// If there are any votes at all, all votes together will be 100%; if there are no votes, all votes together will be 0%.
-		if($poll['totvotes'])
+		if ($poll['totvotes'])
 		{
 			$totpercent = "100%";
 		}
@@ -518,7 +518,7 @@ if($mybb->input['action'] == "thread")
 		}
 
 		// Check if user is allowed to edit posts; if so, show "edit poll" link.
-		if(!is_moderator($fid, 'caneditposts'))
+		if (!is_moderator($fid, 'caneditposts'))
 		{
 			$edit_poll = '';
 		}
@@ -528,13 +528,13 @@ if($mybb->input['action'] == "thread")
 		}
 
 		// Decide what poll status to show depending on the status of the poll and whether or not the user voted already.
-		if($alreadyvoted || $showresults)
+		if ($alreadyvoted || $showresults)
 		{
-			if($alreadyvoted)
+			if ($alreadyvoted)
 			{
 				$pollstatus = $lang->already_voted;
 
-				if($mybb->usergroup['canundovotes'] == 1)
+				if ($mybb->usergroup['canundovotes'] == 1)
 				{
 					$pollstatus .= " [<a href=\"polls.php?action=do_undovote&amp;pid={$poll['pid']}&amp;my_post_key={$mybb->post_code}\">{$lang->undo_vote}</a>]";
 				}
@@ -550,7 +550,7 @@ if($mybb->input['action'] == "thread")
 		else
 		{
 			$publicnote = '&nbsp;';
-			if($poll['public'] == 1)
+			if ($poll['public'] == 1)
 			{
 				$publicnote = $lang->public_note;
 			}
@@ -565,7 +565,7 @@ if($mybb->input['action'] == "thread")
 	}
 
 	// Create the forum jump dropdown box.
-	if($mybb->settings['enableforumjump'] != 0)
+	if ($mybb->settings['enableforumjump'] != 0)
 	{
 		$forumjump = build_forum_jump("", $fid, 1);
 	}
@@ -578,12 +578,12 @@ if($mybb->input['action'] == "thread")
 	mark_thread_read($tid, $fid);
 
 	// If the forum is not open, show closed newreply button unless the user is a moderator of this forum.
-	if($forum['open'] != 0)
+	if ($forum['open'] != 0)
 	{
 		eval("\$newthread = \"".$templates->get("showthread_newthread")."\";");
 
 		// Show the appropriate reply button if this thread is open or closed
-		if($thread['closed'] == 1)
+		if ($thread['closed'] == 1)
 		{
 			eval("\$newreply = \"".$templates->get("showthread_newreply_closed")."\";");
 		}
@@ -594,13 +594,13 @@ if($mybb->input['action'] == "thread")
 	}
 
 	// Create the admin tools dropdown box.
-	if($ismod == TRUE)
+	if ($ismod == TRUE)
 	{
-		if($pollbox)
+		if ($pollbox)
 		{
 			$adminpolloptions = "<option value=\"deletepoll\">".$lang->delete_poll."</option>";
 		}
-		if($thread['visible'] != 1)
+		if ($thread['visible'] != 1)
 		{
 			$approveunapprovethread = "<option value=\"approvethread\">".$lang->approve_thread."</option>";
 		}
@@ -608,11 +608,11 @@ if($mybb->input['action'] == "thread")
 		{
 			$approveunapprovethread = "<option value=\"unapprovethread\">".$lang->unapprove_thread."</option>";
 		}
-		if($thread['closed'] == 1)
+		if ($thread['closed'] == 1)
 		{
 			$closelinkch = ' checked="checked"';
 		}
-		if($thread['sticky'])
+		if ($thread['sticky'])
 		{
 			$stickch = ' checked="checked"';
 		}
@@ -629,7 +629,7 @@ if($mybb->input['action'] == "thread")
 	}
 
 	// Increment the thread view.
-	if($mybb->settings['delayedthreadviews'] == 1)
+	if ($mybb->settings['delayedthreadviews'] == 1)
 	{
 		$db->shutdown_query("INSERT INTO ".TABLE_PREFIX."threadviews (tid) VALUES('{$tid}')");
 	}
@@ -641,11 +641,11 @@ if($mybb->input['action'] == "thread")
 
 	// Work out the thread rating for this thread.
 	$rating = '';
-	if($mybb->settings['allowthreadratings'] != 0 && $forum['allowtratings'] != 0)
+	if ($mybb->settings['allowthreadratings'] != 0 && $forum['allowtratings'] != 0)
 	{
 		$rated = 0;
 		$lang->load("ratethread");
-		if($thread['numratings'] <= 0)
+		if ($thread['numratings'] <= 0)
 		{
 			$thread['width'] = 0;
 			$thread['averagerating'] = 0;
@@ -658,7 +658,7 @@ if($mybb->input['action'] == "thread")
 			$thread['numratings'] = intval($thread['numratings']);
 		}
 
-		if($thread['numratings'])
+		if ($thread['numratings'])
 		{
 			// At least >someone< has rated this thread, was it me?
 			// Check if we have already voted on this thread - it won't show hover effect then.
@@ -667,7 +667,7 @@ if($mybb->input['action'] == "thread")
 		}
 
 		$not_rated = '';
-		if(!$rated)
+		if (!$rated)
 		{
 			$not_rated = ' star_rating_notrated';
 		}
@@ -676,7 +676,7 @@ if($mybb->input['action'] == "thread")
 		eval("\$ratethread = \"".$templates->get("showthread_ratethread")."\";");
 	}
 	// Work out if we are showing unapproved posts as well (if the user is a moderator etc.)
-	if($ismod)
+	if ($ismod)
 	{
 		$visible = "AND (p.visible='0' OR p.visible='1')";
 	}
@@ -686,14 +686,14 @@ if($mybb->input['action'] == "thread")
 	}
 
 	// Can this user perform searches? If so, we can show them the "Search thread" form
-	if($forumpermissions['cansearch'] != 0)
+	if ($forumpermissions['cansearch'] != 0)
 	{
 		eval("\$search_thread = \"".$templates->get("showthread_search")."\";");
 	}
 
 	// Fetch the ignore list for the current user if they have one
 	$ignored_users = array();
-	if($mybb->user['uid'] > 0 && $mybb->user['ignorelist'] != "")
+	if ($mybb->user['uid'] > 0 && $mybb->user['ignorelist'] != "")
 	{
 		$ignore_list = explode(',', $mybb->user['ignorelist']);
 		foreach($ignore_list as $uid)
@@ -703,11 +703,11 @@ if($mybb->input['action'] == "thread")
 	}
 
 	// Which thread mode is our user using by default?
-	if(!empty($mybb->user['threadmode']))
+	if (!empty($mybb->user['threadmode']))
 	{
 		$defaultmode = $mybb->user['threadmode'];
 	}
-	else if($mybb->settings['threadusenetstyle'] == 1)
+	else if ($mybb->settings['threadusenetstyle'] == 1)
 	{
 		$defaultmode = 'threaded';
 	}
@@ -717,18 +717,18 @@ if($mybb->input['action'] == "thread")
 	}
 
 	// If mode is unset, set the default mode
-	if(!isset($mybb->input['mode']))
+	if (!isset($mybb->input['mode']))
 	{
 		$mybb->input['mode'] = $defaultmode;
 	}
 
 	// Threaded or linear display?
-	if($mybb->input['mode'] == 'threaded')
+	if ($mybb->input['mode'] == 'threaded')
 	{
 		$isfirst = 1;
 
 		// Are we linked to a specific pid?
-		if($mybb->input['pid'])
+		if ($mybb->input['pid'])
 		{
 			$where = "AND p.pid='".$mybb->input['pid']."'";
 		}
@@ -747,19 +747,19 @@ if($mybb->input['action'] == "thread")
 		$showpost = $db->fetch_array($query);
 
 		// Choose what pid to display.
-		if(!$mybb->input['pid'])
+		if (!$mybb->input['pid'])
 		{
 			$mybb->input['pid'] = $showpost['pid'];
 		}
 
 		// Is there actually a pid to display?
-		if(!$showpost['pid'])
+		if (!$showpost['pid'])
 		{
 			error($lang->error_invalidpost);
 		}
 
 		$attachcache = array();
-		if($thread['attachmentcount'] > 0)
+		if ($thread['attachmentcount'] > 0)
 		{
 			// Get the attachments for this post.
 			$query = $db->simple_select("attachments", "*", "pid=".$mybb->input['pid']);
@@ -779,9 +779,9 @@ if($mybb->input['action'] == "thread")
         ");
         while($post = $db->fetch_array($query))
         {
-            if(!$postsdone[$post['pid']])
+            if (!$postsdone[$post['pid']])
             {
-                if($post['pid'] == $mybb->input['pid'] || ($isfirst && !$mybb->input['pid']))
+                if ($post['pid'] == $mybb->input['pid'] || ($isfirst && !$mybb->input['pid']))
                 {
 					$postcounter = count($postsdone);
                     $isfirst = 0;
@@ -798,18 +798,18 @@ if($mybb->input['action'] == "thread")
 	}
 	else // Linear display
 	{
-		if(!$mybb->settings['postsperpage'])
+		if (!$mybb->settings['postsperpage'])
 		{
 			$mybb->settings['postperpage'] = 20;
 		}
 
 		// Figure out if we need to display multiple pages.
 		$perpage = $mybb->settings['postsperpage'];
-		if($mybb->input['page'] != "last")
+		if ($mybb->input['page'] != "last")
 		{
 			$page = intval($mybb->input['page']);
 		}
-		if($mybb->input['pid'])
+		if ($mybb->input['pid'])
 		{
 			$post = get_post($mybb->input['pid']);
 			$query = $db->query("
@@ -819,7 +819,7 @@ if($mybb->input['action'] == "thread")
 				$visible
 			");
 			$result = $db->fetch_field($query, "count");
-			if(($result % $perpage) == 0)
+			if (($result % $perpage) == 0)
 			{
 				$page = $result / $perpage;
 			}
@@ -829,7 +829,7 @@ if($mybb->input['action'] == "thread")
 			}
 		}
 		// Recount replies if user is a moderator to take into account unapproved posts.
-		if($ismod)
+		if ($ismod)
 		{
 			$query = $db->simple_select("posts p", "COUNT(*) AS replies", "p.tid='$tid' $visible");
 			$thread['replies'] = $db->fetch_field($query, 'replies')-1;
@@ -838,17 +838,17 @@ if($mybb->input['action'] == "thread")
 		$pages = $postcount / $perpage;
 		$pages = ceil($pages);
 
-		if($mybb->input['page'] == "last")
+		if ($mybb->input['page'] == "last")
 		{
 			$page = $pages;
 		}
 
-		if($page > $pages || $page <= 0)
+		if ($page > $pages || $page <= 0)
 		{
 			$page = 1;
 		}
 
-		if($page)
+		if ($page)
 		{
 			$start = ($page-1) * $perpage;
 		}
@@ -862,16 +862,16 @@ if($mybb->input['action'] == "thread")
 		// Work out if we have terms to highlight
         $highlight = "";
         $threadmode = "";
-        if($mybb->settings['seourls'] == "yes" || ($mybb->settings['seourls'] == "auto" && $_SERVER['SEO_SUPPORT'] == 1))
+        if ($mybb->settings['seourls'] == "yes" || ($mybb->settings['seourls'] == "auto" && $_SERVER['SEO_SUPPORT'] == 1))
         {
-            if($mybb->input['highlight'])
+            if ($mybb->input['highlight'])
             {
                 $highlight = "?highlight=".urlencode($mybb->input['highlight']);
             }
 
-			if($defaultmode != "linear")
+			if ($defaultmode != "linear")
 			{
-	            if($mybb->input['highlight'])
+	            if ($mybb->input['highlight'])
 	            {
 	                $threadmode = "&amp;mode=linear";
 	            }
@@ -883,9 +883,9 @@ if($mybb->input['action'] == "thread")
         }
         else
         {
-			if($mybb->input['highlight'])
+			if ($mybb->input['highlight'])
 			{
-				if(is_array($mybb->input['highlight']))
+				if (is_array($mybb->input['highlight']))
 				{
 					foreach($mybb->input['highlight'] as $highlight_word)
 					{
@@ -898,14 +898,14 @@ if($mybb->input['action'] == "thread")
 				}
 			}
 
-            if($defaultmode != "linear")
+            if ($defaultmode != "linear")
             {
                 $threadmode = "&amp;mode=linear";
             }
         }
 
         $multipage = multipage($postcount, $perpage, $page, str_replace("{tid}", $tid, THREAD_URL_PAGED.$highlight.$threadmode));
-		if($postcount > $perpage)
+		if ($postcount > $perpage)
 		{
 			eval("\$threadpages = \"".$templates->get("showthread_multipage")."\";");
 		}
@@ -919,7 +919,7 @@ if($mybb->input['action'] == "thread")
 			// Set the ID of the first post on page to $pid if it doesn't hold any value
 			// to allow this value to be used for Thread Mode/Linear Mode links
 			// and ensure the user lands on the correct page after changing view mode
-			if(!$pid)
+			if (!$pid)
 			{
 				$pid = $getid['pid'];
 			}
@@ -927,12 +927,12 @@ if($mybb->input['action'] == "thread")
 			$pids .= "$comma'{$getid['pid']}'";
 			$comma = ",";
 		}
-		if($pids)
+		if ($pids)
 		{
 			$pids = "pid IN($pids)";
 
 			$attachcache = array();
-			if($thread['attachmentcount'] > 0)
+			if ($thread['attachmentcount'] > 0)
 			{
 				// Now lets fetch all of the attachments for these posts.
 				$query = $db->simple_select("attachments", "*", $pids);
@@ -961,7 +961,7 @@ if($mybb->input['action'] == "thread")
 		");
 		while($post = $db->fetch_array($query))
 		{
-			if($thread['firstpost'] == $post['pid'] && $thread['visible'] == 0)
+			if ($thread['firstpost'] == $post['pid'] && $thread['visible'] == 0)
 			{
 				$post['visible'] = 0;
 			}
@@ -972,7 +972,7 @@ if($mybb->input['action'] == "thread")
 	}
 
 	// Show the similar threads table if wanted.
-	if($mybb->settings['showsimilarthreads'] != 0)
+	if ($mybb->settings['showsimilarthreads'] != 0)
 	{
 		switch($db->type)
 		{
@@ -1004,7 +1004,7 @@ if($mybb->input['action'] == "thread")
 		{
 			++$count;
 			$trow = alt_trow();
-			if($similar_thread['icon'] > 0 && $icon_cache[$similar_thread['icon']])
+			if ($similar_thread['icon'] > 0 && $icon_cache[$similar_thread['icon']])
 			{
 				$icon = $icon_cache[$similar_thread['icon']];
 				$icon = "<img src=\"{$icon['path']}\" alt=\"{$icon['name']}\" />";
@@ -1013,7 +1013,7 @@ if($mybb->input['action'] == "thread")
 			{
 				$icon = "&nbsp;";
 			}
-			if(!$similar_thread['username'])
+			if (!$similar_thread['username'])
 			{
 				$similar_thread['username'] = $similar_thread['threadusername'];
 				$similar_thread['profilelink'] = $similar_thread['threadusername'];
@@ -1024,7 +1024,7 @@ if($mybb->input['action'] == "thread")
 			}
 
 			// If this thread has a prefix, insert a space between prefix and subject
-			if($similar_thread['prefix'] != 0)
+			if ($similar_thread['prefix'] != 0)
 			{
 				$prefix = build_prefixes($similar_thread['prefix']);
 				$similar_thread['threadprefix'] = $prefix['displaystyle'].'&nbsp;';
@@ -1041,7 +1041,7 @@ if($mybb->input['action'] == "thread")
 			$lastposteruid = $similar_thread['lastposteruid'];
 
 			// Don't link to guest's profiles (they have no profile).
-			if($lastposteruid == 0)
+			if ($lastposteruid == 0)
 			{
 				$lastposterlink = $lastposter;
 			}
@@ -1053,34 +1053,34 @@ if($mybb->input['action'] == "thread")
 			$similar_thread['views'] = my_number_format($similar_thread['views']);
 			eval("\$similarthreadbits .= \"".$templates->get("showthread_similarthreads_bit")."\";");
 		}
-		if($count)
+		if ($count)
 		{
 			eval("\$similarthreads = \"".$templates->get("showthread_similarthreads")."\";");
 		}
 	}
 
 	// Decide whether or not to show quick reply.
-	if($forumpermissions['canpostreplys'] != 0 && $mybb->user['suspendposting'] != 1 && ($thread['closed'] != 1 || is_moderator($fid)) && $mybb->settings['quickreply'] != 0 && $mybb->user['showquickreply'] != '0' && $forum['open'] != 0)
+	if ($forumpermissions['canpostreplys'] != 0 && $mybb->user['suspendposting'] != 1 && ($thread['closed'] != 1 || is_moderator($fid)) && $mybb->settings['quickreply'] != 0 && $mybb->user['showquickreply'] != '0' && $forum['open'] != 0)
 	{
 		$query = $db->simple_select("posts", "pid", "tid='{$tid}'", array("order_by" => "pid", "order_dir" => "desc", "limit" => 1));
 		$last_pid = $db->fetch_field($query, "pid");
 
 		// Show captcha image for guests if enabled
-		if($mybb->settings['captchaimage'] && !$mybb->user['uid'])
+		if ($mybb->settings['captchaimage'] && !$mybb->user['uid'])
 		{
 			require_once MYBB_ROOT.'inc/class_captcha.php';
 			$post_captcha = new captcha(TRUE, "post_captcha");
 
-			if($post_captcha->html)
+			if ($post_captcha->html)
 			{
 				$captcha = $post_captcha->html;
 			}
 		}
-		if($mybb->user['signature'])
+		if ($mybb->user['signature'])
 		{
 			$postoptionschecked['signature'] = 'checked="checked"';
 		}
-		if($mybb->user['emailnotify'] == 1)
+		if ($mybb->user['emailnotify'] == 1)
 		{
 			$postoptionschecked['emailnotify'] = 'checked="checked"';
 		}
@@ -1094,11 +1094,11 @@ if($mybb->input['action'] == "thread")
 	}
 
 	// If the user is a moderator, show the moderation tools.
-	if($ismod)
+	if ($ismod)
 	{
 		$customthreadtools = $customposttools = '';
 
-		if(is_moderator($forum['fid'], "canusecustomtools") && ($forum_stats[-1]['modtools'] || $forum_stats[$forum['fid']]['modtools']))
+		if (is_moderator($forum['fid'], "canusecustomtools") && ($forum_stats[-1]['modtools'] || $forum_stats[$forum['fid']]['modtools']))
 		{
 			switch($db->type)
 			{
@@ -1112,7 +1112,7 @@ if($mybb->input['action'] == "thread")
 
 			while($tool = $db->fetch_array($query))
 			{
-				if($tool['type'] == 'p')
+				if ($tool['type'] == 'p')
 				{
 					eval("\$customposttools .= \"".$templates->get("showthread_inlinemoderation_custom_tool")."\";");
 				}
@@ -1123,7 +1123,7 @@ if($mybb->input['action'] == "thread")
 			}
 
 			// Build inline moderation dropdown
-			if(!empty($customposttools))
+			if (!empty($customposttools))
 			{
 				eval("\$customposttools = \"".$templates->get("showthread_inlinemoderation_custom")."\";");
 			}
@@ -1132,7 +1132,7 @@ if($mybb->input['action'] == "thread")
 		eval("\$inlinemod = \"".$templates->get("showthread_inlinemoderation")."\";");
 
 		// Build thread moderation dropdown
-		if(!empty($customthreadtools))
+		if (!empty($customthreadtools))
 		{
 			eval("\$customthreadtools = \"".$templates->get("showthread_moderationoptions_custom")."\";");
 		}
@@ -1146,24 +1146,24 @@ if($mybb->input['action'] == "thread")
 	$add_remove_subscription = 'add';
 	$add_remove_subscription_text = $lang->subscribe_thread;
 
-	if($mybb->user['uid'])
+	if ($mybb->user['uid'])
 	{
 		$query = $db->simple_select("threadsubscriptions", "tid", "tid='".intval($tid)."' AND uid='".intval($mybb->user['uid'])."'", array('limit' => 1));
 
-		if($db->fetch_field($query, 'tid'))
+		if ($db->fetch_field($query, 'tid'))
 		{
 			$add_remove_subscription = 'remove';
 			$add_remove_subscription_text = $lang->unsubscribe_thread;
 		}
 	}
 
-	if($mybb->settings['postlayout'] == "classic")
+	if ($mybb->settings['postlayout'] == "classic")
 	{
 		eval("\$classic_header = \"".$templates->get("showthread_classic_header")."\";");
 	}
 
 	// Get users viewing this thread
-	if($mybb->settings['browsingthisthread'] != 0)
+	if ($mybb->settings['browsingthisthread'] != 0)
 	{
 		$timecut = TIME_NOW - $mybb->settings['wolcutoff'];
 
@@ -1184,23 +1184,23 @@ if($mybb->input['action'] == "thread")
 
 		while($user = $db->fetch_array($query))
 		{
-			if($user['uid'] == 0)
+			if ($user['uid'] == 0)
 			{
 				++$guestcount;
 			}
-			else if($doneusers[$user['uid']] < $user['time'] || !$doneusers[$user['uid']])
+			else if ($doneusers[$user['uid']] < $user['time'] || !$doneusers[$user['uid']])
 			{
 				++$membercount;
 				$doneusers[$user['uid']] = $user['time'];
 
 				$invisiblemark = '';
-				if($user['invisible'] == 1)
+				if ($user['invisible'] == 1)
 				{
 					$invisiblemark = "*";
 					++$inviscount;
 				}
 
-				if($user['invisible'] != 1 || $mybb->usergroup['canviewwolinvis'] == 1 || $user['uid'] == $mybb->user['uid'])
+				if ($user['invisible'] != 1 || $mybb->usergroup['canviewwolinvis'] == 1 || $user['uid'] == $mybb->user['uid'])
 				{
 					$user['profilelink'] = get_profile_link($user['uid']);
 					$user['username'] = format_name($user['username'], $user['usergroup'], $user['displaygroup']);
@@ -1212,23 +1212,23 @@ if($mybb->input['action'] == "thread")
 			}
 		}
 
-		if($guestcount)
+		if ($guestcount)
 		{
 			$guestsonline = $lang->sprintf($lang->users_browsing_thread_guests, $guestcount);
 		}
 
-		if($guestcount && $onlinemembers)
+		if ($guestcount && $onlinemembers)
 		{
 			$onlinesep = $lang->comma;
 		}
 
 		$invisonline = '';
-		if($inviscount && $mybb->usergroup['canviewwolinvis'] != 1 && ($inviscount != 1 && $mybb->user['invisible'] != 1))
+		if ($inviscount && $mybb->usergroup['canviewwolinvis'] != 1 && ($inviscount != 1 && $mybb->user['invisible'] != 1))
 		{
 			$invisonline = $lang->sprintf($lang->users_browsing_thread_invis, $inviscount);
 		}
 
-		if($invisonline != '' && $guestcount)
+		if ($invisonline != '' && $guestcount)
 		{
 			$onlinesep2 = $lang->comma;
 		}
@@ -1253,7 +1253,7 @@ function buildtree($replyto="0", $indent="0")
 {
 	global $tree, $mybb, $theme, $mybb, $pid, $tid, $templates, $parser;
 
-	if($indent)
+	if ($indent)
 	{
 		$indentsize = 13 * $indent;
 	}
@@ -1263,7 +1263,7 @@ function buildtree($replyto="0", $indent="0")
 	}
 
 	++$indent;
-	if(is_array($tree[$replyto]))
+	if (is_array($tree[$replyto]))
 	{
 		foreach($tree[$replyto] as $key => $post)
 		{
@@ -1271,14 +1271,14 @@ function buildtree($replyto="0", $indent="0")
 			$posttime = my_date($mybb->settings['timeformat'], $post['dateline']);
 			$post['subject'] = htmlspecialchars_uni($parser->parse_badwords($post['subject']));
 
-			if(!$post['subject'])
+			if (!$post['subject'])
 			{
 				$post['subject'] = "[".$lang->no_subject."]";
 			}
 
 			$post['profilelink'] = build_profile_link($post['username'], $post['uid']);
 
-			if($mybb->input['pid'] == $post['pid'])
+			if ($mybb->input['pid'] == $post['pid'])
 			{
 				eval("\$posts .= \"".$templates->get("showthread_threaded_bitactive")."\";");
 			}
@@ -1287,7 +1287,7 @@ function buildtree($replyto="0", $indent="0")
 				eval("\$posts .= \"".$templates->get("showthread_threaded_bit")."\";");
 			}
 
-			if($tree[$post['pid']])
+			if ($tree[$post['pid']])
 			{
 				$posts .= buildtree($post['pid'], $indent);
 			}

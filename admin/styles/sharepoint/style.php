@@ -28,7 +28,7 @@
  */
 
 // Disallow direct access to this file for security reasons
-if(!defined("IN_MYBB"))
+if (!defined("IN_MYBB"))
 {
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
@@ -37,17 +37,17 @@ class Page extends DefaultPage
 {
 	function generate_breadcrumb()
 	{
-		if(!is_array($this->breadcrumb_trail))
+		if (!is_array($this->breadcrumb_trail))
 		{
 			return FALSE;
 		}
 		$trail = "";
 		foreach($this->breadcrumb_trail as $key => $crumb)
 		{
-			if($this->breadcrumb_trail[$key+1])
+			if ($this->breadcrumb_trail[$key+1])
 			{
 				$trail .= "<a href=\"".$crumb['url']."\">".$crumb['name']."</a>";
-				if($this->breadcrumb_trail[$key+2])
+				if ($this->breadcrumb_trail[$key+2])
 				{
 					$trail .= " &raquo; ";
 				}
@@ -65,23 +65,23 @@ class Page extends DefaultPage
 	{
 		global $plugins;
 		$tabs = $plugins->run_hooks("admin_page_output_nav_tabs_start", $tabs);
-		if(count($tabs) > 1)
+		if (count($tabs) > 1)
 		{
 			$first = TRUE;
 			echo "<div class=\"nav_tabs\">";
 			echo "\t<ul>\n";
 			foreach($tabs as $id => $tab)
 			{
-				if($id == $active)
+				if ($id == $active)
 				{
 					continue;
 				}
 				$class = '';
-				if($tab['link_target'])
+				if ($tab['link_target'])
 				{
 					$target = " target=\"{$tab['link_target']}\"";
 				}
-				if($first) $class .= " first";
+				if ($first) $class .= " first";
 				echo "\t\t<li class=\"{$class}\"><a href=\"{$tab['link']}\"{$target}>{$tab['title']}</a></li>\n";
 				$first = FALSE;
 				$target = '';
@@ -90,7 +90,7 @@ class Page extends DefaultPage
 			echo "</div>";
 		}
 
-		if($tabs[$active])
+		if ($tabs[$active])
 		{
 			$intro_tab = $tabs[$active];
 			echo "<div class=\"intro\">";

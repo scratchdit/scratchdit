@@ -23,19 +23,19 @@ define("MYBB_SQL_LOAD_ERROR", 44);
 define("MYBB_CACHE_NO_WRITE", 45);
 define("MYBB_CACHEHANDLER_LOAD_ERROR", 46);
 
-if(!defined("E_STRICT"))
+if (!defined("E_STRICT"))
 {
 	// This constant has been defined since PHP 5.
 	define("E_STRICT", 2048);
 }
 
-if(!defined("E_RECOVERABLE_ERROR"))
+if (!defined("E_RECOVERABLE_ERROR"))
 {
 	// This constant has been defined since PHP 5.2.
 	define("E_RECOVERABLE_ERROR", 4096);
 }
 
-if(!defined("E_DEPRECATED"))
+if (!defined("E_DEPRECATED"))
 {
 	// This constant has been defined since PHP 5.3.
 	define("E_DEPRECATED", 8192);
@@ -146,12 +146,12 @@ class errorHandler {
 		global $mybb;
 
 		// Error reporting turned off (either globally or by @ before erroring statement)
-		if(error_reporting() == 0)
+		if (error_reporting() == 0)
 		{
 			return TRUE;
 		}
 
-		if(in_array($type, $this->ignore_types))
+		if (in_array($type, $this->ignore_types))
 		{
 			return TRUE;
 		}
@@ -162,18 +162,18 @@ class errorHandler {
 
 		// For some reason in the installer this setting is set to "<"
 		$accepted_error_types = array('both', 'error', 'warning', 'none');
-		if(!in_array($mybb->settings['errortypemedium'], $accepted_error_types))
+		if (!in_array($mybb->settings['errortypemedium'], $accepted_error_types))
 		{
 			$mybb->settings['errortypemedium'] = "both";
 		}
 
-		if(defined("IN_TASK"))
+		if (defined("IN_TASK"))
 		{
 			global $task;
 
 			require_once MYBB_ROOT."inc/functions_task.php";
 
-			if($file)
+			if ($file)
 			{
 				$filestr = " - Line: $line - File: $file";
 			}
@@ -182,26 +182,26 @@ class errorHandler {
 		}
 
 		// Saving error to log file.
-		if($mybb->settings['errorlogmedium'] == "log" || $mybb->settings['errorlogmedium'] == "both")
+		if ($mybb->settings['errorlogmedium'] == "log" || $mybb->settings['errorlogmedium'] == "both")
 		{
 			$this->log_error($type, $message, $file, $line);
 		}
 
 		// Are we emailing the Admin a copy?
-		if($mybb->settings['errorlogmedium'] == "mail" || $mybb->settings['errorlogmedium'] == "both")
+		if ($mybb->settings['errorlogmedium'] == "mail" || $mybb->settings['errorlogmedium'] == "both")
 		{
 			$this->email_error($type, $message, $file, $line);
 		}
 
 		// SQL Error
-		if($type == MYBB_SQL)
+		if ($type == MYBB_SQL)
 		{
 			$this->output_error($type, $message, $file, $line);
 		}
 		else
 		{
 			// Do we have a PHP error?
-			if(my_strpos(my_strtolower($this->error_types[$type]), 'warning') === FALSE)
+			if (my_strpos(my_strtolower($this->error_types[$type]), 'warning') === FALSE)
 			{
 				$this->output_error($type, $message, $file, $line);
 			}
@@ -211,7 +211,7 @@ class errorHandler {
 				global $templates;
 
 				$warning = "<strong>{$this->error_types[$type]}</strong> [$type] $message - Line: $line - File: $file PHP ".PHP_VERSION." (".PHP_OS.")<br />\n";
-				if(is_object($templates) && method_exists($templates, "get") && !defined("IN_ADMINCP"))
+				if (is_object($templates) && method_exists($templates, "get") && !defined("IN_ADMINCP"))
 				{
 					$this->warnings .= $warning;
 					$this->warnings .= $this->generate_backtrace();
@@ -236,23 +236,23 @@ class errorHandler {
 	{
 		global $lang, $templates;
 
-		if(empty($this->warnings))
+		if (empty($this->warnings))
 		{
 			return FALSE;
 		}
 
 		// Incase a template fails and we're recieving a blank page.
-		if(MANUAL_WARNINGS)
+		if (MANUAL_WARNINGS)
 		{
 			echo $this->warnings."<br />";
 		}
 
-		if(!$lang->warnings)
+		if (!$lang->warnings)
 		{
 			$lang->warnings = "The following warnings occured:";
 		}
 
-		if(defined("IN_ADMINCP"))
+		if (defined("IN_ADMINCP"))
 		{
 			$warning = makeacpphpwarning($this->warnings);
 		}
@@ -260,9 +260,9 @@ class errorHandler {
 		{
 			$template_exists = FALSE;
 
-			if(!is_object($templates) || !method_exists($templates, 'get'))
+			if (!is_object($templates) || !method_exists($templates, 'get'))
 			{
-				if(@file_exists(MYBB_ROOT."inc/class_templates.php"))
+				if (@file_exists(MYBB_ROOT."inc/class_templates.php"))
 				{
 					@require_once MYBB_ROOT."inc/class_templates.php";
 					$templates = new templates;
@@ -274,7 +274,7 @@ class errorHandler {
 				$template_exists = TRUE;
 			}
 
-			if($template_exists == TRUE)
+			if ($template_exists == TRUE)
 			{
 				eval("\$warning = \"".$templates->get("php_warnings")."\";");
 			}
@@ -294,12 +294,12 @@ class errorHandler {
 	{
 		global $lang;
 
-		if(!$message)
+		if (!$message)
 		{
 			$message = $lang->unknown_user_trigger;
 		}
 
-		if(in_array($type, $this->mybb_error_types))
+		if (in_array($type, $this->mybb_error_types))
 		{
 			$this->error($type, $message);
 		}
@@ -321,7 +321,7 @@ class errorHandler {
 	{
 		global $mybb;
 
-		if($type == MYBB_SQL)
+		if ($type == MYBB_SQL)
 		{
 			$message = "SQL Error: {$message['error_no']} - {$message['error']}\nQuery: {$message['query']}";
 		}
@@ -334,7 +334,7 @@ class errorHandler {
 		$error_data .= "\t<message>".$message."</message>\n";
 		$error_data .= "</error>\n\n";
 
-		if(trim($mybb->settings['errorloglocation']) != "")
+		if (trim($mybb->settings['errorloglocation']) != "")
 		{
 			@error_log($error_data, 3, $mybb->settings['errorloglocation']);
 		}
@@ -356,12 +356,12 @@ class errorHandler {
 	{
 		global $mybb;
 
-		if(!$mybb->settings['adminemail'])
+		if (!$mybb->settings['adminemail'])
 		{
 			return FALSE;
 		}
 
-		if($type == MYBB_SQL)
+		if ($type == MYBB_SQL)
 		{
 			$message = "SQL Error: {$message['error_no']} - {$message['error']}\nQuery: {$message['query']}";
 		}
@@ -375,20 +375,20 @@ class errorHandler {
 	{
 		global $mybb, $parser;
 
-		if(!$mybb->settings['bbname'])
+		if (!$mybb->settings['bbname'])
 		{
 			$mybb->settings['bbname'] = "MyBB";
 		}
 
-		if($type == MYBB_SQL)
+		if ($type == MYBB_SQL)
 		{
 			$title = "MyBB SQL Error";
 			$error_message = "<p>MyBB has experienced an internal SQL error and cannot continue.</p>";
-			if($mybb->settings['errortypemedium'] == "both" || $mybb->settings['errortypemedium'] == "error" || defined("IN_INSTALL") || defined("IN_UPGRADE"))
+			if ($mybb->settings['errortypemedium'] == "both" || $mybb->settings['errortypemedium'] == "error" || defined("IN_INSTALL") || defined("IN_UPGRADE"))
 			{
 				$error_message .= "<dl>\n";
 				$error_message .= "<dt>SQL Error:</dt>\n<dd>{$message['error_no']} - {$message['error']}</dd>\n";
-				if($message['query'] != "")
+				if ($message['query'] != "")
 				{
 					$error_message .= "<dt>Query:</dt>\n<dd>{$message['query']}</dd>\n";
 				}
@@ -399,48 +399,48 @@ class errorHandler {
 		{
 			$title = "MyBB Internal Error";
 			$error_message = "<p>MyBB has experienced an internal error and cannot continue.</p>";
-			if($mybb->settings['errortypemedium'] == "both" || $mybb->settings['errortypemedium'] == "error" || defined("IN_INSTALL") || defined("IN_UPGRADE"))
+			if ($mybb->settings['errortypemedium'] == "both" || $mybb->settings['errortypemedium'] == "error" || defined("IN_INSTALL") || defined("IN_UPGRADE"))
 			{
 				$error_message .= "<dl>\n";
 				$error_message .= "<dt>Error Type:</dt>\n<dd>{$this->error_types[$type]} ($type)</dd>\n";
 				$error_message .= "<dt>Error Message:</dt>\n<dd>{$message}</dd>\n";
-				if(!empty($file))
+				if (!empty($file))
 				{
 					$error_message .= "<dt>Location:</dt><dd>File: {$file}<br />Line: {$line}</dd>\n";
-					if(!@preg_match('#config\.php|settings\.php#', $file) && @file_exists($file))
+					if (!@preg_match('#config\.php|settings\.php#', $file) && @file_exists($file))
 					{
 						$code_pre = @file($file);
 
 						$code = "";
 
-						if(isset($code_pre[$line-4]))
+						if (isset($code_pre[$line-4]))
 						{
 							$code .= $line-3 . ". ".$code_pre[$line-4];
 						}
 
-						if(isset($code_pre[$line-3]))
+						if (isset($code_pre[$line-3]))
 						{
 							$code .= $line-2 . ". ".$code_pre[$line-3];
 						}
 
-						if(isset($code_pre[$line-2]))
+						if (isset($code_pre[$line-2]))
 						{
 							$code .= $line-1 . ". ".$code_pre[$line-2];
 						}
 
 						$code .= $line . ". ".$code_pre[$line-1]; // The actual line.
 
-						if(isset($code_pre[$line]))
+						if (isset($code_pre[$line]))
 						{
 							$code .= $line+1 . ". ".$code_pre[$line];
 						}
 
-						if(isset($code_pre[$line+1]))
+						if (isset($code_pre[$line+1]))
 						{
 							$code .= $line+2 . ". ".$code_pre[$line+1];
 						}
 
-						if(isset($code_pre[$line+2]))
+						if (isset($code_pre[$line+2]))
 						{
 							$code .= $line+3 . ". ".$code_pre[$line+2];
 						}
@@ -449,9 +449,9 @@ class errorHandler {
 
 						$parser_exists = FALSE;
 
-						if(!is_object($parser) || !method_exists($parser, 'mycode_parse_php'))
+						if (!is_object($parser) || !method_exists($parser, 'mycode_parse_php'))
 						{
-							if(@file_exists(MYBB_ROOT."inc/class_parser.php"))
+							if (@file_exists(MYBB_ROOT."inc/class_parser.php"))
 							{
 								@require_once MYBB_ROOT."inc/class_parser.php";
 								$parser = new postParser;
@@ -463,7 +463,7 @@ class errorHandler {
 							$parser_exists = TRUE;
 						}
 
-						if($parser_exists)
+						if ($parser_exists)
 						{
 							$code = $parser->mycode_parse_php($code, TRUE);
 						}
@@ -476,7 +476,7 @@ class errorHandler {
 					}
 				}
 				$backtrace = $this->generate_backtrace();
-				if($backtrace && !in_array($type, $this->mybb_error_types))
+				if ($backtrace && !in_array($type, $this->mybb_error_types))
 				{
 					$error_message .= "<dt>Backtrace:</dt><dd>{$backtrace}</dd>\n";
 				}
@@ -484,7 +484,7 @@ class errorHandler {
 			}
 		}
 
-		if(isset($lang->settings['charset']))
+		if (isset($lang->settings['charset']))
 		{
 			$charset = $lang->settings['charset'];
 		}
@@ -493,7 +493,7 @@ class errorHandler {
 			$charset = 'UTF-8';
 		}
 
-		if(!headers_sent() && !defined("IN_INSTALL") && !defined("IN_UPGRADE"))
+		if (!headers_sent() && !defined("IN_INSTALL") && !defined("IN_UPGRADE"))
 		{
 			@header('HTTP/1.1 503 Service Temporarily Unavailable');
 			@header('Status: 503 Service Temporarily Unavailable');
@@ -570,7 +570,7 @@ EOF;
 	 */
 	function generate_backtrace()
 	{
-		if(function_exists("debug_backtrace"))
+		if (function_exists("debug_backtrace"))
 		{
 			$trace = debug_backtrace();
 			$backtrace = "<table style=\"width: 100%; margin: 10px 0; border: 1px solid #aaa; border-collapse: collapse; border-bottom: 0;\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\">\n";
@@ -585,9 +585,9 @@ EOF;
 
 			foreach($trace as $call)
 			{
-				if(!$call['file']) $call['file'] = "[PHP]";
-				if(!$call['line']) $call['line'] = "&nbsp;";
-				if($call['class']) $call['function'] = $call['class'].$call['type'].$call['function'];
+				if (!$call['file']) $call['file'] = "[PHP]";
+				if (!$call['line']) $call['line'] = "&nbsp;";
+				if ($call['class']) $call['function'] = $call['class'].$call['type'].$call['function'];
 				$call['file'] = str_replace(MYBB_ROOT, "/", $call['file']);
 				$backtrace .= "<tr>\n";
 				$backtrace .= "<td style=\"font-size: 11px; padding: 4px; border-bottom: 1px solid #ccc;\">{$call['file']}</td>\n";

@@ -10,12 +10,12 @@
  */
 
 // Disallow direct access to this file for security reasons
-if(!defined("IN_MYBB"))
+if (!defined("IN_MYBB"))
 {
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
 
-if($mybb->input['action'] == "do_graph")
+if ($mybb->input['action'] == "do_graph")
 {
 	$range = array(
 		'start' => intval($mybb->input['start']),
@@ -35,12 +35,12 @@ $sub_tabs['overall_statistics'] = array(
 
 $plugins->run_hooks("admin_tools_statistics_begin");
 
-if(!$mybb->input['action'])
+if (!$mybb->input['action'])
 {
 	$plugins->run_hooks("admin_tools_statistics_overall_begin");
 
 	$query = $db->simple_select("stats", "COUNT(*) as total");
-	if($db->fetch_field($query, "total") == 0)
+	if ($db->fetch_field($query, "total") == 0)
 	{
 		flash_message($lang->error_no_statistics_available_yet, 'error');
 		admin_redirect("index.php?module=tools");
@@ -49,7 +49,7 @@ if(!$mybb->input['action'])
 	$per_page = 20;
 
 	// Do we have date range criteria?
-	if($mybb->input['from_year'])
+	if ($mybb->input['from_year'])
 	{
 		$start_dateline = mktime(0, 0, 0, intval($mybb->input['from_month']), intval($mybb->input['from_day']), intval($mybb->input['from_year']));
 		$end_dateline = mktime(23, 59, 59, intval($mybb->input['to_month']), intval($mybb->input['to_day']), intval($mybb->input['to_year']));
@@ -57,7 +57,7 @@ if(!$mybb->input['action'])
 	}
 
 	// Otherwise default to the last 30 days
-	if(!$mybb->input['from_year'] || $start_dateline > TIME_NOW || $end_dateline > mktime(23, 59, 59))
+	if (!$mybb->input['from_year'] || $start_dateline > TIME_NOW || $end_dateline > mktime(23, 59, 59))
 	{
 		$start_dateline = TIME_NOW-(60*60*24*30);
 		$end_dateline = TIME_NOW;
@@ -70,7 +70,7 @@ if(!$mybb->input['action'])
 
 	$last_dateline = 0;
 
-	if($mybb->input['page'] && $mybb->input['page'] > 1)
+	if ($mybb->input['page'] && $mybb->input['page'] > 1)
 	{
 		$mybb->input['page'] = intval($mybb->input['page']);
 		$start = ($mybb->input['page']*$per_page)-$per_page;
@@ -84,7 +84,7 @@ if(!$mybb->input['action'])
 	$query = $db->simple_select("stats", "*", "dateline >= '".intval($start_dateline)."' AND dateline <= '".intval($end_dateline)."'", array('order_by' => 'dateline', 'order_dir' => 'asc'));
 	while($stat = $db->fetch_array($query))
 	{
-		if($last_dateline)
+		if ($last_dateline)
 		{
 			$stat['change_users'] = ($stat['numusers'] - $stats[$last_dateline]['numusers']);
 			$stat['change_threads'] = ($stat['numthreads'] - $stats[$last_dateline]['numthreads']);
@@ -96,7 +96,7 @@ if(!$mybb->input['action'])
 		$last_dateline = $stat['dateline'];
 	}
 
-	if(empty($stats))
+	if (empty($stats))
 	{
 		flash_message($lang->error_no_results_found_for_criteria, 'error');
 		admin_redirect("index.php?module=tools");
@@ -161,7 +161,7 @@ function generate_growth_string($number)
 {
 	global $lang, $cp_style;
 
-	if($number === NULL)
+	if ($number === NULL)
 	{
 		return "";
 	}
@@ -169,11 +169,11 @@ function generate_growth_string($number)
 	$number = intval($number);
 	$friendly_number = my_number_format(abs($number));
 
-	if($number > 0)
+	if ($number > 0)
 	{
 		$growth_string = "(<img src=\"./styles/{$cp_style}/images/icons/increase.gif\" alt=\"{$lang->increase}\" title=\"{$lang->increase}\" style=\"vertical-align: middle; margin-top: -2px;\" /> {$friendly_number})";
 	}
-	elseif($number == 0)
+	elseif ($number == 0)
 	{
 		$growth_string = "(<img src=\"./styles/{$cp_style}/images/icons/no_change.gif\" alt=\"{$lang->no_change}\" title=\"{$lang->no_change}\" style=\"vertical-align: middle; margin-top: -2px;\" /> {$friendly_number})";
 	}
@@ -190,7 +190,7 @@ function create_graph($type, $range=NULL)
 	global $db;
 
 	// Do we have date range criteria?
-	if($range['end'] || $range['start'])
+	if ($range['end'] || $range['start'])
 	{
 		$start = intval($range['start']);
 		$end = intval($range['end']);
@@ -203,7 +203,7 @@ function create_graph($type, $range=NULL)
 	}
 
 	$allowed_types = array('users', 'threads', 'posts');
-	if(!in_array($type, $allowed_types))
+	if (!in_array($type, $allowed_types))
 	{
 		die;
 	}
@@ -211,7 +211,7 @@ function create_graph($type, $range=NULL)
 	require_once MYBB_ROOT.'inc/class_graph.php';
 
 	$points = $stats = $datelines = array();
-	if($start == 0)
+	if ($start == 0)
 	{
 		$query = $db->simple_select("stats", "dateline,num{$type}", "dateline <= '".intval($end)."'", array('order_by' => 'dateline', 'order_dir' => 'desc', 'limit' => 2));
 		while($stat = $db->fetch_array($query))
@@ -224,7 +224,7 @@ function create_graph($type, $range=NULL)
 		$points[$datelines[1]] = $stats[0]-$stats[1];
 		ksort($points, SORT_NUMERIC);
 	}
-	elseif($end == 0)
+	elseif ($end == 0)
 	{
 		$query = $db->simple_select("stats", "dateline,num{$type}", "dateline >= '".intval($start)."'", array('order_by' => 'dateline', 'order_dir' => 'asc', 'limit' => 2));
 		while($stat = $db->fetch_array($query))
@@ -253,7 +253,7 @@ function create_graph($type, $range=NULL)
 	// Find our year(s) label
 	$start_year = date('Y', $datelines[0]);
 	$last_year = date('Y', $datelines[count($datelines)-1]);
-	if(($last_year - $start_year) == 0)
+	if (($last_year - $start_year) == 0)
 	{
 		$bottom_label = $start_year;
 	}

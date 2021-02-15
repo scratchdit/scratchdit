@@ -28,19 +28,19 @@ function upgrade43_dbchanges()
 	echo "<p>Performing necessary upgrade queries...</p>";
 	flush();
 
-	if($mybb->settings['captchaimage'] == 2)
+	if ($mybb->settings['captchaimage'] == 2)
 	{
 		$db->update_query('settings', array('value' => 1), "name='captchaimage'"); // Reset CAPTCHA to MyBB Default
 		$db->update_query('settings', array('value' => ''), 'name IN (\'captchapublickey\', \'captchaprivatekey\')'); // Clean out stored credential keys
 	}
 
-	if($db->field_exists('aim', 'users'))
+	if ($db->field_exists('aim', 'users'))
 	{
 		$db->drop_column('users', 'aim');
 	}
 	$db->delete_query("settings", "name='allowaimfield'");
 
-	if($db->field_exists('regex', 'badwords'))
+	if ($db->field_exists('regex', 'badwords'))
 	{
 		$db->drop_column('badwords', 'regex');
 	}
@@ -58,7 +58,7 @@ function upgrade43_dbchanges()
 	$cache->delete("mybb_credits");
 
 	// Add lockout column
-	if(!$db->field_exists("loginlockoutexpiry", "users"))
+	if (!$db->field_exists("loginlockoutexpiry", "users"))
 	{
 		$db->add_column("users", "loginlockoutexpiry", "int NOT NULL default '0'");
 	}

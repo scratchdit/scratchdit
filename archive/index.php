@@ -24,21 +24,21 @@ switch($action)
 	// Display an announcement.
 	case "announcement":
 		// Fetch the forum this thread is in
-		if($announcement['fid'] != -1)
+		if ($announcement['fid'] != -1)
 		{
 			$forum = get_forum($announcement['fid']);
-			if(!$forum['fid'] || $forum['password'] != '')
+			if (!$forum['fid'] || $forum['password'] != '')
 			{
 				archive_error($lang->error_invalidforum);
 			}
 
 			// Check if we have permission to view this thread
 			$forumpermissions = forum_permissions($forum['fid']);
-			if($forumpermissions['canview'] != 1 || $forumpermissions['canviewthreads'] != 1)
+			if ($forumpermissions['canview'] != 1 || $forumpermissions['canviewthreads'] != 1)
 			{
 				archive_error_no_permission();
 			}
-			
+
 			check_forum_password_archive($forum['fid']);
 		}
 
@@ -81,21 +81,21 @@ switch($action)
 
 		// Fetch the forum this thread is in
 		$forum = get_forum($thread['fid']);
-		if(!$forum['fid'] || $forum['password'] != '')
+		if (!$forum['fid'] || $forum['password'] != '')
 		{
 			archive_error($lang->error_invalidforum);
 		}
 
 		// Check if we have permission to view this thread
 		$forumpermissions = forum_permissions($forum['fid']);
-		if($forumpermissions['canview'] != 1 || $forumpermissions['canviewthreads'] != 1)
+		if ($forumpermissions['canview'] != 1 || $forumpermissions['canviewthreads'] != 1)
 		{
 			archive_error_no_permission();
 		}
-		
-		if($thread['visible'] != 1)
+
+		if ($thread['visible'] != 1)
 		{
-			if(is_moderator($forum['fid']))
+			if (is_moderator($forum['fid']))
 			{
 				archive_error($lang->sprintf($lang->error_unapproved_thread, $mybb->settings['bburl']."/".get_thread_link($thread['tid'], $page)));
 			}
@@ -104,14 +104,14 @@ switch($action)
 				archive_error($lang->error_invalidthread);
 			}
 		}
-		
-		if($forumpermissions['canonlyviewownthreads'] == 1 && $thread['uid'] != $mybb->user['uid'])
+
+		if ($forumpermissions['canonlyviewownthreads'] == 1 && $thread['uid'] != $mybb->user['uid'])
 		{
 			archive_error_no_permission();
 		}
-		
+
 		check_forum_password_archive($forum['fid']);
-		
+
 		// Build the navigation
 		build_forum_breadcrumb($forum['fid'], 1);
 		add_breadcrumb($thread['subject']);
@@ -125,11 +125,11 @@ switch($action)
 		$postcount = intval($thread['replies'])+1;
 		$pages = ceil($postcount/$perpage);
 
-		if($page > $pages)
+		if ($page > $pages)
 		{
 			$page = 1;
 		}
-		if($page)
+		if ($page)
 		{
 			$start = ($page-1) * $perpage;
 		}
@@ -146,17 +146,17 @@ switch($action)
 		{
 			$pids[$post['pid']] = $post['pid'];
 		}
-		
-		if(empty($pids))
+
+		if (empty($pids))
 		{
 			archive_error($lang->error_invalidthread);
 		}
-		
+
 		archive_multipage($postcount, $perpage, $page, "{$base_url}thread-$id");
 
 		$pids = implode(",", $pids);
 
-		if($pids)
+		if ($pids)
 		{
 			// Build attachments cache
 			$query = $db->simple_select("attachments", "*", "pid IN ({$pids})");
@@ -177,7 +177,7 @@ switch($action)
 		while($post = $db->fetch_array($query))
 		{
 			$post['date'] = my_date($mybb->settings['dateformat'].", ".$mybb->settings['timeformat'], $post['dateline'], "", 0);
-			if($post['userusername'])
+			if ($post['userusername'])
 			{
 				$post['username'] = $post['userusername'];
 			}
@@ -192,7 +192,7 @@ switch($action)
 				"me_username" => $post['username'],
 				"filter_badwords" => 1
 			);
-			if($post['smilieoff'] == 1)
+			if ($post['smilieoff'] == 1)
 			{
 				$parser_options['allow_smilies'] = 0;
 			}
@@ -200,7 +200,7 @@ switch($action)
 			$post['message'] = $parser->parse_message($post['message'], $parser_options);
 
 			// Is there an attachment in this post?
-			if(is_array($acache[$post['pid']]))
+			if (is_array($acache[$post['pid']]))
 			{
 				foreach($acache[$post['pid']] as $aid => $attachment)
 				{
@@ -209,7 +209,7 @@ switch($action)
 			}
 
 			// Damn thats a lot of parsing, now to determine which username to show..
-			if($post['userusername'])
+			if ($post['userusername'])
 			{
 				$post['username'] = $post['userusername'];
 			}
@@ -232,15 +232,15 @@ switch($action)
 	case "forum":
 		// Check if we have permission to view this forum
 		$forumpermissions = forum_permissions($forum['fid']);
-		if($forumpermissions['canview'] != 1)
+		if ($forumpermissions['canview'] != 1)
 		{
 			archive_error_no_permission();
 		}
-		
+
 		check_forum_password_archive($forum['fid']);
-		
+
 		$useronly = "";
-		if($forumpermissions['canonlyviewownthreads'] == 1)
+		if ($forumpermissions['canonlyviewownthreads'] == 1)
 		{
 			$useronly = "AND uid={$mybb->user['uid']}";
 		}
@@ -253,7 +253,7 @@ switch($action)
 		build_forum_breadcrumb($forum['fid'], 1);
 
 		// No threads and not a category? Error!
-		if($threadcount < 1 && $forum['type'] != 'c')
+		if ($threadcount < 1 && $forum['type'] != 'c')
 		{
 			archive_header(strip_tags($forum['name']), $forum['name'], $mybb->settings['bburl']."/".get_forum_link($id, $page)."");
 			archive_error($lang->error_nothreads);
@@ -264,19 +264,19 @@ switch($action)
 
 		$plugins->run_hooks("archive_forum_start");
 
-		if(!$mybb->settings['threadsperpage'])
+		if (!$mybb->settings['threadsperpage'])
 		{
 			$mybb->settings['threadsperpage'] = 20;
 		}
 
 		$perpage = $mybb->settings['threadsperpage'];
 		$pages = ceil($threadcount/$perpage);
-		if($page > $pages)
+		if ($page > $pages)
 		{
 			$page = 1;
 		}
-		
-		if($page > 0)
+
+		if ($page > 0)
 		{
 			$start = ($page-1) * $perpage;
 		}
@@ -287,11 +287,11 @@ switch($action)
 		}
 
 		// Decide what type of listing to show.
-		if($forum['type'] == 'f')
+		if ($forum['type'] == 'f')
 		{
 			echo "<div class=\"listing\">\n<div class=\"header\"><h2>{$forum['name']}</h2></div>\n";
 		}
-		elseif($forum['type'] == 'c')
+		elseif ($forum['type'] == 'c')
 		{
 			echo "<div class=\"listing\">\n<div class=\"header\"><h2>{$forum['name']}</h2></div>\n";
 		}
@@ -299,7 +299,7 @@ switch($action)
 		// Show subforums.
 		$query = $db->simple_select("forums", "COUNT(fid) AS subforums", "pid='{$id}' AND status='1'");
 		$subforumcount = $db->fetch_field($query, "subforums");
-		if($subforumcount > 0)
+		if ($subforumcount > 0)
 		{
 			echo "<div class=\"forumlist\">\n";
 			echo "<h3>{$lang->subforums}</h3>\n";
@@ -308,16 +308,16 @@ switch($action)
 			echo $forums;
 			echo "</ol>\n</div>\n";
 		}
-		
+
 		archive_multipage($threadcount, $perpage, $page, "{$base_url}forum-$id");
-	
+
 		// Get the announcements if the forum is not a category.
-		if($forum['type'] == 'f')
+		if ($forum['type'] == 'f')
 		{
 			$sql = build_parent_list($forum['fid'], "fid", "OR", $forum['parentlist']);
 			$time = TIME_NOW;
 			$query = $db->simple_select("announcements", "*", "startdate < '{$time}' AND (enddate > '{$time}' OR enddate=0) AND ({$sql} OR fid='-1')");
-			if($db->num_rows($query) > 0)
+			if ($db->num_rows($query) > 0)
 			{
 				echo "<div class=\"announcementlist\">\n";
 				echo "<h3>{$lang->forumbit_announcements}</h3>";
@@ -333,7 +333,7 @@ switch($action)
 		}
 
 		// Get the stickies if the forum is not a category.
-		if($forum['type'] == 'f')
+		if ($forum['type'] == 'f')
 		{
 			$options = array(
 				'order_by' => 'sticky, lastpost',
@@ -342,7 +342,7 @@ switch($action)
 				'limit' => $perpage
 			);
 			$query = $db->simple_select("threads", "*", "fid='{$id}' AND visible='1' AND sticky='1' AND closed NOT LIKE 'moved|%' {$useronly}", $options);
-			if($db->num_rows($query) > 0)
+			if ($db->num_rows($query) > 0)
 			{
 				echo "<div class=\"threadlist\">\n";
 				echo "<h3>{$lang->forumbit_stickies}</h3>";
@@ -350,7 +350,7 @@ switch($action)
 				while($sticky = $db->fetch_array($query))
 				{
 					$sticky['subject'] = htmlspecialchars_uni($parser->parse_badwords($sticky['subject']));
-					if($sticky['replies'] != 1)
+					if ($sticky['replies'] != 1)
 					{
 						$lang_reply_text = $lang->archive_replies;
 					}
@@ -369,7 +369,7 @@ switch($action)
 		}
 
 		// Get the threads if the forum is not a category.
-		if($forum['type'] == 'f')
+		if ($forum['type'] == 'f')
 		{
 			$options = array(
 				'order_by' => 'sticky, lastpost',
@@ -378,7 +378,7 @@ switch($action)
 				'limit' => $perpage
 			);
 			$query = $db->simple_select("threads", "*", "fid='{$id}' AND visible='1' AND sticky='0' AND closed NOT LIKE 'moved|%' {$useronly}", $options);
-			if($db->num_rows($query) > 0)
+			if ($db->num_rows($query) > 0)
 			{
 				echo "<div class=\"threadlist\">\n";
 				echo "<h3>{$lang->forumbit_threads}</h3>";
@@ -386,7 +386,7 @@ switch($action)
 				while($thread = $db->fetch_array($query))
 				{
 					$thread['subject'] = htmlspecialchars_uni($parser->parse_badwords($thread['subject']));
-					if($thread['replies'] != 1)
+					if ($thread['replies'] != 1)
 					{
 						$lang_reply_text = $lang->archive_replies;
 					}
@@ -458,7 +458,7 @@ function build_archive_forumbits($pid=0)
 
 	// Sort out the forum cache first.
 	static $fcache;
-	if(!is_array($fcache))
+	if (!is_array($fcache))
 	{
 		// Fetch forums
 		$query = $db->simple_select("forums", "*", "active!=0 AND password=''", array('order_by' =>'pid, disporder'));
@@ -470,20 +470,20 @@ function build_archive_forumbits($pid=0)
 	}
 
 	// Start the process.
-	if(is_array($fcache[$pid]))
+	if (is_array($fcache[$pid]))
 	{
 		foreach($fcache[$pid] as $key => $main)
 		{
 			foreach($main as $key => $forum)
 			{
 				$perms = $forumpermissions[$forum['fid']];
-				if(($perms['canview'] == 1 || $mybb->settings['hideprivateforums'] == 0) && $forum['active'] != 0)
+				if (($perms['canview'] == 1 || $mybb->settings['hideprivateforums'] == 0) && $forum['active'] != 0)
 				{
-					if($forum['linkto'])
+					if ($forum['linkto'])
 					{
 						$forums .= "<li><a href=\"{$forum['linkto']}\">{$forum['name']}</a>";
 					}
-					elseif($forum['type'] == "c")
+					elseif ($forum['type'] == "c")
 					{
 						$forums .= "<li><strong><a href=\"{$base_url}forum-{$forum['fid']}.html\">{$forum['name']}</a></strong>";
 					}
@@ -491,7 +491,7 @@ function build_archive_forumbits($pid=0)
 					{
 						$forums .= "<li><a href=\"{$base_url}forum-{$forum['fid']}.html\">{$forum['name']}</a>";
 					}
-					if($fcache[$forum['fid']])
+					if ($fcache[$forum['fid']])
 					{
 						$forums .= "\n<ol>\n";
 						$forums .= build_archive_forumbits($forum['fid']);

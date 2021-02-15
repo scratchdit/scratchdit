@@ -10,14 +10,14 @@
  */
 
 // Disallow direct access to this file for security reasons
-if(!defined("IN_MYBB"))
+if (!defined("IN_MYBB"))
 {
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
 
 $page->add_breadcrumb_item($lang->admin_permissions, "index.php?module=user-admin_permissions");
 
-if(($mybb->input['action'] == "edit" && $mybb->input['uid'] == 0) || $mybb->input['action'] == "group" || !$mybb->input['action'])
+if (($mybb->input['action'] == "edit" && $mybb->input['uid'] == 0) || $mybb->input['action'] == "group" || !$mybb->input['action'])
 {
 	$sub_tabs['user_permissions'] = array(
 		'title' => $lang->user_permissions,
@@ -42,35 +42,35 @@ $uid = intval($mybb->input['uid']);
 
 $plugins->run_hooks("admin_user_admin_permissions_begin");
 
-if($mybb->input['action'] == "delete")
+if ($mybb->input['action'] == "delete")
 {
 	$plugins->run_hooks("admin_user_admin_permissions_delete");
 
-	if(is_super_admin($uid) && $mybb->user['uid'] != $uid)
+	if (is_super_admin($uid) && $mybb->user['uid'] != $uid)
 	{
 		flash_message($lang->error_delete_super_admin, 'error');
 		admin_redirect("index.php?module=user-admin_permissions");
 	}
 
-	if($mybb->input['no'])
+	if ($mybb->input['no'])
 	{
 		admin_redirect("index.php?module=user-admin_permissions");
 	}
 
-	if(!trim($mybb->input['uid']))
+	if (!trim($mybb->input['uid']))
 	{
 		flash_message($lang->error_delete_no_uid, 'error');
 		admin_redirect("index.php?module=user-admin_permissions");
 	}
 
 	$query = $db->simple_select("adminoptions", "COUNT(uid) as adminoptions", "uid = '{$mybb->input['uid']}'");
-	if($db->fetch_field($query, 'adminoptions') == 0)
+	if ($db->fetch_field($query, 'adminoptions') == 0)
 	{
 		flash_message($lang->error_delete_invalid_uid, 'error');
 		admin_redirect("index.php?module=user-admin_permissions");
 	}
 
-	if($mybb->request_method == "post")
+	if ($mybb->request_method == "post")
 	{
 		$newperms = array(
 			"permissions" => ''
@@ -80,14 +80,14 @@ if($mybb->input['action'] == "delete")
 		$plugins->run_hooks("admin_user_admin_permissions_delete_commit");
 
 		// Log admin action
-		if($uid < 0)
+		if ($uid < 0)
 		{
 			$query = $db->simple_select("usergroups", "title", "gid='$gid'");
 			$group = $db->fetch_array($query);
 			log_admin_action($uid, $group['title']);
 
 		}
-		elseif($uid == 0)
+		elseif ($uid == 0)
 		{
 			// Default
 			log_admin_action(0, $lang->default);
@@ -107,24 +107,24 @@ if($mybb->input['action'] == "delete")
 	}
 }
 
-if($mybb->input['action'] == "edit")
+if ($mybb->input['action'] == "edit")
 {
 	$plugins->run_hooks("admin_user_admin_permissions_edit");
 
-	if($mybb->request_method == "post")
+	if ($mybb->request_method == "post")
 	{
 		foreach($mybb->input['permissions'] as $module => $actions)
 		{
 			$no_access = 0;
 			foreach($actions as $action => $access)
 			{
-				if($access == 0)
+				if ($access == 0)
 				{
 					++$no_access;
 				}
 			}
 			// User can't access any actions in this module - just disallow it completely
-			if($no_access == count($actions))
+			if ($no_access == count($actions))
 			{
 				unset($mybb->input['permissions'][$module]);
 			}
@@ -133,7 +133,7 @@ if($mybb->input['action'] == "edit")
 		// Does an options row exist for this admin already?
 		$query = $db->simple_select("adminoptions", "COUNT(uid) AS existing_options", "uid='".intval($mybb->input['uid'])."'");
 		$existing_options = $db->fetch_field($query, "existing_options");
-		if($existing_options > 0)
+		if ($existing_options > 0)
 		{
 			$db->update_query("adminoptions", array('permissions' => $db->escape_string(serialize($mybb->input['permissions']))), "uid = '".intval($mybb->input['uid'])."'");
 		}
@@ -151,13 +151,13 @@ if($mybb->input['action'] == "edit")
 		$plugins->run_hooks("admin_user_admin_permissions_edit_commit");
 
 		// Log admin action
-		if($uid > 0)
+		if ($uid > 0)
 		{
 			// Users
 			$user = get_user($uid);
 			log_admin_action($uid, $user['username']);
 		}
-		elseif($uid < 0)
+		elseif ($uid < 0)
 		{
 			// Groups
 			$gid = abs($uid);
@@ -175,7 +175,7 @@ if($mybb->input['action'] == "edit")
 		admin_redirect("index.php?module=user-admin_permissions");
 	}
 
-	if($uid > 0)
+	if ($uid > 0)
 	{
 		$query = $db->query("
 			SELECT u.uid, u.username, g.cancp, g.gid
@@ -190,7 +190,7 @@ if($mybb->input['action'] == "edit")
 		$title = $admin['username'];
 		$page->add_breadcrumb_item($lang->user_permissions, "index.php?module=user-admin_permissions");
 	}
-	elseif($uid < 0)
+	elseif ($uid < 0)
 	{
 		$gid = abs($uid);
 		$query = $db->simple_select("usergroups", "title", "gid='$gid'");
@@ -207,14 +207,14 @@ if($mybb->input['action'] == "edit")
 		$title = $lang->default;
 	}
 
-	if($uid != 0)
+	if ($uid != 0)
 	{
 		$page->add_breadcrumb_item($lang->edit_permissions.": {$title}");
 	}
 
 	$page->output_header($lang->edit_permissions);
 
-	if($uid != 0)
+	if ($uid != 0)
 	{
 		$sub_tabs['edit_permissions'] = array(
 			'title' => $lang->edit_permissions,
@@ -234,13 +234,13 @@ if($mybb->input['action'] == "edit")
 	$dir = opendir($modules_dir);
 	while(($module = readdir($dir)) !== FALSE)
 	{
-		if(is_dir($modules_dir."/".$module) && !in_array($module, array(".", "..")) && file_exists($modules_dir."/".$module."/module_meta.php"))
+		if (is_dir($modules_dir."/".$module) && !in_array($module, array(".", "..")) && file_exists($modules_dir."/".$module."/module_meta.php"))
 		{
 			require_once $modules_dir."/".$module."/module_meta.php";
 			$meta_function = $module."_admin_permissions";
 
 			// Module has no permissions, skip it
-			if(function_exists($meta_function) && is_array($meta_function()))
+			if (function_exists($meta_function) && is_array($meta_function()))
 			{
 				$permission_modules[$module] = $meta_function();
 				$modules[$permission_modules[$module]['disporder']][] = $module;
@@ -252,7 +252,7 @@ if($mybb->input['action'] == "edit")
 	ksort($modules);
 	foreach($modules as $disp_order => $mod)
 	{
-		if(!is_array($mod))
+		if (!is_array($mod))
 		{
 			continue;
 		}
@@ -283,7 +283,7 @@ if($mybb->input['action'] == "edit")
 	$page->output_footer();
 }
 
-if($mybb->input['action'] == "group")
+if ($mybb->input['action'] == "group")
 {
 	$plugins->run_hooks("admin_user_admin_permissions_group");
 
@@ -306,7 +306,7 @@ if($mybb->input['action'] == "group")
 	");
 	while($group = $db->fetch_array($query))
 	{
-		if($group['permissions'] != "")
+		if ($group['permissions'] != "")
 		{
 			$perm_type = "group";
 		}
@@ -317,7 +317,7 @@ if($mybb->input['action'] == "group")
 		$uid = -$group['gid'];
 		$table->construct_cell("<div class=\"float_right\"><img src=\"styles/{$page->style}/images/icons/{$perm_type}.gif\" title=\"{$lang->permissions_type_group}\" alt=\"{$perm_type}\" /></div><div><strong><a href=\"index.php?module=user-admin_permissions&amp;action=edit&amp;uid={$uid}\" title=\"{$lang->edit_group}\">{$group['title']}</a></strong><br /></div>");
 
-		if($group['permissions'] != "")
+		if ($group['permissions'] != "")
 		{
 			$popup = new PopupMenu("groupperm_{$uid}", $lang->options);
 			$popup->add_item($lang->edit_permissions, "index.php?module=user-admin_permissions&amp;action=edit&amp;uid={$uid}");
@@ -333,7 +333,7 @@ if($mybb->input['action'] == "group")
 		$table->construct_row();
 	}
 
-	if($table->num_rows() == 0)
+	if ($table->num_rows() == 0)
 	{
 		$table->construct_cell($lang->no_group_perms, array("colspan" => "2"));
 		$table->construct_row();
@@ -352,7 +352,7 @@ LEGEND;
 	$page->output_footer();
 }
 
-if(!$mybb->input['action'])
+if (!$mybb->input['action'])
 {
 	$plugins->run_hooks("admin_user_admin_permissions_start");
 
@@ -417,7 +417,7 @@ if(!$mybb->input['action'])
 	");
 	while($admin = $db->fetch_array($query))
 	{
-		if($admin['permissions'] != "")
+		if ($admin['permissions'] != "")
 		{
 			$perm_type = "user";
 		}
@@ -426,15 +426,15 @@ if(!$mybb->input['action'])
 			$groups = explode(",", $admin['additionalgroups'].",".$admin['usergroup']);
 			foreach($groups as $group)
 			{
-				if($group == "") continue;
-				if($group_permissions[$group] != "")
+				if ($group == "") continue;
+				if ($group_permissions[$group] != "")
 				{
 					$perm_type = "group";
 					break;
 				}
 			}
 
-			if(!$group_permissions)
+			if (!$group_permissions)
 			{
 				$perm_type = "default";
 			}
@@ -444,18 +444,18 @@ if(!$mybb->input['action'])
 
 		// Build a list of group memberships that have access to the Admin CP
 		// Primary usergroup?
-		if($usergroups[$admin['usergroup']]['cancp'] == 1)
+		if ($usergroups[$admin['usergroup']]['cancp'] == 1)
 		{
 			$usergroup_list[] = "<i>".$usergroups[$admin['usergroup']]['title']."</i>";
 		}
 
 		// Secondary usergroups?
 		$additional_groups = explode(',', $admin['additionalgroups']);
-		if(is_array($additional_groups))
+		if (is_array($additional_groups))
 		{
 			foreach($additional_groups as $gid)
 			{
-				if($usergroups[$gid]['cancp'] == 1)
+				if ($usergroups[$gid]['cancp'] == 1)
 				{
 					$usergroup_list[] = $usergroups[$gid]['title'];
 				}
@@ -468,7 +468,7 @@ if(!$mybb->input['action'])
 		$table->construct_cell(my_date($mybb->settings['dateformat'].", ".$mybb->settings['timeformat'], $admin['lastactive']), array("class" => "align_center"));
 
 		$popup = new PopupMenu("adminperm_{$admin['uid']}", $lang->options);
-		if($admin['permissions'] != "")
+		if ($admin['permissions'] != "")
 		{
 			$popup->add_item($lang->edit_permissions, "index.php?module=user-admin_permissions&amp;action=edit&amp;uid={$admin['uid']}");
 			$popup->add_item($lang->revoke_permissions, "index.php?module=user-admin_permissions&amp;action=delete&amp;uid={$admin['uid']}&amp;my_post_key={$mybb->post_code}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_perms_deletion2}')");
@@ -482,7 +482,7 @@ if(!$mybb->input['action'])
 		$table->construct_row();
 	}
 
-	if($table->num_rows() == 0)
+	if ($table->num_rows() == 0)
 	{
 		$table->construct_cell($lang->no_user_perms, array("colspan" => "2"));
 		$table->construct_row();

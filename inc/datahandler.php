@@ -65,7 +65,7 @@ class DataHandler
 	 */
 	function __construct($method="insert")
 	{
-		if($method != "update" && $method != "insert")
+		if ($method != "update" && $method != "insert")
 		{
 			die("A valid method was not supplied to the data handler.");
 		}
@@ -79,7 +79,7 @@ class DataHandler
 	 */
 	function set_data($data)
 	{
-		if(!is_array($data))
+		if (!is_array($data))
 		{
 			return FALSE;
 		}
@@ -121,7 +121,7 @@ class DataHandler
 		global $lang;
 
 		// Load the language pack we need
-		if($this->language_file)
+		if ($this->language_file)
 		{
 			$lang->load($this->language_file, TRUE);
 		}
@@ -129,18 +129,18 @@ class DataHandler
 		foreach($this->errors as $error)
 		{
 			$lang_string = $this->language_prefix.'_'.$error['error_code'];
-			if(!$lang->$lang_string)
+			if (!$lang->$lang_string)
 			{
 				$errors[] = $error['error_code'];
 				continue;
 			}
 
-			if(!empty($error['data']) && !is_array($error['data']))
+			if (!empty($error['data']) && !is_array($error['data']))
 			{
 				$error['data'] = array($error['data']);
 			}
 
-			if(is_array($error['data']))
+			if (is_array($error['data']))
 			{
 				array_unshift($error['data'], $lang->$lang_string);
 				$errors[] = call_user_func_array(array($lang, "sprintf"), $error['data']);
@@ -170,7 +170,7 @@ class DataHandler
 	 */
 	function get_validated()
 	{
-		if($this->is_validated == TRUE)
+		if ($this->is_validated == TRUE)
 		{
 			return TRUE;
 		}
@@ -189,11 +189,11 @@ class DataHandler
 	*/
 	function verify_yesno_option(&$options, $option, $default=1)
 	{
-		if($this->method == "insert" || array_key_exists($option, $options))
+		if ($this->method == "insert" || array_key_exists($option, $options))
 		{
-			if($options[$option] != $default && $options[$option] != "")
+			if ($options[$option] != $default && $options[$option] != "")
 			{
-				if($default == 1)
+				if ($default == 1)
 				{
 					$options[$option] = 0;
 				}
@@ -202,7 +202,7 @@ class DataHandler
 					$options[$option] = 1;
 				}
 			}
-			else if(@array_key_exists($option, $options) && $options[$option] == '')
+			else if (@array_key_exists($option, $options) && $options[$option] == '')
 			{
 				$options[$option] = 0;
 			}

@@ -23,7 +23,7 @@ require_once MYBB_ROOT."inc/class_parser.php";
 $parser = new postParser;
 
 $groupscache = $cache->read("usergroups");
-if(!is_array($groupscache))
+if (!is_array($groupscache))
 {
 	$cache->update_usergroups();
 	$groupscache = $cache->read("usergroups");
@@ -34,26 +34,26 @@ $fpermissioncache = $cache->read("forumpermissions");
 send_page_headers();
 
 // If the installer has not been removed and no lock exists, die.
-if(is_dir(MYBB_ROOT."install") && !file_exists(MYBB_ROOT."install/lock"))
+if (is_dir(MYBB_ROOT."install") && !file_exists(MYBB_ROOT."install/lock"))
 {
 	echo "Please remove the install directory from your server, or create a file called 'lock' in the install directory. Until you do so, your board will remain unaccessable";
 	exit;
 }
 
 // If the server OS is not Windows and not Apache or the PHP is running as a CGI or we have defined ARCHIVE_QUERY_STRINGS, use query strings - DIRECTORY_SEPARATOR checks if running windows
-//if((DIRECTORY_SEPARATOR != '\\' && stripos($_SERVER['SERVER_SOFTWARE'], 'apache') == FALSE) || stripos(SAPI_NAME, 'cgi') !== FALSE || defined("ARCHIVE_QUERY_STRINGS"))
+//if ((DIRECTORY_SEPARATOR != '\\' && stripos($_SERVER['SERVER_SOFTWARE'], 'apache') == FALSE) || stripos(SAPI_NAME, 'cgi') !== FALSE || defined("ARCHIVE_QUERY_STRINGS"))
 // http://dev.mybb.com/issues/1489 - remove automatic detection and rely on users to set the right option here
-if($mybb->settings['seourls_archive'] == 1)
+if ($mybb->settings['seourls_archive'] == 1)
 {
-	if($_SERVER['REQUEST_URI'])
+	if ($_SERVER['REQUEST_URI'])
     {
         $url = $_SERVER['REQUEST_URI'];
     }
-    elseif($_SERVER['REDIRECT_URL'])
+    elseif ($_SERVER['REDIRECT_URL'])
 	{
 		$url = $_SERVER['REDIRECT_URL'];
 	}
-	elseif($_SERVER['PATH_INFO'])
+	elseif ($_SERVER['PATH_INFO'])
 	{
 		$url = $_SERVER['PATH_INFO'];
 	}
@@ -76,11 +76,11 @@ $action = "index";
 // This seems to work the same as the block below except without the css bugs O_o
 $archiveurl = $mybb->settings['bburl'].'/archive';
 
-if($endpart != "index.php")
+if ($endpart != "index.php")
 {
 	$endpart = str_replace(".html", "", $endpart);
 	$todo = explode("-", $endpart, 3);
-	if($todo[0])
+	if ($todo[0])
 	{
 		$action = $action2 = $todo[0];
 	}
@@ -88,7 +88,7 @@ if($endpart != "index.php")
 	$id = intval($todo[1]);
 
 	// Get the thread, announcement or forum information.
-	if($action == "announcement")
+	if ($action == "announcement")
 	{
 		$time = TIME_NOW;
 		$query = $db->query("
@@ -98,45 +98,45 @@ if($endpart != "index.php")
 			WHERE a.aid='{$id}' AND startdate < '{$time}'  AND (enddate > '{$time}' OR enddate = 0)
 		");
 		$announcement = $db->fetch_array($query);
-		if(!$announcement['aid'])
+		if (!$announcement['aid'])
 		{
 			$action = "404";
 		}
 	}
-	elseif($action == "thread")
+	elseif ($action == "thread")
 	{
 		$query = $db->simple_select("threads", "*", "tid='{$id}' AND closed NOT LIKE 'moved|%'");
 		$thread = $db->fetch_array($query);
-		if(!$thread['tid'])
+		if (!$thread['tid'])
 		{
 			$action = "404";
 		}
 	}
-	elseif($action == "forum")
+	elseif ($action == "forum")
 	{
 		$query = $db->simple_select("forums", "*", "fid='{$id}' AND active!=0 AND password=''");
 		$forum = $db->fetch_array($query);
-		if(!$forum['fid'])
+		if (!$forum['fid'])
 		{
 			$action = "404";
 		}
 	}
-	elseif($action != 'index')
+	elseif ($action != 'index')
 	{
 		$action = "404";
 	}
 }
 
 // Define the full MyBB version location of this page.
-if($action == "thread")
+if ($action == "thread")
 {
 	define(MYBB_LOCATION, get_thread_link($id));
 }
-elseif($action == "forum")
+elseif ($action == "forum")
 {
 	define(MYBB_LOCATION, get_forum_link($id));
 }
-elseif($action == "announcement")
+elseif ($action == "announcement")
 {
 	define(MYBB_LOCATION, get_announcement_link($id));
 }
@@ -149,7 +149,7 @@ else
 $session = new session;
 $session->init();
 
-if(!$mybb->settings['bblanguage'])
+if (!$mybb->settings['bblanguage'])
 {
 	$mybb->settings['bblanguage'] = "english";
 }
@@ -165,15 +165,15 @@ $navbits[0]['name'] = $mybb->settings['bbname_orig'];
 $navbits[0]['url'] = $mybb->settings['bburl']."/archive/index.php";
 
 // Check banned ip addresses
-if(is_banned_ip($session->ipaddress))
+if (is_banned_ip($session->ipaddress))
 {
 	archive_error($lang->error_banned);
 }
 
 // If our board is closed..
-if($mybb->settings['boardclosed'] == 1)
+if ($mybb->settings['boardclosed'] == 1)
 {
-	if($mybb->usergroup['cancp'] != 1)
+	if ($mybb->usergroup['cancp'] != 1)
 	{
 		$lang->error_boardclosed .= "<blockquote>".$mybb->settings['boardclosed_reason']."</blockquote>";
 		archive_error($lang->error_boardclosed);
@@ -181,20 +181,20 @@ if($mybb->settings['boardclosed'] == 1)
 }
 
 // Load Limiting - DIRECTORY_SEPARATOR checks if running windows
-if(DIRECTORY_SEPARATOR != '\\')
+if (DIRECTORY_SEPARATOR != '\\')
 {
-	if($uptime = @exec('uptime'))
+	if ($uptime = @exec('uptime'))
 	{
 		preg_match("/averages?: ([0-9\.]+),[\s]+([0-9\.]+),[\s]+([0-9\.]+)/", $uptime, $regs);
 		$load = $regs[1];
-		if($mybb->usergroup['cancp'] != 1 && $load > $mybb->settings['load'] && $mybb->settings['load'] > 0)
+		if ($mybb->usergroup['cancp'] != 1 && $load > $mybb->settings['load'] && $mybb->settings['load'] > 0)
 		{
 			archive_error($lang->error_loadlimit);
 		}
 	}
 }
 
-if($mybb->usergroup['canview'] == 0)
+if ($mybb->usergroup['canview'] == 0)
 {
 	archive_error_no_permission();
 }

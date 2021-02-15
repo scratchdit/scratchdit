@@ -18,19 +18,19 @@ require_once "./global.php";
 // Load global language phrases
 $lang->load("report");
 
-if($mybb->usergroup['canview'] == 0 || !$mybb->user['uid'])
+if ($mybb->usergroup['canview'] == 0 || !$mybb->user['uid'])
 {
 	error_no_permission();
 }
 
-if($mybb->input['action'] != "do_report")
+if ($mybb->input['action'] != "do_report")
 {
 	$mybb->input['action'] = "report";
 }
 
 $post = get_post($mybb->input['pid']);
 
-if(!$post['pid'])
+if (!$post['pid'])
 {
 	$error = $lang->error_invalidpost;
 	eval("\$report_error = \"".$templates->get("report_error")."\";");
@@ -40,7 +40,7 @@ if(!$post['pid'])
 
 
 $forum = get_forum($post['fid']);
-if(!$forum)
+if (!$forum)
 {
 	$error = $lang->error_invalidforum;
 	eval("\$report_error = \"".$templates->get("report_error")."\";");
@@ -53,7 +53,7 @@ check_forum_password($forum['parentlist']);
 
 $thread = get_thread($post['tid']);
 
-if($mybb->input['action'] == "report")
+if ($mybb->input['action'] == "report")
 {
 	$plugins->run_hooks("report_start");
 	$pid = $mybb->input['pid'];
@@ -63,20 +63,20 @@ if($mybb->input['action'] == "report")
 	eval("\$report = \"".$templates->get("report")."\";");
 	output_page($report);
 }
-elseif($mybb->input['action'] == "do_report" && $mybb->request_method == "post")
+elseif ($mybb->input['action'] == "do_report" && $mybb->request_method == "post")
 {
 	// Verify incoming POST request
 	verify_post_check($mybb->input['my_post_key']);
 
 	$plugins->run_hooks("report_do_report_start");
-	if(!trim($mybb->input['reason']))
+	if (!trim($mybb->input['reason']))
 	{
 		eval("\$report = \"".$templates->get("report_noreason")."\";");
 		output_page($report);
 		exit;
 	}
 
-	if($mybb->settings['reportmethod'] == "email" || $mybb->settings['reportmethod'] == "pms")
+	if ($mybb->settings['reportmethod'] == "email" || $mybb->settings['reportmethod'] == "pms")
 	{
 		$query = $db->query("
 			SELECT DISTINCT u.username, u.email, u.receivepms, u.uid
@@ -85,7 +85,7 @@ elseif($mybb->input['action'] == "do_report" && $mybb->request_method == "post")
 			WHERE m.fid IN (".$forum['parentlist'].") AND m.isgroup = '0'
 		");
 		$nummods = $db->num_rows($query);
-		if(!$nummods)
+		if (!$nummods)
 		{
 			unset($query);
 			switch($db->type)
@@ -114,7 +114,7 @@ elseif($mybb->input['action'] == "do_report" && $mybb->request_method == "post")
 			$emailsubject = $lang->sprintf($lang->emailsubject_reportpost, $mybb->settings['bbname']);
 			$emailmessage = $lang->sprintf($lang->email_reportpost, $mybb->user['username'], $mybb->settings['bbname'], $post['subject'], $mybb->settings['bburl'], str_replace('&amp;', '&', get_post_link($post['pid'], $thread['tid'])."#pid".$post['pid']), $thread['subject'], $mybb->input['reason']);
 
-			if($mybb->settings['reportmethod'] == "pms" && $mod['receivepms'] != 0 && $mybb->settings['enablepms'] != 0)
+			if ($mybb->settings['reportmethod'] == "pms" && $mod['receivepms'] != 0 && $mybb->settings['enablepms'] != 0)
 			{
 				$pm_recipients[] = $mod['uid'];
 			}
@@ -124,7 +124,7 @@ elseif($mybb->input['action'] == "do_report" && $mybb->request_method == "post")
 			}
 		}
 
-		if(count($pm_recipients) > 0)
+		if (count($pm_recipients) > 0)
 		{
 			$emailsubject = $lang->sprintf($lang->emailsubject_reportpost, $mybb->settings['bbname']);
 			$emailmessage = $lang->sprintf($lang->email_reportpost, $mybb->user['username'], $mybb->settings['bbname'], $post['subject'], $mybb->settings['bburl'], str_replace('&amp;', '&', get_post_link($post['pid'], $thread['tid'])."#pid".$post['pid']), $thread['subject'], $mybb->input['reason']);
@@ -144,7 +144,7 @@ elseif($mybb->input['action'] == "do_report" && $mybb->request_method == "post")
 			$pmhandler->set_data($pm);
 
 			// Now let the pm handler do all the hard work.
-			if(!$pmhandler->validate_pm())
+			if (!$pmhandler->validate_pm())
 			{
 				// Force it to valid to just get it out of here
 				$pmhandler->is_validated = TRUE;

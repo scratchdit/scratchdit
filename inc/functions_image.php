@@ -21,7 +21,7 @@
  */
 function generate_thumbnail($file, $path, $filename, $maxheight, $maxwidth)
 {
-	if(!function_exists("imagecreate"))
+	if (!function_exists("imagecreate"))
 	{
 		$thumb['code'] = 3;
 		return $thumb;
@@ -35,34 +35,34 @@ function generate_thumbnail($file, $path, $filename, $maxheight, $maxwidth)
 	$imgbits = $imgdesc['bits'];
 	$imgchan = $imgdesc['channels'];
 
-	if($imgwidth == 0 || $imgheight == 0)
+	if ($imgwidth == 0 || $imgheight == 0)
 	{
 		$thumb['code'] = 3;
 		return $thumb;
 	}
-	if(($imgwidth >= $maxwidth) || ($imgheight >= $maxheight))
+	if (($imgwidth >= $maxwidth) || ($imgheight >= $maxheight))
 	{
 		check_thumbnail_memory($imgwidth, $imgheight, $imgtype, $imgbits, $imgchan);
 
-		if($imgtype == 3)
+		if ($imgtype == 3)
 		{
-			if(@function_exists("imagecreatefrompng"))
+			if (@function_exists("imagecreatefrompng"))
 			{
 				$im = @imagecreatefrompng($file);
 			}
 		}
-		elseif($imgtype == 2)
+		elseif ($imgtype == 2)
 		{
-			if(@function_exists("imagecreatefromjpeg"))
+			if (@function_exists("imagecreatefromjpeg"))
 			{
 				$im = @imagecreatefromjpeg($file);
 			}
 		}
-		elseif($imgtype == 1)
+		elseif ($imgtype == 1)
 		{
-			if(@function_exists("imagecreatefromgif"))
+			if (@function_exists("imagecreatefromgif"))
 			{
-				$im = @imagecreatefromgif($file);
+				$im = @imagecreatefromgif ($file);
 			}
 		}
 		else
@@ -70,7 +70,7 @@ function generate_thumbnail($file, $path, $filename, $maxheight, $maxwidth)
 			$thumb['code'] = 3;
 			return $thumb;
 		}
-		if(!$im)
+		if (!$im)
 		{
 			$thumb['code'] = 3;
 			return $thumb;
@@ -80,14 +80,14 @@ function generate_thumbnail($file, $path, $filename, $maxheight, $maxwidth)
 		$thumbheight = $scale['height'];
 		$thumbim = @imagecreateTRUEcolor($thumbwidth, $thumbheight);
 
-		if(!$thumbim)
+		if (!$thumbim)
 		{
 			$thumbim = @imagecreate($thumbwidth, $thumbheight);
 			$resized = TRUE;
 		}
 
 		// Attempt to preserve the transparency if there is any
-		if($imgtype == 3)
+		if ($imgtype == 3)
 		{
 			// A PNG!
 			imagealphablending($thumbim, FALSE);
@@ -96,11 +96,11 @@ function generate_thumbnail($file, $path, $filename, $maxheight, $maxwidth)
 			// Save Alpha...
 			imagesavealpha($thumbim, TRUE);
 		}
-		elseif($imgtype == 2)
+		elseif ($imgtype == 2)
 		{
 			// Transparent GIF?
 			$trans_color = imagecolortransparent($im);
-			if($trans_color >= 0 && $trans_color < imagecolorstotal($im))
+			if ($trans_color >= 0 && $trans_color < imagecolorstotal($im))
 			{
 				$trans = imagecolorsforindex($im, $trans_color);
 				$new_trans_color = imagecolorallocate($thumbim, $trans['red'], $trans['blue'], $trans['green']);
@@ -109,7 +109,7 @@ function generate_thumbnail($file, $path, $filename, $maxheight, $maxwidth)
 			}
 		}
 
-		if(!isset($resized))
+		if (!isset($resized))
 		{
 			@imagecopyresampled($thumbim, $im, 0, 0, 0, 0, $thumbwidth, $thumbheight, $imgwidth, $imgheight);
 		}
@@ -118,16 +118,16 @@ function generate_thumbnail($file, $path, $filename, $maxheight, $maxwidth)
 			@imagecopyresized($thumbim, $im, 0, 0, 0, 0, $thumbwidth, $thumbheight, $imgwidth, $imgheight);
 		}
 		@imagedestroy($im);
-		if(!function_exists("imagegif") && $imgtype == 1)
+		if (!function_exists("imagegif") && $imgtype == 1)
 		{
 			$filename = str_replace(".gif", ".jpg", $filename);
 		}
 		switch($imgtype)
 		{
 			case 1:
-				if(function_exists("imagegif"))
+				if (function_exists("imagegif"))
 				{
-					@imagegif($thumbim, $path."/".$filename);
+					@imagegif ($thumbim, $path."/".$filename);
 				}
 				else
 				{
@@ -164,20 +164,20 @@ function generate_thumbnail($file, $path, $filename, $maxheight, $maxwidth)
  */
 function check_thumbnail_memory($width, $height, $type, $bitdepth, $channels)
 {
-	if(!function_exists("memory_get_usage"))
+	if (!function_exists("memory_get_usage"))
 	{
 		return FALSE;
 	}
 
 	$memory_limit = @ini_get("memory_limit");
-	if(!$memory_limit || $memory_limit == -1)
+	if (!$memory_limit || $memory_limit == -1)
 	{
 		return FALSE;
 	}
 
 	$limit = preg_match("#^([0-9]+)\s?([kmg])b?$#i", trim(my_strtolower($memory_limit)), $matches);
 	$memory_limit = 0;
-	if($matches[1] && $matches[2])
+	if ($matches[1] && $matches[2])
 	{
 		switch($matches[2])
 		{
@@ -197,9 +197,9 @@ function check_thumbnail_memory($width, $height, $type, $bitdepth, $channels)
 	$thumbnail_memory = round(($width * $height * $bitdepth * $channels / 8) * 5);
 	$thumbnail_memory += 2097152;
 
-	if($thumbnail_memory > $free_memory)
+	if ($thumbnail_memory > $free_memory)
 	{
-		if($matches[1] && $matches[2])
+		if ($matches[1] && $matches[2])
 		{
 			switch($matches[2])
 			{
@@ -232,20 +232,20 @@ function scale_image($width, $height, $maxwidth, $maxheight)
 	$width = intval($width);
 	$height = intval($height);
 
-	if(!$width) $width = $maxwidth;
-	if(!$height) $height = $maxheight;
+	if (!$width) $width = $maxwidth;
+	if (!$height) $height = $maxheight;
 
 	$newwidth = $width;
 	$newheight = $height;
 
-	if($width > $maxwidth)
+	if ($width > $maxwidth)
 	{
 		$newwidth = $maxwidth;
 		$newheight = ceil(($height*(($maxwidth*100)/$width))/100);
 		$height = $newheight;
 		$width = $newwidth;
 	}
-	if($height > $maxheight)
+	if ($height > $maxheight)
 	{
 		$newheight = $maxheight;
 		$newwidth = ceil(($width*(($maxheight*100)/$height))/100);

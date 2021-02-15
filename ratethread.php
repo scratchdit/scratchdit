@@ -23,13 +23,13 @@ $lang->load("ratethread");
 $tid = intval($mybb->input['tid']);
 $query = $db->simple_select("threads", "*", "tid='{$tid}'");
 $thread = $db->fetch_array($query);
-if(!$thread['tid'])
+if (!$thread['tid'])
 {
 	error($lang->error_invalidthread);
 }
 
 $forumpermissions = forum_permissions($thread['fid']);
-if($forumpermissions['canview'] == 0 || $forumpermissions['canratethreads'] == 0 || $mybb->usergroup['canratethreads'] == 0 || $mybb->settings['allowthreadratings'] == 0)
+if ($forumpermissions['canview'] == 0 || $forumpermissions['canratethreads'] == 0 || $mybb->usergroup['canratethreads'] == 0 || $mybb->settings['allowthreadratings'] == 0)
 {
 	error_no_permission();
 }
@@ -37,21 +37,21 @@ if($forumpermissions['canview'] == 0 || $forumpermissions['canratethreads'] == 0
 // Get forum info
 $fid = $thread['fid'];
 $forum = get_forum($fid);
-if(!$forum)
+if (!$forum)
 {
 	error($lang->error_invalidforum);
 }
 
 // Get forum info
 $forum = get_forum($fid);
-if(!$forum)
+if (!$forum)
 {
 	error($lang->error_invalidforum);
 }
 else
 {
 	// Is our forum closed?
-	if($forum['open'] == 0)
+	if ($forum['open'] == 0)
 	{
 		// Doesn't look like it is
 		error($lang->error_closedinvalidforum);
@@ -61,18 +61,18 @@ else
 // Check if this forum is password protected and we have a valid password
 check_forum_password($forum['fid']);
 
-if($forum['allowtratings'] == 0)
+if ($forum['allowtratings'] == 0)
 {
 	error_no_permission();
 }
 $mybb->input['rating'] = intval($mybb->input['rating']);
-if($mybb->input['rating'] < 1 || $mybb->input['rating'] > 5)
+if ($mybb->input['rating'] < 1 || $mybb->input['rating'] > 5)
 {
 	error($lang->error_invalidrating);
 }
 $plugins->run_hooks("ratethread_start");
 
-if($mybb->user['uid'] != 0)
+if ($mybb->user['uid'] != 0)
 {
 	$whereclause = "uid='{$mybb->user['uid']}'";
 }
@@ -83,7 +83,7 @@ else
 $query = $db->simple_select("threadratings", "*", "{$whereclause} AND tid='{$tid}'");
 $ratecheck = $db->fetch_array($query);
 
-if($ratecheck['rid'] || $mybb->cookies['mybbratethread'][$tid])
+if ($ratecheck['rid'] || $mybb->cookies['mybbratethread'][$tid])
 {
 	error($lang->error_alreadyratedthread);
 }
@@ -96,7 +96,7 @@ else
 		SET numratings=numratings+1, totalratings=totalratings+'{$mybb->input['rating']}'
 		WHERE tid='{$tid}'
 	");
-	if($mybb->user['uid'] != 0)
+	if ($mybb->user['uid'] != 0)
 	{
 		$insertarray = array(
 			'tid' => $tid,
@@ -120,13 +120,13 @@ else
 }
 $plugins->run_hooks("ratethread_end");
 
-if($mybb->input['ajax'])
+if ($mybb->input['ajax'])
 {
 	echo "<success>{$lang->rating_added}</success>\n";
 	$query = $db->simple_select("threads", "totalratings, numratings", "tid='$tid'", array('limit' => 1));
 	$fetch = $db->fetch_array($query);
 	$width = 0;
-	if($fetch['numratings'] >= 0)
+	if ($fetch['numratings'] >= 0)
 	{
 		$averagerating = floatval(round($fetch['totalratings']/$fetch['numratings'], 2));
 		$width = intval(round($averagerating))*20;

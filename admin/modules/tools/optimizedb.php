@@ -10,7 +10,7 @@
  */
 
 // Disallow direct access to this file for security reasons
-if(!defined("IN_MYBB"))
+if (!defined("IN_MYBB"))
 {
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
@@ -19,13 +19,13 @@ $page->add_breadcrumb_item($lang->optimize_database, "index.php?module=tools-opt
 
 $plugins->run_hooks("admin_tools_optimizedb_begin");
 
-if(!$mybb->input['action'])
+if (!$mybb->input['action'])
 {
 	$plugins->run_hooks("admin_tools_optimizedb_start");
 
-	if($mybb->request_method == "post")
+	if ($mybb->request_method == "post")
 	{
-		if(!is_array($mybb->input['tables']))
+		if (!is_array($mybb->input['tables']))
 		{
 			flash_message($lang->error_no_tables_selected, 'error');
 			admin_redirect("index.php?module=tools-optimizedb");
@@ -59,20 +59,20 @@ if(!$mybb->input['action'])
 
 		for(var i = 0; i < select_box.length; i++)
 		{
-			if(action == 'select')
+			if (action == 'select')
 			{
 				select_box[i].selected = TRUE;
 			}
-			else if(action == 'deselect')
+			else if (action == 'deselect')
 			{
 				select_box[i].selected = FALSE;
 			}
-			else if(action == 'forum' && prefix != 0)
+			else if (action == 'forum' && prefix != 0)
 			{
 				select_box[i].selected = FALSE;
 				var row = select_box[i].value;
 				var subString = row.substring(prefix.length, 0);
-				if(subString == prefix)
+				if (subString == prefix)
 				{
 					select_box[i].selected = TRUE;
 				}

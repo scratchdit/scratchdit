@@ -22,7 +22,7 @@ $parser = new postParser;
 
 $lang->load("warnings");
 
-if($mybb->settings['enablewarningsystem'] == 0)
+if ($mybb->settings['enablewarningsystem'] == 0)
 {
 	error($lang->error_warning_system_disabled);
 }
@@ -31,67 +31,67 @@ if($mybb->settings['enablewarningsystem'] == 0)
 expire_warnings();
 
 // Actually warn a user
-if($mybb->input['action'] == "do_warn" && $mybb->request_method == "post")
+if ($mybb->input['action'] == "do_warn" && $mybb->request_method == "post")
 {
 	// Verify incoming POST request
 	verify_post_check($mybb->input['my_post_key']);
 
-	if($mybb->usergroup['canwarnusers'] != 1)
+	if ($mybb->usergroup['canwarnusers'] != 1)
 	{
 		error_no_permission();
 	}
 
 	// Check we haven't exceeded the maximum number of warnings per day
-	if($mybb->usergroup['maxwarningsday'] != 0)
+	if ($mybb->usergroup['maxwarningsday'] != 0)
 	{
 		$timecut = TIME_NOW-60*60*24;
 		$query = $db->simple_select("warnings", "COUNT(wid) AS given_today", "issuedby='{$mybb->user['uid']}' AND dateline>'$timecut'");
 		$given_today = $db->fetch_field($query, "given_today");
-		if($given_today >= $mybb->usergroup['maxwarningsday'])
+		if ($given_today >= $mybb->usergroup['maxwarningsday'])
 		{
 			error($lang->sprintf($lang->reached_max_warnings_day, $mybb->usergroup['maxwarningsday']));
 		}
 	}
 
 	$user = get_user(intval($mybb->input['uid']));
-	if(!$user['uid'])
+	if (!$user['uid'])
 	{
 		error($lang->error_invalid_user);
 	}
 
-	if($user['uid'] == $mybb->user['uid'])
+	if ($user['uid'] == $mybb->user['uid'])
 	{
 		error($lang->cannot_warn_self);
 	}
 
-	if($user['warningpoints'] >= $mybb->settings['maxwarningpoints'])
+	if ($user['warningpoints'] >= $mybb->settings['maxwarningpoints'])
 	{
 		error($lang->user_reached_max_warning);
 	}
 
 	$group_permissions = user_permissions($user['uid']);
 
-	if($group_permissions['canreceivewarnings'] != 1)
+	if ($group_permissions['canreceivewarnings'] != 1)
 	{
 		error($lang->error_cant_warn_group);
 	}
 
-	if(!modcp_can_manage_user($user['uid']))
+	if (!modcp_can_manage_user($user['uid']))
 	{
 		error($lang->error_cant_warn_user);
 	}
 
 	// Is this warning being given for a post?
-	if($mybb->input['pid'])
+	if ($mybb->input['pid'])
 	{
 		$post = get_post(intval($mybb->input['pid']));
 		$thread = get_thread($post['tid']);
-		if(!$post['pid'] || !$thread['tid'])
+		if (!$post['pid'] || !$thread['tid'])
 		{
 			error($lang->error_invalid_post);
 		}
 		$forum_permissions = forum_permissions($thread['fid']);
-		if($forum_permissions['canview'] != 1)
+		if ($forum_permissions['canview'] != 1)
 		{
 			error_no_permission();
 		}
@@ -99,23 +99,23 @@ if($mybb->input['action'] == "do_warn" && $mybb->request_method == "post")
 
 	$plugins->run_hooks("warnings_do_warn_start");
 
-	if(!trim($mybb->input['notes']))
+	if (!trim($mybb->input['notes']))
 	{
 		$warn_errors[] = $lang->error_no_note;
 	}
 
 	// Using a predefined warning type
-	if($mybb->input['type'] != "custom")
+	if ($mybb->input['type'] != "custom")
 	{
 		$query = $db->simple_select("warningtypes", "*", "tid='".intval($mybb->input['type'])."'");
 		$warning_type = $db->fetch_array($query);
-		if(!$warning_type['tid'])
+		if (!$warning_type['tid'])
 		{
 			$warn_errors[] = $lang->error_invalid_type;
 		}
 		$points = $warning_type['points'];
 		$warning_title = "";
-		if($warning_type['expirationtime'])
+		if ($warning_type['expirationtime'])
 		{
 			$warning_expires = TIME_NOW+$warning_type['expirationtime'];
 		}
@@ -123,13 +123,13 @@ if($mybb->input['action'] == "do_warn" && $mybb->request_method == "post")
 	// Issuing a custom warning
 	else
 	{
-		if($mybb->settings['allowcustomwarnings'] == 0)
+		if ($mybb->settings['allowcustomwarnings'] == 0)
 		{
 			$warn_errors[] = $lang->error_cant_custom_warn;
 		}
 		else
 		{
-			if(!$mybb->input['custom_reason'])
+			if (!$mybb->input['custom_reason'])
 			{
 				$warn_errors[] = $lang->error_no_custom_reason;
 			}
@@ -137,7 +137,7 @@ if($mybb->input['action'] == "do_warn" && $mybb->request_method == "post")
 			{
 				$warning_title = $mybb->input['custom_reason'];
 			}
-			if(!is_numeric($mybb->input['custom_points']) || $mybb->input['custom_points'] > $mybb->settings['maxwarningpoints'] || $mybb->input['custom_points'] < 0)
+			if (!is_numeric($mybb->input['custom_points']) || $mybb->input['custom_points'] > $mybb->settings['maxwarningpoints'] || $mybb->input['custom_points'] < 0)
 			{
 				$warn_errors[] = $lang->sprintf($lang->error_invalid_custom_points, $mybb->settings['maxwarningpoints']);
 			}
@@ -146,27 +146,27 @@ if($mybb->input['action'] == "do_warn" && $mybb->request_method == "post")
 				$points = round((int)$mybb->input['custom_points']);
 			}
 			// Build expiry date
-			if($mybb->input['expires'])
+			if ($mybb->input['expires'])
 			{
 				$warning_expires = intval($mybb->input['expires']);
-				if($mybb->input['expires_period'] == "hours")
+				if ($mybb->input['expires_period'] == "hours")
 				{
 					$warning_expires = $warning_expires*3600;
 				}
-				else if($mybb->input['expires_period'] == "days")
+				else if ($mybb->input['expires_period'] == "days")
 				{
 					$warning_expires = $warning_expires*86400;
 				}
-				else if($mybb->input['expires_period'] == "weeks")
+				else if ($mybb->input['expires_period'] == "weeks")
 				{
 					$warning_expires = $warning_expires*604800;
 				}
-				else if($mybb->input['expires_period'] == "months")
+				else if ($mybb->input['expires_period'] == "months")
 				{
 					$warning_expires = $warning_expires*2592000;
 				}
 				// Add on current time and we're there!
-				if($mybb->input['expires_period'] != "never" && $warning_expires)
+				if ($mybb->input['expires_period'] != "never" && $warning_expires)
 				{
 					$warning_expires += TIME_NOW;
 				}
@@ -174,13 +174,13 @@ if($mybb->input['action'] == "do_warn" && $mybb->request_method == "post")
 		}
 	}
 
-	if($warning_expires <= TIME_NOW)
+	if ($warning_expires <= TIME_NOW)
 	{
 		$warning_expires = 0;
 	}
 
 	// Are we notifying the user?
-	if(!$warn_errors && $mybb->input['send_pm'] == 1 && $group_permissions['canusepms'] != 0 && $mybb->settings['enablepms'] != 0)
+	if (!$warn_errors && $mybb->input['send_pm'] == 1 && $group_permissions['canusepms'] != 0 && $mybb->settings['enablepms'] != 0)
 	{
 		// Bring up the PM handler
 		require_once MYBB_ROOT."inc/datahandlers/pm.php";
@@ -204,10 +204,10 @@ if($mybb->input['action'] == "do_warn" && $mybb->request_method == "post")
 		$pmhandler->admin_override = TRUE;
 
 		// Now let the pm handler do all the hard work.
-		if(!$pmhandler->validate_pm())
+		if (!$pmhandler->validate_pm())
 		{
 			$pm_errors = $pmhandler->get_friendly_errors();
-			if($warn_errors)
+			if ($warn_errors)
 			{
 				$warn_errors = array_merge($warn_errors, $pm_errors);
 			}
@@ -223,12 +223,12 @@ if($mybb->input['action'] == "do_warn" && $mybb->request_method == "post")
 	}
 
 	// No errors - save warning to database
-	if(!is_array($warn_errors))
+	if (!is_array($warn_errors))
 	{
 		// Build warning level & ensure it doesn't go over 100.
 		$current_level = round($user['warningpoints']/$mybb->settings['maxwarningpoints']*100);
 		$new_warning_level = round(($user['warningpoints']+$points)/$mybb->settings['maxwarningpoints']*100);
-		if($new_warning_level > 100)
+		if ($new_warning_level > 100)
 		{
 			$new_warning_level = 100;
 		}
@@ -257,7 +257,7 @@ if($mybb->input['action'] == "do_warn" && $mybb->request_method == "post")
 		$query = $db->simple_select("warninglevels", "*", "percentage<=$new_warning_level", array("order_by" => "percentage", "order_dir" => "desc"));
 		$new_level = $db->fetch_array($query);
 
-		if($new_level['lid'])
+		if ($new_level['lid'])
 		{
 			$expiration = 0;
 			$action = unserialize($new_level['action']);
@@ -266,7 +266,7 @@ if($mybb->input['action'] == "do_warn" && $mybb->request_method == "post")
 			{
 				// Ban the user for a specified time
 				case 1:
-					if($action['length'] > 0)
+					if ($action['length'] > 0)
 					{
 						$expiration = TIME_NOW+$action['length'];
 					}
@@ -275,15 +275,15 @@ if($mybb->input['action'] == "do_warn" && $mybb->request_method == "post")
 					$existing_ban = $db->fetch_array($query);
 
 					// Only perform if no previous ban or new ban expires later than existing ban
-					if(($expiration > $existing_ban['lifted'] && $existing_ban['lifted'] != 0) || $expiration == 0 || !$existing_ban['uid'])
+					if (($expiration > $existing_ban['lifted'] && $existing_ban['lifted'] != 0) || $expiration == 0 || !$existing_ban['uid'])
 					{
-						if(!$warning_title)
+						if (!$warning_title)
 						{
 							$warning_title = $warning_type['title'];
 						}
 
 						// Never lift the ban?
-						if($action['length'] <= 0)
+						if ($action['length'] <= 0)
 						{
 							$bantime = '---';
 						}
@@ -292,29 +292,29 @@ if($mybb->input['action'] == "do_warn" && $mybb->request_method == "post")
 							$bantimes = fetch_ban_times();
 							foreach($bantimes as $date => $string)
 							{
-								if($date == '---')
+								if ($date == '---')
 								{
 									continue;
 								}
 
 								$time = 0;
 								list($day, $month, $year) = explode('-', $date);
-								if($day > 0)
+								if ($day > 0)
 								{
 									$time += 60*60*24*$day;
 								}
 
-								if($month > 0)
+								if ($month > 0)
 								{
 									$time += 60*60*24*30*$month;
 								}
 
-								if($year > 0)
+								if ($year > 0)
 								{
 									$time += 60*60*24*365*$year;
 								}
 
-								if($time == $action['length'])
+								if ($time == $action['length'])
 								{
 									$bantime = $date;
 									break;
@@ -335,7 +335,7 @@ if($mybb->input['action'] == "do_warn" && $mybb->request_method == "post")
 							"reason" => $db->escape_string($warning_title)
 						);
 						// Delete old ban for this user, taking details
-						if($existing_ban['uid'])
+						if ($existing_ban['uid'])
 						{
 							$db->delete_query("banned", "uid='{$user['uid']}' AND gid='{$action['usergroup']}'");
 							// Override new ban details with old group info
@@ -347,7 +347,7 @@ if($mybb->input['action'] == "do_warn" && $mybb->request_method == "post")
 						$period = $lang->expiration_never;
 						$ban_length = fetch_friendly_expiration($action['length']);
 
-						if($ban_length['time'])
+						if ($ban_length['time'])
 						{
 							$lang_str = "expiration_".$ban_length['period'];
 							$period = $lang->sprintf($lang->result_period, $ban_length['time'], $lang->$lang_str);
@@ -363,19 +363,19 @@ if($mybb->input['action'] == "do_warn" && $mybb->request_method == "post")
 					break;
 				// Suspend posting privileges
 				case 2:
-					if($action['length'] > 0)
+					if ($action['length'] > 0)
 					{
 						$expiration = TIME_NOW+$action['length'];
 					}
 					// Only perform if the expiration time is greater than the users current suspension period
-					if($expiration == 0 || $expiration > $user['suspensiontime'])
+					if ($expiration == 0 || $expiration > $user['suspensiontime'])
 					{
-						if(($user['suspensiontime'] != 0 && $user['suspendposting']) || !$user['suspendposting'])
+						if (($user['suspensiontime'] != 0 && $user['suspendposting']) || !$user['suspendposting'])
 						{
 							$period = $lang->expiration_never;
 							$ban_length = fetch_friendly_expiration($action['length']);
 
-							if($ban_length['time'])
+							if ($ban_length['time'])
 							{
 								$lang_str = "expiration_".$ban_length['period'];
 								$period = $lang->sprintf($lang->result_period, $ban_length['time'], $lang->$lang_str);
@@ -390,19 +390,19 @@ if($mybb->input['action'] == "do_warn" && $mybb->request_method == "post")
 					break;
 				// Moderate new posts
 				case 3:
-					if($action['length'] > 0)
+					if ($action['length'] > 0)
 					{
 						$expiration = TIME_NOW+$action['length'];
 					}
 					// Only perform if the expiration time is greater than the users current suspension period
-					if($expiration == 0 || $expiration > $user['moderationtime'])
+					if ($expiration == 0 || $expiration > $user['moderationtime'])
 					{
-						if(($user['moderationtime'] != 0 && $user['moderateposts']) || !$user['suspendposting'])
+						if (($user['moderationtime'] != 0 && $user['moderateposts']) || !$user['suspendposting'])
 						{
 							$period = $lang->expiration_never;
 							$ban_length = fetch_friendly_expiration($action['length']);
 
-							if($ban_length['time'])
+							if ($ban_length['time'])
 							{
 								$lang_str = "expiration_".$ban_length['period'];
 								$period = $lang->sprintf($lang->result_period, $ban_length['time'], $lang->$lang_str);
@@ -424,7 +424,7 @@ if($mybb->input['action'] == "do_warn" && $mybb->request_method == "post")
 
 		$lang->redirect_warned = $lang->sprintf($lang->redirect_warned, $user['username'], $new_warning_level, $friendly_action);
 
-		if($post['pid'])
+		if ($post['pid'])
 		{
 			redirect(get_post_link($post['pid']), $lang->redirect_warned);
 		}
@@ -434,7 +434,7 @@ if($mybb->input['action'] == "do_warn" && $mybb->request_method == "post")
 		}
 	}
 
-	if($warn_errors)
+	if ($warn_errors)
 	{
 		$warn_errors = inline_error($warn_errors);
 		$mybb->input['action'] = "warn";
@@ -442,64 +442,64 @@ if($mybb->input['action'] == "do_warn" && $mybb->request_method == "post")
 }
 
 // Warn a user
-if($mybb->input['action'] == "warn")
+if ($mybb->input['action'] == "warn")
 {
-	if($mybb->usergroup['canwarnusers'] != 1)
+	if ($mybb->usergroup['canwarnusers'] != 1)
 	{
 		error_no_permission();
 	}
 
 	// Check we haven't exceeded the maximum number of warnings per day
-	if($mybb->usergroup['maxwarningsday'] != 0)
+	if ($mybb->usergroup['maxwarningsday'] != 0)
 	{
 		$timecut = TIME_NOW-60*60*24;
 		$query = $db->simple_select("warnings", "COUNT(wid) AS given_today", "issuedby='{$mybb->user['uid']}' AND dateline>'$timecut'");
 		$given_today = $db->fetch_field($query, "given_today");
-		if($given_today >= $mybb->usergroup['maxwarningsday'])
+		if ($given_today >= $mybb->usergroup['maxwarningsday'])
 		{
 			error($lang->sprintf($lang->reached_max_warnings_day, $mybb->usergroup['maxwarningsday']));
 		}
 	}
 
 	$user = get_user(intval($mybb->input['uid']));
-	if(!$user['uid'])
+	if (!$user['uid'])
 	{
 		error($lang->error_invalid_user);
 	}
 
-	if($user['uid'] == $mybb->user['uid'])
+	if ($user['uid'] == $mybb->user['uid'])
 	{
 		error($lang->cannot_warn_self);
 	}
 
-	if($user['warningpoints'] >= $mybb->settings['maxwarningpoints'])
+	if ($user['warningpoints'] >= $mybb->settings['maxwarningpoints'])
 	{
 		error($lang->user_reached_max_warning);
 	}
 
 	$group_permissions = user_permissions($user['uid']);
 
-	if($group_permissions['canreceivewarnings'] != 1)
+	if ($group_permissions['canreceivewarnings'] != 1)
 	{
 		error($lang->error_cant_warn_group);
 	}
 
-	if(!modcp_can_manage_user($user['uid']))
+	if (!modcp_can_manage_user($user['uid']))
 	{
 		error($lang->error_cant_warn_user);
 	}
 
 	// Giving a warning for a specific post
-	if($mybb->input['pid'])
+	if ($mybb->input['pid'])
 	{
 		$post = get_post(intval($mybb->input['pid']));
 		$thread = get_thread($post['tid']);
-		if(!$post['pid'] || !$thread['tid'])
+		if (!$post['pid'] || !$thread['tid'])
 		{
 			error($lang->error_invalid_post);
 		}
 		$forum_permissions = forum_permissions($thread['fid']);
-		if($forum_permissions['canview'] != 1)
+		if ($forum_permissions['canview'] != 1)
 		{
 			error_no_permission();
 		}
@@ -520,9 +520,9 @@ if($mybb->input['action'] == "warn")
 		$first = TRUE;
 		while($warning = $db->fetch_array($query))
 		{
-			if($warning['expired'] != $last_expired || $first)
+			if ($warning['expired'] != $last_expired || $first)
 			{
-				if($warning['expired'] == 0)
+				if ($warning['expired'] == 0)
 				{
 					eval("\$warnings .= \"".$templates->get("warnings_active_header")."\";");
 				}
@@ -537,7 +537,7 @@ if($mybb->input['action'] == "warn")
 			$post_link = "";
 			$issuedby = build_profile_link($warning['username'], $warning['issuedby']);
 			$date_issued = my_date($mybb->settings['dateformat'], $warning['dateline']).", ".my_date($mybb->settings['timeformat'], $warning['dateline']);
-			if($warning['type_title'])
+			if ($warning['type_title'])
 			{
 				$warning_type = $warning['type_title'];
 			}
@@ -546,14 +546,14 @@ if($mybb->input['action'] == "warn")
 				$warning_type = $warning['title'];
 			}
 			$warning_type = htmlspecialchars_uni($warning_type);
-			if($warning['points'] > 0)
+			if ($warning['points'] > 0)
 			{
 				$warning['points'] = "+{$warning['points']}";
 			}
 			$points = $lang->sprintf($lang->warning_points, $warning['points']);
-			if($warning['expired'] != 1)
+			if ($warning['expired'] != 1)
 			{
-				if($warning['expires'] == 0)
+				if ($warning['expires'] == 0)
 				{
 					$expires = $lang->never;
 				}
@@ -564,11 +564,11 @@ if($mybb->input['action'] == "warn")
 			}
 			else
 			{
-				if($warning['daterevoked'])
+				if ($warning['daterevoked'])
 				{
 					$expires = $lang->warning_revoked;
 				}
-				else if($warning['expires'])
+				else if ($warning['expires'])
 				{
 					$expires = $lang->already_expired;
 				}
@@ -577,7 +577,7 @@ if($mybb->input['action'] == "warn")
 			$plugins->run_hooks("warnings_warning");
 			eval("\$warnings .= \"".$templates->get("warnings_warning")."\";");
 		}
-		if($warnings)
+		if ($warnings)
 		{
 			eval("\$existing_warnings = \"".$templates->get("warnings_warn_existing")."\";");
 		}
@@ -586,13 +586,13 @@ if($mybb->input['action'] == "warn")
 	$plugins->run_hooks("warnings_warn_start");
 
 	// Coming here from failed do_warn?
-	if($warn_errors)
+	if ($warn_errors)
 	{
 		$notes = htmlspecialchars_uni($mybb->input['notes']);
 		$type_checked[$mybb->input['type']] = "checked=\"checked\"";
 		$pm_subject = htmlspecialchars_uni($mybb->input['pm_subject']);
 		$message = htmlspecialchars_uni($mybb->input['pm_message']);
-		if($mybb->input['send_pm'])
+		if ($mybb->input['send_pm'])
 		{
 			$send_pm_checked = "checked=\"checked\"";
 		}
@@ -627,7 +627,7 @@ if($mybb->input['action'] == "warn")
 		switch($level['action']['type'])
 		{
 			case 1:
-				if($level['action']['length'] > 0)
+				if ($level['action']['length'] > 0)
 				{
 					$ban_length = fetch_friendly_expiration($level['action']['length']);
 					$lang_str = "expiration_".$ban_length['period'];
@@ -637,7 +637,7 @@ if($mybb->input['action'] == "warn")
 				$level['friendly_action'] = $lang->sprintf($lang->result_banned, $group_name, $period);
 				break;
 			case 2:
-				if($level['action']['length'] > 0)
+				if ($level['action']['length'] > 0)
 				{
 					$period = fetch_friendly_expiration($level['action']['length']);
 					$lang_str = "expiration_".$period['period'];
@@ -646,7 +646,7 @@ if($mybb->input['action'] == "warn")
 				$level['friendly_action'] = $lang->sprintf($lang->result_suspended, $period);
 				break;
 			case 3:
-				if($level['action']['length'] > 0)
+				if ($level['action']['length'] > 0)
 				{
 					$period = fetch_friendly_expiration($level['action']['length']);
 					$lang_str = "expiration_".$period['period'];
@@ -666,21 +666,21 @@ if($mybb->input['action'] == "warn")
 		$checked = $type_checked[$type['tid']];
 		$type['title'] = htmlspecialchars_uni($type['title']);
 		$new_warning_level = round(($user['warningpoints']+$type['points'])/$mybb->settings['maxwarningpoints']*100);
-		if($new_warning_level > 100)
+		if ($new_warning_level > 100)
 		{
 			$new_warning_level = 100;
 		}
-		if($type['points'] > 0)
+		if ($type['points'] > 0)
 		{
 			$type['points'] = "+{$type['points']}";
 		}
 		$points = $lang->sprintf($lang->warning_points, $type['points']);
 
-		if(is_array($levels))
+		if (is_array($levels))
 		{
 			foreach($levels as $level)
 			{
-				if($new_warning_level >= $level['percentage'])
+				if ($new_warning_level >= $level['percentage'])
 				{
 					$new_level = $level;
 					break;
@@ -688,7 +688,7 @@ if($mybb->input['action'] == "warn")
 			}
 		}
 		$level_diff = $new_warning_level-$current_level;
-		if($new_level['friendly_action'])
+		if ($new_level['friendly_action'])
 		{
 			$result = "<div class=\"smalltext\" style=\"clear: left; padding-top: 4px;\">{$lang->result}<br />".$new_level['friendly_action']."</div>";
 		}
@@ -697,19 +697,19 @@ if($mybb->input['action'] == "warn")
 		unset($result);
 	}
 
-	if($mybb->settings['allowcustomwarnings'] != 0)
+	if ($mybb->settings['allowcustomwarnings'] != 0)
 	{
 		eval("\$custom_warning = \"".$templates->get("warnings_warn_custom")."\";");
 	}
 
-	if($group_permissions['canusepms']  != 0 && $mybb->user['receivepms'] != 0 && $mybb->settings['enablepms'] != 0)
+	if ($group_permissions['canusepms']  != 0 && $mybb->user['receivepms'] != 0 && $mybb->settings['enablepms'] != 0)
 	{
 		$smilieinserter = $codebuttons = "";
 
-		if($mybb->settings['bbcodeinserter'] != 0 && $mybb->settings['pmsallowmycode'] != 0 && $mybb->user['showcodebuttons'] != 0)
+		if ($mybb->settings['bbcodeinserter'] != 0 && $mybb->settings['pmsallowmycode'] != 0 && $mybb->user['showcodebuttons'] != 0)
 		{
 			$codebuttons = build_mycode_inserter();
-			if($mybb->settings['pmsallowsmilies'] != 0)
+			if ($mybb->settings['pmsallowsmilies'] != 0)
 			{
 				$smilieinserter = build_clickable_smilies();
 			}
@@ -725,12 +725,12 @@ if($mybb->input['action'] == "warn")
 }
 
 // Revoke a warning
-if($mybb->input['action'] == "do_revoke" && $mybb->request_method == "post")
+if ($mybb->input['action'] == "do_revoke" && $mybb->request_method == "post")
 {
 	// Verify incoming POST request
 	verify_post_check($mybb->input['my_post_key']);
 
-	if($mybb->usergroup['canwarnusers'] != 1)
+	if ($mybb->usergroup['canwarnusers'] != 1)
 	{
 		error_no_permission();
 	}
@@ -738,11 +738,11 @@ if($mybb->input['action'] == "do_revoke" && $mybb->request_method == "post")
 	$query = $db->simple_select("warnings", "*", "wid='".intval($mybb->input['wid'])."'");
 	$warning = $db->fetch_array($query);
 
-	if(!$warning['wid'])
+	if (!$warning['wid'])
 	{
 		error($lang->error_invalid_warning);
 	}
-	else if($warning['daterevoked'])
+	else if ($warning['daterevoked'])
 	{
 		error($lang->warning_already_revoked);
 	}
@@ -750,14 +750,14 @@ if($mybb->input['action'] == "do_revoke" && $mybb->request_method == "post")
 	$user = get_user($warning['uid']);
 
 	$group_permissions = user_permissions($user['uid']);
-	if($group_permissions['canreceivewarnings'] != 1)
+	if ($group_permissions['canreceivewarnings'] != 1)
 	{
 		error($lang->error_cant_warn_group);
 	}
 
 	$plugins->run_hooks("warnings_do_revoke_start");
 
-	if(!trim($mybb->input['reason']))
+	if (!trim($mybb->input['reason']))
 	{
 		$warn_errors[] = $lang->no_revoke_reason;
 		$warn_errors = inline_error($warn_errors);
@@ -766,10 +766,10 @@ if($mybb->input['action'] == "do_revoke" && $mybb->request_method == "post")
 	else
 	{
 		// Warning is still active, lower users point count
-		if($warning['expired'] != 1)
+		if ($warning['expired'] != 1)
 		{
 			$new_warning_points = $user['warningpoints']-$warning['points'];
-			if($new_warning_points < 0)
+			if ($new_warning_points < 0)
 			{
 				$new_warning_points = 0;
 			}
@@ -783,7 +783,7 @@ if($mybb->input['action'] == "do_revoke" && $mybb->request_method == "post")
 			$current_level = round($user['warningpoints']/$mybb->settings['maxwarningpoints']*100);
 			$new_warning_level = round($new_warning_points/$mybb->settings['maxwarningpoints']*100);
 			$query = $db->simple_select("warninglevels", "action", "percentage>$new_warning_level AND percentage<=$current_level");
-			if($db->num_rows($query))
+			if ($db->num_rows($query))
 			{
 				// we have some warning levels we need to revoke
 				$max_expiration_times = $check_levels = array();
@@ -797,7 +797,7 @@ if($mybb->input['action'] == "do_revoke" && $mybb->request_method == "post")
 				// now that we've got all the info, do necessary stuff
 				for($i = 1; $i <= 3; ++$i)
 				{
-					if($check_levels[$i])
+					if ($check_levels[$i])
 					{
 						switch($i)
 						{
@@ -815,26 +815,26 @@ if($mybb->input['action'] == "do_revoke" && $mybb->request_method == "post")
 						}
 
 						// if the thing isn't in force, don't bother with trying to update anything
-						if(!$user[$current_inforce_field])
+						if (!$user[$current_inforce_field])
 						{
 							continue;
 						}
 
-						if($lower_levels[$i])
+						if ($lower_levels[$i])
 						{
 							// lessen the expiration time if necessary
 
-							if(!$lower_expiration_times[$i])
+							if (!$lower_expiration_times[$i])
 							{
 								// doesn't expire - enforce this
 								$updated_user[$current_expiry_field] = 0;
 								continue;
 							}
 
-							if($max_expiration_times[$i])
+							if ($max_expiration_times[$i])
 							{
 								// if the old level did have an expiry time...
-								if($max_expiration_times[$i] <= $lower_expiration_times[$i])
+								if ($max_expiration_times[$i] <= $lower_expiration_times[$i])
 								{
 									// if the lower expiration time is actually higher than the upper expiration time -> skip
 									continue;
@@ -847,7 +847,7 @@ if($mybb->input['action'] == "do_revoke" && $mybb->request_method == "post")
 								// the old level never expired, not much we can do but try to estimate a new expiry time... which will just happen to be starting from today...
 								$expire_offset = TIME_NOW + $lower_expiration_times[$i];
 								// if the user's expiry time is already less than what we're going to set it to, skip
-								if($user[$current_expiry_field] <= $expire_offset)
+								if ($user[$current_expiry_field] <= $expire_offset)
 								{
 									continue;
 								}
@@ -855,7 +855,7 @@ if($mybb->input['action'] == "do_revoke" && $mybb->request_method == "post")
 
 							$updated_user[$current_expiry_field] = $user[$current_expiry_field] + $expire_offset;
 							// double-check if it's expired already
-							if($updated_user[$current_expiry_field] < TIME_NOW)
+							if ($updated_user[$current_expiry_field] < TIME_NOW)
 							{
 								$updated_user[$current_expiry_field] = 0;
 								$updated_user[$current_inforce_field] = 0;
@@ -890,9 +890,9 @@ if($mybb->input['action'] == "do_revoke" && $mybb->request_method == "post")
 }
 
 // Detailed view of a warning
-if($mybb->input['action'] == "view")
+if ($mybb->input['action'] == "view")
 {
-	if($mybb->usergroup['canwarnusers'] != 1)
+	if ($mybb->usergroup['canwarnusers'] != 1)
 	{
 		error_no_permission();
 	}
@@ -907,19 +907,19 @@ if($mybb->input['action'] == "view")
 	");
 	$warning = $db->fetch_array($query);
 
-	if(!$warning['wid'])
+	if (!$warning['wid'])
 	{
 		error($lang->error_invalid_warning);
 	}
 
 	$user = get_user(intval($warning['uid']));
-	if(!$user['username'])
+	if (!$user['username'])
 	{
 		$user['username'] = $lang->guest;
 	}
 
 	$group_permissions = user_permissions($user['uid']);
-	if($group_permissions['canreceivewarnings'] != 1)
+	if ($group_permissions['canreceivewarnings'] != 1)
 	{
 		error($lang->error_cant_warn_group);
 	}
@@ -927,7 +927,7 @@ if($mybb->input['action'] == "view")
 	$plugins->run_hooks("warnings_view_start");
 
 	$lang->nav_profile = $lang->sprintf($lang->nav_profile, $user['username']);
-	if($user['uid'])
+	if ($user['uid'])
 	{
 		add_breadcrumb($lang->nav_profile, get_profile_link($user['uid']));
 		add_breadcrumb($lang->nav_warning_log, "warnings.php?uid={$user['uid']}");
@@ -942,7 +942,7 @@ if($mybb->input['action'] == "view")
 	$user_link = build_profile_link($user['username'], $user['uid']);
 
 	$post_link = "";
-	if($warning['post_subject'])
+	if ($warning['post_subject'])
 	{
 		$warning['post_subject'] = $parser->parse_badwords($warning['post_subject']);
 		$warning['post_subject'] = htmlspecialchars_uni($warning['post_subject']);
@@ -958,7 +958,7 @@ if($mybb->input['action'] == "view")
 	$notes = nl2br(htmlspecialchars_uni($warning['notes']));
 
 	$date_issued = my_date($mybb->settings['dateformat'], $warning['dateline']).", ".my_date($mybb->settings['timeformat'], $warning['dateline']);
-	if($warning['type_title'])
+	if ($warning['type_title'])
 	{
 		$warning_type = $warning['type_title'];
 	}
@@ -967,7 +967,7 @@ if($mybb->input['action'] == "view")
 		$warning_type = $warning['title'];
 	}
 	$warning_type = htmlspecialchars_uni($warning_type);
-	if($warning['points'] > 0)
+	if ($warning['points'] > 0)
 	{
 		$warning['points'] = "+{$warning['points']}";
 	}
@@ -975,9 +975,9 @@ if($mybb->input['action'] == "view")
 	$revoked_date = '';
 
 	$points = $lang->sprintf($lang->warning_points, $warning['points']);
-	if($warning['expired'] != 1)
+	if ($warning['expired'] != 1)
 	{
-		if($warning['expires'] == 0)
+		if ($warning['expires'] == 0)
 		{
 			$expires = $lang->never;
 		}
@@ -989,18 +989,18 @@ if($mybb->input['action'] == "view")
 	}
 	else
 	{
-		if($warning['daterevoked'])
+		if ($warning['daterevoked'])
 		{
 			$expires = $status = $lang->warning_revoked;
 		}
-		else if($warning['expires'])
+		else if ($warning['expires'])
 		{
 			$revoked_date = '('.my_date($mybb->settings['dateformat'], $warning['expires']).' '.my_date($mybb->settings['timeformat'], $warning['expires']).')';
 			$expires = $status = $lang->already_expired;
 		}
 	}
 
-	if(!$warning['daterevoked'])
+	if (!$warning['daterevoked'])
 	{
 		eval("\$revoke = \"".$templates->get("warnings_view_revoke")."\";");
 	}
@@ -1008,7 +1008,7 @@ if($mybb->input['action'] == "view")
 	{
 		$date_revoked = my_date($mybb->settings['dateformat'], $warning['daterevoked']).", ".my_date($mybb->settings['timeformat'], $warning['daterevoked']);
 		$revoked_user = get_user($warning['revokedby']);
-		if(!$revoked_user['username'])
+		if (!$revoked_user['username'])
 		{
 			$revoked_user['username'] = $lang->guest;
 		}
@@ -1024,20 +1024,20 @@ if($mybb->input['action'] == "view")
 }
 
 // Showing list of warnings for a particular user
-if(!$mybb->input['action'])
+if (!$mybb->input['action'])
 {
-	if($mybb->usergroup['canwarnusers'] != 1)
+	if ($mybb->usergroup['canwarnusers'] != 1)
 	{
 		error_no_permission();
 	}
 
 	$user = get_user(intval($mybb->input['uid']));
-	if(!$user['uid'])
+	if (!$user['uid'])
 	{
 		error($lang->error_invalid_user);
 	}
 	$group_permissions = user_permissions($user['uid']);
-	if($group_permissions['canreceivewarnings'] != 1)
+	if ($group_permissions['canreceivewarnings'] != 1)
 	{
 		error($lang->error_cant_warn_group);
 	}
@@ -1046,7 +1046,7 @@ if(!$mybb->input['action'])
 	add_breadcrumb($lang->nav_profile, get_profile_link($user['uid']));
 	add_breadcrumb($lang->nav_warning_log);
 
-	if(!$mybb->settings['postsperpage'])
+	if (!$mybb->settings['postsperpage'])
 	{
 		$mybb->settings['postperpage'] = 20;
 	}
@@ -1060,11 +1060,11 @@ if(!$mybb->input['action'])
 
 	$pages = ceil($warning_count/$perpage);
 
-	if($page > $pages || $page <= 0)
+	if ($page > $pages || $page <= 0)
 	{
 		$page = 1;
 	}
-	if($page)
+	if ($page)
 	{
 		$start = ($page-1) * $perpage;
 	}
@@ -1077,17 +1077,17 @@ if(!$mybb->input['action'])
 	$multipage = multipage($warning_count, $perpage, $page, "warnings.php?uid={$user['uid']}");
 
 	$warning_level = round($user['warningpoints']/$mybb->settings['maxwarningpoints']*100);
-	if($warning_level > 100)
+	if ($warning_level > 100)
 	{
 		$warning_level = 100;
 	}
 
-	if($user['warningpoints'] > $mybb->settings['maxwarningpoints'])
+	if ($user['warningpoints'] > $mybb->settings['maxwarningpoints'])
 	{
 		$user['warningpoints'] = $mybb->settings['maxwarningpoints'];
 	}
 
-	if($warning_level > 0)
+	if ($warning_level > 0)
 	{
 		$lang->current_warning_level = $lang->sprintf($lang->current_warning_level, $warning_level, $user['warningpoints'], $mybb->settings['maxwarningpoints']);
 	}
@@ -1110,9 +1110,9 @@ if(!$mybb->input['action'])
 	$first = TRUE;
 	while($warning = $db->fetch_array($query))
 	{
-		if($warning['expired'] != $last_expired || $first)
+		if ($warning['expired'] != $last_expired || $first)
 		{
-			if($warning['expired'] == 0)
+			if ($warning['expired'] == 0)
 			{
 				eval("\$warnings .= \"".$templates->get("warnings_active_header")."\";");
 			}
@@ -1125,7 +1125,7 @@ if(!$mybb->input['action'])
 		$first = FALSE;
 
 		$post_link = "";
-		if($warning['post_subject'])
+		if ($warning['post_subject'])
 		{
 			$warning['post_subject'] = $parser->parse_badwords($warning['post_subject']);
 			$warning['post_subject'] = htmlspecialchars_uni($warning['post_subject']);
@@ -1133,7 +1133,7 @@ if(!$mybb->input['action'])
 		}
 		$issuedby = build_profile_link($warning['username'], $warning['issuedby']);
 		$date_issued = my_date($mybb->settings['dateformat'], $warning['dateline']).", ".my_date($mybb->settings['timeformat'], $warning['dateline']);
-		if($warning['type_title'])
+		if ($warning['type_title'])
 		{
 			$warning_type = $warning['type_title'];
 		}
@@ -1142,14 +1142,14 @@ if(!$mybb->input['action'])
 			$warning_type = $warning['title'];
 		}
 		$warning_type = htmlspecialchars_uni($warning_type);
-		if($warning['points'] > 0)
+		if ($warning['points'] > 0)
 		{
 			$warning['points'] = "+{$warning['points']}";
 		}
 		$points = $lang->sprintf($lang->warning_points, $warning['points']);
-		if($warning['expired'] != 1)
+		if ($warning['expired'] != 1)
 		{
-			if($warning['expires'] == 0)
+			if ($warning['expires'] == 0)
 			{
 				$expires = $lang->never;
 			}
@@ -1160,11 +1160,11 @@ if(!$mybb->input['action'])
 		}
 		else
 		{
-			if($warning['daterevoked'])
+			if ($warning['daterevoked'])
 			{
 				$expires = $lang->warning_revoked;
 			}
-			else if($warning['expires'])
+			else if ($warning['expires'])
 			{
 				$expires = $lang->already_expired;
 			}
@@ -1174,7 +1174,7 @@ if(!$mybb->input['action'])
 		eval("\$warnings .= \"".$templates->get("warnings_warning")."\";");
 	}
 
-	if(!$warnings)
+	if (!$warnings)
 	{
 		eval("\$warnings = \"".$templates->get("warnings_no_warnings")."\";");
 	}
@@ -1205,7 +1205,7 @@ function find_warnlevels_to_check(&$query, &$max_expiration_times, &$check_level
 	{
 		// revoke actions taken at this warning level
 		$action = unserialize($warn_level['action']);
-		if($action['type'] < 1 || $action['type'] > 3)	// prevent any freak-ish cases
+		if ($action['type'] < 1 || $action['type'] > 3)	// prevent any freak-ish cases
 		{
 			continue;
 		}
@@ -1213,10 +1213,10 @@ function find_warnlevels_to_check(&$query, &$max_expiration_times, &$check_level
 		$check_levels[$action['type']] = TRUE;
 
 		$max_exp_time = &$max_expiration_times[$action['type']];
-		if($action['length'] && $max_exp_time != 0)
+		if ($action['length'] && $max_exp_time != 0)
 		{
 			$expiration = $action['length'];
-			if($expiration > $max_exp_time)
+			if ($expiration > $max_exp_time)
 			{
 				$max_exp_time = $expiration;
 			}

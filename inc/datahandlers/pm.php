@@ -10,7 +10,7 @@
  */
 
 // Disallow direct access to this file for security reasons
-if(!defined("IN_MYBB"))
+if (!defined("IN_MYBB"))
 {
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
@@ -64,13 +64,13 @@ class PMDataHandler extends DataHandler
 		$subject = &$this->data['subject'];
 
 		// Subject is over 85 characters, too long.
-		if(my_strlen($subject) > 85)
+		if (my_strlen($subject) > 85)
 		{
 			$this->set_error("too_long_subject");
 			return FALSE;
 		}
 		// No subject, apply the default [no subject]
-		if(!trim_blank_chrs($subject))
+		if (!trim_blank_chrs($subject))
 		{
 			$this->set_error("missing_subject");
 			return FALSE;
@@ -88,7 +88,7 @@ class PMDataHandler extends DataHandler
 		$message = &$this->data['message'];
 
 		// No message, return an error.
-		if(trim_blank_chrs($message) == '')
+		if (trim_blank_chrs($message) == '')
 		{
 			$this->set_error("missing_message");
 			return FALSE;
@@ -108,7 +108,7 @@ class PMDataHandler extends DataHandler
 		$pm = &$this->data;
 
 		// Return if we've already validated
-		if($pm['sender']) return TRUE;
+		if ($pm['sender']) return TRUE;
 
 		// Fetch the senders profile data.
 		$sender = get_user($pm['fromid']);
@@ -117,9 +117,9 @@ class PMDataHandler extends DataHandler
 		$sender_permissions = user_permissions($pm['fromid']);
 
 		// Check if the sender is over their quota or not - if they are, disable draft sending
-		if($pm['options']['savecopy'] != 0 && !$pm['saveasdraft'])
+		if ($pm['options']['savecopy'] != 0 && !$pm['saveasdraft'])
 		{
-			if($sender_permissions['pmquota'] != "0" && $sender['totalpms'] >= $sender_permissions['pmquota'] && $this->admin_override != TRUE)
+			if ($sender_permissions['pmquota'] != "0" && $sender['totalpms'] >= $sender_permissions['pmquota'] && $this->admin_override != TRUE)
 			{
 				$pm['options']['savecopy'] = 0;
 			}
@@ -149,9 +149,9 @@ class PMDataHandler extends DataHandler
 
 		$invalid_recipients = array();
 		// We have our recipient usernames but need to fetch user IDs
-		if(array_key_exists("to", $pm))
+		if (array_key_exists("to", $pm))
 		{
-			if((count($pm['to']) <= 0 || trim(implode("", $pm['to'])) == "") && !$pm['saveasdraft'])
+			if ((count($pm['to']) <= 0 || trim(implode("", $pm['to'])) == "") && !$pm['saveasdraft'])
 			{
 				$this->set_error("no_recipients");
 				return FALSE;
@@ -159,25 +159,25 @@ class PMDataHandler extends DataHandler
 
 			foreach(array("to", "bcc") as $recipient_type)
 			{
-				if(!is_array($pm[$recipient_type]))
+				if (!is_array($pm[$recipient_type]))
 				{
 					$pm[$recipient_type] = array($pm[$recipient_type]);
 				}
 				foreach($pm[$recipient_type] as $username)
 				{
 					$username = trim($username);
-					if(empty($username))
+					if (empty($username))
 					{
 						continue;
 					}
 					// Check that this recipient actually exists
 					$query = $db->simple_select("users", "*", "username='".$db->escape_string($username)."'");
 					$user = $db->fetch_array($query);
-					if($recipient_type == "bcc")
+					if ($recipient_type == "bcc")
 					{
 						$user['bcc'] = 1;
 					}
-					if($user['uid'])
+					if ($user['uid'])
 					{
 						$recipients[] = $user;
 					}
@@ -193,23 +193,23 @@ class PMDataHandler extends DataHandler
 		{
 			foreach(array("toid", "bccid") as $recipient_type)
 			{
-				if(count($pm['toid']) <= 0)
+				if (count($pm['toid']) <= 0)
 				{
 					$this->set_error("no_recipients");
 					return FALSE;
 				}
-				if(is_array($pm[$recipient_type]))
+				if (is_array($pm[$recipient_type]))
 				{
 					foreach($pm[$recipient_type] as $uid)
 					{
 						// Check that this recipient actually exists
 						$query = $db->simple_select("users", "*", "uid='".intval($uid)."'");
 						$user = $db->fetch_array($query);
-						if($recipient_type == "bccid")
+						if ($recipient_type == "bccid")
 						{
 							$user['bcc'] = 1;
 						}
-						if($user['uid'])
+						if ($user['uid'])
 						{
 							$recipients[] = $user;
 						}
@@ -223,7 +223,7 @@ class PMDataHandler extends DataHandler
 		}
 
 		// If we have one or more invalid recipients and we're not saving a draft, error
-		if(count($invalid_recipients) > 0)
+		if (count($invalid_recipients) > 0)
 		{
 			$invalid_recipients = implode(", ", array_map("htmlspecialchars_uni", $invalid_recipients));
 			$this->set_error("invalid_recipients", array($invalid_recipients));
@@ -233,7 +233,7 @@ class PMDataHandler extends DataHandler
 		$sender_permissions = user_permissions($pm['fromid']);
 
 		// Are we trying to send this message to more users than the permissions allow?
-		if($sender_permissions['maxpmrecipients'] > 0 && count($recipients) > $sender_permissions['maxpmrecipients'] && $this->admin_override != TRUE)
+		if ($sender_permissions['maxpmrecipients'] > 0 && count($recipients) > $sender_permissions['maxpmrecipients'] && $this->admin_override != TRUE)
 		{
 			$this->set_error("too_many_recipients", array($sender_permissions['maxpmrecipients']));
 		}
@@ -247,26 +247,26 @@ class PMDataHandler extends DataHandler
 			// See if the sender is on the recipients ignore list and that either
 			// - admin_override is set or
 			// - sender is an administrator
-			if(($this->admin_override != TRUE && $sender_permissions['cancp'] != 1) && $sender_permissions['canoverridepm'] != 1)
+			if (($this->admin_override != TRUE && $sender_permissions['cancp'] != 1) && $sender_permissions['canoverridepm'] != 1)
 			{
 				$ignorelist = explode(",", $user['ignorelist']);
-				if(!empty($ignorelist) && in_array($pm['fromid'], $ignorelist))
+				if (!empty($ignorelist) && in_array($pm['fromid'], $ignorelist))
 				{
 					$this->set_error("recipient_is_ignoring", array($user['username']));
 				}
 
 				// Is the recipient only allowing private messages from their buddy list?
-				if($mybb->settings['allowbuddyonly'] == 1 && $user['receivefrombuddy'] == 1)
+				if ($mybb->settings['allowbuddyonly'] == 1 && $user['receivefrombuddy'] == 1)
 				{
 					$buddylist = explode(",", $user['buddylist']);
-					if(!empty($buddylist) && !in_array($pm['fromid'], $buddylist))
+					if (!empty($buddylist) && !in_array($pm['fromid'], $buddylist))
 					{
 						$this->set_error("recipient_has_buddy_only", array(htmlspecialchars_uni($user['username'])));
 					}
 				}
 
 				// Can the recipient actually receive private messages based on their permissions or user setting?
-				if(($user['receivepms'] == 0 || $recipient_permissions['canusepms'] == 0) && !$pm['saveasdraft'])
+				if (($user['receivepms'] == 0 || $recipient_permissions['canusepms'] == 0) && !$pm['saveasdraft'])
 				{
 					$this->set_error("recipient_pms_disabled", array($user['username']));
 					return FALSE;
@@ -274,13 +274,13 @@ class PMDataHandler extends DataHandler
 			}
 
 			// Check to see if the user has reached their private message quota - if they have, email them.
-			if($recipient_permissions['pmquota'] != "0" && $user['totalpms'] >= $recipient_permissions['pmquota'] && $recipient_permissions['cancp'] != 1 && $sender_permissions['cancp'] != 1 && !$pm['saveasdraft'] && !$this->admin_override)
+			if ($recipient_permissions['pmquota'] != "0" && $user['totalpms'] >= $recipient_permissions['pmquota'] && $recipient_permissions['cancp'] != 1 && $sender_permissions['cancp'] != 1 && !$pm['saveasdraft'] && !$this->admin_override)
 			{
-				if(trim($user['language']) != '' && $lang->language_exists($user['language']))
+				if (trim($user['language']) != '' && $lang->language_exists($user['language']))
 				{
 					$uselang = trim($user['language']);
 				}
-				elseif($mybb->settings['bblanguage'])
+				elseif ($mybb->settings['bblanguage'])
 				{
 					$uselang = $mybb->settings['bblanguage'];
 				}
@@ -288,7 +288,7 @@ class PMDataHandler extends DataHandler
 				{
 					$uselang = "english";
 				}
-				if($uselang == $mybb->settings['bblanguage'] || !$uselang)
+				if ($uselang == $mybb->settings['bblanguage'] || !$uselang)
 				{
 					$emailsubject = $lang->emailsubject_reachedpmquota;
 					$emailmessage = $lang->email_reachedpmquota;
@@ -316,7 +316,7 @@ class PMDataHandler extends DataHandler
 				$db->insert_query("mailqueue", $new_email);
 				$cache->update_mailqueue();
 
-				if($this->admin_override != TRUE)
+				if ($this->admin_override != TRUE)
 				{
 					$this->set_error("recipient_reached_quota", array($user['username']));
 				}
@@ -334,7 +334,7 @@ class PMDataHandler extends DataHandler
 			);
 
 			// If this recipient is defined as a BCC recipient, save it
-			if($user['bcc'] == 1)
+			if ($user['bcc'] == 1)
 			{
 				$pm['recipients'][$user['uid']]['bcc'] = 1;
 			}
@@ -354,7 +354,7 @@ class PMDataHandler extends DataHandler
 		$pm = &$this->data;
 
 		// Check if post flooding is enabled within MyBB or if the admin override option is specified.
-		if($mybb->settings['pmfloodsecs'] > 0 && $pm['fromid'] != 0 && $this->admin_override == FALSE)
+		if ($mybb->settings['pmfloodsecs'] > 0 && $pm['fromid'] != 0 && $this->admin_override == FALSE)
 		{
 			// Fetch the senders profile data.
 			$sender = get_user($pm['fromid']);
@@ -364,11 +364,11 @@ class PMDataHandler extends DataHandler
 			$sender['lastpm'] = $db->fetch_field($query, "dateline");
 
 			// A little bit of calculation magic and moderator status checking.
-			if(TIME_NOW-$sender['lastpm'] <= $mybb->settings['pmfloodsecs'] && !is_moderator("", "", $pm['fromid']))
+			if (TIME_NOW-$sender['lastpm'] <= $mybb->settings['pmfloodsecs'] && !is_moderator("", "", $pm['fromid']))
 			{
 				// Oops, user has been flooding - throw back error message.
 				$time_to_wait = ($mybb->settings['pmfloodsecs'] - (TIME_NOW-$sender['lastpm'])) + 1;
-				if($time_to_wait == 1)
+				if ($time_to_wait == 1)
 				{
 					$this->set_error("pm_flooding_one_second");
 				}
@@ -397,7 +397,7 @@ class PMDataHandler extends DataHandler
 		$this->verify_yesno_option($options, 'disablesmilies', 0);
 
 		// Requesting a read receipt?
-		if(isset($options['readreceipt']) && $options['readreceipt'] == 1)
+		if (isset($options['readreceipt']) && $options['readreceipt'] == 1)
 		{
 			$options['readreceipt'] = 1;
 		}
@@ -419,7 +419,7 @@ class PMDataHandler extends DataHandler
 
 		$pm = &$this->data;
 
-		if(!$pm['savedraft'])
+		if (!$pm['savedraft'])
 		{
 			$this->verify_pm_flooding();
 		}
@@ -438,7 +438,7 @@ class PMDataHandler extends DataHandler
 		$plugins->run_hooks("datahandler_pm_validate", $this);
 
 		// Choose the appropriate folder to save in.
-		if($pm['saveasdraft'])
+		if ($pm['saveasdraft'])
 		{
 			$pm['folder'] = 3;
 		}
@@ -449,7 +449,7 @@ class PMDataHandler extends DataHandler
 
 		// We are done validating, return.
 		$this->set_validated(TRUE);
-		if(count($this->get_errors()) > 0)
+		if (count($this->get_errors()) > 0)
 		{
 			return FALSE;
 		}
@@ -469,11 +469,11 @@ class PMDataHandler extends DataHandler
 		global $cache, $db, $mybb, $plugins, $lang;
 
 		// Yes, validating is required.
-		if(!$this->get_validated())
+		if (!$this->get_validated())
 		{
 			die("The PM needs to be validated before inserting it into the DB.");
 		}
-		if(count($this->get_errors()) > 0)
+		if (count($this->get_errors()) > 0)
 		{
 			die("The PM is not valid.");
 		}
@@ -483,14 +483,14 @@ class PMDataHandler extends DataHandler
 
 		$pm['pmid'] = intval($pm['pmid']);
 
-		if(!$pm['icon'] || $pm['icon'] < 0)
+		if (!$pm['icon'] || $pm['icon'] < 0)
 		{
 			$pm['icon'] = 0;
 		}
 
 		$uid = 0;
 
-		if(!is_array($pm['recipients']))
+		if (!is_array($pm['recipients']))
 		{
 			$recipient_list = array();
 		}
@@ -499,7 +499,7 @@ class PMDataHandler extends DataHandler
 			// Build recipient list
 			foreach($pm['recipients'] as $recipient)
 			{
-				if($recipient['bcc'])
+				if ($recipient['bcc'])
 				{
 					$recipient_list['bcc'][] = $recipient['uid'];
 				}
@@ -532,9 +532,9 @@ class PMDataHandler extends DataHandler
 		$draftcheck = $db->fetch_array($query);
 
 		// This PM was previously a draft
-		if($draftcheck['pmid'])
+		if ($draftcheck['pmid'])
 		{
-			if($draftcheck['deletetime'])
+			if ($draftcheck['deletetime'])
 			{
 				// This draft was a reply to a PM
 				$pm['pmid'] = $draftcheck['deletetime'];
@@ -546,12 +546,12 @@ class PMDataHandler extends DataHandler
 		}
 
 		// Saving this message as a draft
-		if($pm['saveasdraft'])
+		if ($pm['saveasdraft'])
 		{
 			$this->pm_insert_data['uid'] = $pm['sender']['uid'];
 
 			// If this is a reply, then piggyback into the deletetime to let us know in the future
-			if($pm['do'] == "reply" || $pm['do'] == "replyall")
+			if ($pm['do'] == "reply" || $pm['do'] == "replyall")
 			{
 				$this->pm_insert_data['deletetime'] = $pm['pmid'];
 			}
@@ -571,13 +571,13 @@ class PMDataHandler extends DataHandler
 			// Send email notification of new PM if it is enabled for the recipient
 			$query = $db->simple_select("privatemessages", "dateline", "uid='".$recipient['uid']."' AND folder='1'", array('order_by' => 'dateline', 'order_dir' => 'desc', 'limit' => 1));
 			$lastpm = $db->fetch_array($query);
-			if($recipient['pmnotify'] == 1 && $recipient['lastactive'] > $lastpm['dateline'])
+			if ($recipient['pmnotify'] == 1 && $recipient['lastactive'] > $lastpm['dateline'])
 			{
-				if($recipient['language'] != "" && $lang->language_exists($recipient['language']))
+				if ($recipient['language'] != "" && $lang->language_exists($recipient['language']))
 				{
 					$uselang = $recipient['language'];
 				}
-				elseif($mybb->settings['bblanguage'])
+				elseif ($mybb->settings['bblanguage'])
 				{
 					$uselang = $mybb->settings['bblanguage'];
 				}
@@ -585,7 +585,7 @@ class PMDataHandler extends DataHandler
 				{
 					$uselang = "english";
 				}
-				if($uselang == $mybb->settings['bblanguage'] && !empty($lang->emailsubject_newpm))
+				if ($uselang == $mybb->settings['bblanguage'] && !empty($lang->emailsubject_newpm))
 				{
 					$emailsubject = $lang->emailsubject_newpm;
 					$emailmessage = $lang->email_newpm;
@@ -600,7 +600,7 @@ class PMDataHandler extends DataHandler
 					$emailmessage = $userlang->email_newpm;
 				}
 
-				if(!$pm['sender']['username'])
+				if (!$pm['sender']['username'])
 				{
 					$pm['sender']['username'] = $lang->mybb_engine;
 				}
@@ -627,7 +627,7 @@ class PMDataHandler extends DataHandler
 			$this->pmid = $db->insert_query("privatemessages", $this->pm_insert_data);
 
 			// If PM noices/alerts are on, show!
-			if($recipient['pmnotice'] == 1)
+			if ($recipient['pmnotice'] == 1)
 			{
 				$updated_user = array(
 					"pmnotice" => 2
@@ -641,9 +641,9 @@ class PMDataHandler extends DataHandler
 		}
 
 		// Are we replying or forwarding an existing PM?
-		if($pm['pmid'])
+		if ($pm['pmid'])
 		{
-			if($pm['do'] == "reply" || $pm['do'] == "replyall")
+			if ($pm['do'] == "reply" || $pm['do'] == "replyall")
 			{
 				$sql_array = array(
 					'status' => 3,
@@ -651,7 +651,7 @@ class PMDataHandler extends DataHandler
 				);
 				$db->update_query("privatemessages", $sql_array, "pmid={$pm['pmid']} AND uid={$pm['sender']['uid']}");
 			}
-			elseif($pm['do'] == "forward")
+			elseif ($pm['do'] == "forward")
 			{
 				$sql_array = array(
 					'status' => 4,
@@ -662,9 +662,9 @@ class PMDataHandler extends DataHandler
 		}
 
 		// If we're saving a copy
-		if($pm['options']['savecopy'] != 0)
+		if ($pm['options']['savecopy'] != 0)
 		{
-			if(isset($recipient_list['to']) && count($recipient_list['to']) == 1)
+			if (isset($recipient_list['to']) && count($recipient_list['to']) == 1)
 			{
 				$this->pm_insert_data['toid'] = $uid;
 			}

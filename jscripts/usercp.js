@@ -5,17 +5,17 @@ var UserCP = {
 
 	openBuddySelect: function(field)
 	{
-		if(!$(field))
+		if (!$(field))
 		{
 			return FALSE;
 		}
 		this.buddy_field = field;
-		if($('buddyselect_container'))
+		if ($('buddyselect_container'))
 		{
 			UserCP.buddySelectLoaded();
 			return FALSE;
 		}
-		if(use_xmlhttprequest == 1)
+		if (use_xmlhttprequest == 1)
 		{
 			this.spinner = new ActivityIndicator("body", {image: "images/spinner_big.gif"});
 			new Ajax.Request('xmlhttp.php?action=get_buddyselect', {method: 'get', onComplete: function(request) { UserCP.buddySelectLoaded(request); }});
@@ -25,16 +25,16 @@ var UserCP = {
 	buddySelectLoaded: function(request)
 	{
 		// Using new copy
-		if(request)
+		if (request)
 		{
-			if(request.responseText.match(/<error>(.*)<\/error>/))
+			if (request.responseText.match(/<error>(.*)<\/error>/))
 			{
 				message = request.responseText.match(/<error>(.*)<\/error>/);
-				if(!message[1])
+				if (!message[1])
 				{
 					message[1] = "An unknown error occurred.";
 				}
-				if(this.spinner)
+				if (this.spinner)
 				{
 					this.spinner.destroy();
 					this.spinner = '';
@@ -42,9 +42,9 @@ var UserCP = {
 				alert('There was an error fetching the posts.\n\n'+message[1]);
 				return FALSE;
 			}
-			else if(request.responseText)
+			else if (request.responseText)
 			{
-				if($('buddyselect_container'))
+				if ($('buddyselect_container'))
 				{
 					Element.remove('buddyselect_container');
 				}
@@ -87,7 +87,7 @@ var UserCP = {
 		$('buddyselect_container').style.display = "block";
 		$('buddyselect_container').style.zIndex = '1000';
 		$('buddyselect_container').style.textAlign = 'left';
-		if(this.spinner)
+		if (this.spinner)
 		{
 			this.spinner.destroy();
 			this.spinner = '';
@@ -98,11 +98,11 @@ var UserCP = {
 	{
 		var checkbox = $('checkbox_'+uid);
 		// Buddy already in list - remove
-		if($('buddyselect_buddies_'+uid))
+		if ($('buddyselect_buddies_'+uid))
 		{
 			Element.remove('buddyselect_buddies_'+uid);
 			var buddies = $('buddyselect_buddies').innerHTML.stripTags();
-			if(buddies.charAt(0) == ",")
+			if (buddies.charAt(0) == ",")
 			{
 				first_buddy = $('buddyselect_buddies').childNodes[0];
 				first_buddy.innerHTML = first_buddy.innerHTML.substr(1, first_buddy.innerHTML.length);
@@ -112,7 +112,7 @@ var UserCP = {
 		else
 		{
 			var buddies = $('buddyselect_buddies').innerHTML.stripTags();
-			if(buddies != "")
+			if (buddies != "")
 			{
 				username = ", "+username;
 			}
@@ -125,11 +125,11 @@ var UserCP = {
 
 	closeBuddySelect: function(canceled)
 	{
-		if(canceled != TRUE)
+		if (canceled != TRUE)
 		{
 			var buddies = $('buddyselect_buddies').innerHTML.stripTags();
 			existing_buddies = $(this.buddy_field).value;
-			if(existing_buddies != "")
+			if (existing_buddies != "")
 			{
 				existing_buddies = existing_buddies.replace(/^\s+|\s+$/g, "");
 				existing_buddies = existing_buddies.replace(/,\s?/g, ",");
@@ -137,9 +137,9 @@ var UserCP = {
 				exp_buddies.each(function(buddy, i)
 				{
 					buddy = buddy.replace(/^\s+|\s+$/g, "");
-					if((","+existing_buddies+",").toLowerCase().indexOf(","+buddy.toLowerCase()+",") == -1)
+					if ((","+existing_buddies+",").toLowerCase().indexOf(","+buddy.toLowerCase()+",") == -1)
 					{
-						if(existing_buddies)
+						if (existing_buddies)
 						{
 							existing_buddies += ",";
 						}
@@ -159,18 +159,18 @@ var UserCP = {
 
 	addBuddy: function(type)
 	{
-		if(!$(type+'_add_username').value)
+		if (!$(type+'_add_username').value)
 		{
 			return FALSE;
 		}
-		if(use_xmlhttprequest != 1)
+		if (use_xmlhttprequest != 1)
 		{
 			return TRUE;
 		}
 
 		var old_value = $(type+'_submit').value;
 
-		if(type == "ignored")
+		if (type == "ignored")
 		{
 			$(type+'_submit').value = lang.adding_ignored;
 			var list = 'ignore';
@@ -189,7 +189,7 @@ var UserCP = {
 
 	removeBuddy: function(type, uid)
 	{
-		if(type == "ignored")
+		if (type == "ignored")
 		{
 			var message = lang.remove_ignored;
 		}
@@ -198,9 +198,9 @@ var UserCP = {
 			var message = lang.remove_buddy;
 		}
 
-		if(confirm(message))
+		if (confirm(message))
 		{
-			if(use_xmlhttprequest != 1)
+			if (use_xmlhttprequest != 1)
 			{
 				return TRUE;
 			}

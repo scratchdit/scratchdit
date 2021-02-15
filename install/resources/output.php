@@ -10,7 +10,7 @@
  */
 
 class installerOutput {
-	
+
 	public $doneheader;
 	public $openedform;
 	public $script = "index.php";
@@ -20,8 +20,8 @@ class installerOutput {
 	function print_header($title="Welcome", $image="welcome", $form=1, $error=0)
 	{
 		global $mybb, $lang;
-		
-		if($lang->title)
+
+		if ($lang->title)
 		{
 			$this->title = $lang->title;
 		}
@@ -29,7 +29,7 @@ class installerOutput {
 		@header("Content-type: text/html; charset=utf-8");
 
 		$this->doneheader = 1;
-		if($image == "dbconfig")
+		if ($image == "dbconfig")
 		{
 			$dbconfig_add = "<script type=\"text/javascript\">document.write('<style type=\"text/css\">.db_type { display: none; }</style>');</script>";
 		}
@@ -45,12 +45,12 @@ class installerOutput {
 </head>
 <body>
 END;
-		if($form)
+		if ($form)
 		{
 			echo "\n	<form method=\"post\" action=\"".$this->script."\">\n";
 			$this->openedform = 1;
 		}
-		
+
 		echo <<<END
 		<div id="container">
 		<div id="logo">
@@ -59,17 +59,17 @@ END;
 		<div id="inner_container">
 		<div id="header">$this->title</div>
 END;
-		if(empty($this->steps))
+		if (empty($this->steps))
 		{
 			$this->steps = array();
 		}
-		if(is_array($this->steps))
+		if (is_array($this->steps))
 		{
 		echo "\n		<div id=\"progress\">";
 				echo "\n			<ul>\n";
 				foreach($this->steps as $action => $step)
 				{
-					if($action == $mybb->input['action'])
+					if ($action == $mybb->input['action'])
 					{
 						echo "				<li class=\"active\"><strong>$step</strong></li>\n";
 					}
@@ -87,7 +87,7 @@ END;
 		echo "\n		<div id=\"progress_error\"></div>";
 		echo "\n		<div id=\"content_error\">\n";
 		}
-		if($title != "")
+		if ($title != "")
 		{
 		echo <<<END
 			<h2 class="$image">$title</h2>\n
@@ -103,7 +103,7 @@ END;
 	function print_error($message)
 	{
 		global $lang;
-		if(!$this->doneheader)
+		if (!$this->doneheader)
 		{
 			$this->print_header($lang->error, "", 0, 1);
 		}
@@ -118,7 +118,7 @@ END;
 	function print_footer($nextact="")
 	{
 		global $lang, $footer_extra;
-		if($nextact && $this->openedform)
+		if ($nextact && $this->openedform)
 		{
 			echo "\n			<input type=\"hidden\" name=\"action\" value=\"$nextact\" />";
 			echo "\n				<div id=\"next_button\"><input type=\"submit\" class=\"submit_button\" value=\"".$lang->next." &raquo;\" /></div><br style=\"clear: both;\" />\n";

@@ -3,7 +3,7 @@ var autoComplete = Class.create();
 autoComplete.prototype = {
 	initialize: function(textbox, url, options)
 	{
-		if(!$(textbox))
+		if (!$(textbox))
 		{
 			return FALSE;
 		}
@@ -19,7 +19,7 @@ autoComplete.prototype = {
 		this.valueSpan = options.valueSpan;
 		this.urlParam = options.urlParam;
 
-		if(options.minChars)
+		if (options.minChars)
 		{
 			this.minChars = options.minChars;
 		}
@@ -28,7 +28,7 @@ autoComplete.prototype = {
 			this.minChars = 3;
 		}
 
-		if(options.delimChar)
+		if (options.delimChar)
 		{
 			this.delimChar = options.delimChar;
 		}
@@ -46,7 +46,7 @@ autoComplete.prototype = {
 		Event.observe(this.textbox, "keyup", this.onKeyUp.bindAsEventListener(this));
 		Event.observe(this.textbox, "keydown", this.onKeyDown.bindAsEventListener(this));
 
-		if(this.textbox.form)
+		if (this.textbox.form)
 		{
 			Event.observe(this.textbox.form, "submit", this.onFormSubmit.bindAsEventListener(this));
 			this.formSubmit = TRUE;
@@ -66,7 +66,7 @@ autoComplete.prototype = {
 
 	onFormSubmit: function(e)
 	{
-		if(this.lastKeycode == Event.KEY_RETURN && this.menuOpen == TRUE)
+		if (this.lastKeycode == Event.KEY_RETURN && this.menuOpen == TRUE)
 		{
 			setTimeout(function() { this.textbox.focus() }.bind(this), 10);
 			this.menuOpen = FALSE;
@@ -93,7 +93,7 @@ autoComplete.prototype = {
 
 	onKeyPress: function(e)
 	{
-		if(this.timeout)
+		if (this.timeout)
 		{
 			clearTimeout(this.timeout);
 		}
@@ -104,15 +104,15 @@ autoComplete.prototype = {
 			case Event.KEY_RIGHT:
 				break;
 			case Event.KEY_UP:
-				if(this.popup.visible())
+				if (this.popup.visible())
 				{
-					if(this.currentIndex > 0)
+					if (this.currentIndex > 0)
 					{
 						this.scrollToItem(this.currentIndex-1);
 						this.highlightItem(this.currentIndex-1);
 						this.setTypeAhead(this.currentIndex);
 					}
-					else if(this.currentIndex == 0)
+					else if (this.currentIndex == 0)
 					{
 						this.textbox.value = this.lastValue;
 						this.hidePopup();
@@ -121,7 +121,7 @@ autoComplete.prototype = {
 				Event.stop(e);
 				break;
 			case Event.KEY_DOWN:
-				if(this.currentIndex+1 < this.popup.childNodes.length && this.popup.visible())
+				if (this.currentIndex+1 < this.popup.childNodes.length && this.popup.visible())
 				{
 					this.scrollToItem(this.currentIndex+1);
 					this.highlightItem(this.currentIndex+1);
@@ -130,13 +130,13 @@ autoComplete.prototype = {
 				Event.stop(e);
 				break;
 			case Event.KEY_TAB:
-				if(this.popup.visible() && this.currentIndex > -1)
+				if (this.popup.visible() && this.currentIndex > -1)
 				{
 					this.updateValue(this.popup.childNodes[this.currentIndex]);
 					this.hidePopup();
 					this.currentIndex = -1;
 
-					if(this.delimChar)
+					if (this.delimChar)
 					{
 						Event.stop(e);
 					}
@@ -144,11 +144,11 @@ autoComplete.prototype = {
 				}
 				break;
 			case Event.KEY_RETURN:
-				if(this.menuOpen == TRUE)
+				if (this.menuOpen == TRUE)
 				{
 					Event.stop(e);
 				}
-				if(this.currentIndex != -1)
+				if (this.currentIndex != -1)
 				{
 					this.updateValue(this.popup.childNodes[this.currentIndex]);
 					this.hidePopup();
@@ -170,13 +170,13 @@ autoComplete.prototype = {
 
 	buildURL: function(value)
 	{
-		if(!this.urlParam)
+		if (!this.urlParam)
 		{
 			this.urlParam = "query";
 		}
 
 		var separator = "?";
-		if(this.url.indexOf("?") >= 0)
+		if (this.url.indexOf("?") >= 0)
 		{
 			separator = "&";
 		}
@@ -186,7 +186,7 @@ autoComplete.prototype = {
 
 	doRequest: function()
 	{
-		if(this.lastValue == this.textbox.value)
+		if (this.lastValue == this.textbox.value)
 		{
 			return FALSE;
 		}
@@ -196,12 +196,12 @@ autoComplete.prototype = {
 		value = this.textbox.value;
 		cacheValue = this.textbox.length+this.textbox.value;
 
-		if(this.delimChar)
+		if (this.delimChar)
 		{
 			delimIndex = value.lastIndexOf(this.delimChar);
-			if(delimIndex >= -1)
+			if (delimIndex >= -1)
 			{
-				if(value.charAt(delimIndex+1) == " ")
+				if (value.charAt(delimIndex+1) == " ")
 				{
 					delimIndex += 1;
 				}
@@ -211,9 +211,9 @@ autoComplete.prototype = {
 			}
 		}
 
-		if(value.length >= this.minChars)
+		if (value.length >= this.minChars)
 		{
-			if(this.cache[cacheValue])
+			if (this.cache[cacheValue])
 			{
 				this.popup.innerHTML = this.cache[cacheValue];
 				this.onComplete();
@@ -225,7 +225,7 @@ autoComplete.prototype = {
 		}
 		else
 		{
-			if(this.popup.visible())
+			if (this.popup.visible())
 			{
 				this.hidePopup();
 			}
@@ -235,11 +235,11 @@ autoComplete.prototype = {
 	onComplete: function(request)
 	{
 		// Cached results or fresh ones?
-		if(request)
+		if (request)
 		{
-			if(request.responseText.charAt(0) != "<")
+			if (request.responseText.charAt(0) != "<")
 			{
-				if(this.popup.visible())
+				if (this.popup.visible())
 				{
 					this.hidePopup();
 				}
@@ -252,7 +252,7 @@ autoComplete.prototype = {
 		}
 
 		this.currentIndex = -1;
-		if(this.popup.childNodes.length < 1)
+		if (this.popup.childNodes.length < 1)
 		{
 			return FALSE;
 		}
@@ -265,9 +265,9 @@ autoComplete.prototype = {
 			}
 		}.bind(this));
 
-		if(this.popup.childNodes.length < 1)
+		if (this.popup.childNodes.length < 1)
 		{
-			if(this.popup.visible())
+			if (this.popup.visible())
 			{
 				this.hidePopup();
 			}
@@ -293,11 +293,11 @@ autoComplete.prototype = {
 		Element.remove(clone);
 
 		var maxHeight = 100;
-		if(offsetHeight > 0 && offsetHeight < maxHeight)
+		if (offsetHeight > 0 && offsetHeight < maxHeight)
 		{
 			this.popup.style.overflow = "hidden";
 		}
-		else if(MyBB.browser == "ie")
+		else if (MyBB.browser == "ie")
 		{
 			this.popup.style.height = maxHeight+"px";
 			this.popup.style.overflowY = "auto";
@@ -318,13 +318,13 @@ autoComplete.prototype = {
 			offsetTop += element.offsetTop || 0;
 			offsetLeft += element.offsetLeft || 0;
 			element = element.offsetParent;
-			if(element && ($(element).getStyle('position') == 'absolute'))
+			if (element && ($(element).getStyle('position') == 'absolute'))
 			{
 				break;
 			}
 		} while(element);
 		this.popup.style.marginTop = "-1px";
-		if(MyBB.browser == "ie")
+		if (MyBB.browser == "ie")
 		{
 			this.popup.style.left = offsetLeft+1+"px";
 		}
@@ -341,7 +341,7 @@ autoComplete.prototype = {
 		this.menuOpen = TRUE;
 		this.overPopup = 0;
 
-		if(this.currentKeyCode != 8 && this.currentKeyCode != 46)
+		if (this.currentKeyCode != 8 && this.currentKeyCode != 46)
 		{
 			this.highlightItem(0);
 			/*his.setTypeAhead(0, 1);*/
@@ -356,7 +356,7 @@ autoComplete.prototype = {
 		Event.stopObserving(this.popup, "mouseover", this.popupOver.bindAsEventListener(this));
 		Event.stopObserving(this.popup, "mouseout", this.popupOut.bindAsEventListener(this));
 
-		if(this.overPopup == 1 && this.currentIndex > -1)
+		if (this.overPopup == 1 && this.currentIndex > -1)
 		{
 			this.updateValue(this.popup.childNodes[this.currentIndex]);
 			this.currentIndex = -1;
@@ -376,20 +376,20 @@ autoComplete.prototype = {
 
 	updateValue: function(selectedItem)
 	{
-		if(this.valueSpan && selectedItem.innerHTML)
+		if (this.valueSpan && selectedItem.innerHTML)
 		{
 			var items = selectedItem.getElementsByTagName("SPAN");
-			if(items)
+			if (items)
 			{
 				$A(items).each(function(item) {
-					if(item.className == this.valueSpan)
+					if (item.className == this.valueSpan)
 					{
 						textBoxValue = item.innerHTML;
 					}
 				}.bind(this));
 			}
 		}
-		else if(!this.valueSpan && selectedItem.innerHTML)
+		else if (!this.valueSpan && selectedItem.innerHTML)
 		{
 			textBoxValue = selectedItem.innerHTML;
 		}
@@ -399,9 +399,9 @@ autoComplete.prototype = {
 		}
 
 		this.textbox.value = "";
-		if(this.delimChar)
+		if (this.delimChar)
 		{
-			if(this.previousComplete)
+			if (this.previousComplete)
 			{
 				this.textbox.value = this.previousComplete;
 			}
@@ -434,7 +434,7 @@ autoComplete.prototype = {
 
 	highlightItem: function(selectedItem)
 	{
-		if(this.currentIndex != -1)
+		if (this.currentIndex != -1)
 		{
 			this.popup.childNodes[this.currentIndex].className = "";
 		}
@@ -446,24 +446,24 @@ autoComplete.prototype = {
 	{
 		newItem = this.popup.childNodes[selectedItem];
 
-		if(!newItem)
+		if (!newItem)
 		{
 			return FALSE;
 		}
 
-		if(newItem.offsetTop+newItem.offsetHeight > this.popup.scrollTop+this.popup.offsetHeight)
+		if (newItem.offsetTop+newItem.offsetHeight > this.popup.scrollTop+this.popup.offsetHeight)
 		{
 			this.popup.scrollTop = (newItem.offsetTop+newItem.offsetHeight) - this.popup.offsetHeight;
 		}
-		else if((newItem.offsetTop+newItem.offsetHeight) < this.popup.scrollTop)
+		else if ((newItem.offsetTop+newItem.offsetHeight) < this.popup.scrollTop)
 		{
 			this.popup.scrollTop = newItem.offsetTop;
 		}
-		else if(newItem.offsetTop < this.popup.scrollTop)
+		else if (newItem.offsetTop < this.popup.scrollTop)
 		{
 			this.popup.scrollTop = newItem.offsetTop;
 		}
-		else if(newItem.offsetTop > (this.popup.scrollTop + this.popup.offsetHeight))
+		else if (newItem.offsetTop > (this.popup.scrollTop + this.popup.offsetHeight))
 		{
 			this.popup.scrollTop = (newItem.offsetTop+newItem.offsetHeight)-this.popup.offsetHeight;
 		}
@@ -473,28 +473,28 @@ autoComplete.prototype = {
 	{
 		selectedItem = this.popup.childNodes[selectedItem];
 
-		if(!selectedItem || (!this.textbox.setSelectionRange && !this.textbox.createTextRange))
+		if (!selectedItem || (!this.textbox.setSelectionRange && !this.textbox.createTextRange))
 		{
 			return FALSE;
 		}
 
-		if(selectChanges)
+		if (selectChanges)
 		{
 			selectStart = this.textbox.value.length;
 		}
 
 		newValue = this.updateValue(selectedItem);
 		selectEnd = this.textbox.value.length;
-		if(!selectChanges)
+		if (!selectChanges)
 		{
 			selectStart = selectEnd;
 		}
 
-		if(this.textbox.setSelectionange)
+		if (this.textbox.setSelectionange)
 		{
 			this.textbox.setSelectionRange(selectStart, selectEnd);
 		}
-		else if(this.textbox.createTextRange)
+		else if (this.textbox.createTextRange)
 		{
 			var range = this.textbox.createTextRange();
 			range.moveStart('character', selectStart);
@@ -507,11 +507,11 @@ autoComplete.prototype = {
 	{
 		selectEnd = this.textbox.value.length;
 
-		if(this.textbox.setSelectionRange)
+		if (this.textbox.setSelectionRange)
 		{
 			this.textbox.setSelectionRange(selectEnd, selectEnd);
 		}
-		else if(window.createTextRange)
+		else if (window.createTextRange)
 		{
 			var range = this.textbox.createTextRange();
 			range.moveStart('character', selectEnd);

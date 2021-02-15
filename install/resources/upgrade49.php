@@ -28,7 +28,7 @@ function upgrade49_dbchanges()
 	echo "<p>Performing necessary upgrade queries...</p>";
 	flush();
 
-	if($db->field_exists('yahoo', 'users'))
+	if ($db->field_exists('yahoo', 'users'))
 	{
 		$db->drop_column('users', 'yahoo');
 	}

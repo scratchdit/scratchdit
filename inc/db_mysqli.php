@@ -139,7 +139,7 @@ class DB_MySQLi
 	function connect($config)
 	{
 		// Simple connection to one server
-		if(array_key_exists('hostname', $config))
+		if (array_key_exists('hostname', $config))
 		{
 			$connections['read'][] = $config;
 		}
@@ -147,11 +147,11 @@ class DB_MySQLi
 		// Connecting to more than one server
 		{
 			// Specified multiple servers, but no specific read/write servers
-			if(!array_key_exists('read', $config))
+			if (!array_key_exists('read', $config))
 			{
 				foreach($config as $key => $settings)
 				{
-					if(is_int($key)) $connections['read'][] = $settings;
+					if (is_int($key)) $connections['read'][] = $settings;
 				}
 			}
 			// Specified both read & write servers
@@ -166,12 +166,12 @@ class DB_MySQLi
 		// Actually connect to the specified servers
 		foreach(array('read', 'write') as $type)
 		{
-			if(!is_array($connections[$type]))
+			if (!is_array($connections[$type]))
 			{
 				break;
 			}
 
-			if(array_key_exists('hostname', $connections[$type]))
+			if (array_key_exists('hostname', $connections[$type]))
 			{
 				$details = $connections[$type];
 				unset($connections);
@@ -186,7 +186,7 @@ class DB_MySQLi
 			{
 				$connect_function = "mysqli_connect";
 				$persist = "";
-				if($single_connection['pconnect'] && version_compare(PHP_VERSION, '5.3.0', '>='))
+				if ($single_connection['pconnect'] && version_compare(PHP_VERSION, '5.3.0', '>='))
 				{
 					$persist = "p:";
 				}
@@ -197,7 +197,7 @@ class DB_MySQLi
 
 				// Specified a custom port for this connection?
 				list($hostname, $port) = explode(":", $single_connection['hostname'], 2);
-				if($port)
+				if ($port)
 				{
 					$this->$link = @$connect_function($persist.$hostname, $single_connection['username'], $single_connection['password'], "", $port);
 				}
@@ -210,7 +210,7 @@ class DB_MySQLi
 				$this->query_time += $time_spent;
 
 				// Successful connection? break down brother!
-				if($this->$link)
+				if ($this->$link)
 				{
 					$this->connections[] = "[".strtoupper($type)."] {$single_connection['username']}@{$single_connection['hostname']} (Connected in ".number_format($time_spent, 0)."s)";
 					break;
@@ -223,26 +223,26 @@ class DB_MySQLi
 		}
 
 		// No write server was specified (simple connection or just multiple servers) - mirror write link
-		if(!array_key_exists('write', $connections))
+		if (!array_key_exists('write', $connections))
 		{
 			$this->write_link = &$this->read_link;
 		}
 
 		// Have no read connection?
-		if(!$this->read_link)
+		if (!$this->read_link)
 		{
 			$this->error("[READ] Unable to connect to MySQL server");
 			return FALSE;
 		}
 		// No write?
-		else if(!$this->write_link)
+		else if (!$this->write_link)
 		{
 			$this->error("[WRITE] Unable to connect to MySQL server");
 			return FALSE;
 		}
 
 		// Select databases
-		if(!$this->select_db($config['database']))
+		if (!$this->select_db($config['database']))
 		{
 			return -1;
 		}
@@ -262,7 +262,7 @@ class DB_MySQLi
 		global $mybb;
 
 		$master_success = @mysqli_select_db($this->read_link, $database) or $this->error("[READ] Unable to select database", $this->read_link);
-		if($this->write_link)
+		if ($this->write_link)
 		{
 			$slave_success = @mysqli_select_db($this->write_link, $database) or $this->error("[WRITE] Unable to select slave database", $this->write_link);
 
@@ -273,11 +273,11 @@ class DB_MySQLi
 			$success = $master_success;
 		}
 
-		if($success && $this->db_encoding)
+		if ($success && $this->db_encoding)
 		{
 			$this->query("SET NAMES '{$this->db_encoding}'");
 
-			if($slave_success && count($this->connections) > 1)
+			if ($slave_success && count($this->connections) > 1)
 			{
 				$this->write_query("SET NAMES '{$this->db_encoding}'");
 			}
@@ -300,7 +300,7 @@ class DB_MySQLi
 		$this->get_execution_time();
 
 		// Only execute write queries on slave server
-		if($write_query && $this->write_link)
+		if ($write_query && $this->write_link)
 		{
 			$this->current_link = &$this->write_link;
 			$query = @mysqli_query($this->write_link, $string);
@@ -311,7 +311,7 @@ class DB_MySQLi
 			$query = @mysqli_query($this->read_link, $string);
 		}
 
-		if($this->error_number() && !$hide_errors)
+		if ($this->error_number() && !$hide_errors)
 		{
 			$this->error($string);
 			exit;
@@ -321,7 +321,7 @@ class DB_MySQLi
 		$this->query_time += $query_time;
 		$this->query_count++;
 
-		if($mybb->debug_mode)
+		if ($mybb->debug_mode)
 		{
 			$this->explain_query($string, $query_time);
 		}
@@ -349,11 +349,11 @@ class DB_MySQLi
 	function explain_query($string, $qtime)
 	{
 		global $plugins;
-		if($plugins->current_hook)
+		if ($plugins->current_hook)
 		{
 			$debug_extra = "<div style=\"float_right\">(Plugin Hook: {$plugins->current_hook})</div>";
 		}
-		if(preg_match("#^\s*select#i", $string))
+		if (preg_match("#^\s*select#i", $string))
 		{
 			$query = mysqli_query($this->current_link, "EXPLAIN $string");
 			$this->explain .= "<table style=\"background-color: #666;\" width=\"95%\" cellpadding=\"4\" cellspacing=\"1\" align=\"center\">\n".
@@ -438,7 +438,7 @@ class DB_MySQLi
 	 */
 	function fetch_field($query, $field, $row=FALSE)
 	{
-		if($row !== FALSE)
+		if ($row !== FALSE)
 		{
 			$this->data_seek($query, $row);
 		}
@@ -486,7 +486,7 @@ class DB_MySQLi
 	function close()
 	{
 		@mysqli_close($this->read_link);
-		if($this->write_link)
+		if ($this->write_link)
 		{
 			@mysqli_close($this->write_link);
 		}
@@ -499,7 +499,7 @@ class DB_MySQLi
 	 */
 	function error_number()
 	{
-		if($this->current_link)
+		if ($this->current_link)
 		{
 			return mysqli_errno($this->current_link);
 		}
@@ -516,7 +516,7 @@ class DB_MySQLi
 	 */
 	function error_string()
 	{
-		if($this->current_link)
+		if ($this->current_link)
 		{
 			return mysqli_error($this->current_link);
 		}
@@ -533,13 +533,13 @@ class DB_MySQLi
 	 */
 	function error($string="")
 	{
-		if($this->error_reporting)
+		if ($this->error_reporting)
 		{
-			if(class_exists("errorHandler"))
+			if (class_exists("errorHandler"))
 			{
 				global $error_handler;
 
-				if(!is_object($error_handler))
+				if (!is_object($error_handler))
 				{
 					require_once MYBB_ROOT."inc/class_error.php";
 					$error_handler = new errorHandler();
@@ -595,7 +595,7 @@ class DB_MySQLi
 	 */
 	function list_tables($database, $prefix='')
 	{
-		if($prefix)
+		if ($prefix)
 		{
 			$query = $this->query("SHOW TABLES FROM `$database` LIKE '".$this->escape_string($prefix)."%'");
 		}
@@ -626,7 +626,7 @@ class DB_MySQLi
 		");
 		$exists = $this->num_rows($query);
 
-		if($exists > 0)
+		if ($exists > 0)
 		{
 			return TRUE;
 		}
@@ -652,7 +652,7 @@ class DB_MySQLi
 		");
 		$exists = $this->num_rows($query);
 
-		if($exists > 0)
+		if ($exists > 0)
 		{
 			return TRUE;
 		}
@@ -671,7 +671,7 @@ class DB_MySQLi
 	function shutdown_query($query, $name=0)
 	{
 		global $shutdown_queries;
-		if($name)
+		if ($name)
 		{
 			$shutdown_queries[$name] = $query;
 		}
@@ -695,25 +695,25 @@ class DB_MySQLi
 	{
 		$query = "SELECT ".$fields." FROM ".$this->table_prefix.$table;
 
-		if($conditions != "")
+		if ($conditions != "")
 		{
 			$query .= " WHERE ".$conditions;
 		}
 
-		if(isset($options['order_by']))
+		if (isset($options['order_by']))
 		{
 			$query .= " ORDER BY ".$options['order_by'];
-			if(isset($options['order_dir']))
+			if (isset($options['order_dir']))
 			{
 				$query .= " ".my_strtoupper($options['order_dir']);
 			}
 		}
 
-		if(isset($options['limit_start']) && isset($options['limit']))
+		if (isset($options['limit_start']) && isset($options['limit']))
 		{
 			$query .= " LIMIT ".$options['limit_start'].", ".$options['limit'];
 		}
-		else if(isset($options['limit']))
+		else if (isset($options['limit']))
 		{
 			$query .= " LIMIT ".$options['limit'];
 		}
@@ -730,7 +730,7 @@ class DB_MySQLi
 	 */
 	function insert_query($table, $array)
 	{
-		if(!is_array($array))
+		if (!is_array($array))
 		{
 			return FALSE;
 		}
@@ -753,7 +753,7 @@ class DB_MySQLi
 	 */
 	function insert_query_multiple($table, $array)
 	{
-		if(!is_array($array))
+		if (!is_array($array))
 		{
 			return FALSE;
 		}
@@ -787,7 +787,7 @@ class DB_MySQLi
 	 */
 	function update_query($table, $array, $where="", $limit="", $no_quote=FALSE)
 	{
-		if(!is_array($array))
+		if (!is_array($array))
 		{
 			return FALSE;
 		}
@@ -796,7 +796,7 @@ class DB_MySQLi
 		$query = "";
 		$quote = "'";
 
-		if($no_quote == TRUE)
+		if ($no_quote == TRUE)
 		{
 			$quote = "";
 		}
@@ -807,12 +807,12 @@ class DB_MySQLi
 			$comma = ', ';
 		}
 
-		if(!empty($where))
+		if (!empty($where))
 		{
 			$query .= " WHERE $where";
 		}
 
-		if(!empty($limit))
+		if (!empty($limit))
 		{
 			$query .= " LIMIT $limit";
 		}
@@ -834,11 +834,11 @@ class DB_MySQLi
 	function delete_query($table, $where="", $limit="")
 	{
 		$query = "";
-		if(!empty($where))
+		if (!empty($where))
 		{
 			$query .= " WHERE $where";
 		}
-		if(!empty($limit))
+		if (!empty($limit))
 		{
 			$query .= " LIMIT $limit";
 		}
@@ -853,7 +853,7 @@ class DB_MySQLi
 	 */
 	function escape_string($string)
 	{
-		if(function_exists("mysqli_real_escape_string") && $this->read_link)
+		if (function_exists("mysqli_real_escape_string") && $this->read_link)
 		{
 			$string = mysqli_real_escape_string($this->read_link, $string);
 		}
@@ -893,13 +893,13 @@ class DB_MySQLi
 	 */
 	function get_version()
 	{
-		if($this->version)
+		if ($this->version)
 		{
 			return $this->version;
 		}
 		$query = $this->query("SELECT VERSION() as version");
 		$ver = $this->fetch_array($query);
-		if($ver['version'])
+		if ($ver['version'])
 		{
 			$version = explode(".", $ver['version'], 3);
 			$this->version = intval($version[0]).".".intval($version[1]).".".intval($version[2]);
@@ -967,9 +967,9 @@ class DB_MySQLi
 	function is_fulltext($table, $index="")
 	{
 		$structure = $this->show_create_table($table);
-		if($index != "")
+		if ($index != "")
 		{
-			if(preg_match("#FULLTEXT KEY (`?)$index(`?)#i", $structure))
+			if (preg_match("#FULLTEXT KEY (`?)$index(`?)#i", $structure))
 			{
 				return TRUE;
 			}
@@ -978,7 +978,7 @@ class DB_MySQLi
 				return FALSE;
 			}
 		}
-		if(preg_match('#FULLTEXT KEY#i', $structure))
+		if (preg_match('#FULLTEXT KEY#i', $structure))
 		{
 			return TRUE;
 		}
@@ -998,7 +998,7 @@ class DB_MySQLi
 		$query = $this->write_query("SHOW TABLE STATUS LIKE '{$this->table_prefix}$table'");
 		$status = $this->fetch_array($query);
 		$table_type = my_strtoupper($status['Engine']);
-		if($version >= '3.23.23' && $table_type == 'MYISAM')
+		if ($version >= '3.23.23' && $table_type == 'MYISAM')
 		{
 			return TRUE;
 		}
@@ -1015,7 +1015,7 @@ class DB_MySQLi
 	{
 		$version = $this->get_version();
 		$supports_fulltext = $this->supports_fulltext($table);
-		if($version >= '4.0.1' && $supports_fulltext == TRUE)
+		if ($version >= '4.0.1' && $supports_fulltext == TRUE)
 		{
 			return TRUE;
 		}
@@ -1034,14 +1034,14 @@ class DB_MySQLi
 		$query = $this->write_query("SHOW INDEX FROM {$this->table_prefix}{$table}");
 		while($ukey = $this->fetch_array($query))
 		{
-			if($ukey['Key_name'] == $index)
+			if ($ukey['Key_name'] == $index)
 			{
 				$index_exists = TRUE;
 				break;
 			}
 		}
 
-		if($index_exists)
+		if ($index_exists)
 		{
 			return TRUE;
 		}
@@ -1080,7 +1080,7 @@ class DB_MySQLi
 	 */
 	function drop_table($table, $hard=FALSE, $table_prefix=TRUE)
 	{
-		if($table_prefix == FALSE)
+		if ($table_prefix == FALSE)
 		{
 			$table_prefix = "";
 		}
@@ -1089,7 +1089,7 @@ class DB_MySQLi
 			$table_prefix = $this->table_prefix;
 		}
 
-		if($hard == FALSE)
+		if ($hard == FALSE)
 		{
 			$this->write_query('DROP TABLE IF EXISTS '.$table_prefix.$table);
 		}
@@ -1116,7 +1116,7 @@ class DB_MySQLi
 			$comma = ',';
 		}
 
-		if(empty($replacements))
+		if (empty($replacements))
 		{
 			 return FALSE;
 		}
@@ -1190,7 +1190,7 @@ class DB_MySQLi
 	 */
 	function fetch_size($table='')
 	{
-		if($table != '')
+		if ($table != '')
 		{
 			$query = $this->query("SHOW TABLE STATUS LIKE '".$this->table_prefix.$table."'");
 		}
@@ -1213,7 +1213,7 @@ class DB_MySQLi
 	 */
 	function fetch_db_charsets()
 	{
-		if($this->link && version_compare($this->get_version(), "4.1", "<"))
+		if ($this->link && version_compare($this->get_version(), "4.1", "<"))
 		{
 			return FALSE;
 		}
@@ -1303,7 +1303,7 @@ class DB_MySQLi
 			'cp932' => 'cp932_japanese_ci',
 			'eucjpms' => 'eucjpms_japanese_ci',
 		);
-		if($collations[$charset])
+		if ($collations[$charset])
 		{
 			return $collations[$charset];
 		}
@@ -1317,13 +1317,13 @@ class DB_MySQLi
 	 */
 	function build_create_table_collation()
 	{
-		if(!$this->db_encoding)
+		if (!$this->db_encoding)
 		{
 			return '';
 		}
 
 		$collation = $this->fetch_charset_collation($this->db_encoding);
-		if(!$collation)
+		if (!$collation)
 		{
 			return '';
 		}
@@ -1343,7 +1343,7 @@ class DB_MySQLi
 
 
 		// Just starting timer, init and return
-		if(!$time_start)
+		if (!$time_start)
 		{
 			$time_start = $time;
 			return;
@@ -1352,7 +1352,7 @@ class DB_MySQLi
 		else
 		{
 			$total = $time-$time_start;
-			if($total < 0) $total = 0;
+			if ($total < 0) $total = 0;
 			$time_start = 0;
 			return $total;
 		}

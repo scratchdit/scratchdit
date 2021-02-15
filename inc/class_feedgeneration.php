@@ -46,7 +46,7 @@ class FeedGenerator
 	 */
 	function set_feed_format($feed_format)
 	{
-		if($feed_format == 'atom1.0')
+		if ($feed_format == 'atom1.0')
 		{
 			$this->feed_format = 'atom1.0';
 		}
@@ -117,7 +117,7 @@ class FeedGenerator
 		// Now loop through all of the items and add them to the feed XML.
 		foreach($this->items as $item)
 		{
-			if(!$item['date'])
+			if (!$item['date'])
 			{
 				$item['date'] = TIME_NOW;
 			}
@@ -127,14 +127,14 @@ class FeedGenerator
 				case "atom1.0":
 					$item['date'] = date("Y-m-d\TH:i:s\Z", $item['date']);
 					$this->xml .= "\t<entry xmlns=\"http://www.w3.org/2005/Atom\">\n";
-					if(!empty($item['author']))
+					if (!empty($item['author']))
 					{
 						$this->xml .= "\t\t<author>\n";
 						$this->xml .= "\t\t\t<name type=\"html\" xml:space=\"preserve\"><![CDATA[".$this->sanitize_content($item['author'])."]]></name>\n";
 						$this->xml .= "\t\t</author>\n";
 					}
 					$this->xml .= "\t\t<published>{$item['date']}</published>\n";
-					if(empty($item['updated']))
+					if (empty($item['updated']))
 					{
 						$item['updated'] = $item['date'];
 					}
@@ -158,7 +158,7 @@ class FeedGenerator
 					$this->xml .= "\t\t\t<title><![CDATA[".$this->sanitize_content($item['title'])."]]></title>\n";
 					$this->xml .= "\t\t\t<link>".$item['link']."</link>\n";
 					$this->xml .= "\t\t\t<pubDate>".$item['date']."</pubDate>\n";
-					if($item['author'])
+					if ($item['author'])
 					{
 						$this->xml .= "\t\t\t<dc:creator><![CDATA[".$this->sanitize_content($item['author'])."]]></dc:creator>\n";
 					}
@@ -213,7 +213,7 @@ class FeedGenerator
 		}
 
 		// Output the feed XML. If the feed hasn't been generated, do so.
-		if($this->xml)
+		if ($this->xml)
 		{
 			echo $this->xml;
 		}

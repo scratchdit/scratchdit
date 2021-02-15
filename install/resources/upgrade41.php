@@ -58,7 +58,7 @@ function upgrade41_dbchanges2()
 		$original = $row['action'];
 		$stripped = stripslashes($original);
 
-		if($stripped !== $original)
+		if ($stripped !== $original)
 		{
 			$db->update_query("moderatorlog", array(
 				"action" => $db->escape_string($stripped),
@@ -94,7 +94,7 @@ function upgrade41_dbchanges3()
 		$templang->set_path(MYBB_ROOT."inc/languages");
 		$templang->set_language($langname);
 		$templang->load("global");
-		if(isset($templang->guest))
+		if (isset($templang->guest))
 		{
 			$guestlangs[] = $db->escape_string($templang->guest);
 		}

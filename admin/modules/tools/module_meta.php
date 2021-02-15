@@ -10,7 +10,7 @@
  */
 
 // Disallow direct access to this file for security reasons
-if(!defined("IN_MYBB"))
+if (!defined("IN_MYBB"))
 {
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
@@ -71,7 +71,7 @@ function tools_action_handler($action)
 
 	$sub_menu = $plugins->run_hooks("admin_tools_menu_logs", $sub_menu);
 
-	if(!isset($actions[$action]))
+	if (!isset($actions[$action]))
 	{
 		$page->active_action = "system_health";
 	}
@@ -81,7 +81,7 @@ function tools_action_handler($action)
 
 	$page->sidebar .= $sidebar->get_markup();
 
-	if(isset($actions[$action]))
+	if (isset($actions[$action]))
 	{
 		$page->active_action = $actions[$action]['active'];
 		return $actions[$action]['file'];

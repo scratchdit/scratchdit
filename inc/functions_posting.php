@@ -24,11 +24,11 @@
  */
 function remove_message_quotes(&$text, $rmdepth=NULL)
 {
-	if(!$text)
+	if (!$text)
 	{
 		return $text;
 	}
-	if(!isset($rmdepth))
+	if (!isset($rmdepth))
 	{
 		global $mybb;
 		$rmdepth = $mybb->settings['maxquotedepth'];
@@ -40,7 +40,7 @@ function remove_message_quotes(&$text, $rmdepth=NULL)
 	preg_match_all("#\[quote(=(?:&quot;|\"|')?.*?(?:&quot;|\"|')?)?\]#si", $text, $smatches, PREG_OFFSET_CAPTURE | PREG_PATTERN_ORDER);
 	preg_match_all("#\[/quote\]#i", $text, $ematches, PREG_OFFSET_CAPTURE | PREG_PATTERN_ORDER);
 
-	if(empty($smatches) || empty($ematches))
+	if (empty($smatches) || empty($ematches))
 	{
 		return $text;
 	}
@@ -55,7 +55,7 @@ function remove_message_quotes(&$text, $rmdepth=NULL)
 	$first_token = $soffsets[0];
 	foreach($ematches[0] as $id => $match)
 	{
-		if($match[1] > $first_token)
+		if ($match[1] > $first_token)
 		{
 			$eoffsets[] = $match[1];
 		}
@@ -71,12 +71,12 @@ function remove_message_quotes(&$text, $rmdepth=NULL)
 		$last_offset = 0;
 		foreach($soffsets as $sk => &$soffset)
 		{
-			if($soffset >= $last_offset)
+			if ($soffset >= $last_offset)
 			{
 				// search for corresponding eoffset
 				foreach($eoffsets as $ek => &$eoffset) // use foreach instead of for to get around indexing issues with unset
 				{
-					if($eoffset > $soffset)
+					if ($eoffset > $soffset)
 					{
 						// we've found a pair
 						$good_offsets[$soffset] = 1;
@@ -94,7 +94,7 @@ function remove_message_quotes(&$text, $rmdepth=NULL)
 		$first_start = reset($soffsets);
 		foreach($eoffsets as $ek => &$eoffset)
 		{
-			if($eoffset < $first_start)
+			if ($eoffset < $first_start)
 			{
 				unset($eoffsets[$ek]);
 			}
@@ -107,7 +107,7 @@ function remove_message_quotes(&$text, $rmdepth=NULL)
 	}
 
 
-	if(empty($good_offsets))
+	if (empty($good_offsets))
 	{
 		return $text;
 	}
@@ -120,18 +120,18 @@ function remove_message_quotes(&$text, $rmdepth=NULL)
 	$tmp_start = 0;
 	foreach($good_offsets as $offset => $dincr)
 	{
-		if($depth == $rmdepth && $dincr == 1)
+		if ($depth == $rmdepth && $dincr == 1)
 		{
 			$tmp_start = $offset;
 		}
 		$depth += $dincr;
-		if($depth == $rmdepth && $dincr == -1)
+		if ($depth == $rmdepth && $dincr == -1)
 		{
 			$remove_regions[] = array($tmp_start, $offset);
 		}
 	}
 
-	if(empty($remove_regions))
+	if (empty($remove_regions))
 	{
 		return $text;
 	}
@@ -145,17 +145,17 @@ function remove_message_quotes(&$text, $rmdepth=NULL)
 		$cpy_start = $region[1]+8; // 8 = strlen('[/quote]')
 		// clean up newlines
 		$next_char = $text{$region[1]+8};
-		if($next_char == "\r" || $next_char == "\n")
+		if ($next_char == "\r" || $next_char == "\n")
 		{
 			++$cpy_start;
-			if($next_char == "\r" && $text{$region[1]+9} == "\n")
+			if ($next_char == "\r" && $text{$region[1]+9} == "\n")
 			{
 				++$cpy_start;
 			}
 		}
 	}
 	// append remaining end text
-	if(strlen($text) != $cpy_start)
+	if (strlen($text) != $cpy_start)
 	{
 		$newtext .= substr($text, $cpy_start);
 	}
@@ -177,14 +177,14 @@ function remove_message_quotes(&$text, $rmdepth=NULL)
 function parse_quoted_message(&$quoted_post, $remove_message_quotes=TRUE)
 {
 	global $parser, $lang, $plugins;
-	if(!isset($parser))
+	if (!isset($parser))
 	{
 		require_once MYBB_ROOT."inc/class_parser.php";
 		$parser = new postParser;
 	}
 
 	// Swap username over if we have a registered user
-	if($quoted_post['userusername'])
+	if ($quoted_post['userusername'])
 	{
 		$quoted_post['username'] = $quoted_post['userusername'];
 	}
@@ -200,11 +200,11 @@ function parse_quoted_message(&$quoted_post, $remove_message_quotes=TRUE)
 	), $quoted_post['message']);
 	$quoted_post['message'] = $parser->parse_badwords($quoted_post['message']);
 
-	if($remove_message_quotes)
+	if ($remove_message_quotes)
 	{
 		global $mybb;
 		$max_quote_depth = intval($mybb->settings['maxquotedepth']);
-		if($max_quote_depth)
+		if ($max_quote_depth)
 		{
 			$quoted_post['message'] = remove_message_quotes($quoted_post['message'], $max_quote_depth-1); // we're wrapping the message in a [quote] tag, so take away one quote depth level
 		}

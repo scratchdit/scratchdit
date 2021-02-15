@@ -9,17 +9,17 @@ var Thread = {
 	initMultiQuote: function()
 	{
 		var quoted = Cookie.get("multiquote");
-		if(quoted)
+		if (quoted)
 		{
 			var post_ids = quoted.split("|");
 			post_ids.each(function(post_id) {
-				if($("multiquote_"+post_id))
+				if ($("multiquote_"+post_id))
 				{
 					element = $("multiquote_"+post_id);
 					element.src = element.src.replace("postbit_multiquote.gif", "postbit_multiquote_on.gif");
 				}
 			});
-			if($('quickreply_multiquote'))
+			if ($('quickreply_multiquote'))
 			{
 				$('quickreply_multiquote').show();
 			}
@@ -32,22 +32,22 @@ var Thread = {
 		var new_post_ids = new Array();
 		var quoted = Cookie.get("multiquote");
 		var is_new = TRUE;
-		if(quoted)
+		if (quoted)
 		{
 			var post_ids = quoted.split("|");
 			post_ids.each(function(post_id) {
-				if(post_id != pid && post_id != '')
+				if (post_id != pid && post_id != '')
 				{
 					new_post_ids[new_post_ids.length] = post_id;
 				}
-				else if(post_id == pid)
+				else if (post_id == pid)
 				{
 					is_new = FALSE;
 				}
 			});
 		}
 		element = $("multiquote_"+pid);
-		if(is_new == TRUE)
+		if (is_new == TRUE)
 		{
 			element.src = element.src.replace("postbit_multiquote.gif", "postbit_multiquote_on.gif");
 			new_post_ids[new_post_ids.length] = pid;
@@ -56,9 +56,9 @@ var Thread = {
 		{
 			element.src = element.src.replace("postbit_multiquote_on.gif", "postbit_multiquote.gif");
 		}
-		if($('quickreply_multiquote'))
+		if ($('quickreply_multiquote'))
 		{
-			if(new_post_ids.length > 0)
+			if (new_post_ids.length > 0)
 			{
 				$('quickreply_multiquote').show();
 			}
@@ -72,7 +72,7 @@ var Thread = {
 
 	loadMultiQuoted: function()
 	{
-		if(use_xmlhttprequest == 1)
+		if (use_xmlhttprequest == 1)
 		{
 			this.spinner = new ActivityIndicator("body", {image: imagepath + "/spinner_big.gif"});
 			new Ajax.Request('xmlhttp.php?action=get_multiquoted&load_all=1', {method: 'get', onComplete: function(request) {Thread.multiQuotedLoaded(request); }});
@@ -86,28 +86,28 @@ var Thread = {
 
 	multiQuotedLoaded: function(request)
 	{
-		if(request.responseText.match(/<error>(.*)<\/error>/))
+		if (request.responseText.match(/<error>(.*)<\/error>/))
 		{
 			message = request.responseText.match(/<error>(.*)<\/error>/);
-			if(!message[1])
+			if (!message[1])
 			{
 				message[1] = "An unknown error occurred.";
 			}
-			if(this.spinner)
+			if (this.spinner)
 			{
 				this.spinner.destroy();
 				this.spinner = '';
 			}
 			alert('There was an error fetching the posts.\n\n'+message[1]);
 		}
-		else if(request.responseText)
+		else if (request.responseText)
 		{
 			var id = 'message';
-			if(typeof clickableEditor != 'undefined')
+			if (typeof clickableEditor != 'undefined')
 			{
 				id = clickableEditor.textarea;
 			}
-			if($(id).value)
+			if ($(id).value)
 			{
 				$(id).value += "\n";
 			}
@@ -116,7 +116,7 @@ var Thread = {
 		Thread.clearMultiQuoted();
 		$('quickreply_multiquote').hide();
 		$('quoted_ids').value = 'all';
-		if(this.spinner)
+		if (this.spinner)
 		{
 			this.spinner.destroy();
 			this.spinner = '';
@@ -128,11 +128,11 @@ var Thread = {
 	{
 		$('quickreply_multiquote').hide();
 		var quoted = Cookie.get("multiquote");
-		if(quoted)
+		if (quoted)
 		{
 			var post_ids = quoted.split("|");
 			post_ids.each(function(post_id) {
-				if($("multiquote_"+post_id))
+				if ($("multiquote_"+post_id))
 				{
 					element = $("multiquote_"+post_id);
 					element.src = element.src.replace("postbit_multiquote_on.gif", "postbit_multiquote.gif");
@@ -145,11 +145,11 @@ var Thread = {
 	deletePost: function(pid)
 	{
 		confirmReturn = confirm(quickdelete_confirm);
-		if(confirmReturn == TRUE)
+		if (confirmReturn == TRUE)
 		{
 			var form = new Element("form", { method: "post", action: "editpost.php?action=deletepost&delete=1", style: "display: none;" });
 
-			if(my_post_key)
+			if (my_post_key)
 			{
 				form.insert({ bottom: new Element("input",
 					{
@@ -180,12 +180,12 @@ var Thread = {
 
 	quickEdit: function(pid)
 	{
-		if(!$("pid_"+pid))
+		if (!$("pid_"+pid))
 		{
 			return FALSE;
 		}
 
-		if(Thread.qeCache[pid])
+		if (Thread.qeCache[pid])
 		{
 			return FALSE;
 		}
@@ -198,14 +198,14 @@ var Thread = {
 
 	quickEditLoaded: function(request, pid)
 	{
-		if(request.responseText.match(/<error>(.*)<\/error>/))
+		if (request.responseText.match(/<error>(.*)<\/error>/))
 		{
 			message = request.responseText.match(/<error>(.*)<\/error>/);
-			if(!message[1])
+			if (!message[1])
 			{
 				message[1] = "An unknown error occurred.";
 			}
-			if(this.spinner)
+			if (this.spinner)
 			{
 				this.spinner.destroy();
 				this.spinner = '';
@@ -213,7 +213,7 @@ var Thread = {
 			alert('There was an error performing the update.\n\n'+message[1]);
 			Thread.qeCache[pid] = "";
 		}
-		else if(request.responseText)
+		else if (request.responseText)
 		{
 			$("pid_"+pid).innerHTML = request.responseText;
 			element = $("quickedit_"+pid);
@@ -228,7 +228,7 @@ var Thread = {
 
 			scrollTo(0, offsetTop);
 		}
-		if(this.spinner)
+		if (this.spinner)
 		{
 			this.spinner.destroy();
 			this.spinner = '';
@@ -238,7 +238,7 @@ var Thread = {
 	quickEditSave: function(pid)
 	{
 		message = $("quickedit_"+pid).value;
-		if(message == "")
+		if (message == "")
 		{
 			return FALSE;
 		}
@@ -252,7 +252,7 @@ var Thread = {
 	{
 		$("pid_"+pid).innerHTML = Thread.qeCache[pid];
 		Thread.qeCache[pid] = "";
-		if(this.spinner)
+		if (this.spinner)
 		{
 			this.spinner.destroy();
 			this.spinner = '';
@@ -261,28 +261,28 @@ var Thread = {
 
 	quickEditSaved: function(request, pid)
 	{
-		if(request.responseText.match(/<error>(.*)<\/error>/))
+		if (request.responseText.match(/<error>(.*)<\/error>/))
 		{
 			message = request.responseText.match(/<error>(.*)<\/error>/);
-			if(!message[1])
+			if (!message[1])
 			{
 				message[1] = "An unknown error occurred.";
 			}
-			if(this.spinner)
+			if (this.spinner)
 			{
 				this.spinner.destroy();
 				this.spinner = '';
 			}
 			alert('There was an error performing the update.\n\n'+message[1]);
 		}
-		else if(request.responseText)
+		else if (request.responseText)
 		{
 			var message = request.responseText;
 			var edited_regex = new RegExp("<editedmsg>(.*)</editedmsg>", "m");
-			if(request.responseText.match(edited_regex))
+			if (request.responseText.match(edited_regex))
 			{
 				var edited_message = request.responseText.match(edited_regex)[1];
-				if($('edited_by_'+pid))
+				if ($('edited_by_'+pid))
 				{
 					$('edited_by_'+pid).innerHTML = edited_message;
 				}
@@ -292,7 +292,7 @@ var Thread = {
 			Thread.qeCache[pid] = "";
 		}
 
-		if(this.spinner)
+		if (this.spinner)
 		{
 			this.spinner.destroy();
 			this.spinner = '';
@@ -301,7 +301,7 @@ var Thread = {
 
 	initQuickReply: function()
 	{
-		if($('quick_reply_form') && use_xmlhttprequest == 1)
+		if ($('quick_reply_form') && use_xmlhttprequest == 1)
 		{
 			Event.observe($('quick_reply_submit'), "click", Thread.quickReply.bindAsEventListener(this));
 		}
@@ -311,7 +311,7 @@ var Thread = {
 	{
 		Event.stop(e);
 
-		if(this.quick_replying)
+		if (this.quick_replying)
 		{
 			return FALSE;
 		}
@@ -325,24 +325,24 @@ var Thread = {
 
 	quickReplyDone: function(request)
 	{
-		if($('captcha_trow'))
+		if ($('captcha_trow'))
 		{
 			captcha = request.responseText.match(/^<captcha>([0-9a-zA-Z]+)(\|([0-9a-zA-Z]+)|)<\/captcha>/);
-			if(captcha)
+			if (captcha)
 			{
 				request.responseText = request.responseText.replace(/^<captcha>(.*)<\/captcha>/, '');
 
-				if(captcha[1] == "reload")
+				if (captcha[1] == "reload")
 				{
 					Recaptcha.reload();
 				}
-				else if($("captcha_img"))
+				else if ($("captcha_img"))
 				{
-					if(captcha[1])
+					if (captcha[1])
 					{
 						imghash = captcha[1];
 						$('imagehash').value = imghash;
-						if(captcha[3])
+						if (captcha[3])
 						{
 							$('imagestring').type = "hidden";
 							$('imagestring').value = captcha[3];
@@ -360,29 +360,29 @@ var Thread = {
 				}
 			}
 		}
-		if(request.responseText.match(/<error>([^<]*)<\/error>/))
+		if (request.responseText.match(/<error>([^<]*)<\/error>/))
 		{
 			message = request.responseText.match(/<error>([^<]*)<\/error>/);
 
-			if(!message[1])
+			if (!message[1])
 			{
 				message[1] = "An unknown error occurred.";
 			}
 
-			if(this.spinner)
+			if (this.spinner)
 			{
 				this.spinner.destroy();
 				this.spinner = '';
 			}
 			alert('There was an error posting your reply:\n\n'+message[1]);
 		}
-		else if(request.responseText.match(/id="post_([0-9]+)"/))
+		else if (request.responseText.match(/id="post_([0-9]+)"/))
 		{
 			var pid = request.responseText.match(/id="post_([0-9]+)"/)[1];
 			var post = document.createElement("div");
 			post.innerHTML = request.responseText;
 			$('posts').appendChild(post);
-			if(MyBB.browser == "ie" || MyBB.browser == "opera" || MyBB.browser == "safari" || MyBB.browser == "chrome")
+			if (MyBB.browser == "ie" || MyBB.browser == "opera" || MyBB.browser == "safari" || MyBB.browser == "chrome")
 			{
 				var scripts = request.responseText.extractScripts();
 				scripts.each(function(script)
@@ -391,7 +391,7 @@ var Thread = {
 				});
 			}
 			Form.reset('quick_reply_form');
-			if($('lastpid'))
+			if ($('lastpid'))
 			{
 				$('lastpid').value = pid;
 			}
@@ -401,7 +401,7 @@ var Thread = {
 			request.responseText.evalScripts();
 		}
 
-		if(this.spinner)
+		if (this.spinner)
 		{
 			this.spinner.destroy();
 			this.spinner = '';

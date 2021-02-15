@@ -31,7 +31,7 @@ function upgrade15_dbchanges()
 	echo "<p>Performing necessary upgrade queries..</p>";
 	flush();
 
-	if($db->type != "pgsql")
+	if ($db->type != "pgsql")
 	{
 		$db->update_query("settinggroups", array('isdefault' => '1'), "isdefault='yes'");
 		$db->update_query("settinggroups", array('isdefault' => '0'), "isdefault='no'");
@@ -39,7 +39,7 @@ function upgrade15_dbchanges()
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."events CHANGE timezone timezone varchar(4) NOT NULL default '0'");
 	}
 
-	if($db->type == "pgsql")
+	if ($db->type == "pgsql")
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."warnings ALTER COLUMN revokereason SET default ''");
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."warnings ALTER COLUMN notes SET default ''");
@@ -47,13 +47,13 @@ function upgrade15_dbchanges()
 
 	$cache->update("internal_settings", array('encryption_key' => random_str(32)));
 
-	if($db->type != "sqlite")
+	if ($db->type != "sqlite")
 	{
 		$ip_index = $db->index_exists("sessions", "ip");
 
-		if($ip_index == FALSE)
+		if ($ip_index == FALSE)
 		{
-			if($db->type == "pgsql")
+			if ($db->type == "pgsql")
 			{
 				$db->write_query("CREATE INDEX ip ON ".TABLE_PREFIX."sessions (ip)");
 			}
@@ -118,7 +118,7 @@ function upgrade15_usernameupdate()
 		}
 		while(!$userhandler->verify_username() || $userhandler->verify_username_exists());
 
-		if(!$userhandler->validate_user())
+		if (!$userhandler->validate_user())
 		{
 			$not_renameable[] = htmlspecialchars_uni($user['username']);
 		}
@@ -134,7 +134,7 @@ function upgrade15_usernameupdate()
 		}
 	}
 
-	if(!empty($not_renameable))
+	if (!empty($not_renameable))
 	{
 		echo "<span style=\"color: red;\">NOTICE:</span> The following users could not be renamed automatically. Please rename these users in the Admin CP manually after the upgrade process has finished completing:<br />
 		<ul>

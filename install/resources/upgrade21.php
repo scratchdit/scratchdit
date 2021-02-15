@@ -31,32 +31,32 @@ function upgrade21_dbchanges()
 
 	$db->delete_query("settings", "name = 'standardheaders'");
 
-	if($db->field_exists('showinbirthdaylist', 'usergroups'))
+	if ($db->field_exists('showinbirthdaylist', 'usergroups'))
 	{
 		$db->drop_column("usergroups", "showinbirthdaylist");
 	}
 
-	if($db->field_exists('canoverridepm', 'usergroups'))
+	if ($db->field_exists('canoverridepm', 'usergroups'))
 	{
 		$db->drop_column("usergroups", "canoverridepm");
 	}
 
-	if($db->field_exists('canusesig', 'usergroups'))
+	if ($db->field_exists('canusesig', 'usergroups'))
 	{
 		$db->drop_column("usergroups", "canusesig");
 	}
 
-	if($db->field_exists('canusesigxposts', 'usergroups'))
+	if ($db->field_exists('canusesigxposts', 'usergroups'))
 	{
 		$db->drop_column("usergroups", "canusesigxposts");
 	}
 
-	if($db->field_exists('signofollow', 'usergroups'))
+	if ($db->field_exists('signofollow', 'usergroups'))
 	{
 		$db->drop_column("usergroups", "signofollow");
 	}
 
-	if($db->field_exists('postnum', 'profilefields'))
+	if ($db->field_exists('postnum', 'profilefields'))
 	{
 		$db->drop_column("profilefields", "postnum");
 	}
@@ -91,7 +91,7 @@ function upgrade21_dbchanges()
 	foreach($groups as $group)
 	{
 		$disallowed_array = array(1, 5, 7);
-		if(in_array($group['gid'], $disallowed_array) || $group['isbannedgroup'] == 1)
+		if (in_array($group['gid'], $disallowed_array) || $group['isbannedgroup'] == 1)
 		{
 			continue;
 		}

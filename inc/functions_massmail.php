@@ -19,7 +19,7 @@ function build_mass_mail_query($conditions)
 {
 	global $db;
 
-	if(!is_array($conditions))
+	if (!is_array($conditions))
 	{
 		return '';
 	}
@@ -30,7 +30,7 @@ function build_mass_mail_query($conditions)
 	$user_like_fields = array("username", "email");
 	foreach($user_like_fields as $search_field)
 	{
-		if($conditions[$search_field])
+		if ($conditions[$search_field])
 		{
 			$search_sql .= " AND u.{$search_field} LIKE '%".$db->escape_string_like($conditions[$search_field])."%'";
 		}
@@ -41,7 +41,7 @@ function build_mass_mail_query($conditions)
 	foreach($direction_fields as $search_field)
 	{
 		$direction_field = $search_field."_dir";
-		if($conditions[$search_field] && $conditions[$direction_field])
+		if ($conditions[$search_field] && $conditions[$direction_field])
 		{
 			switch($conditions[$direction_field])
 			{
@@ -59,9 +59,9 @@ function build_mass_mail_query($conditions)
 	}
 
 	// Usergroup based searching
-	if($conditions['usergroup'])
+	if ($conditions['usergroup'])
 	{
-		if(!is_array($conditions['usergroup']))
+		if (!is_array($conditions['usergroup']))
 		{
 			$conditions['usergroup'] = array($conditions['usergroup']);
 		}
@@ -133,12 +133,12 @@ function make_pretty_links($message_html)
 	do
 	{
 		$start = stripos($message_html, "<a", $offset);
-		if($start === FALSE)
+		if ($start === FALSE)
 		{
 			break;
 		}
 		$end = stripos($message_html, "</a>", $start);
-		if($end === FALSE)
+		if ($end === FALSE)
 		{
 			break;
 		}
@@ -146,24 +146,24 @@ function make_pretty_links($message_html)
 		$a_href = substr($message_html, $start, ($end-$start));
 
 		preg_match("#href=\"?([^\"> ]+)\"?#i", $a_href, $href_matches);
-		if(!$href_matches[1])
+		if (!$href_matches[1])
 		{
 			continue;
 		}
 		$link = $href_matches[1];
 
 		$contents = strip_tags($a_href);
-		if(!$contents)
+		if (!$contents)
 		{
 			preg_match("#alt=\"?([^\">]+)\"?#i", $a_href, $matches2);
-			if($matches2[1])
+			if ($matches2[1])
 			{
 				$contents = $matches2[1];
 			}
-			if(!$contents)
+			if (!$contents)
 			{
 				preg_match("#title=\"?([^\">]+)\"?#i", $a_href, $matches2);
-				if($matches2[1])
+				if ($matches2[1])
 				{
 					$contents = $matches2[1];
 				}

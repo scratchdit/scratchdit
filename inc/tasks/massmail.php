@@ -10,7 +10,7 @@
  */
 
 // Disallow direct access to this file for security reasons
-if(!defined("IN_MYBB"))
+if (!defined("IN_MYBB"))
 {
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
@@ -25,19 +25,19 @@ function task_massmail($task)
 	$query = $db->simple_select("massemails", "*", "senddate <= '".TIME_NOW."' AND status IN (1,2)");
 	while($mass_email = $db->fetch_array($query))
 	{
-		if($mass_email['status'] == 1)
+		if ($mass_email['status'] == 1)
 		{
 			$db->update_query("massemails", array('status' => 2), "mid='{$mass_email['mid']}'", 1);
 		}
 
 		$sentcount = 0;
 
-		if(!$mass_email['perpage'])
+		if (!$mass_email['perpage'])
 		{
 			$mass_email['perpage'] = 50;
 		}
 
-		if(strpos($mass_email['htmlmessage'], '<br />') === FALSE && strpos($mass_email['htmlmessage'], '<br>') === FALSE)
+		if (strpos($mass_email['htmlmessage'], '<br />') === FALSE && strpos($mass_email['htmlmessage'], '<br>') === FALSE)
 		{
 			$mass_email['htmlmessage'] = nl2br($mass_email['htmlmessage']);
 		}
@@ -73,7 +73,7 @@ function task_massmail($task)
 			}
 
 			// Private Message
-			if($mass_email['type'] == 1)
+			if ($mass_email['type'] == 1)
 			{
 				$pm_handler = new PMDataHandler();
 				$pm_handler->admin_override = TRUE;
@@ -87,7 +87,7 @@ function task_massmail($task)
 
 				$pm['to'] = explode(",", $user['username']);
 				$pm_handler->set_data($pm);
-				if(!$pm_handler->validate_pm())
+				if (!$pm_handler->validate_pm())
 				{
 					$friendly_errors = implode('\n', $pm_handler->get_friendly_errors());
 					add_task_log($task, $lang->sprintf($lang->task_massmail_ran_errors, htmlspecialchars_uni($user['username']), $friendly_errors));
@@ -130,7 +130,7 @@ function task_massmail($task)
 		$update_array['sentcount'] = $mass_email['sentcount'] + $sentcount;
 		$update_array['totalcount'] = $mass_email['totalcount'];
 
-		if($update_array['sentcount'] >= $mass_email['totalcount'])
+		if ($update_array['sentcount'] >= $mass_email['totalcount'])
 		{
 			$update_array['status'] = 3;
 		}

@@ -29,12 +29,12 @@ function upgrade23_dbchanges()
 	$output->print_header("Updating Database");
 	echo "<p>Performing necessary upgrade queries...</p>";
 
-	if($db->field_exists('canusecustomtools', 'moderators'))
+	if ($db->field_exists('canusecustomtools', 'moderators'))
 	{
 		$db->drop_column('moderators', 'canusecustomtools');
 	}
 
-	if($db->field_exists('cansendemailoverride', 'usergroups'))
+	if ($db->field_exists('cansendemailoverride', 'usergroups'))
 	{
 		$db->drop_column('usergroups', 'cansendemailoverride');
 	}

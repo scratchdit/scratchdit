@@ -6,7 +6,7 @@ PopupMenu.prototype = {
 	{
 		document.currentMenu = "";
 
-		if(!$(id))
+		if (!$(id))
 		{
 			return FALSE;
 		}
@@ -14,7 +14,7 @@ PopupMenu.prototype = {
 		var element = $(id);
 
 		var popupMenu = element.id+"_popup";
-		if(!$(popupMenu))
+		if (!$(popupMenu))
 		{
 			return FALSE;
 		}
@@ -27,12 +27,12 @@ PopupMenu.prototype = {
 	openMenu: function(e)
 	{
 		Event.stop(e);
-		if(document.currentMenu && document.currentMenu == this.id)
+		if (document.currentMenu && document.currentMenu == this.id)
 		{
 			this.closeMenu();
 			return FALSE;
 		}
-		else if(document.currentMenu != "")
+		else if (document.currentMenu != "")
 		{
 			this.closeMenu();
 		}
@@ -44,14 +44,14 @@ PopupMenu.prototype = {
 			offsetTop += element.offsetTop || 0;
 			offsetLeft += element.offsetLeft || 0;
 			element = element.offsetParent;
-			if(element)
+			if (element)
 			{
-				if(Element.getStyle(element, 'position') == 'relative' || Element.getStyle(element, 'position') == 'absolute') break;
+				if (Element.getStyle(element, 'position') == 'relative' || Element.getStyle(element, 'position') == 'absolute') break;
 			}
 		} while(element);
 		offsetTopReal = offsetTop;
 		offsetLeftReal = offsetLeft;
-		if(element) // will be TRUE if we broke off the last loop
+		if (element) // will be TRUE if we broke off the last loop
 		{
 			// calculate the TRUE top/left position relative to page borders (this is used for checking whether the popup menu will be displayed within the page)
 			do
@@ -66,14 +66,14 @@ PopupMenu.prototype = {
 		this.menu.style.zIndex = 100;
 		this.menu.style.top = (offsetTop+element.offsetHeight-1)+"px";
 		// Bad browser detection - yes, only choice - yes.
-		if(MyBB.browser == "opera" || MyBB.browser == "safari")
+		if (MyBB.browser == "opera" || MyBB.browser == "safari")
 		{
 			this.menu.style.top = (parseInt(this.menu.style.top)-2)+"px";
 		}
 		this.menu.style.left = offsetLeft+"px";
 		this.menu.style.visibility = 'hidden';
 		this.menu.style.display = 'block';
-		if(this.menu.style.width)
+		if (this.menu.style.width)
 		{
 			menuWidth = parseInt(this.menu.style.width);
 		}
@@ -82,7 +82,7 @@ PopupMenu.prototype = {
 			menuWidth = this.menu.offsetWidth;
 		}
 		pageSize = DomLib.getPageSize();
-		if(offsetLeftReal+menuWidth >= pageSize[0])
+		if (offsetLeftReal+menuWidth >= pageSize[0])
 		{
 			this.menu.style.left = (offsetLeft-menuWidth+element.offsetWidth)+"px";
 		}
@@ -95,7 +95,7 @@ PopupMenu.prototype = {
 
 	closeMenu: function()
 	{
-		if(!document.currentMenu)
+		if (!document.currentMenu)
 		{
 			return;
 		}

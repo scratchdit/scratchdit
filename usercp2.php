@@ -18,7 +18,7 @@ $templatelist = 'usercp_nav_messenger,usercp_nav_changename,usercp_nav_profile,u
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_user.php";
 
-if($mybb->user['uid'] == 0)
+if ($mybb->user['uid'] == 0)
 {
 	error_no_permission();
 }
@@ -32,22 +32,22 @@ usercp_menu();
 
 $server_http_referer = htmlentities($_SERVER['HTTP_REFERER']);
 
-if($mybb->input['action'] == "do_addsubscription")
+if ($mybb->input['action'] == "do_addsubscription")
 {
-	if($mybb->input['type'] != "forum")
+	if ($mybb->input['type'] != "forum")
 	{
 		$thread = get_thread($mybb->input['tid']);
-		if(!$thread['tid'])
+		if (!$thread['tid'])
 		{
 			error($lang->error_invalidthread);
 		}
 		$forumpermissions = forum_permissions($thread['fid']);
-		if($forumpermissions['canview'] == 0 || $forumpermissions['canviewthreads'] == 0)
+		if ($forumpermissions['canview'] == 0 || $forumpermissions['canviewthreads'] == 0)
 		{
 			error_no_permission();
 		}
 		add_subscribed_thread($thread['tid'], $mybb->input['notification']);
-		if($mybb->input['referrer'])
+		if ($mybb->input['referrer'])
 		{
 			$url = htmlspecialchars_uni(addslashes($mybb->input['referrer']));
 		}
@@ -59,22 +59,22 @@ if($mybb->input['action'] == "do_addsubscription")
 	}
 }
 
-if($mybb->input['action'] == "addsubscription")
+if ($mybb->input['action'] == "addsubscription")
 {
-	if($mybb->input['type'] == "forum")
+	if ($mybb->input['type'] == "forum")
 	{
 		$forum = get_forum($mybb->input['fid']);
-		if(!$forum['fid'])
+		if (!$forum['fid'])
 		{
 			error($lang->error_invalidforum);
 		}
 		$forumpermissions = forum_permissions($forum['fid']);
-		if($forumpermissions['canview'] == 0 || $forumpermissions['canviewthreads'] == 0)
+		if ($forumpermissions['canview'] == 0 || $forumpermissions['canviewthreads'] == 0)
 		{
 			error_no_permission();
 		}
 		add_subscribed_forum($forum['fid']);
-		if($server_http_referer)
+		if ($server_http_referer)
 		{
 			$url = $server_http_referer;
 		}
@@ -87,7 +87,7 @@ if($mybb->input['action'] == "addsubscription")
 	else
 	{
 		$thread  = get_thread($mybb->input['tid']);
-		if(!$thread['tid'])
+		if (!$thread['tid'])
 		{
 			error($lang->error_invalidthread);
 		}
@@ -95,12 +95,12 @@ if($mybb->input['action'] == "addsubscription")
 		add_breadcrumb($lang->nav_addsubscription);
 
 		$forumpermissions = forum_permissions($thread['fid']);
-		if($forumpermissions['canview'] == 0 || $forumpermissions['canviewthreads'] == 0)
+		if ($forumpermissions['canview'] == 0 || $forumpermissions['canviewthreads'] == 0)
 		{
 			error_no_permission();
 		}
 		$referrer = '';
-		if($server_http_referer)
+		if ($server_http_referer)
 		{
 			$referrer = $server_http_referer;
 		}
@@ -111,11 +111,11 @@ if($mybb->input['action'] == "addsubscription")
 		$thread['subject'] = htmlspecialchars_uni($thread['subject']);
 		$lang->subscribe_to_thread = $lang->sprintf($lang->subscribe_to_thread, $thread['subject']);
 
-		if($mybb->user['subscriptionmethod'] == 1 || $mybb->user['subscriptionmethod'] == 0)
+		if ($mybb->user['subscriptionmethod'] == 1 || $mybb->user['subscriptionmethod'] == 0)
 		{
 			$notification_none_checked = "checked=\"checked\"";
 		}
-		else if($mybb->user['subscriptionmethod'] == 2)
+		else if ($mybb->user['subscriptionmethod'] == 2)
 		{
 			$notification_instant_checked = "checked=\"checked\"";
 		}
@@ -123,17 +123,17 @@ if($mybb->input['action'] == "addsubscription")
 		output_page($add_subscription);
 	}
 }
-elseif($mybb->input['action'] == "removesubscription")
+elseif ($mybb->input['action'] == "removesubscription")
 {
-	if($mybb->input['type'] == "forum")
+	if ($mybb->input['type'] == "forum")
 	{
 		$forum = get_forum($mybb->input['fid']);
-		if(!$forum['fid'])
+		if (!$forum['fid'])
 		{
 			error($lang->error_invalidforum);
 		}
 		remove_subscribed_forum($forum['fid']);
-		if($server_http_referer)
+		if ($server_http_referer)
 		{
 			$url = $server_http_referer;
 		}
@@ -146,12 +146,12 @@ elseif($mybb->input['action'] == "removesubscription")
 	else
 	{
 		$thread = get_thread($mybb->input['tid']);
-		if(!$thread['tid'])
+		if (!$thread['tid'])
 		{
 			error($lang->error_invalidthread);
 		}
 		remove_subscribed_thread($thread['tid']);
-		if($server_http_referer)
+		if ($server_http_referer)
 		{
 			$url = $server_http_referer;
 		}
@@ -162,12 +162,12 @@ elseif($mybb->input['action'] == "removesubscription")
 		redirect($url, $lang->redirect_subscriptionremoved);
 	}
 }
-elseif($mybb->input['action'] == "removesubscriptions")
-{	
-	if($mybb->input['type'] == "forum")
+elseif ($mybb->input['action'] == "removesubscriptions")
+{
+	if ($mybb->input['type'] == "forum")
 	{
 		$db->delete_query("forumsubscriptions", "uid='".$mybb->user['uid']."'");
-		if($server_http_referer)
+		if ($server_http_referer)
 		{
 			$url = $server_http_referer;
 		}
@@ -180,7 +180,7 @@ elseif($mybb->input['action'] == "removesubscriptions")
 	else
 	{
 		$db->delete_query("threadsubscriptions", "uid='".$mybb->user['uid']."'");
-		if($server_http_referer)
+		if ($server_http_referer)
 		{
 			$url = $server_http_referer;
 		}

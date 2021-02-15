@@ -23,10 +23,10 @@ class xcacheCacheHandler
 	{
 		global $mybb;
 
-		if(!function_exists("xcache_get"))
+		if (!function_exists("xcache_get"))
 		{
 			// Check if our DB engine is loaded
-			if(!extension_loaded("XCache"))
+			if (!extension_loaded("XCache"))
 			{
 				// Throw our super awesome cache loading error
 				$mybb->trigger_generic_error("xcache_load_error");
@@ -60,7 +60,7 @@ class xcacheCacheHandler
 
 	function fetch($name, $hard_refresh=FALSE)
 	{
-		if(!xcache_isset($this->unique_id."_".$name))
+		if (!xcache_isset($this->unique_id."_".$name))
 		{
 			return FALSE;
 		}

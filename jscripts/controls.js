@@ -36,7 +36,7 @@
 // useful when one of the tokens is \n (a newline), as it
 // allows smart autocompletion after linebreaks.
 
-if(typeof Effect == 'undefined')
+if (typeof Effect == 'undefined')
   throw("controls.js requires including script.aculo.us' effects.js library");
 
 var Autocompleter = { };
@@ -52,7 +52,7 @@ Autocompleter.Base = Class.create({
     this.entryCount  = 0;
     this.oldElementValue = this.element.value;
 
-    if(this.setOptions)
+    if (this.setOptions)
       this.setOptions(options);
     else
       this.options = options || { };
@@ -63,7 +63,7 @@ Autocompleter.Base = Class.create({
     this.options.minChars     = this.options.minChars || 1;
     this.options.onShow       = this.options.onShow ||
       function(element, update){
-        if(!update.style.position || update.style.position=='absolute') {
+        if (!update.style.position || update.style.position=='absolute') {
           update.style.position = 'absolute';
           Position.clone(element, update, {
             setHeight: FALSE,
@@ -75,7 +75,7 @@ Autocompleter.Base = Class.create({
     this.options.onHide = this.options.onHide ||
       function(element, update){ new Effect.Fade(update,{duration:0.15}) };
 
-    if(typeof(this.options.tokens) == 'string')
+    if (typeof(this.options.tokens) == 'string')
       this.options.tokens = new Array(this.options.tokens);
     // Force carriage returns as token delimiters anyway
     if (!this.options.tokens.include('\n'))
@@ -92,8 +92,8 @@ Autocompleter.Base = Class.create({
   },
 
   show: function() {
-    if(Element.getStyle(this.update, 'display')=='none') this.options.onShow(this.element, this.update);
-    if(!this.iefix &&
+    if (Element.getStyle(this.update, 'display')=='none') this.options.onShow(this.element, this.update);
+    if (!this.iefix &&
       (Prototype.Browser.IE) &&
       (Element.getStyle(this.update, 'position')=='absolute')) {
       new Insertion.After(this.update,
@@ -102,7 +102,7 @@ Autocompleter.Base = Class.create({
        'src="javascript:FALSE;" frameborder="0" scrolling="no"></iframe>');
       this.iefix = $(this.update.id+'_iefix');
     }
-    if(this.iefix) setTimeout(this.fixIEOverlapping.bind(this), 50);
+    if (this.iefix) setTimeout(this.fixIEOverlapping.bind(this), 50);
   },
 
   fixIEOverlapping: function() {
@@ -114,20 +114,20 @@ Autocompleter.Base = Class.create({
 
   hide: function() {
     this.stopIndicator();
-    if(Element.getStyle(this.update, 'display')!='none') this.options.onHide(this.element, this.update);
-    if(this.iefix) Element.hide(this.iefix);
+    if (Element.getStyle(this.update, 'display')!='none') this.options.onHide(this.element, this.update);
+    if (this.iefix) Element.hide(this.iefix);
   },
 
   startIndicator: function() {
-    if(this.options.indicator) Element.show(this.options.indicator);
+    if (this.options.indicator) Element.show(this.options.indicator);
   },
 
   stopIndicator: function() {
-    if(this.options.indicator) Element.hide(this.options.indicator);
+    if (this.options.indicator) Element.hide(this.options.indicator);
   },
 
   onKeyPress: function(event) {
-    if(this.active)
+    if (this.active)
       switch(event.keyCode) {
        case Event.KEY_TAB:
        case Event.KEY_RETURN:
@@ -153,13 +153,13 @@ Autocompleter.Base = Class.create({
          return;
       }
      else
-       if(event.keyCode==Event.KEY_TAB || event.keyCode==Event.KEY_RETURN ||
+       if (event.keyCode==Event.KEY_TAB || event.keyCode==Event.KEY_RETURN ||
          (Prototype.Browser.WebKit > 0 && event.keyCode == 0)) return;
 
     this.changed = TRUE;
     this.hasFocus = TRUE;
 
-    if(this.observer) clearTimeout(this.observer);
+    if (this.observer) clearTimeout(this.observer);
       this.observer =
         setTimeout(this.onObserverEvent.bind(this), this.options.frequency*1000);
   },
@@ -172,7 +172,7 @@ Autocompleter.Base = Class.create({
 
   onHover: function(event) {
     var element = Event.findElement(event, 'LI');
-    if(this.index != element.autocompleteIndex)
+    if (this.index != element.autocompleteIndex)
     {
         this.index = element.autocompleteIndex;
         this.render();
@@ -195,12 +195,12 @@ Autocompleter.Base = Class.create({
   },
 
   render: function() {
-    if(this.entryCount > 0) {
+    if (this.entryCount > 0) {
       for (var i = 0; i < this.entryCount; i++)
         this.index==i ?
           Element.addClassName(this.getEntry(i),"selected") :
           Element.removeClassName(this.getEntry(i),"selected");
-      if(this.hasFocus) {
+      if (this.hasFocus) {
         this.show();
         this.active = TRUE;
       }
@@ -211,13 +211,13 @@ Autocompleter.Base = Class.create({
   },
 
   markPrevious: function() {
-    if(this.index > 0) this.index--;
+    if (this.index > 0) this.index--;
       else this.index = this.entryCount-1;
     this.getEntry(this.index).scrollIntoView(TRUE);
   },
 
   markNext: function() {
-    if(this.index < this.entryCount-1) this.index++;
+    if (this.index < this.entryCount-1) this.index++;
       else this.index = 0;
     this.getEntry(this.index).scrollIntoView(FALSE);
   },
@@ -243,7 +243,7 @@ Autocompleter.Base = Class.create({
     var value = '';
     if (this.options.select) {
       var nodes = $(selectedElement).select('.' + this.options.select) || [];
-      if(nodes.length>0) value = Element.collectTextNodes(nodes[0], this.options.select);
+      if (nodes.length>0) value = Element.collectTextNodes(nodes[0], this.options.select);
     } else
       value = Element.collectTextNodesIgnoreClass(selectedElement, 'informal');
 
@@ -265,12 +265,12 @@ Autocompleter.Base = Class.create({
   },
 
   updateChoices: function(choices) {
-    if(!this.changed && this.hasFocus) {
+    if (!this.changed && this.hasFocus) {
       this.update.innerHTML = choices;
       Element.cleanWhitespace(this.update);
       Element.cleanWhitespace(this.update.down());
 
-      if(this.update.firstChild && this.update.down().childNodes) {
+      if (this.update.firstChild && this.update.down().childNodes) {
         this.entryCount =
           this.update.down().childNodes.length;
         for (var i = 0; i < this.entryCount; i++) {
@@ -285,7 +285,7 @@ Autocompleter.Base = Class.create({
       this.stopIndicator();
       this.index = 0;
 
-      if(this.entryCount==1 && this.options.autoSelect) {
+      if (this.entryCount==1 && this.options.autoSelect) {
         this.selectEntry();
         this.hide();
       } else {
@@ -302,7 +302,7 @@ Autocompleter.Base = Class.create({
   onObserverEvent: function() {
     this.changed = FALSE;
     this.tokenBounds = NULL;
-    if(this.getToken().length>=this.options.minChars) {
+    if (this.getToken().length>=this.options.minChars) {
       this.getUpdatedChoices();
     } else {
       this.active = FALSE;
@@ -360,7 +360,7 @@ Ajax.Autocompleter = Class.create(Autocompleter.Base, {
     this.options.parameters = this.options.callback ?
       this.options.callback(this.element, entry) : entry;
 
-    if(this.options.defaultParams)
+    if (this.options.defaultParams)
       this.options.parameters += '&' + this.options.defaultParams;
 
     new Ajax.Request(this.url, this.options);
@@ -953,8 +953,8 @@ Form.Element.DelayedObserver = Class.create({
     Event.observe(this.element,'keyup',this.delayedListener.bindAsEventListener(this));
   },
   delayedListener: function(event) {
-    if(this.lastValue == $F(this.element)) return;
-    if(this.timer) clearTimeout(this.timer);
+    if (this.lastValue == $F(this.element)) return;
+    if (this.timer) clearTimeout(this.timer);
     this.timer = setTimeout(this.onTimerEvent.bind(this), this.delay * 1000);
     this.lastValue = $F(this.element);
   },

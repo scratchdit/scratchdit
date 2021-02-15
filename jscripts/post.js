@@ -5,7 +5,7 @@ var Post = {
 
 	loadMultiQuoted: function()
 	{
-		if(use_xmlhttprequest == 1)
+		if (use_xmlhttprequest == 1)
 		{
 			tid = document.input.tid.value;
 			this.spinner = new ActivityIndicator("body", {image: imagepath + "/spinner_big.gif"});
@@ -20,7 +20,7 @@ var Post = {
 
 	loadMultiQuotedAll: function()
 	{
-		if(use_xmlhttprequest == 1)
+		if (use_xmlhttprequest == 1)
 		{
 			this.spinner = new ActivityIndicator("body", {image: imagepath + "/spinner_big.gif"});
 			new Ajax.Request('xmlhttp.php?action=get_multiquoted&load_all=1', {method: 'get', onComplete: function(request) { Post.multiQuotedLoaded(request); }});
@@ -34,29 +34,29 @@ var Post = {
 
 	multiQuotedLoaded: function(request)
 	{
-		if(request.responseText.match(/<error>(.*)<\/error>/))
+		if (request.responseText.match(/<error>(.*)<\/error>/))
 		{
 			message = request.responseText.match(/<error>(.*)<\/error>/);
 
-			if(!message[1])
+			if (!message[1])
 			{
 				message[1] = "An unknown error occurred.";
 			}
-			if(this.spinner)
+			if (this.spinner)
 			{
 				this.spinner.destroy();
 				this.spinner = '';
 			}
 			alert('There was an error fetching the posts.\n\n'+message[1]);
 		}
-		else if(request.responseText)
+		else if (request.responseText)
 		{
 			var id = 'message';
-			if(typeof clickableEditor != 'undefined')
+			if (typeof clickableEditor != 'undefined')
 			{
 				id = clickableEditor.textarea;
 			}
-			if($(id).value)
+			if ($(id).value)
 			{
 				$(id).value += "\n";
 			}
@@ -64,7 +64,7 @@ var Post = {
 		}
 		$('multiquote_unloaded').hide();
 		document.input.quoted_ids.value = 'all';
-		if(this.spinner)
+		if (this.spinner)
 		{
 			this.spinner.destroy();
 			this.spinner = '';
@@ -79,7 +79,7 @@ var Post = {
 
 	removeAttachment: function(aid)
 	{
-		if(confirm(removeattach_confirm) == TRUE)
+		if (confirm(removeattach_confirm) == TRUE)
 		{
 			document.input.attachmentaid.value = aid;
 			document.input.attachmentact.value = "remove";

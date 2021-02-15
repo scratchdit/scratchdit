@@ -10,7 +10,7 @@
  */
 
 // Disallow direct access to this file for security reasons
-if(!defined("IN_MYBB"))
+if (!defined("IN_MYBB"))
 {
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
@@ -21,14 +21,14 @@ $page->add_breadcrumb_item($lang->file_verification, "index.php?module=tools-fil
 
 $plugins->run_hooks("admin_tools_file_verification_begin");
 
-if(!$mybb->input['action'])
+if (!$mybb->input['action'])
 {
 	$plugins->run_hooks("admin_tools_file_verification_check");
 
-	if($mybb->request_method == "post")
+	if ($mybb->request_method == "post")
 	{
 		// User clicked no
-		if($mybb->input['no'])
+		if ($mybb->input['no'])
 		{
 			admin_redirect("index.php?module=tools-system_health");
 		}
@@ -39,7 +39,7 @@ if(!$mybb->input['action'])
 
 		$file = explode("\n", fetch_remote_file("http://www.mybb.com/checksums/release_mybb_{$mybb->version_code}.txt"));
 
-		if(strstr($file[0], "<?xml") !== FALSE || empty($file[0]))
+		if (strstr($file[0], "<?xml") !== FALSE || empty($file[0]))
 		{
 			$page->output_inline_error($lang->error_communication);
 			$page->output_footer();
@@ -50,23 +50,23 @@ if(!$mybb->input['action'])
 		foreach($file as $line)
 		{
 			$parts = explode(" ", $line, 2);
-			if(empty($parts[0]) || empty($parts[1]))
+			if (empty($parts[0]) || empty($parts[1]))
 			{
 				continue;
 			}
 
-			if(substr($parts[1], 0, 7) == "./admin")
+			if (substr($parts[1], 0, 7) == "./admin")
 			{
 				$parts[1] = "./{$mybb->config['admin_dir']}".substr($parts[1], 7);
 			}
 
-			if(file_exists(MYBB_ROOT."forums.php") && !file_exists(MYBB_ROOT."portal.php"))
+			if (file_exists(MYBB_ROOT."forums.php") && !file_exists(MYBB_ROOT."portal.php"))
 			{
-				if(trim($parts[1]) == "./index.php")
+				if (trim($parts[1]) == "./index.php")
 				{
 					$parts[1] = "./forums.php";
 				}
-				elseif($parts[1] == "./portal.php")
+				elseif ($parts[1] == "./portal.php")
 				{
 					$parts[1] = "./index.php";
 				}
@@ -101,7 +101,7 @@ if(!$mybb->input['action'])
 			$table->construct_row();
 		}
 
-		if($table->num_rows() == 0)
+		if ($table->num_rows() == 0)
 		{
 			$table->construct_cell($lang->no_corrupt_files_found, array('colspan' => 3));
 			$table->construct_row();

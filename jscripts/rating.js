@@ -4,7 +4,7 @@ var Rating = {
 		var rating_elements = $$('.star_rating');
 		rating_elements.each(function(rating_element) {
 			var elements = Element.getElementsBySelector(rating_element, 'li a');
-			if(Element.hasClassName(rating_element, 'star_rating_notrated'))
+			if (Element.hasClassName(rating_element, 'star_rating_notrated'))
 			{
 				elements.each(function(element) {
 					element.onclick = function() {
@@ -27,7 +27,7 @@ var Rating = {
 
 	build_forumdisplay: function(tid, options)
 	{
-		if(!$('rating_thread_'+tid))
+		if (!$('rating_thread_'+tid))
 		{
 			return;
 		}
@@ -69,14 +69,14 @@ var Rating = {
 
 	rating_added: function(request, element_id)
 	{
-		if(request.responseText.match(/<error>(.*)<\/error>/))
+		if (request.responseText.match(/<error>(.*)<\/error>/))
 		{
 			message = request.responseText.match(/<error>(.*)<\/error>/);
-			if(!message[1])
+			if (!message[1])
 			{
 				message[1] = 'An unknown error occurred.';
 			}
-			if(this.spinner)
+			if (this.spinner)
 			{
 				this.spinner.destroy();
 				this.spinner = '';
@@ -84,9 +84,9 @@ var Rating = {
 			document.body.style.cursor = 'default';
 			alert('There was an error performing the update.\n\n'+message[1]);
 		}
-		else if(request.responseText.match(/<success>(.*)<\/success>/))
+		else if (request.responseText.match(/<success>(.*)<\/success>/))
 		{
-			if(!$('success_rating_' + element_id))
+			if (!$('success_rating_' + element_id))
 			{
 				var success = document.createElement('span');
 				var element = $('rating_thread_' + element_id);
@@ -101,7 +101,7 @@ var Rating = {
 			success.id = 'success_rating_' + element_id;
 			success.innerHTML = request.responseText.match(/<success>(.*)<\/success>/)[1];
 
-			if(request.responseText.match(/<average>(.*)<\/average>/))
+			if (request.responseText.match(/<average>(.*)<\/average>/))
 			{
 				$('current_rating_' + element_id).innerHTML = request.responseText.match(/<average>(.*)<\/average>/)[1];
 			}
@@ -110,7 +110,7 @@ var Rating = {
 			rating_elements.each(function(rating_element) {
 				var elements = Element.getElementsBySelector(rating_element, 'li a');
 				elements.each(function(element) {
-					if(element.id == "rating_thread_" + element_id) {
+					if (element.id == "rating_thread_" + element_id) {
 						element.onclick = function() { return FALSE; };
 						element.style.cursor = 'default';
 						element.title = $('current_rating_'+element_id).innerHTML;
@@ -122,7 +122,7 @@ var Rating = {
 			$('current_rating_' + element_id).style.width = request.responseText.match(/<width>(.*)<\/width>/)[1]+"%";
 		}
 
-		if(this.spinner)
+		if (this.spinner)
 		{
 			this.spinner.destroy();
 			this.spinner = '';
@@ -130,7 +130,7 @@ var Rating = {
 	}
 };
 
-if(use_xmlhttprequest == 1)
+if (use_xmlhttprequest == 1)
 {
 	Event.observe(document, 'dom:loaded', Rating.init);
 }

@@ -17,19 +17,19 @@
  */
 function fetch_friendly_expiration($time)
 {
-	if($time == 0 || $time == -1)
+	if ($time == 0 || $time == -1)
 	{
 		return array("period" => "never");
 	}
-	else if($time % 2592000 == 0)
+	else if ($time % 2592000 == 0)
 	{
 		return array("time" => $time/2592000, "period" => "months");
 	}
-	else if($time % 604800 == 0)
+	else if ($time % 604800 == 0)
 	{
 		return array("time" => $time/604800, "period" => "weeks");
 	}
-	else if($time % 86400 == 0)
+	else if ($time % 86400 == 0)
 	{
 		return array("time" => $time/86400, "period" => "days");
 	}
@@ -48,25 +48,25 @@ function fetch_friendly_expiration($time)
  */
 function fetch_time_length($time, $period)
 {
-	$time = intval($time);		
+	$time = intval($time);
 
-	if($period == "hours")
+	if ($period == "hours")
 	{
 		$time = $time*3600;
 	}
-	else if($period == "days")
+	else if ($period == "days")
 	{
 		$time = $time*86400;
 	}
-	else if($period == "weeks")
+	else if ($period == "weeks")
 	{
 		$time = $time*604800;
 	}
-	else if($period == "months")
+	else if ($period == "months")
 	{
 		$time = $time*2592000;
 	}
-	else if($period == "never" && $time == 0)
+	else if ($period == "never" && $time == 0)
 	{
 		// User is permanentely banned
 		$time = "-1";

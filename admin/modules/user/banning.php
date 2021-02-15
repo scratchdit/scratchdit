@@ -10,7 +10,7 @@
  */
 
 // Disallow direct access to this file for security reasons
-if(!defined("IN_MYBB"))
+if (!defined("IN_MYBB"))
 {
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
@@ -51,12 +51,12 @@ $ban_times = fetch_ban_times();
 
 $plugins->run_hooks("admin_user_banning_begin");
 
-if($mybb->input['action'] == "prune")
+if ($mybb->input['action'] == "prune")
 {
 	$plugins->run_hooks("admin_user_banning_prune");
 
 	// User clicked no
-	if($mybb->input['no'])
+	if ($mybb->input['no'])
 	{
 		admin_redirect("index.php?module=user-banning");
 	}
@@ -64,7 +64,7 @@ if($mybb->input['action'] == "prune")
 	$query = $db->simple_select("banned", "*", "uid='{$mybb->input['uid']}'");
 	$ban = $db->fetch_array($query);
 
-	if(!$ban['uid'])
+	if (!$ban['uid'])
 	{
 		flash_message($lang->error_invalid_ban, 'error');
 		admin_redirect("index.php?module=user-banning");
@@ -72,13 +72,13 @@ if($mybb->input['action'] == "prune")
 
 	$user = get_user($ban['uid']);
 
-	if(is_super_admin($user['uid']) && ($mybb->user['uid'] != $user['uid'] && !is_super_admin($mybb->user['uid'])))
+	if (is_super_admin($user['uid']) && ($mybb->user['uid'] != $user['uid'] && !is_super_admin($mybb->user['uid'])))
 	{
 		flash_message($lang->cannot_perform_action_super_admin_general, 'error');
 		admin_redirect("index.php?module=user-banning");
 	}
 
-	if($mybb->request_method == "post")
+	if ($mybb->request_method == "post")
 	{
 		require_once MYBB_ROOT."inc/class_moderation.php";
 		$moderation = new Moderation();
@@ -110,12 +110,12 @@ if($mybb->input['action'] == "prune")
 	}
 }
 
-if($mybb->input['action'] == "lift")
+if ($mybb->input['action'] == "lift")
 {
 	$plugins->run_hooks("admin_user_banning_lift");
 
 	// User clicked no
-	if($mybb->input['no'])
+	if ($mybb->input['no'])
 	{
 		admin_redirect("index.php?module=user-banning");
 	}
@@ -123,7 +123,7 @@ if($mybb->input['action'] == "lift")
 	$query = $db->simple_select("banned", "*", "uid='{$mybb->input['uid']}'");
 	$ban = $db->fetch_array($query);
 
-	if(!$ban['uid'])
+	if (!$ban['uid'])
 	{
 		flash_message($lang->error_invalid_ban, 'error');
 		admin_redirect("index.php?module=user-banning");
@@ -131,13 +131,13 @@ if($mybb->input['action'] == "lift")
 
 	$user = get_user($ban['uid']);
 
-	if(is_super_admin($user['uid']) && ($mybb->user['uid'] != $user['uid'] && !is_super_admin($mybb->user['uid'])))
+	if (is_super_admin($user['uid']) && ($mybb->user['uid'] != $user['uid'] && !is_super_admin($mybb->user['uid'])))
 	{
 		flash_message($lang->cannot_perform_action_super_admin_general, 'error');
 		admin_redirect("index.php?module=user-banning");
 	}
 
-	if($mybb->request_method == "post")
+	if ($mybb->request_method == "post")
 	{
 		$updated_group = array(
 			'usergroup' => $ban['oldgroup'],
@@ -164,7 +164,7 @@ if($mybb->input['action'] == "lift")
 	}
 }
 
-if($mybb->input['action'] == "edit")
+if ($mybb->input['action'] == "edit")
 {
 	$plugins->run_hooks("admin_user_banning_edit");
 
@@ -173,34 +173,34 @@ if($mybb->input['action'] == "edit")
 
 	$user = get_user($ban['uid']);
 
-	if(!$ban['uid'])
+	if (!$ban['uid'])
 	{
 		flash_message($lang->error_invalid_ban, 'error');
 		admin_redirect("index.php?module=user-banning");
 	}
 
-	if($mybb->request_method == "post")
+	if ($mybb->request_method == "post")
 	{
-		if(!$ban['uid'])
+		if (!$ban['uid'])
 		{
 			$errors[] = $lang->error_invalid_username;
 		}
 		// Is the user we're trying to ban a super admin and we're not?
-		else if(is_super_admin($ban['uid']) && !is_super_admin($ban['uid']))
+		else if (is_super_admin($ban['uid']) && !is_super_admin($ban['uid']))
 		{
 			$errors[] = $lang->error_no_perm_to_ban;
 		}
 
-		if($ban['uid'] == $mybb->user['uid'])
+		if ($ban['uid'] == $mybb->user['uid'])
 		{
 			$errors[] = $lang->error_ban_self;
 		}
 
 		// No errors? Update
-		if(!$errors)
+		if (!$errors)
 		{
 			// Ban the user
-			if($mybb->input['bantime'] == '---')
+			if ($mybb->input['bantime'] == '---')
 			{
 				$lifted = 0;
 			}
@@ -209,7 +209,7 @@ if($mybb->input['action'] == "edit")
 				$lifted = ban_date2timestamp($mybb->input['bantime'], $ban['dateline']);
 			}
 
-			if(count($banned_groups) == 1)
+			if (count($banned_groups) == 1)
 			{
 				$group = array_keys($banned_groups);
 				$mybb->input['usergroup'] = $group[0];
@@ -255,7 +255,7 @@ if($mybb->input['action'] == "edit")
 	$page->output_nav_tabs($sub_tabs, "edit");
 
 	$form = new Form("index.php?module=user-banning&amp;action=edit&amp;uid={$ban['uid']}", "post");
-	if($errors)
+	if ($errors)
 	{
 		$page->output_inline_error($errors);
 	}
@@ -267,12 +267,12 @@ if($mybb->input['action'] == "edit")
 	$form_container = new FormContainer($lang->edit_ban);
 	$form_container->output_row($lang->ban_username, "", $user['username']);
 	$form_container->output_row($lang->ban_reason, "", $form->generate_text_box('reason', $mybb->input['reason'], array('id' => 'reason')), 'reason');
-	if(count($banned_groups) > 1)
+	if (count($banned_groups) > 1)
 	{
 		$form_container->output_row($lang->ban_group, $lang->ban_group_desc, $form->generate_select_box('usergroup', $banned_groups, $mybb->input['usergroup'], array('id' => 'usergroup')), 'usergroup');
 	}
 
-	if($mybb->input['bantime'] == 'perm' || $mybb->input['bantime'] == '' || $mybb->input['lifted'] == 'perm' ||$mybb->input['lifted'] == '')
+	if ($mybb->input['bantime'] == 'perm' || $mybb->input['bantime'] == '' || $mybb->input['lifted'] == 'perm' ||$mybb->input['lifted'] == '')
 	{
 		$mybb->input['bantime'] = '---';
 		$mybb->input['lifted'] = '---';
@@ -280,7 +280,7 @@ if($mybb->input['action'] == "edit")
 
 	foreach($ban_times as $time => $period)
 	{
-		if($time != '---')
+		if ($time != '---')
 		{
 			$friendly_time = my_date("D, jS M Y @ g:ia", ban_date2timestamp($time));
 			$period = "{$period} ({$friendly_time})";
@@ -298,43 +298,43 @@ if($mybb->input['action'] == "edit")
 	$page->output_footer();
 }
 
-if(!$mybb->input['action'])
+if (!$mybb->input['action'])
 {
 	$plugins->run_hooks("admin_user_banning_start");
 
-	if($mybb->request_method == "post")
+	if ($mybb->request_method == "post")
 	{
 		$query = $db->simple_select("users", "uid, usergroup, additionalgroups, displaygroup, username", "LOWER(username)='".$db->escape_string(my_strtolower($mybb->input['username']))."'", array('limit' => 1));
 		$user = $db->fetch_array($query);
 
-		if(!$user['uid'])
+		if (!$user['uid'])
 		{
 			$errors[] = $lang->error_invalid_username;
 		}
 		// Is the user we're trying to ban a super admin and we're not?
-		else if(is_super_admin($user['uid']) && !is_super_admin($mybb->user['uid']))
+		else if (is_super_admin($user['uid']) && !is_super_admin($mybb->user['uid']))
 		{
 			$errors[] = $lang->error_no_perm_to_ban;
 		}
 		else
 		{
 			$query = $db->simple_select("banned", "uid", "uid='{$user['uid']}'");
-			if($db->fetch_field($query, "uid"))
+			if ($db->fetch_field($query, "uid"))
 			{
 				$errors[] = $lang->error_already_banned;
 			}
 		}
 
-		if($user['uid'] == $mybb->user['uid'])
+		if ($user['uid'] == $mybb->user['uid'])
 		{
 			$errors[] = $lang->error_ban_self;
 		}
 
 		// No errors? Insert
-		if(!$errors)
+		if (!$errors)
 		{
 			// Ban the user
-			if($mybb->input['bantime'] == '---')
+			if ($mybb->input['bantime'] == '---')
 			{
 				$lifted = 0;
 			}
@@ -343,7 +343,7 @@ if(!$mybb->input['action'])
 				$lifted = ban_date2timestamp($mybb->input['bantime']);
 			}
 
-			if(count($banned_groups) == 1)
+			if (count($banned_groups) == 1)
 			{
 				$group = array_keys($banned_groups);
 				$mybb->input['usergroup'] = $group[0];
@@ -395,13 +395,13 @@ if(!$mybb->input['action'])
 
 	$per_page = 20;
 
-	if($mybb->input['page'] > 0)
+	if ($mybb->input['page'] > 0)
 	{
 		$current_page = intval($mybb->input['page']);
 		$start = ($current_page-1)*$per_page;
 		$pages = $ban_count / $per_page;
 		$pages = ceil($pages);
-		if($current_page > $pages)
+		if ($current_page > $pages)
 		{
 			$start = 0;
 			$current_page = 1;
@@ -437,7 +437,7 @@ if(!$mybb->input['action'])
 	{
 		$profile_link = build_profile_link($ban['username'], $ban['uid'], "_blank");
 		$ban_date = my_date($mybb->settings['dateformat'], $ban['dateline']);
-		if($ban['lifted'] == 'perm' || $ban['lifted'] == '' || $ban['bantime'] == 'perm' || $ban['bantime'] == '---')
+		if ($ban['lifted'] == 'perm' || $ban['lifted'] == '' || $ban['bantime'] == 'perm' || $ban['bantime'] == '---')
 		{
 			$ban_period = $lang->permenantly;
 			$time_remaining = $lifts_on = $lang->na;
@@ -449,15 +449,15 @@ if(!$mybb->input['action'])
 			$remaining = $ban['lifted']-TIME_NOW;
 			$time_remaining = nice_time($remaining, array('short' => 1, 'seconds' => FALSE))."";
 
-			if($remaining < 3600)
+			if ($remaining < 3600)
 			{
 				$time_remaining = "<span style=\"color: red;\">{$time_remaining}</span>";
 			}
-			else if($remaining < 86400)
+			else if ($remaining < 86400)
 			{
 				$time_remaining = "<span style=\"color: maroon;\">{$time_remaining}</span>";
 			}
-			else if($remaining < 604800)
+			else if ($remaining < 604800)
 			{
 				$time_remaining = "<span style=\"color: green;\">{$time_remaining}</span>";
 			}
@@ -468,9 +468,9 @@ if(!$mybb->input['action'])
 			$lifts_on = my_date($mybb->settings['dateformat'], $ban['lifted']);
 		}
 
-		if(!$ban['adminuser'])
+		if (!$ban['adminuser'])
 		{
-			if($ban['admin'] == 0)
+			if ($ban['admin'] == 0)
 			{
 				$ban['adminuser'] = "MyBB System";
 			}
@@ -489,7 +489,7 @@ if(!$mybb->input['action'])
 		$table->construct_row();
 	}
 
-	if($table->num_rows() == 0)
+	if ($table->num_rows() == 0)
 	{
 		$table->construct_cell($lang->no_banned_users, array("colspan" => "6"));
 		$table->construct_row();
@@ -498,12 +498,12 @@ if(!$mybb->input['action'])
 	echo $pagination;
 
 	$form = new Form("index.php?module=user-banning", "post");
-	if($errors)
+	if ($errors)
 	{
 		$page->output_inline_error($errors);
 	}
 
-	if($mybb->input['uid'] && !$mybb->input['username'])
+	if ($mybb->input['uid'] && !$mybb->input['username'])
 	{
 		$user = get_user($mybb->input['uid']);
 		$mybb->input['username'] = $user['username'];
@@ -512,13 +512,13 @@ if(!$mybb->input['action'])
 	$form_container = new FormContainer($lang->ban_a_user);
 	$form_container->output_row($lang->ban_username, $lang->autocomplete_enabled, $form->generate_text_box('username', $mybb->input['username'], array('id' => 'username')), 'username');
 	$form_container->output_row($lang->ban_reason, "", $form->generate_text_box('reason', $mybb->input['reason'], array('id' => 'reason')), 'reason');
-	if(count($banned_groups) > 1)
+	if (count($banned_groups) > 1)
 	{
 		$form_container->output_row($lang->ban_group, $lang->add_ban_group_desc, $form->generate_select_box('usergroup', $banned_groups, $mybb->input['usergroup'], array('id' => 'usergroup')), 'usergroup');
 	}
 	foreach($ban_times as $time => $period)
 	{
-		if($time != "---")
+		if ($time != "---")
 		{
 			$friendly_time = my_date("D, jS M Y @ g:ia", ban_date2timestamp($time));
 			$period = "{$period} ({$friendly_time})";

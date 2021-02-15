@@ -10,7 +10,7 @@
  */
 
 // Disallow direct access to this file for security reasons
-if(!defined("IN_MYBB"))
+if (!defined("IN_MYBB"))
 {
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
@@ -37,13 +37,13 @@ $sub_tabs['template_check'] = array(
 
 $plugins->run_hooks("admin_tools_system_health_begin");
 
-if($mybb->input['action'] == "do_check_templates" && $mybb->request_method == "post")
+if ($mybb->input['action'] == "do_check_templates" && $mybb->request_method == "post")
 {
 	$plugins->run_hooks("admin_tools_system_health_template_do_check_start");
 
 	$query = $db->simple_select("templates", "*", "", array("order_by" => "sid, title", "order_dir" => "ASC"));
 
-	if(!$db->num_rows($query))
+	if (!$db->num_rows($query))
 	{
 		flash_message($lang->error_invalid_input, 'error');
 		admin_redirect("index.php?module=tools-system_health");
@@ -52,13 +52,13 @@ if($mybb->input['action'] == "do_check_templates" && $mybb->request_method == "p
 	$t_cache = array();
 	while($template = $db->fetch_array($query))
 	{
-		if(check_template($template['template']) == TRUE)
+		if (check_template($template['template']) == TRUE)
 		{
 			$t_cache[$template['sid']][] = $template;
 		}
 	}
 
-	if(empty($t_cache))
+	if (empty($t_cache))
 	{
 		flash_message($lang->success_templates_checked, 'success');
 		admin_redirect("index.php?module=tools-system_health");
@@ -86,7 +86,7 @@ if($mybb->input['action'] == "do_check_templates" && $mybb->request_method == "p
 	$count = 0;
 	foreach($t_cache as $sid => $templates)
 	{
-		if(!$done_set[$sid])
+		if (!$done_set[$sid])
 		{
 			$table = new Table();
 			$table->construct_header($templatesets[$sid]['title'], array("colspan" => 2));
@@ -95,7 +95,7 @@ if($mybb->input['action'] == "do_check_templates" && $mybb->request_method == "p
 			++$count;
 		}
 
-		if($sid == -2)
+		if ($sid == -2)
 		{
 			// Some cheeky clown has altered the master templates!
 			$table->construct_cell($lang->error_master_templates_altered, array("colspan" => 2));
@@ -104,7 +104,7 @@ if($mybb->input['action'] == "do_check_templates" && $mybb->request_method == "p
 
 		foreach($templates as $template)
 		{
-			if($sid == -2)
+			if ($sid == -2)
 			{
 				$table->construct_cell($template['title'], array('colspan' => 2));
 			}
@@ -120,10 +120,10 @@ if($mybb->input['action'] == "do_check_templates" && $mybb->request_method == "p
 			$table->construct_row();
 		}
 
-		if($done_set[$sid] && !$done_output[$sid])
+		if ($done_set[$sid] && !$done_output[$sid])
 		{
 			$done_output[$sid] = 1;
-			if($count == 1)
+			if ($count == 1)
 			{
 				$table->output($lang->check_templates);
 			}
@@ -137,7 +137,7 @@ if($mybb->input['action'] == "do_check_templates" && $mybb->request_method == "p
 	$page->output_footer();
 }
 
-if($mybb->input['action'] == "check_templates")
+if ($mybb->input['action'] == "check_templates")
 {
 	$plugins->run_hooks("admin_tools_system_health_template_check");
 
@@ -146,7 +146,7 @@ if($mybb->input['action'] == "check_templates")
 
 	$page->output_nav_tabs($sub_tabs, 'template_check');
 
-	if($errors)
+	if ($errors)
 	{
 		$page->output_inline_error($errors);
 	}
@@ -168,24 +168,24 @@ if($mybb->input['action'] == "check_templates")
 	$page->output_footer();
 }
 
-if($mybb->input['action'] == "utf8_conversion")
+if ($mybb->input['action'] == "utf8_conversion")
 {
 	$plugins->run_hooks("admin_tools_system_health_utf8_conversion");
 
-	if($db->type == "sqlite" || $db->type == "pgsql")
+	if ($db->type == "sqlite" || $db->type == "pgsql")
 	{
 		flash_message($lang->error_not_supported, 'error');
 		admin_redirect("index.php?module=tools-system_health");
 	}
 
-	if($mybb->request_method == "post" || ($mybb->input['do'] == "all" && !empty($mybb->input['table'])))
+	if ($mybb->request_method == "post" || ($mybb->input['do'] == "all" && !empty($mybb->input['table'])))
 	{
 		@set_time_limit(0);
 
 		$old_table_prefix = $db->table_prefix;
 		$db->set_table_prefix('');
 
-		if(!$db->table_exists($db->escape_string($mybb->input['table'])))
+		if (!$db->table_exists($db->escape_string($mybb->input['table'])))
 		{
 			flash_message($lang->error_invalid_table, 'error');
 			admin_redirect("index.php?module=tools-system_health&action=utf8_conversion");
@@ -257,7 +257,7 @@ if($mybb->input['action'] == "utf8_conversion")
 		$db->write_query("ALTER TABLE {$mybb->input['table']} DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci");
 
 		// Fetch any fulltext keys
-		if($db->supports_fulltext($mybb->input['table']))
+		if ($db->supports_fulltext($mybb->input['table']))
 		{
 			$table_structure = $db->show_create_table($mybb->input['table']);
 			switch($db->type)
@@ -265,7 +265,7 @@ if($mybb->input['action'] == "utf8_conversion")
 				case "mysql":
 				case "mysqli":
 					preg_match_all("#FULLTEXT KEY `?([a-zA-Z0-9_]+)`? \(([a-zA-Z0-9_`,']+)\)#i", $table_structure, $matches);
-					if(is_array($matches))
+					if (is_array($matches))
 					{
 						foreach($matches[0] as $key => $matched)
 						{
@@ -281,14 +281,14 @@ if($mybb->input['action'] == "utf8_conversion")
 		while($column = $db->fetch_array($query))
 		{
 			list($type) = explode('(', $column['Type']);
-			if(array_key_exists($type, $types))
+			if (array_key_exists($type, $types))
 			{
 				// Build the actual strings for converting the columns
 				$names = "CHANGE `{$column['Field']}` `{$column['Field']}` ";
 
-				if(($db->type == 'mysql' || $db->type == 'mysqli') && in_array($type, $blob_types))
+				if (($db->type == 'mysql' || $db->type == 'mysqli') && in_array($type, $blob_types))
 				{
-					if($column['NULL'] == 'YES')
+					if ($column['NULL'] == 'YES')
 					{
 						$attributes = 'NULL';
 					}
@@ -300,7 +300,7 @@ if($mybb->input['action'] == "utf8_conversion")
 				else
 				{
 					$attributes = " DEFAULT ";
-					if($column['Default'] == 'NULL')
+					if ($column['Default'] == 'NULL')
 					{
 						$attributes .= "NULL ";
 					}
@@ -308,7 +308,7 @@ if($mybb->input['action'] == "utf8_conversion")
 					{
 						$attributes .= "'".$db->escape_string($column['Default'])."' ";
 
-						if($column['NULL'] == 'YES')
+						if ($column['NULL'] == 'YES')
 						{
 							$attributes .= 'NULL';
 						}
@@ -326,7 +326,7 @@ if($mybb->input['action'] == "utf8_conversion")
 			}
 		}
 
-		if(!empty($convert_to_binary))
+		if (!empty($convert_to_binary))
 		{
 			// This converts the columns to UTF-8 while also doing the same for data
 			$db->write_query("ALTER TABLE {$mybb->input['table']} {$convert_to_binary}");
@@ -334,7 +334,7 @@ if($mybb->input['action'] == "utf8_conversion")
 		}
 
 		// Any fulltext indexes to recreate?
-		if(is_array($fulltext_to_create))
+		if (is_array($fulltext_to_create))
 		{
 			foreach($fulltext_to_create as $name => $fields)
 			{
@@ -351,7 +351,7 @@ if($mybb->input['action'] == "utf8_conversion")
 
 		flash_message($lang->sprintf($lang->success_table_converted, $mybb->input['table']), 'success');
 
-		if($mybb->input['do'] == "all")
+		if ($mybb->input['do'] == "all")
 		{
 			$old_table_prefix = $db->table_prefix;
 			$db->set_table_prefix('');
@@ -359,11 +359,11 @@ if($mybb->input['action'] == "utf8_conversion")
 			$tables = $db->list_tables($mybb->config['database']['database']);
 			foreach($tables as $key => $tablename)
 			{
-				if(substr($tablename, 0, strlen(TABLE_PREFIX)) == TABLE_PREFIX)
+				if (substr($tablename, 0, strlen(TABLE_PREFIX)) == TABLE_PREFIX)
 				{
 					$table = $db->show_create_table($tablename);
 					preg_match("#CHARSET=([a-zA-Z0-9_]+)\s?#i", $table, $matches);
-					if(fetch_iconv_encoding($matches[1]) == 'utf-8' && $mybb->input['table'] != $tablename)
+					if (fetch_iconv_encoding($matches[1]) == 'utf-8' && $mybb->input['table'] != $tablename)
 					{
 						continue;
 					}
@@ -380,12 +380,12 @@ if($mybb->input['action'] == "utf8_conversion")
 
 			foreach($mybb_tables as $key => $tablename)
 			{
-				if($is_next == TRUE)
+				if ($is_next == TRUE)
 				{
 					$nexttable = $tablename;
 					break;
 				}
-				else if($mybb->input['table'] == $tablename)
+				else if ($mybb->input['table'] == $tablename)
 				{
 					$is_next = TRUE;
 				}
@@ -393,7 +393,7 @@ if($mybb->input['action'] == "utf8_conversion")
 
 			$db->set_table_prefix($old_table_prefix);
 
-			if($nexttable)
+			if ($nexttable)
 			{
 				$nexttable = $db->escape_string($nexttable);
 				admin_redirect("index.php?module=tools-system_health&action=utf8_conversion&do=all&table={$nexttable}");
@@ -406,28 +406,28 @@ if($mybb->input['action'] == "utf8_conversion")
 		exit;
 	}
 
-	if($mybb->input['table'] || $mybb->input['do'] == "all")
+	if ($mybb->input['table'] || $mybb->input['do'] == "all")
 	{
 		$old_table_prefix = $db->table_prefix;
 		$db->set_table_prefix('');
 
-		if($mybb->input['do'] != "all" && !$db->table_exists($db->escape_string($mybb->input['table'])))
+		if ($mybb->input['do'] != "all" && !$db->table_exists($db->escape_string($mybb->input['table'])))
 		{
 			$db->set_table_prefix($old_table_prefix);
 			flash_message($lang->error_invalid_table, 'error');
 			admin_redirect("index.php?module=tools-system_health&action=utf8_conversion");
 		}
 
-		if($mybb->input['do'] == "all")
+		if ($mybb->input['do'] == "all")
 		{
 			$tables = $db->list_tables($mybb->config['database']['database']);
 			foreach($tables as $key => $tablename)
 			{
-				if(substr($tablename, 0, strlen(TABLE_PREFIX)) == TABLE_PREFIX)
+				if (substr($tablename, 0, strlen(TABLE_PREFIX)) == TABLE_PREFIX)
 				{
 					$table = $db->show_create_table($tablename);
 					preg_match("#CHARSET=([a-zA-Z0-9_]+)\s?#i", $table, $matches);
-					if(fetch_iconv_encoding($matches[1]) == 'utf-8')
+					if (fetch_iconv_encoding($matches[1]) == 'utf-8')
 					{
 						continue;
 					}
@@ -435,7 +435,7 @@ if($mybb->input['action'] == "utf8_conversion")
 				}
 			}
 
-			if(is_array($mybb_tables))
+			if (is_array($mybb_tables))
 			{
 				asort($mybb_tables);
 				reset($mybb_tables);
@@ -483,14 +483,14 @@ if($mybb->input['action'] == "utf8_conversion")
 		$form = new Form("index.php?module=tools-system_health&amp;action=utf8_conversion", "post", "utf8_conversion");
 		echo $form->generate_hidden_field("table", $mybb->input['table']);
 
-		if($mybb->input['do'] == "all")
+		if ($mybb->input['do'] == "all")
 		{
 			echo $form->generate_hidden_field("do", "all");
 		}
 
 		$table = new Table;
 
-		if($mybb->input['do'] == "all")
+		if ($mybb->input['do'] == "all")
 		{
 			$table->construct_cell("<strong>".$lang->sprintf($lang->convert_all_to_utf, $charset)."</strong>");
 		}
@@ -504,7 +504,7 @@ if($mybb->input['action'] == "utf8_conversion")
 		$table->construct_cell($lang->notice_process_long_time);
 		$table->construct_row();
 
-		if($mybb->input['do'] == "all")
+		if ($mybb->input['do'] == "all")
 		{
 			$table->output($lang->convert_tables);
 			$buttons[] = $form->generate_submit_button($lang->convert_database_tables);
@@ -537,11 +537,11 @@ if($mybb->input['action'] == "utf8_conversion")
 
 	foreach($tables as $key => $tablename)
 	{
-		if(substr($tablename, 0, strlen($old_table_prefix)) == $old_table_prefix)
+		if (substr($tablename, 0, strlen($old_table_prefix)) == $old_table_prefix)
 		{
 			$table = $db->show_create_table($tablename);
         	preg_match("#CHARSET=([a-zA-Z0-9_]+)\s?#i", $table, $matches);
-			if(fetch_iconv_encoding($matches[1]) != 'utf-8')
+			if (fetch_iconv_encoding($matches[1]) != 'utf-8')
 			{
 				$not_okey[$key] = $tablename;
 				++$not_okey_count;
@@ -557,13 +557,13 @@ if($mybb->input['action'] == "utf8_conversion")
 
 	$db->set_table_prefix($old_table_prefix);
 
-	if($okay_count == count($mybb_tables))
+	if ($okay_count == count($mybb_tables))
 	{
 		flash_message($lang->success_all_tables_already_converted, 'success');
 		admin_redirect("index.php?module=tools-system_health");
 	}
 
-	if(!$mybb->config['database']['encoding'])
+	if (!$mybb->config['database']['encoding'])
 	{
 		flash_message($lang->error_db_encoding_not_set, 'error');
 		admin_redirect("index.php?module=tools-system_health");
@@ -583,7 +583,7 @@ if($mybb->input['action'] == "utf8_conversion")
 
 	foreach($mybb_tables as $key => $tablename)
 	{
-		if(array_key_exists($key, $not_okey))
+		if (array_key_exists($key, $not_okey))
 		{
 			$status = "<a href=\"index.php?module=tools-system_health&amp;action=utf8_conversion&amp;table={$tablename}\" style=\"background: url(styles/{$page->style}/images/icons/cross.gif) no-repeat; padding-left: 20px;\">{$lang->convert_now}</a>";
 		}
@@ -601,7 +601,7 @@ if($mybb->input['action'] == "utf8_conversion")
 	$page->output_footer();
 }
 
-if(!$mybb->input['action'])
+if (!$mybb->input['action'])
 {
 	$plugins->run_hooks("admin_tools_system_health_start");
 
@@ -622,7 +622,7 @@ if(!$mybb->input['action'])
 	$table->construct_cell(get_friendly_size(intval($attachs['spaceused'])), array('width' => '200'));
 	$table->construct_row();
 
-	if($attachs['spaceused'] > 0)
+	if ($attachs['spaceused'] > 0)
 	{
 		$attach_average_size = round($attachs['spaceused']/$attachs['numattachs']);
 		$bandwidth_average_usage = round($attachs['bandwidthused']);
@@ -672,10 +672,10 @@ if(!$mybb->input['action'])
 	$handle = opendir($dir);
 	while(($file = readdir($handle)) !== FALSE)
 	{
-		if(filetype(MYBB_ADMIN_DIR.'backups/'.$file) == 'file')
+		if (filetype(MYBB_ADMIN_DIR.'backups/'.$file) == 'file')
 		{
 			$ext = get_extension($file);
-			if($ext == 'gz' || $ext == 'sql')
+			if ($ext == 'gz' || $ext == 'sql')
 			{
 				$backups[@filemtime(MYBB_ADMIN_DIR.'backups/'.$file)] = array(
 					"file" => $file,
@@ -698,12 +698,12 @@ if(!$mybb->input['action'])
 	{
 		++$backupscnt;
 
-		if($backupscnt == 4)
+		if ($backupscnt == 4)
 		{
 			break;
 		}
 
-		if($backup['time'])
+		if ($backup['time'])
 		{
 			$time = my_date($mybb->settings['dateformat'].", ".$mybb->settings['timeformat'], $backup['time']);
 		}
@@ -717,7 +717,7 @@ if(!$mybb->input['action'])
 		$table->construct_row();
 	}
 
-	if($count == 0)
+	if ($count == 0)
 	{
 		$table->construct_cell($lang->no_backups, array('colspan' => 2));
 		$table->construct_row();
@@ -726,7 +726,7 @@ if(!$mybb->input['action'])
 
 	$table->output($lang->existing_db_backups);
 
-	if(is_writable(MYBB_ROOT.'inc/settings.php'))
+	if (is_writable(MYBB_ROOT.'inc/settings.php'))
 	{
 		$message_settings = "<span style=\"color: green;\">{$lang->writable}</span>";
 	}
@@ -736,7 +736,7 @@ if(!$mybb->input['action'])
 		++$errors;
 	}
 
-	if(is_writable(MYBB_ROOT.'inc/config.php'))
+	if (is_writable(MYBB_ROOT.'inc/config.php'))
 	{
 		$message_config = "<span style=\"color: green;\">{$lang->writable}</span>";
 	}
@@ -746,7 +746,7 @@ if(!$mybb->input['action'])
 		++$errors;
 	}
 
-	if(is_writable('.'.$mybb->settings['uploadspath']))
+	if (is_writable('.'.$mybb->settings['uploadspath']))
 	{
 		$message_upload = "<span style=\"color: green;\">{$lang->writable}</span>";
 	}
@@ -756,7 +756,7 @@ if(!$mybb->input['action'])
 		++$errors;
 	}
 
-	if(is_writable('../'.$mybb->settings['avataruploadpath']))
+	if (is_writable('../'.$mybb->settings['avataruploadpath']))
 	{
 		$message_avatar = "<span style=\"color: green;\">{$lang->writable}</span>";
 	}
@@ -766,7 +766,7 @@ if(!$mybb->input['action'])
 		++$errors;
 	}
 
-	if(is_writable(MYBB_ROOT.'inc/languages/'))
+	if (is_writable(MYBB_ROOT.'inc/languages/'))
 	{
 		$message_language = "<span style=\"color: green;\">{$lang->writable}</span>";
 	}
@@ -776,7 +776,7 @@ if(!$mybb->input['action'])
 		++$errors;
 	}
 
-	if(is_writable(MYBB_ROOT.$config['admin_dir'].'/backups/'))
+	if (is_writable(MYBB_ROOT.$config['admin_dir'].'/backups/'))
 	{
 		$message_backup = "<span style=\"color: green;\">{$lang->writable}</span>";
 	}
@@ -786,7 +786,7 @@ if(!$mybb->input['action'])
 		++$errors;
 	}
 
-	if(is_writable(MYBB_ROOT.'/cache/'))
+	if (is_writable(MYBB_ROOT.'/cache/'))
 	{
 		$message_cache = "<span style=\"color: green;\">{$lang->writable}</span>";
 	}
@@ -796,7 +796,7 @@ if(!$mybb->input['action'])
 		++$errors;
 	}
 
-	if(is_writable(MYBB_ROOT.'/cache/themes/'))
+	if (is_writable(MYBB_ROOT.'/cache/themes/'))
 	{
 		$message_themes = "<span style=\"color: green;\">{$lang->writable}</span>";
 	}
@@ -807,7 +807,7 @@ if(!$mybb->input['action'])
 	}
 
 
-	if($errors)
+	if ($errors)
 	{
 		$page->output_error("<p><em>{$errors} {$lang->error_chmod}</span></strong> {$lang->chmod_info} <a href=\"http://wiki.mybb.com/index.php/HowTo_Chmod\" target=\"_blank\">MyBB Wiki</a>.</em></p>");
 	}

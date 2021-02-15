@@ -61,7 +61,7 @@ class timer {
 	 */
 	function add()
 	{
-		if(!$this->start)
+		if (!$this->start)
 		{
 			$this->start = microtime(TRUE);
 		}
@@ -74,11 +74,11 @@ class timer {
 	 */
 	function getTime()
 	{
-		if($this->end) // timer has been stopped
+		if ($this->end) // timer has been stopped
 		{
 			return $this->totaltime;
 		}
-		elseif($this->start && !$this->end) // timer is still going
+		elseif ($this->start && !$this->end) // timer is still going
 		{
 			$currenttime = microtime(TRUE);
 			$totaltime = $currenttime - $this->start;
@@ -97,7 +97,7 @@ class timer {
 	 */
 	function stop()
 	{
-		if($this->start)
+		if ($this->start)
 		{
 			$this->end = microtime(TRUE);
 			$totaltime = $this->end - $this->start;

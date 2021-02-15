@@ -136,7 +136,7 @@ class DB_SQLite
 
 		$this->connections[] = "[WRITE] {$config['database']} (Connected in ".number_format($query_time, 0)."s)";
 
-		if($this->db)
+		if ($this->db)
 		{
 			$this->query('PRAGMA short_column_names = 1');
 			return TRUE;
@@ -160,21 +160,21 @@ class DB_SQLite
 
 		$this->get_execution_time();
 
-		if(strtolower(substr(ltrim($string), 0, 5)) == 'alter')
+		if (strtolower(substr(ltrim($string), 0, 5)) == 'alter')
 		{
 			$string = preg_replace("#\sAFTER\s([a-z_]+?)(;*?)$#i", "", $string);
 
 			$queryparts = preg_split("/[\s]+/", $string, 4, PREG_SPLIT_NO_EMPTY);
 			$tablename = $queryparts[2];
 			$alterdefs = $queryparts[3];
-			if(strtolower($queryparts[1]) != 'table' || $queryparts[2] == '')
+			if (strtolower($queryparts[1]) != 'table' || $queryparts[2] == '')
 			{
 				$this->error_msg = "near \"{$queryparts[0]}\": syntax error";
 			}
 			else
 			{
 				// SQLITE 3 supports ADD Alter statements
-				if(strtolower(substr(ltrim($string), 0, 3)) == 'add')
+				if (strtolower(substr(ltrim($string), 0, 3)) == 'add')
 				{
 					$query = $this->db->query($string);
 				}
@@ -201,7 +201,7 @@ class DB_SQLite
 			}
 		}
 
-		if($this->error_number($query) > 0 && !$hide_errors)
+		if ($this->error_number($query) > 0 && !$hide_errors)
 		{
 			$this->error($string, $query);
 			exit;
@@ -211,7 +211,7 @@ class DB_SQLite
 		$this->query_time += $query_time;
 		$this->query_count++;
 
-		if($mybb->debug_mode)
+		if ($mybb->debug_mode)
 		{
 			$this->explain_query($string, $query_time);
 		}
@@ -226,7 +226,7 @@ class DB_SQLite
 	 */
 	function explain_query($string, $qtime)
 	{
-		if(preg_match("#^\s*select#i", $string))
+		if (preg_match("#^\s*select#i", $string))
 		{
 			$this->explain .= "<table style=\"background-color: #666;\" width=\"95%\" cellpadding=\"4\" cellspacing=\"1\" align=\"center\">\n".
 				"<tr>\n".
@@ -295,7 +295,7 @@ class DB_SQLite
 	 */
 	function fetch_field($query, $field, $row=FALSE)
 	{
-		if($row !== FALSE)
+		if ($row !== FALSE)
 		{
 			$this->data_seek($query, $row);
 		}
@@ -351,7 +351,7 @@ class DB_SQLite
 	 */
 	function error_number($query="")
 	{
-		if(!$query)
+		if (!$query)
 		{
 			$query = $this->db->last_query;
 		}
@@ -368,9 +368,9 @@ class DB_SQLite
 	 */
 	function error_string($query="")
 	{
-		if($this->error_number != "")
+		if ($this->error_number != "")
 		{
-			if(!$query)
+			if (!$query)
 			{
 				$query = $this->db->last_query;
 			}
@@ -391,28 +391,28 @@ class DB_SQLite
 	{
 		$this->db->roll_back();
 
-		if($this->error_reporting)
+		if ($this->error_reporting)
 		{
-			if(!$query)
+			if (!$query)
 			{
 				$query = $this->db->last_query;
 			}
 
-			if($error_no == "")
+			if ($error_no == "")
 			{
 				$error_no = $this->error_number($query);
 			}
 
-			if($error == "")
+			if ($error == "")
 			{
 				$error = $this->error_string($query);
 			}
 
-			if(class_exists("errorHandler"))
+			if (class_exists("errorHandler"))
 			{
 				global $error_handler;
 
-				if(!is_object($error_handler))
+				if (!is_object($error_handler))
 				{
 					require_once MYBB_ROOT."inc/class_error.php";
 					$error_handler = new errorHandler();
@@ -440,7 +440,7 @@ class DB_SQLite
 	 */
 	function affected_rows($query="")
 	{
-		if(!$query)
+		if (!$query)
 		{
 			$query = $this->db->last_query;
 		}
@@ -456,7 +456,7 @@ class DB_SQLite
 	 */
 	function num_fields($query)
 	{
-		if(!$query)
+		if (!$query)
 		{
 			$query = $this->db->last_query;
 		}
@@ -473,7 +473,7 @@ class DB_SQLite
 	 */
 	function list_tables($database, $prefix='')
 	{
-		if($prefix)
+		if ($prefix)
 		{
 			$query = $this->query("SELECT tbl_name FROM sqlite_master WHERE type = 'table' AND tbl_name LIKE '".$this->escape_string($prefix)."%'");
 		}
@@ -500,7 +500,7 @@ class DB_SQLite
 		$query = $this->query("SELECT COUNT(name) as count FROM sqlite_master WHERE type='table' AND name='{$this->table_prefix}{$table}'");
 		$exists = $this->fetch_field($query, "count");
 
-		if($exists > 0)
+		if ($exists > 0)
 		{
 			return TRUE;
 		}
@@ -525,13 +525,13 @@ class DB_SQLite
 
 		while($row = $this->fetch_array($query))
 		{
-			if($row['name'] == $field)
+			if ($row['name'] == $field)
 			{
 				++$exists;
 			}
 		}
 
-		if($exists > 0)
+		if ($exists > 0)
 		{
 			return TRUE;
 		}
@@ -550,7 +550,7 @@ class DB_SQLite
 	function shutdown_query($query, $name=0)
 	{
 		global $shutdown_queries;
-		if($name)
+		if ($name)
 		{
 			$shutdown_queries[$name] = $query;
 		}
@@ -573,26 +573,26 @@ class DB_SQLite
 	{
 		$query = "SELECT ".$fields." FROM ".$this->table_prefix.$table;
 
-		if($conditions != "")
+		if ($conditions != "")
 		{
 			$query .= " WHERE ".$conditions;
 		}
 
-		if(isset($options['order_by']))
+		if (isset($options['order_by']))
 		{
 			$query .= " ORDER BY ".$options['order_by'];
 
-			if(isset($options['order_dir']))
+			if (isset($options['order_dir']))
 			{
 				$query .= " ".strtoupper($options['order_dir']);
 			}
 		}
 
-		if(isset($options['limit_start']) && isset($options['limit']))
+		if (isset($options['limit_start']) && isset($options['limit']))
 		{
 			$query .= " LIMIT ".$options['limit_start'].", ".$options['limit'];
 		}
-		else if(isset($options['limit']))
+		else if (isset($options['limit']))
 		{
 			$query .= " LIMIT ".$options['limit'];
 		}
@@ -610,7 +610,7 @@ class DB_SQLite
 	 */
 	function insert_query($table, $array)
 	{
-		if(!is_array($array))
+		if (!is_array($array))
 		{
 			return FALSE;
 		}
@@ -633,7 +633,7 @@ class DB_SQLite
 	 */
 	function insert_query_multiple($table, $array)
 	{
-		if(!is_array($array))
+		if (!is_array($array))
 		{
 			return FALSE;
 		}
@@ -667,7 +667,7 @@ class DB_SQLite
 	 */
 	function update_query($table, $array, $where="", $limit="", $no_quote=FALSE)
 	{
-		if(!is_array($array))
+		if (!is_array($array))
 		{
 			return FALSE;
 		}
@@ -676,7 +676,7 @@ class DB_SQLite
 		$query = "";
 		$quote = "'";
 
-		if($no_quote == TRUE)
+		if ($no_quote == TRUE)
 		{
 			$quote = "";
 		}
@@ -687,7 +687,7 @@ class DB_SQLite
 			$comma = ', ';
 		}
 
-		if(!empty($where))
+		if (!empty($where))
 		{
 			$query .= " WHERE $where";
 		}
@@ -706,7 +706,7 @@ class DB_SQLite
 	function delete_query($table, $where="", $limit="")
 	{
 		$query = "";
-		if(!empty($where))
+		if (!empty($where))
 		{
 			$query .= " WHERE $where";
 		}
@@ -753,7 +753,7 @@ class DB_SQLite
 	 */
 	function get_version()
 	{
-		if($this->version)
+		if ($this->version)
 		{
 			return $this->version;
 		}
@@ -905,7 +905,7 @@ class DB_SQLite
 	 */
 	function drop_table($table, $hard=FALSE, $table_prefix=TRUE)
 	{
-		if($table_prefix == FALSE)
+		if ($table_prefix == FALSE)
 		{
 			$table_prefix = "";
 		}
@@ -914,9 +914,9 @@ class DB_SQLite
 			$table_prefix = $this->table_prefix;
 		}
 
-		if($hard == FALSE)
+		if ($hard == FALSE)
 		{
-			if($this->table_exists($table))
+			if ($this->table_exists($table))
 			{
 				$this->query('DROP TABLE '.$table_prefix.$table);
 			}
@@ -948,19 +948,19 @@ class DB_SQLite
 			$comma = ',';
 		}
 
-		if(empty($columns) || empty($values))
+		if (empty($columns) || empty($values))
 		{
 			 return FALSE;
 		}
 
-		if($default_field == "")
+		if ($default_field == "")
 		{
 			return $this->query("REPLACE INTO {$this->table_prefix}{$table} ({$columns}) VALUES({$values})");
 		}
 		else
 		{
 			$update = FALSE;
-			if(is_array($default_field) && !empty($default_field))
+			if (is_array($default_field) && !empty($default_field))
 			{
 				$search_bit = array();
 				foreach($default_field as $field)
@@ -970,7 +970,7 @@ class DB_SQLite
 
 				$search_bit = implode(" AND ", $search_bit);
 				$query = $this->write_query("SELECT COUNT(".$default_field[0].") as count FROM {$this->table_prefix}{$table} WHERE {$search_bit} LIMIT 1");
-				if($this->fetch_field($query, "count") == 1)
+				if ($this->fetch_field($query, "count") == 1)
 				{
 					$update = TRUE;
 				}
@@ -981,7 +981,7 @@ class DB_SQLite
 
 				while($column = $this->fetch_array($query))
 				{
-					if($column[$default_field] == $replacements[$default_field])
+					if ($column[$default_field] == $replacements[$default_field])
 					{
 						$update = TRUE;
 						break;
@@ -989,7 +989,7 @@ class DB_SQLite
 				}
 			}
 
-			if($update === TRUE)
+			if ($update === TRUE)
 			{
 				return $this->update_query($table, $replacements, $search_bit);
 			}
@@ -1021,7 +1021,7 @@ class DB_SQLite
 		global $config, $lang;
 
 		$total = @filesize($config['database']['database']);
-		if(!$total || $table != '')
+		if (!$total || $table != '')
 		{
 			$total = $lang->na;
 		}
@@ -1036,20 +1036,20 @@ class DB_SQLite
 	 */
 	function alter_table_parse($table, $alterdefs, $fullquery="")
 	{
-		if(!$fullquery)
+		if (!$fullquery)
 		{
 			$fullquery = " ... {$alterdefs}";
 		}
 
-		if(!defined("TIME_NOW"))
+		if (!defined("TIME_NOW"))
 		{
 			define("TIME_NOW", time());
 		}
 
-		if($alterdefs != '')
+		if ($alterdefs != '')
 		{
 			$result = $this->query("SELECT sql,name,type FROM sqlite_master WHERE tbl_name = '{$table}' ORDER BY type DESC");
-			if($this->num_rows($result) > 0)
+			if ($this->num_rows($result) > 0)
 			{
 				$row = $this->fetch_array($result); // Table sql
 				$tmpname = 't'.TIME_NOW;
@@ -1091,15 +1091,15 @@ class DB_SQLite
 					switch($action)
 					{
 						case 'change':
-							if(sizeof($defparts) <= 3)
+							if (sizeof($defparts) <= 3)
 							{
 								$this->error($alterdefs, 'near "'.$defparts[0].($defparts[1] ? ' '.$defparts[1] : '').($defparts[2] ? ' '.$defparts[2] : '').'": syntax error', E_USER_WARNING);
 								return FALSE;
 							}
 
-							if($severpos = strpos($createtesttableSQL, ' '.$defparts[1].' '))
+							if ($severpos = strpos($createtesttableSQL, ' '.$defparts[1].' '))
 							{
-								if($newcols[$defparts[1]] != $defparts[1])
+								if ($newcols[$defparts[1]] != $defparts[1])
 								{
 									$this->error($alterdefs, 'unknown column "'.$defparts[1].'" in "'.$table.'"');
 									return FALSE;
@@ -1114,7 +1114,7 @@ class DB_SQLite
 									$insertval .= ' '.$defparts[$i];
 								}
 
-								if($nextcommapos)
+								if ($nextcommapos)
 								{
 									$createtesttableSQL = substr($createtesttableSQL, 0, $severpos).$insertval.substr($createtesttableSQL, $nextcommapos);
 								}
@@ -1130,17 +1130,17 @@ class DB_SQLite
 							}
 							break;
 						case 'drop':
-							if(sizeof($defparts) < 2)
+							if (sizeof($defparts) < 2)
 							{
 								$this->error($fullquery, 'near "'.$defparts[0].($defparts[1] ? ' '.$defparts[1] : '').'": syntax error');
 								return FALSE;
 							}
 
-							if($severpos = strpos($createtesttableSQL, ' '.$defparts[1].' '))
+							if ($severpos = strpos($createtesttableSQL, ' '.$defparts[1].' '))
 							{
 								$nextcommapos = strpos($createtesttableSQL, ',', $severpos);
 
-								if($nextcommapos)
+								if ($nextcommapos)
 								{
 									$createtesttableSQL = substr($createtesttableSQL, 0, $severpos).substr($createtesttableSQL, $nextcommapos + 1);
 								}
@@ -1171,7 +1171,7 @@ class DB_SQLite
 				$this->query($createtesttableSQL);
 
 				$droptempsql = 'DROP TABLE '.$tmpname;
-				if($this->query($droptempsql, 0) === FALSE)
+				if ($this->query($droptempsql, 0) === FALSE)
 				{
 					return FALSE;
 				}
@@ -1302,7 +1302,7 @@ class DB_SQLite
 
 
 		// Just starting timer, init and return
-		if(!$time_start)
+		if (!$time_start)
 		{
 			$time_start = $time;
 			return;
@@ -1311,7 +1311,7 @@ class DB_SQLite
 		else
 		{
 			$total = $time-$time_start;
-			if($total < 0) $total = 0;
+			if ($total < 0) $total = 0;
 			$time_start = 0;
 			return $total;
 		}

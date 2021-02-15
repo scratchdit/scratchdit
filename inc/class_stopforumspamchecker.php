@@ -87,12 +87,12 @@ class StopForumSpamChecker
 		$is_spammer = FALSE;
 		$checknum = $confidence = 0;
 
-		if(!filter_var($email, FILTER_VALIDATE_EMAIL))
+		if (!filter_var($email, FILTER_VALIDATE_EMAIL))
 		{
 			throw new Exception("stopforumspam_invalid_email");
 		}
 
-		if(!filter_var($ip_address, FILTER_VALIDATE_IP))
+		if (!filter_var($ip_address, FILTER_VALIDATE_IP))
 		{
 			throw new Exception('stopforumspam_invalid_ip_address');
 		}
@@ -103,7 +103,7 @@ class StopForumSpamChecker
 			FILTER_FLAG_NO_PRIV_RANGE |  FILTER_FLAG_NO_RES_RANGE
 		);
 
-		if($is_internal_ip)
+		if ($is_internal_ip)
 		{
 			return FALSE;
 		}
@@ -115,36 +115,36 @@ class StopForumSpamChecker
 
 		$result = fetch_remote_file($check_url);
 
-		if($result !== FALSE)
+		if ($result !== FALSE)
 		{
 			$result_json = @json_decode($result);
 
-			if($result_json != NULL && !isset($result_json->error))
+			if ($result_json != NULL && !isset($result_json->error))
 			{
-				if($this->check_usernames && $result_json->username->appears)
+				if ($this->check_usernames && $result_json->username->appears)
 				{
 					$checknum++;
 					$confidence += $result_json->username->confidence;
 				}
 
-				if($this->check_emails && $result_json->email->appears)
+				if ($this->check_emails && $result_json->email->appears)
 				{
 					$checknum++;
 					$confidence += $result_json->email->confidence;
 				}
 
-				if($this->check_ips && $result_json->ip->appears)
+				if ($this->check_ips && $result_json->ip->appears)
 				{
 					$checknum++;
 					$confidence += $result_json->ip->confidence;
 				}
 
-				if($checknum > 0 && $confidence)
+				if ($checknum > 0 && $confidence)
 				{
 					$confidence = $confidence / $checknum;
 				}
 
-				if($confidence > $this->min_weighting_before_spam)
+				if ($confidence > $this->min_weighting_before_spam)
 				{
 					$is_spammer = TRUE;
 				}
@@ -159,7 +159,7 @@ class StopForumSpamChecker
 			throw new Exception('stopforumspam_error_retrieving');
 		}
 
-		if($this->plugins)
+		if ($this->plugins)
 		{
 			$params = array(
 				'username'   => &$username,
@@ -172,7 +172,7 @@ class StopForumSpamChecker
 			$this->plugins->run_hooks('stopforumspam_check_spammer_pre_return', $params);
 		}
 
-		if($this->log_blocks && $is_spammer)
+		if ($this->log_blocks && $is_spammer)
 		{
 			log_spam_block(
 				$username, $email, $ip_address, array(
@@ -195,26 +195,26 @@ class StopForumSpamChecker
 
 		foreach($sfsSettingsEnabled as $setting)
 		{
-			if($setting == 'stopforumspam_check_usernames' && $mybb->settings[$setting])
+			if ($setting == 'stopforumspam_check_usernames' && $mybb->settings[$setting])
 			{
 				$settingsenabled[] = $lang->sfs_error_username;
 				continue;
 			}
 
-			if($setting == 'stopforumspam_check_emails' && $mybb->settings[$setting])
+			if ($setting == 'stopforumspam_check_emails' && $mybb->settings[$setting])
 			{
 				$settingsenabled[] = $lang->sfs_error_email;
 				continue;
 			}
 
-			if($setting = 'stopforumspam_check_ips' && $mybb->settings[$setting])
+			if ($setting = 'stopforumspam_check_ips' && $mybb->settings[$setting])
 			{
 				$settingsenabled[] = $lang->sfs_error_ip;
 				continue;
 			}
 		}
 
-		if(sizeof($settingsenabled) > 1)
+		if (sizeof($settingsenabled) > 1)
 		{
 			$lastsetting = $settingsenabled[sizeof($settingsenabled)-1];
 			unset($settingsenabled[sizeof($settingsenabled)-1]);
