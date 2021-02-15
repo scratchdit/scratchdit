@@ -233,7 +233,7 @@ class MyBB
 				}
 			}
 
-			if (!$this->cookies[$key]) {
+			if (!array_key_exists($key, $this->cookies)) {
 				$this->cookies[$key] = $val;
 			}
 		}
