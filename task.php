@@ -37,7 +37,7 @@ if (PHP_SAPI == "cli") {
 	// Passing a specific task ID
 	if ($_SERVER['argc'] == 2) {
 		$query = $db->simple_select("tasks", "tid", "tid='" . intval($_SERVER['argv'][1]) . "'");
-		$tid = $db->fetch_field($query, "tid");
+		$tid   = $db->fetch_field($query, "tid");
 	}
 
 	if ($tid) {
@@ -45,7 +45,8 @@ if (PHP_SAPI == "cli") {
 	} else {
 		run_task();
 	}
-} else {// Otherwise FALSE GIF image, only supports running next available task
+} else {
+	// Otherwise FALSE GIF image, only supports running next available task
 
 	header("Content-type: image/gif");	// Send our fake gif image (clear 1x1 transparent image)
 	echo base64_decode("R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==");
