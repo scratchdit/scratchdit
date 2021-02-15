@@ -37,8 +37,8 @@ class PluginSystem
 		$pluginlist = $cache->read("plugins");
 		if (array_key_exists('active', $pluginlist) && is_array($pluginlist['active'])) {
 			foreach ($pluginlist['active'] as $plugin) {
-				if ($plugin != "" && file_exists(MYBB_ROOT . "inc/plugins/" . $plugin . ".php")) {
-					include_once MYBB_ROOT . "inc/plugins/" . $plugin . ".php";
+				if ($plugin != "" && file_exists(MYBB_ROOT . "inc/plugins/$plugin.php")) {
+					include_once MYBB_ROOT . "inc/plugins/$plugin.php";
 				}
 			}
 		}
@@ -81,7 +81,7 @@ class PluginSystem
 	 */
 	function run_hooks($hook, &$arguments = "")
 	{
-		if (!is_array($this->hooks[$hook])) {
+		if (!array_key_exists($hook, $this->hooks) || !is_array($this->hooks[$hook])) {
 			return $arguments;
 		}
 
