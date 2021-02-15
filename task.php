@@ -45,11 +45,9 @@ if (PHP_SAPI == "cli") {
 	} else {
 		run_task();
 	}
-}
-// Otherwise FALSE GIF image, only supports running next available task
-else {
-	// Send our fake gif image (clear 1x1 transparent image)
-	header("Content-type: image/gif");
+} else {// Otherwise FALSE GIF image, only supports running next available task
+
+	header("Content-type: image/gif");	// Send our fake gif image (clear 1x1 transparent image)
 	echo base64_decode("R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==");
 
 	// If the use shutdown functionality is turned off, run any shutdown related items now.
