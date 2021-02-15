@@ -3738,7 +3738,7 @@ function update_first_post($tid)
 	global $db;
 
 	$query = $db->simple_select("posts", "pid,replyto", "tid='{$tid}'", array('order_by' => 'dateline', 'limit' => 1));
-	$post = $db->fetch_array($query);
+	$post  = $db->fetch_array($query);
 
 	if ($post['replyto'] != 0) {
 		$replyto_update = array(
@@ -3757,6 +3757,7 @@ function update_first_post($tid)
  * Checks for the length of a string, mb strings accounted for
  *
  * @param string The string to check the length of.
+ *
  * @return int The length of the string.
  */
 function my_strlen($string)
@@ -3764,6 +3765,10 @@ function my_strlen($string)
 	global $lang;
 
 	$string = preg_replace("#&\#([0-9]+);#", "-", $string);
+
+	if (!isset($lang->settings)) {
+		$lang->settings = array();
+	}
 
 	if (!array_key_exists('charset', $lang->settings)) {
 		$lang->settings['charset'] == "utf-8";
