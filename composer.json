@@ -1,0 +1,6 @@
+{
+	"$schema": "https://getcomposer.org/schema.json",
+	"require": {
+		"php": "~7.4-stable"
+	}
+}
