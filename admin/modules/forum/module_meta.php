@@ -1,12 +1,11 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
- * $Id$
  */
 
 // Disallow direct access to this file for security reasons
@@ -15,6 +14,9 @@ if(!defined("IN_MYBB"))
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
 
+/**
+ * @return bool true
+ */
 function forum_meta()
 {
 	global $page, $lang, $plugins;
@@ -29,12 +31,17 @@ function forum_meta()
 
 	$page->add_menu_item($lang->forums_and_posts, "forum", "index.php?module=forum", 20, $sub_menu);
 
-	return TRUE;
+	return true;
 }
 
+/**
+ * @param string $action
+ *
+ * @return string
+ */
 function forum_action_handler($action)
 {
-	global $page, $lang, $plugins;
+	global $page, $plugins;
 
 	$page->active_module = "forum";
 
@@ -59,6 +66,9 @@ function forum_action_handler($action)
 	}
 }
 
+/**
+ * @return array
+ */
 function forum_admin_permissions()
 {
 	global $lang, $plugins;
@@ -75,4 +85,3 @@ function forum_admin_permissions()
 	return array("name" => $lang->forums_and_posts, "permissions" => $admin_permissions, "disporder" => 20);
 }
 
-?>

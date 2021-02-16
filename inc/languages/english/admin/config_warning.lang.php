@@ -1,11 +1,10 @@
 <?php
 /**
- * MyBB 1.6 English Language Pack
- * Copyright 2010 MyBB Group, All Rights Reserved
- * 
- * $Id$
+ * MyBB 1.8 English Language Pack
+ * Copyright 2014 MyBB Group, All Rights Reserved
+ *
  */
- 
+
 $l['warning_system'] = "Warning System";
 $l['warning_types'] = "Warning Types";
 $l['warning_types_desc'] = "Here you can manage the list of different warning types staff are allowed to issue to users.";
@@ -65,8 +64,9 @@ $l['expiration_permanent'] = "Permanent";
 $l['error_invalid_warning_level'] = "The specified warning level does not exist.";
 $l['error_invalid_warning_percentage'] = "You did not enter a valid percentage value for this warning level. Your percentage value must be between 1 and 100.";
 $l['error_invalid_warning_type'] = "The specified warning type does not exist.";
+$l['error_missing_action_type'] = "Please select one of the actions to be taken to assign with this new warning level.";
 $l['error_missing_type_title'] = "You did not enter a title for this warning type";
-$l['error_missing_type_points'] = "You did not enter a valid number of points to add when giving warnings of this type. You must enter a number greater than 0 but less than {1}";
+$l['error_missing_type_points'] = "You did not enter a valid number of points to add when giving warnings of this type. You must enter a number greater than 0 but not greater than {1}";
 
 $l['success_warning_level_created'] = "The warning level has been created successfully.";
 $l['success_warning_level_updated'] = "The warning level has been updated successfully.";
@@ -78,4 +78,3 @@ $l['success_warning_type_deleted'] = "The selected warning type has been deleted
 $l['confirm_warning_level_deletion'] = "Are you sure you wish to delete this warning level?";
 $l['confirm_warning_type_deletion'] = "Are you sure you wish to delete this warning type?";
 
-?>

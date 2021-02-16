@@ -1,5 +1,5 @@
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
-// Distributed under an MIT license: //codemirror.net/LICENSE
+// Distributed under an MIT license: http://codemirror.net/LICENSE
 
 (function() {
   var mode = CodeMirror.getMode({indentUnit: 2}, "javascript");
@@ -197,32 +197,32 @@
      "}");
 
   MT("async",
-     "[keyword async] [keyword function] [def foo]([def args]) { [keyword return] [atom TRUE]; }");
+     "[keyword async] [keyword function] [def foo]([def args]) { [keyword return] [atom true]; }");
 
   MT("async_assignment",
-     "[keyword const] [def foo] [operator =] [keyword async] [keyword function] ([def args]) { [keyword return] [atom TRUE]; };");
+     "[keyword const] [def foo] [operator =] [keyword async] [keyword function] ([def args]) { [keyword return] [atom true]; };");
 
   MT("async_object",
-     "[keyword let] [def obj] [operator =] { [property async]: [atom FALSE] };");
+     "[keyword let] [def obj] [operator =] { [property async]: [atom false] };");
 
   // async be highlighet as keyword and foo as def, but it requires potentially expensive look-ahead. See #4173
   MT("async_object_function",
-     "[keyword let] [def obj] [operator =] { [property async] [property foo]([def args]) { [keyword return] [atom TRUE]; } };");
+     "[keyword let] [def obj] [operator =] { [property async] [property foo]([def args]) { [keyword return] [atom true]; } };");
 
   MT("async_object_properties",
      "[keyword let] [def obj] [operator =] {",
-     "  [property prop1]: [keyword async] [keyword function] ([def args]) { [keyword return] [atom TRUE]; },",
-     "  [property prop2]: [keyword async] [keyword function] ([def args]) { [keyword return] [atom TRUE]; },",
-     "  [property prop3]: [keyword async] [keyword function] [def prop3]([def args]) { [keyword return] [atom TRUE]; },",
+     "  [property prop1]: [keyword async] [keyword function] ([def args]) { [keyword return] [atom true]; },",
+     "  [property prop2]: [keyword async] [keyword function] ([def args]) { [keyword return] [atom true]; },",
+     "  [property prop3]: [keyword async] [keyword function] [def prop3]([def args]) { [keyword return] [atom true]; },",
      "};");
 
   MT("async_arrow",
-     "[keyword const] [def foo] [operator =] [keyword async] ([def args]) [operator =>] { [keyword return] [atom TRUE]; };");
+     "[keyword const] [def foo] [operator =] [keyword async] ([def args]) [operator =>] { [keyword return] [atom true]; };");
 
   MT("async_jquery",
      "[variable $].[property ajax]({",
      "  [property url]: [variable url],",
-     "  [property async]: [atom TRUE],",
+     "  [property async]: [atom true],",
      "  [property method]: [string 'GET']",
      "});");
 
@@ -265,13 +265,13 @@
   TS("typescript_literal_types",
      "[keyword import] [keyword *] [keyword as] [def Sequelize] [keyword from] [string 'sequelize'];",
      "[keyword interface] [def MyAttributes] {",
-     "  [property truthy]: [string 'TRUE'] [operator |] [number 1] [operator |] [atom TRUE];",
-     "  [property falsy]: [string 'FALSE'] [operator |] [number 0] [operator |] [atom FALSE];",
+     "  [property truthy]: [string 'true'] [operator |] [number 1] [operator |] [atom true];",
+     "  [property falsy]: [string 'false'] [operator |] [number 0] [operator |] [atom false];",
      "}",
      "[keyword interface] [def MyInstance] [keyword extends] [type Sequelize].[type Instance] [operator <] [type MyAttributes] [operator >] {",
      "  [property rawAttributes]: [type MyAttributes];",
-     "  [property truthy]: [string 'TRUE'] [operator |] [number 1] [operator |] [atom TRUE];",
-     "  [property falsy]: [string 'FALSE'] [operator |] [number 0] [operator |] [atom FALSE];",
+     "  [property truthy]: [string 'true'] [operator |] [number 1] [operator |] [atom true];",
+     "  [property falsy]: [string 'false'] [operator |] [number 0] [operator |] [atom false];",
      "}")
 
   TS("typescript_extend_operators",
@@ -341,7 +341,7 @@
      "[keyword function] [def A]() {",
      "  [keyword return] [keyword this].[property property];",
      "}",
-     "[keyword function] [def B](): [type Promise][operator <]{ [[ [variable key]: [type string] ]]: [type any] } [operator |] [atom NULL][operator >] {",
+     "[keyword function] [def B](): [type Promise][operator <]{ [[ [variable key]: [type string] ]]: [type any] } [operator |] [atom null][operator >] {",
      "  [keyword return] [keyword this].[property property];",
      "}")
 
@@ -366,7 +366,7 @@
 
   var jsonld_mode = CodeMirror.getMode(
     {indentUnit: 2},
-    {name: "javascript", jsonld: TRUE}
+    {name: "javascript", jsonld: true}
   );
   function LD(name) {
     test.mode(name, jsonld_mode, Array.prototype.slice.call(arguments, 1));
@@ -375,8 +375,8 @@
   LD("json_ld_keywords",
     '{',
     '  [meta "@context"]: {',
-    '    [meta "@base"]: [string "//example.com"],',
-    '    [meta "@vocab"]: [string "//xmlns.com/foaf/0.1/"],',
+    '    [meta "@base"]: [string "http://example.com"],',
+    '    [meta "@vocab"]: [string "http://xmlns.com/foaf/0.1/"],',
     '    [property "likesFlavor"]: {',
     '      [meta "@container"]: [meta "@list"]',
     '      [meta "@reverse"]: [string "@beFavoriteOf"]',
@@ -385,11 +385,11 @@
     '    [property "nick"]: { [meta "@container"]: [meta "@index"] }',
     '  },',
     '  [meta "@graph"]: [[ {',
-    '    [meta "@id"]: [string "//dbpedia.org/resource/John_Lennon"],',
+    '    [meta "@id"]: [string "http://dbpedia.org/resource/John_Lennon"],',
     '    [property "name"]: [string "John Lennon"],',
     '    [property "modified"]: {',
     '      [meta "@value"]: [string "2010-05-29T14:17:39+02:00"],',
-    '      [meta "@type"]: [string "//www.w3.org/2001/XMLSchema#dateTime"]',
+    '      [meta "@type"]: [string "http://www.w3.org/2001/XMLSchema#dateTime"]',
     '    }',
     '  } ]]',
     '}');

@@ -3,8 +3,8 @@
  * MyBB 1.8
  * Copyright 2020 MyBB Group, All Rights Reserved
  *
- * Website: //www.mybb.com
- * License: //www.mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
  */
 
@@ -32,7 +32,7 @@ class redisCacheHandler implements CacheHandlerInterface
 		global $mybb;
 
 		// Check if extension is loaded
-		if (!extension_loaded("Redis"))
+		if(!extension_loaded("Redis"))
 		{
 			// Throw our super awesome cache loading error
 			$mybb->trigger_generic_error("redis_load_error");
@@ -43,7 +43,7 @@ class redisCacheHandler implements CacheHandlerInterface
 	/**
 	 * Connect and initialize this handler.
 	 *
-	 * @return boolean TRUE if successful, FALSE on failure
+	 * @return boolean True if successful, false on failure
 	 */
 	function connect()
 	{
@@ -51,13 +51,13 @@ class redisCacheHandler implements CacheHandlerInterface
 
 		$this->redis = new Redis;
 
-		if (!$mybb->config['redis']['host'])
+		if(!$mybb->config['redis']['host'])
 		{
 			$message = "Please configure the redis settings in inc/config.php before attempting to use this cache handler";
 			$error_handler->trigger($message, MYBB_CACHEHANDLER_LOAD_ERROR);
 			die;
 		}
-		if ($mybb->config['redis']['port'])
+		if($mybb->config['redis']['port'])
 		{
 			$ret = $this->redis->pconnect($mybb->config['redis']['host'], $mybb->config['redis']['port']);
 		}
@@ -67,7 +67,7 @@ class redisCacheHandler implements CacheHandlerInterface
 		}
 
 
-		if (!$ret)
+		if(!$ret)
 		{
 			$message = "Unable to connect to the redis server on {$mybb->config['redis']['host']}:{$mybb->config['redis']['port']}. Are you sure it is running?";
 			$error_handler->trigger($message, MYBB_CACHEHANDLER_LOAD_ERROR);
@@ -77,22 +77,22 @@ class redisCacheHandler implements CacheHandlerInterface
 		// Set a unique identifier for all queries in case other forums are using the same redis server
 		$this->unique_id = md5(MYBB_ROOT);
 
-		return TRUE;
+		return true;
 	}
 
 	/**
 	 * Retrieve an item from the cache.
 	 *
 	 * @param string $name The name of the cache
-	 * @return mixed Cache data if successful, FALSE if failure
+	 * @return mixed Cache data if successful, false if failure
 	 */
 	function fetch($name)
 	{
 		$data = $this->redis->get($this->unique_id."_".$name);
 
-		if ($data === FALSE)
+		if($data === false)
 		{
-			return FALSE;
+			return false;
 		}
 		return unserialize($data);
 	}
@@ -102,7 +102,7 @@ class redisCacheHandler implements CacheHandlerInterface
 	 *
 	 * @param string $name The name of the cache
 	 * @param mixed $contents The data to write to the cache item
-	 * @return boolean TRUE on success, FALSE on failure
+	 * @return boolean True on success, false on failure
 	 */
 	function put($name, $contents)
 	{
@@ -113,7 +113,7 @@ class redisCacheHandler implements CacheHandlerInterface
 	 * Delete a cache
 	 *
 	 * @param string $name The name of the cache
-	 * @return boolean TRUE on success, FALSE on failure
+	 * @return boolean True on success, false on failure
 	 */
 	function delete($name)
 	{

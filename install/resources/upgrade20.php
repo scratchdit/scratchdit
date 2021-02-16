@@ -1,12 +1,11 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * Website: http://www.mybboard.com
- * License: http://mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
- * $Id$
  */
 
 /**
@@ -30,7 +29,7 @@ function upgrade20_dbchanges()
 	echo "<p>Performing necessary upgrade queries...</p>";
 
 	// Update the sequences for pgSQL - #1094, #1248
-	if ($mybb->config['database']['type'] == "pgsql")
+	if($mybb->config['database']['type'] == "pgsql")
 	{
 		$db->query("SELECT setval('{$mybb->config['database']['table_prefix']}attachtypes_atid_seq', (SELECT max(atid) FROM {$mybb->config['database']['table_prefix']}attachtypes));");
 		$db->query("SELECT setval('{$mybb->config['database']['table_prefix']}forums_fid_seq', (SELECT max(fid) FROM {$mybb->config['database']['table_prefix']}forums));");
@@ -49,4 +48,4 @@ function upgrade20_dbchanges()
 	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
 	$output->print_footer("20_done");
 }
-?>
+

@@ -1,12 +1,11 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
- * $Id $
  */
 
 class Graph {
@@ -70,45 +69,44 @@ class Graph {
 	/**
 	 * The corresponding x labels for the graph
 	 *
-	 * @var integer
+	 * @var array
 	 */
 	public $x_labels = array();
 
 	/**
 	 * The bottom label for the graph
 	 *
-	 * @var integer
+	 * @var string
 	 */
-	public $bottom_label = array();
+	public $bottom_label = "";
 
 	/**
 	 * Constructor of class. Initializes the barebore graph.
-	 *
-	 * @return Graph
 	 */
 	public function __construct()
 	{
 		// Setup initial graph layout
 
 		// Check for GD >= 2, create base image
-		if (gd_version() >= 2)
+		$gd_version = gd_version();
+		if($gd_version >= 2)
 		{
-			$this->im = imagecreateTRUEcolor($this->img_width, $this->img_height);
+			$this->im = imagecreatetruecolor($this->img_width, $this->img_height);
 		}
-		else
+		elseif (!empty($gd_version))
 		{
 			$this->im = imagecreate($this->img_width, $this->img_height);
 		}
 
 		// No GD support, die.
-		if (!$this->im)
+		if(!$this->im)
 		{
-			return FALSE;
+			throw new Exception('No GD support');
 		}
 
-		if (function_exists("imageantialias"))
+		if(function_exists("imageantialias"))
 		{
-			imageantialias($this->im, TRUE);
+			imageantialias($this->im, true);
 		}
 
 		// Fill the background
@@ -128,11 +126,23 @@ class Graph {
 	}
 
 	/**
+	 * Check if GD support is enabled and this class can be used.
+	 *
+	 * @return bool True if the class can be used.
+	 */
+	public static function can_use()
+	{
+		$gd_version = gd_version();
+
+		return !empty($gd_version);
+	}
+
+	/**
 	 * Select and allocate a color to the internal image resource
 	 *
-	 * @param integer The red value
-	 * @param integer The green value
-	 * @param integer The blue value
+	 * @param integer $red The red value
+	 * @param integer $green The green value
+	 * @param integer $blue The blue value
 	 * @return integer A color identifier
 	 */
 	private function color($red, $green, $blue)
@@ -143,16 +153,16 @@ class Graph {
 	/**
 	 * Creates a filled rectangle with optional rounded corners
 	 *
-	 * @param integer The initial x value
-	 * @param integer The initial y value
-	 * @param integer The ending x value
-	 * @param integer The ending y value
-	 * @param integer The optional radius
-	 * @param integer The optional rectangle color (defaults to black)
+	 * @param integer $x1 The initial x value
+	 * @param integer $y1 The initial y value
+	 * @param integer $x2 The ending x value
+	 * @param integer $y2 The ending y value
+	 * @param integer $radius The optional radius
+	 * @param integer $color The optional rectangle color (defaults to black)
 	 */
-	private function image_create_rectangle($x1, $y1, $x2, $y2, $radius=1, $color=NULL)
+	private function image_create_rectangle($x1, $y1, $x2, $y2, $radius=1, $color=null)
 	{
-		if ($color == NULL)
+		if($color == null)
 		{
 			$color = $this->color(0, 0, 0);
 		}
@@ -161,7 +171,7 @@ class Graph {
 		imagefilledrectangle($this->im, $x1, $y1+$radius, $x2, $y2-$radius, $color);
 		imagefilledrectangle($this->im, $x1+$radius, $y1, $x2-$radius, $y2, $color);
 
-		if ($radius > 0)
+		if($radius > 0)
 		{
 			$diameter = $radius*2;
 
@@ -176,22 +186,23 @@ class Graph {
 	/**
 	 * Creates a nicer thick line for angled lines
 	 *
-	 * @param integer The initial x value
-	 * @param integer The initial y value
-	 * @param integer The ending x value
-	 * @param integer The ending y value
-	 * @param integer The optional rectangle color (defaults to black)
-	 * @param integer The optional thickness (defaults to 1)
+	 * @param integer $x1 The initial x value
+	 * @param integer $y1 The initial y value
+	 * @param integer $x2 The ending x value
+	 * @param integer $y2 The ending y value
+	 * @param integer $color The optional rectangle color (defaults to black)
+	 * @param integer $thick The optional thickness (defaults to 1)
+	 * @return int
 	 */
 	private function imagelinethick($x1, $y1, $x2, $y2, $color, $thick = 1)
 	{
-		if ($thick == 1)
+		if($thick == 1)
 		{
 			return imageline($this->im, $x1, $y1, $x2, $y2, $color);
 		}
 
 		$t = $thick / 2 - 0.5;
-		if ($x1 == $x2 || $y1 == $y2)
+		if($x1 == $x2 || $y1 == $y2)
 		{
 			return imagefilledrectangle($this->im, round(min($x1, $x2) - $t), round(min($y1, $y2) - $t), round(max($x1, $x2) + $t), round(max($y1, $y2) + $t), $color);
 		}
@@ -212,7 +223,7 @@ class Graph {
 	/**
 	 * Adds an array of x, y points to the internal points array
 	 *
-	 * @param array The array of x, y points to add
+	 * @param array $points The array of x, y points to add
 	 */
 	public function add_points($points)
 	{
@@ -222,7 +233,7 @@ class Graph {
 	/**
 	 * Adds an array of x labels to the internal labels array
 	 *
-	 * @param array The array of x labels to add
+	 * @param array $labels The array of x labels to add
 	 */
 	public function add_x_labels($labels)
 	{
@@ -232,7 +243,7 @@ class Graph {
 	/**
 	 * Sets a bottom label
 	 *
-	 * @param string The bottom label to set
+	 * @param string $label The bottom label to set
 	 */
 	public function set_bottom_label($label)
 	{
@@ -263,10 +274,11 @@ class Graph {
 		// Get our scale for finding our points of reference to place our x axis labels
 		$x_label_scale = ceil(count($this->points)/20);
 		$x_label_points = array();
+		$next_y_scaled = 0;
 
 		foreach($this->points as $x => $y)
 		{
-			if (($x_label_scale == 0 || (($x+1) % $x_label_scale) == 0) && $x != 0)
+			if(($x_label_scale == 0 || (($x+1) % $x_label_scale) == 0) && $x != 0)
 			{
 				$x_label_points[] = $x;
 
@@ -276,13 +288,13 @@ class Graph {
 			}
 
 			// Look ahead to find our next point, if there is one
-			if (!array_key_exists($x+1, $this->points))
+			if(!array_key_exists($x+1, $this->points))
 			{
 				break;
 			}
 			$next_y = $this->points[$x+1];
 
-			if ($y_scale_factor == 0)
+			if($y_scale_factor == 0)
 			{
 				$y_scaled = $next_y_scaled = 0;
 			}
@@ -309,7 +321,7 @@ class Graph {
 		// Draw our bottom label
 		imagestring($this->im, 2, ($this->img_width / 2), $y_initial+25, $this->bottom_label, $this->color(0, 0, 0));
 
-		if ($max > 4)
+		if($max > 4)
 		{
 			// Draw our y labels
 			for($i = 1; $i < 4; ++$i)
@@ -336,4 +348,3 @@ class Graph {
 	}
 }
 
-?>

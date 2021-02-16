@@ -1,23 +1,23 @@
 <?php
 /**
- * Copyright 2007-2017 Horde LLC (//www.horde.org/)
+ * Copyright 2007-2017 Horde LLC (http://www.horde.org/)
  *
  * See the enclosed file COPYING for license information (LGPL). If you did
- * not receive this file, see //www.horde.org/licenses/lgpl21.
+ * not receive this file, see http://www.horde.org/licenses/lgpl21.
  *
  * @package Text_Diff
  * @author  Geoffrey T. Dairiki <dairiki@dairiki.org>
  */
 
 // Disallow direct access to this file for security reasons
-if (!defined("IN_MYBB"))
+if(!defined("IN_MYBB"))
 {
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
 
 class Horde_Text_Diff_ThreeWay_Op_Base
 {
-    public function __construct($orig = FALSE, $final1 = FALSE, $final2 = FALSE)
+    public function __construct($orig = false, $final1 = false, $final2 = false)
     {
         $this->orig = $orig ? $orig : array();
         $this->final1 = $final1 ? $final1 : array();
@@ -34,7 +34,7 @@ class Horde_Text_Diff_ThreeWay_Op_Base
             } elseif ($this->final2 === $this->orig) {
                 $this->_merged = &$this->final1;
             } else {
-                $this->_merged = FALSE;
+                $this->_merged = false;
             }
         }
 
@@ -43,6 +43,6 @@ class Horde_Text_Diff_ThreeWay_Op_Base
 
     public function isConflict()
     {
-        return $this->merged() === FALSE;
+        return $this->merged() === false;
     }
 }

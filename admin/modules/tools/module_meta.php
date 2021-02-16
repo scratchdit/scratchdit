@@ -1,20 +1,22 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
- * $Id$
  */
 
 // Disallow direct access to this file for security reasons
-if (!defined("IN_MYBB"))
+if(!defined("IN_MYBB"))
 {
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
 
+/**
+ * @return bool true
+ */
 function tools_meta()
 {
 	global $page, $lang, $plugins;
@@ -33,9 +35,14 @@ function tools_meta()
 
 	$page->add_menu_item($lang->tools_and_maintenance, "tools", "index.php?module=tools", 50, $sub_menu);
 
-	return TRUE;
+	return true;
 }
 
+/**
+ * @param string $action
+ *
+ * @return string
+ */
 function tools_action_handler($action)
 {
 	global $page, $lang, $plugins;
@@ -54,6 +61,7 @@ function tools_action_handler($action)
 		'adminlog' => array('active' => 'adminlog', 'file' => 'adminlog.php'),
 		'modlog' => array('active' => 'modlog', 'file' => 'modlog.php'),
 		'warninglog' => array('active' => 'warninglog', 'file' => 'warninglog.php'),
+		'spamlog' => array('active' => 'spamlog', 'file' => 'spamlog.php'),
 		'system_health' => array('active' => 'system_health', 'file' => 'system_health.php'),
 		'file_verification' => array('active' => 'file_verification', 'file' => 'file_verification.php'),
 		'statistics' => array('active' => 'statistics', 'file' => 'statistics.php'),
@@ -67,13 +75,14 @@ function tools_action_handler($action)
 	$sub_menu['30'] = array("id" => "maillogs", "title" => $lang->user_email_log, "link" => "index.php?module=tools-maillogs");
 	$sub_menu['40'] = array("id" => "mailerrors", "title" => $lang->system_mail_log, "link" => "index.php?module=tools-mailerrors");
 	$sub_menu['50'] = array("id" => "warninglog", "title" => $lang->user_warning_log, "link" => "index.php?module=tools-warninglog");
-	$sub_menu['60'] = array("id" => "statistics", "title" => $lang->statistics, "link" => "index.php?module=tools-statistics");
+	$sub_menu['60'] = array("id" => "spamlog", "title" => $lang->spam_log, "link" => "index.php?module=tools-spamlog");
+	$sub_menu['70'] = array("id" => "statistics", "title" => $lang->statistics, "link" => "index.php?module=tools-statistics");
 
 	$sub_menu = $plugins->run_hooks("admin_tools_menu_logs", $sub_menu);
 
-	if (!isset($actions[$action]))
+	if(!isset($actions[$action]))
 	{
-		$page->active_action = "system_health";
+		$page->active_action = $action = "system_health";
 	}
 
 	$sidebar = new SidebarItem($lang->logs);
@@ -81,7 +90,7 @@ function tools_action_handler($action)
 
 	$page->sidebar .= $sidebar->get_markup();
 
-	if (isset($actions[$action]))
+	if(isset($actions[$action]))
 	{
 		$page->active_action = $actions[$action]['active'];
 		return $actions[$action]['file'];
@@ -92,6 +101,9 @@ function tools_action_handler($action)
 	}
 }
 
+/**
+ * @return array
+ */
 function tools_admin_permissions()
 {
 	global $lang, $plugins;
@@ -108,6 +120,7 @@ function tools_admin_permissions()
 		"maillogs" => $lang->can_manage_user_mail_log,
 		"mailerrors" => $lang->can_manage_system_mail_log,
 		"warninglog" => $lang->can_manage_user_warning_log,
+		"spamlog" => $lang->can_manage_spam_log,
 		"php_info" => $lang->can_view_php_info,
 		"file_verification" => $lang->can_manage_file_verification,
 		"statistics" => $lang->can_view_statistics,
@@ -117,4 +130,4 @@ function tools_admin_permissions()
 
 	return array("name" => $lang->tools_and_maintenance, "permissions" => $admin_permissions, "disporder" => 50);
 }
-?>
+

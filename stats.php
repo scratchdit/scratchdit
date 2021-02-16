@@ -1,18 +1,18 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
- * $Id$
  */
 
 define("IN_MYBB", 1);
 define('THIS_SCRIPT', 'stats.php');
 
-$templatelist = "stats,stats_thread";
+$templatelist = "stats,stats_thread,stats_topforum";
+
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
 require_once MYBB_ROOT."inc/class_parser.php";
@@ -25,21 +25,27 @@ add_breadcrumb($lang->nav_stats);
 
 $stats = $cache->read("stats");
 
-if ($stats['numthreads'] < 1 || $stats['numusers'] < 1)
+if($stats['numthreads'] < 1 || $stats['numusers'] < 1)
 {
 	error($lang->not_enough_info_stats);
+}
+
+if($mybb->settings['statsenabled'] != 1)
+{
+	error($lang->stats_disabled);
 }
 
 $plugins->run_hooks("stats_start");
 
 $repliesperthread = my_number_format(round((($stats['numposts'] - $stats['numthreads']) / $stats['numthreads']), 2));
 $postspermember = my_number_format(round(($stats['numposts'] / $stats['numusers']), 2));
+$threadspermember = my_number_format(round(($stats['numthreads'] / $stats['numusers']), 2));
 
 // Get number of days since board start (might need improvement)
 $query = $db->simple_select("users", "regdate", "", array('order_by' => 'regdate', 'limit' => 1));
 $result = $db->fetch_array($query);
 $days = (TIME_NOW - $result['regdate']) / 86400;
-if ($days < 1)
+if($days < 1)
 {
 	$days = 1;
 }
@@ -49,29 +55,53 @@ $threadsperday = my_number_format(round(($stats['numthreads'] / $days), 2));
 $membersperday = my_number_format(round(($stats['numusers'] / $days), 2));
 
 // Get forum permissions
-$unviewableforums = get_unviewable_forums(TRUE);
-$fidnot = '1=1';
-$unviewableforumsarray = array();
-if ($unviewableforums)
+$unviewableforums = get_unviewable_forums(true);
+$inactiveforums = get_inactive_forums();
+$unviewablefids = $inactivefids = array();
+$fidnot = '';
+
+if($unviewableforums)
 {
-	$fidnot = "fid NOT IN ($unviewableforums)";
-	$unviewableforumsarray = explode(',', $unviewableforums);
+	$fidnot .= "AND fid NOT IN ($unviewableforums)";
+	$unviewablefids = explode(',', $unviewableforums);
+}
+if($inactiveforums)
+{
+	$fidnot .= "AND fid NOT IN ($inactiveforums)";
+	$inactivefids = explode(',', $inactiveforums);
+}
+
+$unviewableforumsarray = array_merge($unviewablefids, $inactivefids);
+
+// Check group permissions if we can't view threads not started by us
+$group_permissions = forum_permissions();
+$onlyusfids = array();
+foreach($group_permissions as $gpfid => $forum_permissions)
+{
+	if(isset($forum_permissions['canonlyviewownthreads']) && $forum_permissions['canonlyviewownthreads'] == 1)
+	{
+		$onlyusfids[] = $gpfid;
+	}
 }
 
 // Most replied-to threads
 $most_replied = $cache->read("most_replied_threads");
 
-if (!$most_replied)
+if(!$most_replied)
 {
 	$cache->update_most_replied_threads();
-	$most_replied = $cache->read("most_replied_threads", TRUE);
+	$most_replied = $cache->read("most_replied_threads", true);
 }
 
-if (!empty($most_replied))
+$mostreplies = '';
+if(!empty($most_replied))
 {
 	foreach($most_replied as $key => $thread)
 	{
-		if (!in_array("'{$thread['fid']}'", $unviewableforumsarray))
+		if(
+			!in_array($thread['fid'], $unviewableforumsarray) &&
+			(!in_array($thread['fid'], $onlyusfids) || ($mybb->user['uid'] && $thread['uid'] == $mybb->user['uid']))
+		)
 		{
 			$thread['subject'] = htmlspecialchars_uni($parser->parse_badwords($thread['subject']));
 			$numberbit = my_number_format($thread['replies']);
@@ -85,17 +115,21 @@ if (!empty($most_replied))
 // Most viewed threads
 $most_viewed = $cache->read("most_viewed_threads");
 
-if (!$most_viewed)
+if(!$most_viewed)
 {
 	$cache->update_most_viewed_threads();
-	$most_viewed = $cache->read("most_viewed_threads", TRUE);
+	$most_viewed = $cache->read("most_viewed_threads", true);
 }
 
-if (!empty($most_viewed))
+$mostviews = '';
+if(!empty($most_viewed))
 {
 	foreach($most_viewed as $key => $thread)
 	{
-		if (!in_array("'{$thread['fid']}'", $unviewableforumsarray))
+		if(
+			!in_array($thread['fid'], $unviewableforumsarray) &&
+			(!in_array($thread['fid'], $onlyusfids) || ($mybb->user['uid'] && $thread['uid'] == $mybb->user['uid']))
+		)
 		{
 			$thread['subject'] = htmlspecialchars_uni($parser->parse_badwords($thread['subject']));
 			$numberbit = my_number_format($thread['views']);
@@ -106,14 +140,27 @@ if (!empty($most_viewed))
 	}
 }
 
-// Top forum
-if (!empty($fidnot))
+$statistics = $cache->read('statistics');
+$mybb->settings['statscachetime'] = (int)$mybb->settings['statscachetime'];
+
+if($mybb->settings['statscachetime'] < 1)
 {
-	$fidnot .= " AND";
+	$mybb->settings['statscachetime'] = 0;
 }
-$query = $db->simple_select("forums", "fid, name, threads, posts", "$fidnot type='f'", array('order_by' => 'posts', 'order_dir' => 'DESC', 'limit' => 1));
+
+$interval = $mybb->settings['statscachetime']*3600;
+
+if(!$statistics || $interval == 0 || TIME_NOW - $interval > $statistics['time'])
+{
+	$cache->update_statistics();
+	$statistics = $cache->read('statistics');
+}
+
+// Top forum
+$query = $db->simple_select('forums', 'fid, name, threads, posts', "type='f'$fidnot", array('order_by' => 'posts', 'order_dir' => 'DESC', 'limit' => 1));
 $forum = $db->fetch_array($query);
-if (!$forum['posts'])
+
+if(empty($forum['fid']))
 {
 	$topforum = $lang->none;
 	$topforumposts = $lang->no;
@@ -121,57 +168,47 @@ if (!$forum['posts'])
 }
 else
 {
-	$topforum = "<a href=\"".get_forum_link($forum['fid'])."\">{$forum['name']}</a>";
+	$forum['name'] = htmlspecialchars_uni(strip_tags($forum['name']));
+	$forum['link'] = get_forum_link($forum['fid']);
+	eval("\$topforum = \"".$templates->get("stats_topforum")."\";");
 	$topforumposts = $forum['posts'];
 	$topforumthreads = $forum['threads'];
 }
 
-// Today's top poster
-$timesearch = TIME_NOW - 86400;
-switch($db->type)
+// Top referrer defined for the templates even if we don't use it
+$top_referrer = '';
+if($mybb->settings['statstopreferrer'] == 1 && isset($statistics['top_referrer']['uid']))
 {
-	case "pgsql":
-		$query = $db->query("
-			SELECT u.uid, u.username, COUNT(*) AS poststoday
-			FROM ".TABLE_PREFIX."posts p
-			LEFT JOIN ".TABLE_PREFIX."users u ON (p.uid=u.uid)
-			WHERE p.dateline > $timesearch
-			GROUP BY ".$db->build_fields_string("users", "u.")." ORDER BY poststoday DESC
-			LIMIT 1
-		");
-		break;
-	default:
-		$query = $db->query("
-			SELECT u.uid, u.username, COUNT(*) AS poststoday
-			FROM ".TABLE_PREFIX."posts p
-			LEFT JOIN ".TABLE_PREFIX."users u ON (p.uid=u.uid)
-			WHERE p.dateline > $timesearch
-			GROUP BY p.uid ORDER BY poststoday DESC
-			LIMIT 1
-		");
+	// Only show this if we have anything more the 0 referrals
+	if($statistics['top_referrer']['referrals'] > 0)
+	{
+		$toprefuser = build_profile_link(htmlspecialchars_uni($statistics['top_referrer']['username']), $statistics['top_referrer']['uid']);
+		$top_referrer = $lang->sprintf($lang->top_referrer, $toprefuser, my_number_format($statistics['top_referrer']['referrals']));
+	}
 }
-$user = $db->fetch_array($query);
-if (!$user['poststoday'])
+
+// Today's top poster
+if(!isset($statistics['top_poster']['uid']))
 {
 	$topposter = $lang->nobody;
 	$topposterposts = $lang->no_posts;
 }
 else
 {
-	if (!$user['uid'])
+	if(!$statistics['top_poster']['uid'])
 	{
 		$topposter = $lang->guest;
 	}
 	else
 	{
-		$topposter = build_profile_link($user['username'], $user['uid']);
+		$topposter = build_profile_link(htmlspecialchars_uni($statistics['top_poster']['username']), $statistics['top_poster']['uid']);
 	}
-	$topposterposts = $user['poststoday'];
+
+	$topposterposts = $statistics['top_poster']['poststoday'];
 }
 
 // What percent of members have posted?
-$query = $db->simple_select("users", "COUNT(*) AS count", "postnum > 0");
-$posters = $db->fetch_field($query, "count");
+$posters = $statistics['posters'];
 $havepostedpercent = my_number_format(round((($posters / $stats['numusers']) * 100), 2)) . "%";
 
 $lang->todays_top_poster = $lang->sprintf($lang->todays_top_poster, $topposter, my_number_format($topposterposts));
@@ -186,4 +223,3 @@ $plugins->run_hooks("stats_end");
 
 eval("\$stats = \"".$templates->get("stats")."\";");
 output_page($stats);
-?>

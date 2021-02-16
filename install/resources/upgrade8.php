@@ -1,12 +1,11 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
- * $Id$
  */
 
 /**
@@ -31,14 +30,14 @@ function upgrade8_dbchanges()
 
 	echo "<p>Performing necessary upgrade queries..</p>";
 
-	if ($db->field_exists('oldadditionalgroups', "banned"))
+	if($db->field_exists('oldadditionalgroups', "banned"))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."banned DROP oldadditionalgroups;");
 	}
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."banned ADD oldadditionalgroups TEXT NOT NULL AFTER oldgroup");
 
 
-	if ($db->field_exists('olddisplaygroup', "banned"))
+	if($db->field_exists('olddisplaygroup', "banned"))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."banned DROP olddisplaygroup;");
 	}
@@ -49,4 +48,3 @@ function upgrade8_dbchanges()
 	$output->print_footer("8_done");
 }
 
-?>

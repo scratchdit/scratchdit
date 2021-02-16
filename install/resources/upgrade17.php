@@ -1,12 +1,11 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2014 MyBB Group, All Rights Reserved
  *
  * Website: http://www.mybb.com
- * License: http://mybb.com/about/license
+ * License: http://www.mybb.com/about/license
  *
- * $Id$
  */
 
 /**
@@ -32,13 +31,13 @@ function upgrade17_dbchanges()
 	echo "<p>Adding index to private messages table ... ";
 	flush();
 
-	if ($db->type == "mysql" || $db->type == "mysqli")
+	if($db->type == "mysql" || $db->type == "mysqli")
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."privatemessages ADD INDEX ( `toid` )");
 	}
 
 	global $footer_extra;
-	$footer_extra = "<script type=\"text/javascript\">window.onload = function() { var button = $$('.submit_button'); if (button[0]) { button[0].value = 'Automatically Redirecting...'; button[0].disabled = TRUE; button[0].style.color = '#aaa'; button[0].style.borderColor = '#aaa'; document.forms[0].submit(); }}</script>";
+	$footer_extra = "<script type=\"text/javascript\">$(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
 
 	$contents .= "Click next to continue with the upgrade process.</p>";
 	$output->print_contents($contents);
@@ -57,9 +56,9 @@ function upgrade17_dbchanges2()
 	// Update our version history first
 	$version_history = array();
 	$dh = opendir(INSTALL_ROOT."resources");
-	while(($file = readdir($dh)) !== FALSE)
+	while(($file = readdir($dh)) !== false)
 	{
-		if (preg_match("#upgrade([0-9]+).php$#i", $file, $match))
+		if(preg_match("#upgrade([0-9]+).php$#i", $file, $match))
 		{
 			$version_history[$match[1]] = $match[1];
 		}
@@ -71,52 +70,52 @@ function upgrade17_dbchanges2()
 
 	$cache->update("version_history", $version_history);
 
-	if ($db->field_exists('prefix', 'threads'))
+	if($db->field_exists('prefix', 'threads'))
 	{
 		$db->drop_column("threads", "prefix");
 	}
 
-	if ($db->field_exists('loginattempts', "adminoptions"))
+	if($db->field_exists('loginattempts', "adminoptions"))
 	{
 		$db->drop_column("adminoptions", "loginattempts");
 	}
 
-	if ($db->field_exists('loginlockoutexpiry', "adminoptions"))
+	if($db->field_exists('loginlockoutexpiry', "adminoptions"))
 	{
 		$db->drop_column("adminoptions", "loginlockoutexpiry");
 	}
 
-	if ($db->field_exists('canonlyviewownthreads', "forumpermissions"))
+	if($db->field_exists('canonlyviewownthreads', "forumpermissions"))
 	{
 		$db->drop_column("forumpermissions", "canonlyviewownthreads");
 	}
 
-	if ($db->field_exists('isgroup', 'moderators'))
+	if($db->field_exists('isgroup', 'moderators'))
 	{
 		$db->drop_column("moderators", "isgroup");
 	}
 
-	if ($db->field_exists('referrals', 'promotions'))
+	if($db->field_exists('referrals', 'promotions'))
 	{
 		$db->drop_column("promotions", "referrals");
 	}
 
-	if ($db->field_exists('referralstype', 'promotions'))
+	if($db->field_exists('referralstype', 'promotions'))
 	{
 		$db->drop_column("promotions", "referralstype");
 	}
 
-	if ($db->field_exists('pid', 'reputation'))
+	if($db->field_exists('pid', 'reputation'))
 	{
 		$db->drop_column("reputation", "pid");
 	}
 
-	if ($db->field_exists('allowvideocode', 'calendars'))
+	if($db->field_exists('allowvideocode', 'calendars'))
 	{
 		$db->drop_column("calendars", "allowvideocode");
 	}
 
-	if ($db->field_exists('allowvideocode', 'forums'))
+	if($db->field_exists('allowvideocode', 'forums'))
 	{
 		$db->drop_column("forums", "allowvideocode");
 	}
@@ -164,7 +163,7 @@ function upgrade17_dbchanges2()
 	$db->update_query("calendars", array('allowvideocode' => '1'));
 
 	global $footer_extra;
-	$footer_extra = "<script type=\"text/javascript\">window.onload = function() { var button = $$('.submit_button'); if (button[0]) { button[0].value = 'Automatically Redirecting...'; button[0].disabled = TRUE; button[0].style.color = '#aaa'; button[0].style.borderColor = '#aaa'; document.forms[0].submit(); }}</script>";
+	$footer_extra = "<script type=\"text/javascript\">$(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
 
 	$contents .= "Click next to continue with the upgrade process.</p>";
 	$output->print_contents($contents);
@@ -180,52 +179,52 @@ function upgrade17_dbchanges3()
 	echo "<p>Performing necessary upgrade queries..</p>";
 	flush();
 
-	if ($db->field_exists('canundovotes', 'usergroups'))
+	if($db->field_exists('canundovotes', 'usergroups'))
 	{
 		$db->drop_column("usergroups", "canundovotes");
 	}
 
-	if ($db->field_exists('maxreputationsperuser', 'usergroups'))
+	if($db->field_exists('maxreputationsperuser', 'usergroups'))
 	{
 		$db->drop_column("usergroups", "maxreputationsperuser");
 	}
 
-	if ($db->field_exists('maxreputationsperthread', 'usergroups'))
+	if($db->field_exists('maxreputationsperthread', 'usergroups'))
 	{
 		$db->drop_column("usergroups", "maxreputationsperthread");
 	}
 
-	if ($db->field_exists('receivefrombuddy', 'users'))
+	if($db->field_exists('receivefrombuddy', 'users'))
 	{
 		$db->drop_column("users", "receivefrombuddy");
 	}
 
-	if ($db->field_exists('suspendsignature', 'users'))
+	if($db->field_exists('suspendsignature', 'users'))
 	{
 		$db->drop_column("users", "suspendsignature");
 	}
 
-	if ($db->field_exists('suspendsigtime', 'users'))
+	if($db->field_exists('suspendsigtime', 'users'))
 	{
 		$db->drop_column("users", "suspendsigtime");
 	}
 
-	if ($db->field_exists('loginattempts', 'users'))
+	if($db->field_exists('loginattempts', 'users'))
 	{
 		$db->drop_column("users", "loginattempts");
 	}
 
-	if ($db->field_exists('failedlogin', 'users'))
+	if($db->field_exists('failedlogin', 'users'))
 	{
 		$db->drop_column("users", "failedlogin");
 	}
 
-	if ($db->field_exists('usernotes', "users"))
+	if($db->field_exists('usernotes', "users"))
 	{
 		$db->drop_column("users", "usernotes");
 	}
 
-	if ($db->field_exists('referrals', 'users'))
+	if($db->field_exists('referrals', 'users'))
 	{
 		$db->drop_column("users", "referrals");
 	}
@@ -273,7 +272,7 @@ function upgrade17_dbchanges3()
 	$output->print_contents($contents);
 
 	global $footer_extra;
-	$footer_extra = "<script type=\"text/javascript\">window.onload = function() { var button = $$('.submit_button'); if (button[0]) { button[0].value = 'Automatically Redirecting...'; button[0].disabled = TRUE; button[0].style.color = '#aaa'; button[0].style.borderColor = '#aaa'; document.forms[0].submit(); }}</script>";
+	$footer_extra = "<script type=\"text/javascript\">$(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
 
 	$output->print_footer("17_dbchanges4");
 }
@@ -287,36 +286,36 @@ function upgrade17_dbchanges4()
 	echo "<p>Performing necessary upgrade queries..</p>";
 	flush();
 
-	if ($db->field_exists('remember', 'users'))
+	if($db->field_exists('remember', 'users'))
 	{
 		$db->drop_column("users", "remember");
 	}
 
-	if ($db->type != "pgsql")
+	if($db->type != "pgsql")
 	{
 		// PgSQL doesn't support longtext
 		$db->modify_column("searchlog", "threads", "longtext NOT NULL");
 		$db->modify_column("searchlog", "posts", "longtext NOT NULL");
 	}
 
-	if ($db->field_exists("uid", "moderators") && !$db->field_exists("id", "moderators"))
+	if($db->field_exists("uid", "moderators") && !$db->field_exists("id", "moderators"))
 	{
 		switch($db->type)
 		{
 			case "pgsql":
-				$db->rename_column("moderators", "uid", "id", "int", TRUE, "'0'");
+				$db->rename_column("moderators", "uid", "id", "int", true, "'0'");
 				break;
 			default:
 				$db->rename_column("moderators", "uid", "id", "int unsigned NOT NULL default '0'");
 		}
 	}
 
-	if ($db->table_exists("threadprefixes"))
+	if($db->table_exists("threadprefixes"))
 	{
 		$db->drop_table("threadprefixes");
 	}
 
-	if ($db->table_exists("delayedmoderation"))
+	if($db->table_exists("delayedmoderation"))
 	{
 		$db->drop_table("delayedmoderation");
 	}
@@ -369,7 +368,7 @@ function upgrade17_dbchanges4()
 				prefix varchar(120) NOT NULL default '',
 				displaystyle varchar(200) NOT NULL default '',
 				forums text NOT NULL,
-				groups text NOT NULL,
+				`groups` text NOT NULL,
 				PRIMARY KEY(pid)
 			) ENGINE=MyISAM;");
 			$db->write_query("CREATE TABLE ".TABLE_PREFIX."delayedmoderation (
@@ -393,7 +392,7 @@ function upgrade17_dbchanges4()
 	$output->print_contents($contents);
 
 	global $footer_extra;
-	$footer_extra = "<script type=\"text/javascript\">window.onload = function() { var button = $$('.submit_button'); if (button[0]) { button[0].value = 'Automatically Redirecting...'; button[0].disabled = TRUE; button[0].style.color = '#aaa'; button[0].style.borderColor = '#aaa'; document.forms[0].submit(); }}</script>";
+	$footer_extra = "<script type=\"text/javascript\">$(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
 
 	$output->print_footer("17_dbchanges5");
 }
@@ -402,11 +401,11 @@ function upgrade17_dbchanges5()
 {
 	global $db, $output, $mybb, $cache;
 
-	if (file_exists(MYBB_ROOT.$mybb->config['admin_dir']."/inc/functions.php"))
+	if(file_exists(MYBB_ROOT.$mybb->config['admin_dir']."/inc/functions.php"))
 	{
 		require_once MYBB_ROOT.$mybb->config['admin_dir']."/inc/functions.php";
 	}
-	else if (file_exists(MYBB_ROOT."admin/inc/functions.php"))
+	else if(file_exists(MYBB_ROOT."admin/inc/functions.php"))
 	{
 		require_once MYBB_ROOT."admin/inc/functions.php";
 	}
@@ -430,13 +429,13 @@ function upgrade17_dbchanges5()
 	$db->update_query("spiders", array('useragent' => 'Slurp'), "name='Yahoo!'");
 
 	$query = $db->simple_select("spiders", "COUNT(*) as numexists", "useragent='twiceler'");
-	if ($db->fetch_field($query, "numexists") == 0)
+	if($db->fetch_field($query, "numexists") == 0)
 	{
 		$db->insert_query("spiders", array('name' => "Cuil", 'useragent' => 'twiceler'));
 	}
 
 	$query = $db->simple_select("spiders", "COUNT(*) as numexists", "useragent='Baiduspider'");
-	if ($db->fetch_field($query, "numexists") == 0)
+	if($db->fetch_field($query, "numexists") == 0)
 	{
 		$db->insert_query("spiders", array('name' => "Baidu", 'useragent' => 'Baiduspider'));
 	}
@@ -463,7 +462,7 @@ function upgrade17_dbchanges5()
 	$output->print_contents($contents);
 
 	global $footer_extra;
-	$footer_extra = "<script type=\"text/javascript\">window.onload = function() { var button = $$('.submit_button'); if (button[0]) { button[0].value = 'Automatically Redirecting...'; button[0].disabled = TRUE; button[0].style.color = '#aaa'; button[0].style.borderColor = '#aaa'; document.forms[0].submit(); }}</script>";
+	$footer_extra = "<script type=\"text/javascript\">$(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
 
 	$output->print_footer("17_dbchanges6");
 }
@@ -474,18 +473,18 @@ function upgrade17_dbchanges6()
 
 	$output->print_header("Post IP Repair Conversion");
 
-	if (!$_POST['ipspage'])
+	if(!$_POST['ipspage'])
 	{
 		$ipp = 5000;
 	}
 	else
 	{
-		$ipp = $_POST['ipspage'];
+		$ipp = (int)$_POST['ipspage'];
 	}
 
-	if ($_POST['ipstart'])
+	if($_POST['ipstart'])
 	{
-		$startat = $_POST['ipstart'];
+		$startat = (int)$_POST['ipstart'];
 		$upper = $startat+$ipp;
 		$lower = $startat;
 	}
@@ -499,7 +498,7 @@ function upgrade17_dbchanges6()
 	$query = $db->simple_select("posts", "COUNT(pid) AS ipcount");
 	$cnt = $db->fetch_array($query);
 
-	if ($upper > $cnt['ipcount'])
+	if($upper > $cnt['ipcount'])
 	{
 		$upper = $cnt['ipcount'];
 	}
@@ -507,17 +506,17 @@ function upgrade17_dbchanges6()
 	echo "<p>Repairing ip {$lower} to {$upper} ({$cnt['ipcount']} Total)</p>";
 	flush();
 
-	$ipaddress = FALSE;
+	$ipaddress = false;
 
 	$query = $db->simple_select("posts", "ipaddress, pid", "", array('limit_start' => $lower, 'limit' => $ipp));
 	while($post = $db->fetch_array($query))
 	{
-		$db->update_query("posts", array('longipaddress' => intval(my_ip2long($post['ipaddress']))), "pid = '{$post['pid']}'");
-		$ipaddress = TRUE;
+		$db->update_query("posts", array('longipaddress' => (int)my_ip2long($post['ipaddress'])), "pid = '{$post['pid']}'");
+		$ipaddress = true;
 	}
 
 	$remaining = $upper-$cnt['ipcount'];
-	if ($remaining && $ipaddress)
+	if($remaining && $ipaddress)
 	{
 		$nextact = "17_dbchanges6";
 		$startat = $startat+$ipp;
@@ -526,12 +525,12 @@ function upgrade17_dbchanges6()
 	else
 	{
 		$nextact = "17_dbchanges7";
-		$contents = "<p>Done</p><p>All post ips have been succesfully repaired. Click next to continue.</p>";
+		$contents = "<p>Done</p><p>All post ips have been successfully repaired. Click next to continue.</p>";
 	}
 	$output->print_contents($contents);
 
 	global $footer_extra;
-	$footer_extra = "<script type=\"text/javascript\">window.onload = function() { var button = $$('.submit_button'); if (button[0]) { button[0].value = 'Automatically Redirecting...'; button[0].disabled = TRUE; button[0].style.color = '#aaa'; button[0].style.borderColor = '#aaa'; document.forms[0].submit(); }}</script>";
+	$footer_extra = "<script type=\"text/javascript\">$(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
 
 	$output->print_footer($nextact);
 }
@@ -542,18 +541,18 @@ function upgrade17_dbchanges7()
 
 	$output->print_header("User IP Repair Conversion");
 
-	if (!$_POST['ipspage'])
+	if(!$_POST['ipspage'])
 	{
 		$ipp = 5000;
 	}
 	else
 	{
-		$ipp = $_POST['ipspage'];
+		$ipp = (int)$_POST['ipspage'];
 	}
 
-	if ($_POST['ipstart'])
+	if($_POST['ipstart'])
 	{
-		$startat = $_POST['ipstart'];
+		$startat = (int)$_POST['ipstart'];
 		$upper = $startat+$ipp;
 		$lower = $startat;
 	}
@@ -567,32 +566,32 @@ function upgrade17_dbchanges7()
 	$query = $db->simple_select("users", "COUNT(uid) AS ipcount");
 	$cnt = $db->fetch_array($query);
 
-	if ($upper > $cnt['ipcount'])
+	if($upper > $cnt['ipcount'])
 	{
 		$upper = $cnt['ipcount'];
 	}
 
 	$contents .= "<p>Repairing ip {$lower} to {$upper} ({$cnt['ipcount']} Total)</p>";
 
-	$ipaddress = FALSE;
+	$ipaddress = false;
 	$update_array = array();
 
 	$query = $db->simple_select("users", "regip, lastip, uid", "", array('limit_start' => $lower, 'limit' => $ipp));
 	while($user = $db->fetch_array($query))
 	{
 		$update_array = array(
-			'longregip' => intval(my_ip2long($user['regip'])),
-			'longlastip' => intval(my_ip2long($user['lastip']))
+			'longregip' => (int)my_ip2long($user['regip']),
+			'longlastip' => (int)my_ip2long($user['lastip'])
 		);
 
 		$db->update_query("users", $update_array, "uid = '{$user['uid']}'");
 
 		$update_array = array();
-		$ipaddress = TRUE;
+		$ipaddress = true;
 	}
 
 	$remaining = $upper-$cnt['ipcount'];
-	if ($remaining && $ipaddress)
+	if($remaining && $ipaddress)
 	{
 		$nextact = "17_dbchanges7";
 		$startat = $startat+$ipp;
@@ -606,7 +605,7 @@ function upgrade17_dbchanges7()
 	$output->print_contents($contents);
 
 	global $footer_extra;
-	$footer_extra = "<script type=\"text/javascript\">window.onload = function() { var button = $$('.submit_button'); if (button[0]) { button[0].value = 'Automatically Redirecting...'; button[0].disabled = TRUE; button[0].style.color = '#aaa'; button[0].style.borderColor = '#aaa'; document.forms[0].submit(); }}</script>";
+	$footer_extra = "<script type=\"text/javascript\">$(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
 
 	$output->print_footer($nextact);
 }
@@ -619,55 +618,55 @@ function upgrade17_redoconfig()
 
 	$output->print_header("Rewriting config.php");
 
-	if (!is_array($config['memcache']))
+	if(!is_array($config['memcache']))
 	{
 		// Backup our old Config file
 		@copy(MYBB_ROOT."inc/config.php", MYBB_ROOT."inc/config.backup.php");
 
 		$fh = @fopen(MYBB_ROOT."inc/config.php", "w");
-		if (!$fh)
+		if(!$fh)
 		{
 			echo "<p><span style=\"color: red; font-weight: bold;\">Unable to open inc/config.php</span><br />Before the upgrade process can continue, you need to changes the permissions of inc/config.php so it is writable.</p>";
 			$output->print_footer("17_redoconfig");
 			exit;
 		}
 
-		if (!$config['memcache_host'])
+		if(!$config['memcache_host'])
 		{
 			$config['memcache_host'] = "localhost";
 		}
 
-		if (!$config['memcache_port'])
+		if(!$config['memcache_port'])
 		{
 			$config['memcache_port'] = 11211;
 		}
 
 		$comment = "";
 
-		if (!$db->db_encoding || !$config['database']['encoding'])
+		if(!$db->db_encoding || !$config['database']['encoding'])
 		{
 			$comment = " // ";
 		}
 
-		if (!$config['database']['encoding'])
+		if(!$config['database']['encoding'])
 		{
 			$config['database']['encoding'] = "utf8";
 		}
 
 		// Update SQLite selection. SQLite 2 is depreciated.
-		if ($config['database']['type'] == 'sqlite2' || $config['database']['type'] == 'sqlite3')
+		if($config['database']['type'] == 'sqlite2' || $config['database']['type'] == 'sqlite3')
 		{
 			$config['database']['type'] = 'sqlite';
 		}
 
 		// Do we have a read or a write database?
-		if ($config['database']['read'])
+		if($config['database']['read'])
 		{
 			$database_config = "\$config['database']['type'] = '{$config['database']['type']}';";
 			foreach(array('read', 'write') as $type)
 			{
 				// Multiple read/write databases?
-				if ($config['database'][$type][0]['database'])
+				if($config['database'][$type][0]['database'])
 				{
 					$i = 0;
 					foreach($config['database'][$type] as $database_connection)
@@ -707,14 +706,13 @@ function upgrade17_redoconfig()
 ";
 		}
 
-
 		$configdata = "<?php
 /**
  * Database configuration
  *
- * Please see the MyBB Wiki for advanced
+ * Please see the MyBB Docs for advanced
  * database configuration for larger installations
- * http://wiki.mybb.com/
+ * https://docs.mybb.com/
  */
 
 {$database_config}
@@ -809,7 +807,7 @@ function upgrade17_redoconfig()
 	echo "<p>Click next to continue with the upgrade process.</p>";
 
 	global $footer_extra;
-	$footer_extra = "<script type=\"text/javascript\">window.onload = function() { var button = $$('.submit_button'); if (button[0]) { button[0].value = 'Automatically Redirecting...'; button[0].disabled = TRUE; button[0].style.color = '#aaa'; button[0].style.borderColor = '#aaa'; document.forms[0].submit(); }}</script>";
+	$footer_extra = "<script type=\"text/javascript\">$(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
 
 	$output->print_footer("17_updatecss");
 }
@@ -817,11 +815,11 @@ function upgrade17_updatecss()
 {
 	global $db, $output, $orig_config, $mybb;
 
-	if (file_exists(MYBB_ROOT.$mybb->config['admin_dir']."/inc/functions_themes.php"))
+	if(file_exists(MYBB_ROOT.$mybb->config['admin_dir']."/inc/functions_themes.php"))
 	{
 		require_once MYBB_ROOT.$mybb->config['admin_dir']."/inc/functions_themes.php";
 	}
-	else if (file_exists(MYBB_ROOT."admin/inc/functions_themes.php"))
+	else if(file_exists(MYBB_ROOT."admin/inc/functions_themes.php"))
 	{
 		require_once MYBB_ROOT."admin/inc/functions_themes.php";
 	}
@@ -857,7 +855,7 @@ function upgrade17_updatecss()
 	echo "<p>Click next to continue with the upgrade process.</p>";
 
 	global $footer_extra;
-	//$footer_extra = "<script type=\"text/javascript\">window.onload = function() { var button = $$('.submit_button'); if (button[0]) { button[0].value = 'Automatically Redirecting...'; button[0].disabled = TRUE; button[0].style.color = '#aaa'; button[0].style.borderColor = '#aaa'; document.forms[0].submit(); }}</script>";
+	//$footer_extra = "<script type=\"text/javascript\">$(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
 
 	$output->print_footer("17_done");
 }
@@ -867,9 +865,9 @@ function upgrade_css_140_to_160($name, $css)
 	// Update our CSS to the new stuff in 1.6
 	$parsed_css = css_to_array($css);
 
-	if ($name == "global.css")
+	if($name == "global.css")
 	{
-		if (is_array($parsed_css))
+		if(is_array($parsed_css))
 		{
 			foreach($parsed_css as $class_id => $array)
 			{
@@ -905,7 +903,7 @@ function upgrade_css_140_to_160($name, $css)
 			md5('.pagination_breadcrumb_link') => array("class_name" => '.pagination_breadcrumb_link', "values" => "vertical-align: middle;\n\tcursor: pointer;"),
 		);
 	}
-	else if ($name == "usercp.css")
+	else if($name == "usercp.css")
 	{
 		$to_add = array(
 			md5('.usercp_notepad') => array("class_name" => '.usercp_notepad', "values" => "width: 99%;"),
@@ -915,7 +913,7 @@ function upgrade_css_140_to_160($name, $css)
 
 	foreach($to_add as $class_id => $array)
 	{
-		if ($already_parsed[$class_id])
+		if($already_parsed[$class_id])
 		{
 			$already_parsed[$class_id]++;
 			$class_id .= "_".$already_parsed[$class_id];
@@ -934,20 +932,20 @@ function upgrade_css_140_to_160($name, $css)
 	$css = "";
 	foreach($parsed_css as $class_id => $array)
 	{
-		if ($array['name'] || $array['description'])
+		if($array['name'] || $array['description'])
 		{
 			$theme['css'] .= "/* ";
-			if ($array['name'])
+			if($array['name'])
 			{
 				$array['css'] .= "Name: {$array['name']}";
 
-				if ($array['description'])
+				if($array['description'])
 				{
 					$array['css'] .= "\n";
 				}
 			}
 
-			if ($array['description'])
+			if($array['description'])
 			{
 				$array['css'] .= "Description: {$array['description']}";
 			}
@@ -960,4 +958,4 @@ function upgrade_css_140_to_160($name, $css)
 
 	return $css;
 }
-?>
+

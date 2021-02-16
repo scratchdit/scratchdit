@@ -1,16 +1,15 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
- * $Id$
  */
 
 // Disallow direct access to this file for security reasons
-if (!defined("IN_MYBB"))
+if(!defined("IN_MYBB"))
 {
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
@@ -30,24 +29,35 @@ $sub_tabs['prune_mod_logs'] = array(
 
 $plugins->run_hooks("admin_tools_modlog_begin");
 
-if ($mybb->input['action'] == 'prune')
+if($mybb->input['action'] == 'prune')
 {
 	$plugins->run_hooks("admin_tools_modlog_prune");
 
-	if ($mybb->request_method == 'post')
+	if($mybb->request_method == 'post')
 	{
-		$where = 'dateline < '.(TIME_NOW-(intval($mybb->input['older_than'])*86400));
+		$is_today = false;
+		$mybb->input['older_than'] = $mybb->get_input('older_than', MyBB::INPUT_INT);
+		if($mybb->input['older_than'] <= 0)
+		{
+			$is_today = true;
+			$mybb->input['older_than'] = 1;
+		}
+		$where = 'dateline < '.(TIME_NOW-($mybb->input['older_than']*86400));
 
 		// Searching for entries by a particular user
-		if ($mybb->input['uid'])
+		if($mybb->input['uid'])
 		{
-			$where .= " AND uid='".intval($mybb->input['uid'])."'";
+			$where .= " AND uid='".$mybb->get_input('uid', MyBB::INPUT_INT)."'";
 		}
 
 		// Searching for entries in a specific module
-		if ($mybb->input['fid'] > 0)
+		if($mybb->input['fid'] > 0)
 		{
 			$where .= " AND fid='".$db->escape_string($mybb->input['fid'])."'";
+		}
+		else
+		{
+			$mybb->input['fid'] = 0;
 		}
 
 		$db->delete_query("moderatorlog", $where);
@@ -55,15 +65,33 @@ if ($mybb->input['action'] == 'prune')
 
 		$plugins->run_hooks("admin_tools_modlog_prune_commit");
 
-		if (!is_array($forum_cache))
+		if(!isset($forum_cache) || !is_array($forum_cache))
 		{
 			$forum_cache = cache_forums();
 		}
 
 		// Log admin action
-		log_admin_action($mybb->input['older_than'], $mybb->input['uid'], $mybb->input['fid'], $num_deleted, $forum_cache[$mybb->input['fid']]['name']);
+		if(!empty($forum_cache[$mybb->get_input('fid')]['name']))
+		{
+			$name = $forum_cache[$mybb->get_input('fid')]['name'];
+		} else
+		{
+			$name = null;
+		}
 
-		flash_message($lang->success_pruned_mod_logs, 'success');
+		log_admin_action($mybb->get_input('older_than'), $mybb->get_input('uid'), $mybb->get_input('fid'), $num_deleted, $name);
+
+		$success = $lang->success_pruned_mod_logs;
+		if($is_today == true && $num_deleted > 0)
+		{
+			$success .= ' '.$lang->note_logs_locked;
+		}
+		elseif($is_today == true && $num_deleted == 0)
+		{
+			flash_message($lang->note_logs_locked, 'error');
+			admin_redirect("index.php?module=tools-modlog");
+		}
+		flash_message($success, 'success');
 		admin_redirect("index.php?module=tools-modlog");
 	}
 	$page->add_breadcrumb_item($lang->prune_mod_logs, "index.php?module=tools-modlog&amp;action=prune");
@@ -71,8 +99,8 @@ if ($mybb->input['action'] == 'prune')
 	$page->output_nav_tabs($sub_tabs, 'prune_mod_logs');
 
 	// Fetch filter options
-	$sortbysel[$mybb->input['sortby']] = 'selected="selected"';
-	$ordersel[$mybb->input['order']] = 'selected="selected"';
+	$sortbysel[$mybb->get_input('sortby')] = 'selected="selected"';
+	$ordersel[$mybb->get_input('order')] = 'selected="selected"';
 
 	$user_options[''] = $lang->all_moderators;
 	$user_options['0'] = '----------';
@@ -85,18 +113,24 @@ if ($mybb->input['action'] == 'prune')
 	");
 	while($user = $db->fetch_array($query))
 	{
-		$user_options[$user['uid']] = $user['username'];
+		// Deleted Users
+		if(!$user['username'])
+		{
+			$user['username'] = htmlspecialchars_uni($lang->na_deleted);
+		}
+
+		$user_options[$user['uid']] = htmlspecialchars_uni($user['username']);
 	}
 
 	$form = new Form("index.php?module=tools-modlog&amp;action=prune", "post");
 	$form_container = new FormContainer($lang->prune_moderator_logs);
-	$form_container->output_row($lang->forum, "", $form->generate_forum_select('fid', $mybb->input['fid'], array('id' => 'fid', 'main_option' => $lang->all_forums)), 'fid');
-	$form_container->output_row($lang->forum_moderator, "", $form->generate_select_box('uid', $user_options, $mybb->input['uid'], array('id' => 'uid')), 'uid');
-	if (!$mybb->input['older_than'])
+	$form_container->output_row($lang->forum, "", $form->generate_forum_select('fid', $mybb->get_input('fid'), array('id' => 'fid', 'main_option' => $lang->all_forums)), 'fid');
+	$form_container->output_row($lang->forum_moderator, "", $form->generate_select_box('uid', $user_options, $mybb->get_input('uid'), array('id' => 'uid')), 'uid');
+	if(!$mybb->get_input('older_than'))
 	{
 		$mybb->input['older_than'] = '30';
 	}
-	$form_container->output_row($lang->date_range, "", $lang->older_than.$form->generate_text_box('older_than', $mybb->input['older_than'], array('id' => 'older_than', 'style' => 'width: 30px')).' '.$lang->days, 'older_than');
+	$form_container->output_row($lang->date_range, "", $lang->older_than.$form->generate_numeric_field('older_than', $mybb->get_input('older_than'), array('id' => 'older_than', 'style' => 'width: 50px', 'min' => 0)).' '.$lang->days, 'older_than');
 	$form_container->end();
 	$buttons[] = $form->generate_submit_button($lang->prune_moderator_logs);
 	$form->output_submit_wrapper($buttons);
@@ -105,7 +139,7 @@ if ($mybb->input['action'] == 'prune')
 	$page->output_footer();
 }
 
-if (!$mybb->input['action'])
+if(!$mybb->input['action'])
 {
 	$plugins->run_hooks("admin_tools_modlog_start");
 
@@ -113,28 +147,33 @@ if (!$mybb->input['action'])
 
 	$page->output_nav_tabs($sub_tabs, 'mod_logs');
 
-	$perpage = intval($mybb->input['perpage']);
-	if (!$perpage)
+	$perpage = $mybb->get_input('perpage', MyBB::INPUT_INT);
+	if(!$perpage)
 	{
+		if(!$mybb->settings['threadsperpage'] || (int)$mybb->settings['threadsperpage'] < 1)
+		{
+			$mybb->settings['threadsperpage'] = 20;
+		}
+
 		$perpage = $mybb->settings['threadsperpage'];
 	}
 
 	$where = 'WHERE 1=1';
 
 	// Searching for entries by a particular user
-	if ($mybb->input['uid'])
+	if(!empty($mybb->input['uid']))
 	{
-		$where .= " AND l.uid='".intval($mybb->input['uid'])."'";
+		$where .= " AND l.uid='".$mybb->get_input('uid', MyBB::INPUT_INT)."'";
 	}
 
 	// Searching for entries in a specific forum
-	if ($mybb->input['fid'] > 0)
+	if($mybb->get_input('fid') > 0)
 	{
-		$where .= " AND l.fid='".intval($mybb->input['fid'])."'";
+		$where .= " AND l.fid='".$mybb->get_input('fid', MyBB::INPUT_INT)."'";
 	}
 
 	// Order?
-	switch($mybb->input['sortby'])
+	switch($mybb->get_input('sortby'))
 	{
 		case "username":
 			$sortby = "u.username";
@@ -148,8 +187,8 @@ if (!$mybb->input['action'])
 		default:
 			$sortby = "l.dateline";
 	}
-	$order = $mybb->input['order'];
-	if ($order != "asc")
+	$order = $mybb->get_input('order');
+	if($order != "asc")
 	{
 		$order = "desc";
 	}
@@ -162,26 +201,26 @@ if (!$mybb->input['action'])
 	$rescount = $db->fetch_field($query, "count");
 
 	// Figure out if we need to display multiple pages.
-	if ($mybb->input['page'] != "last")
+	if($mybb->get_input('page') != "last")
 	{
-		$pagecnt = intval($mybb->input['page']);
+		$pagecnt = $mybb->get_input('page', MyBB::INPUT_INT);
 	}
 
-	$postcount = intval($rescount);
+	$postcount = (int)$rescount;
 	$pages = $postcount / $perpage;
 	$pages = ceil($pages);
 
-	if ($mybb->input['page'] == "last")
+	if($mybb->get_input('page') == "last")
 	{
 		$pagecnt = $pages;
 	}
 
-	if ($pagecnt > $pages)
+	if($pagecnt > $pages)
 	{
 		$pagecnt = 1;
 	}
 
-	if ($pagecnt)
+	if($pagecnt)
 	{
 		$start = ($pagecnt-1) * $perpage;
 	}
@@ -213,41 +252,54 @@ if (!$mybb->input['action'])
 	{
 		$information = '';
 		$logitem['action'] = htmlspecialchars_uni($logitem['action']);
-		$logitem['dateline'] = date("jS M Y, G:i", $logitem['dateline']);
+		$logitem['dateline'] = my_date('relative', $logitem['dateline']);
 		$trow = alt_trow();
-		$username = format_name($logitem['username'], $logitem['usergroup'], $logitem['displaygroup']);
-		$logitem['profilelink'] = build_profile_link($username, $logitem['uid'], "_blank");
-		if ($logitem['tsubject'])
+		if($logitem['username'])
+		{
+			$username = format_name(htmlspecialchars_uni($logitem['username']), $logitem['usergroup'], $logitem['displaygroup']);
+			$logitem['profilelink'] = build_profile_link($username, $logitem['uid'], "_blank");
+		}
+		else
+		{
+			$username = $logitem['profilelink'] = $logitem['username'] = htmlspecialchars_uni($lang->na_deleted);
+		}
+		if($logitem['tsubject'])
 		{
 			$information = "<strong>{$lang->thread}</strong> <a href=\"../".get_thread_link($logitem['tid'])."\" target=\"_blank\">".htmlspecialchars_uni($logitem['tsubject'])."</a><br />";
 		}
-		if ($logitem['fname'])
+		if($logitem['fname'])
 		{
 			$information .= "<strong>{$lang->forum}</strong> <a href=\"../".get_forum_link($logitem['fid'])."\" target=\"_blank\">".htmlspecialchars_uni($logitem['fname'])."</a><br />";
 		}
-		if ($logitem['psubject'])
+		if($logitem['psubject'])
 		{
 			$information .= "<strong>{$lang->post}</strong> <a href=\"../".get_post_link($logitem['pid'])."#pid{$logitem['pid']}\" target=\"_blank\">".htmlspecialchars_uni($logitem['psubject'])."</a>";
 		}
 
-		if (!$logitem['tsubject'] || !$logitem['fname'] || !$logitem['psubject'])
+		if(!$logitem['tsubject'] || !$logitem['fname'] || !$logitem['psubject'])
 		{
-			$data = unserialize($logitem['data']);
-			if ($data['uid'])
+			$data = my_unserialize($logitem['data']);
+			if(!empty($data['uid']))
 			{
-				$information = $lang->user_info." <a href=\"".get_profile_link($data['uid'])."\" target=\"_blank\">".htmlspecialchars_uni($data['username'])."</a>";
+				$information = "<strong>{$lang->user_info}</strong> <a href=\"../".get_profile_link($data['uid'])."\" target=\"_blank\">".htmlspecialchars_uni($data['username'])."</a>";
+			}
+			if(!empty($data['aid']))
+			{
+				$information = "<strong>{$lang->announcement}</strong> <a href=\"../".get_announcement_link($data['aid'])."\" target=\"_blank\">".htmlspecialchars_uni($data['subject'])."</a>";
 			}
 		}
+
+		$plugins->run_hooks("admin_tools_modlog_modlogs_result");
 
 		$table->construct_cell($logitem['profilelink']);
 		$table->construct_cell($logitem['dateline'], array("class" => "align_center"));
 		$table->construct_cell($logitem['action'], array("class" => "align_center"));
 		$table->construct_cell($information);
-		$table->construct_cell($logitem['ipaddress'], array("class" => "align_center"));
+		$table->construct_cell(my_inet_ntop($db->unescape_binary($logitem['ipaddress'])), array("class" => "align_center"));
 		$table->construct_row();
 	}
 
-	if ($table->num_rows() == 0)
+	if($table->num_rows() == 0)
 	{
 		$table->construct_cell($lang->no_modlogs, array("colspan" => "5"));
 		$table->construct_row();
@@ -256,14 +308,14 @@ if (!$mybb->input['action'])
 	$table->output($lang->mod_logs);
 
 	// Do we need to construct the pagination?
-	if ($rescount > $perpage)
+	if($rescount > $perpage)
 	{
 		echo draw_admin_pagination($pagecnt, $perpage, $rescount, "index.php?module=tools-modlog&amp;perpage=$perpage&amp;uid={$mybb->input['uid']}&amp;fid={$mybb->input['fid']}&amp;sortby={$mybb->input['sortby']}&amp;order={$order}")."<br />";
 	}
 
 	// Fetch filter options
-	$sortbysel[$mybb->input['sortby']] = "selected=\"selected\"";
-	$ordersel[$mybb->input['order']] = "selected=\"selected\"";
+	$sortbysel[$mybb->get_input('sortby')] = "selected=\"selected\"";
+	$ordersel[$mybb->get_input('order')] = "selected=\"selected\"";
 
 	$user_options[''] = $lang->all_moderators;
 	$user_options['0'] = '----------';
@@ -276,12 +328,18 @@ if (!$mybb->input['action'])
 	");
 	while($user = $db->fetch_array($query))
 	{
+		// Deleted Users
+		if(!$user['username'])
+		{
+			$user['username'] = $lang->na_deleted;
+		}
+
 		$selected = '';
-		if ($mybb->input['uid'] == $user['uid'])
+		if($mybb->get_input('uid') == $user['uid'])
 		{
 			$selected = "selected=\"selected\"";
 		}
-		$user_options[$user['uid']] = $user['username'];
+		$user_options[$user['uid']] = htmlspecialchars_uni($user['username']);
 	}
 
 	$sort_by = array(
@@ -298,10 +356,10 @@ if (!$mybb->input['action'])
 
 	$form = new Form("index.php?module=tools-modlog", "post");
 	$form_container = new FormContainer($lang->filter_moderator_logs);
-	$form_container->output_row($lang->forum, "", $form->generate_forum_select('fid', $mybb->input['fid'], array('id' => 'fid', 'main_option' => $lang->all_forums)), 'fid');
-	$form_container->output_row($lang->forum_moderator, "", $form->generate_select_box('uid', $user_options, $mybb->input['uid'], array('id' => 'uid')), 'uid');
-	$form_container->output_row($lang->sort_by, "", $form->generate_select_box('sortby', $sort_by, $mybb->input['sortby'], array('id' => 'sortby'))." {$lang->in} ".$form->generate_select_box('order', $order_array, $order, array('id' => 'order'))." {$lang->order}", 'order');
-	$form_container->output_row($lang->results_per_page, "", $form->generate_text_box('perpage', $perpage, array('id' => 'perpage')), 'perpage');
+	$form_container->output_row($lang->forum, "", $form->generate_forum_select('fid', $mybb->get_input('fid'), array('id' => 'fid', 'main_option' => $lang->all_forums)), 'fid');
+	$form_container->output_row($lang->forum_moderator, "", $form->generate_select_box('uid', $user_options, $mybb->get_input('uid'), array('id' => 'uid')), 'uid');
+	$form_container->output_row($lang->sort_by, "", $form->generate_select_box('sortby', $sort_by, $mybb->get_input('sortby'), array('id' => 'sortby'))." {$lang->in} ".$form->generate_select_box('order', $order_array, $order, array('id' => 'order'))." {$lang->order}", 'order');
+	$form_container->output_row($lang->results_per_page, "", $form->generate_numeric_field('perpage', $perpage, array('id' => 'perpage', 'min' => 1)), 'perpage');
 
 	$form_container->end();
 	$buttons[] = $form->generate_submit_button($lang->filter_moderator_logs);
@@ -310,4 +368,3 @@ if (!$mybb->input['action'])
 
 	$page->output_footer();
 }
-?>

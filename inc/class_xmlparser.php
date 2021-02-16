@@ -3,14 +3,14 @@
  * MyBB 1.8
  * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * Website: //www.mybb.com
- * License: //www.mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
  */
 
 /**
  * The following class is based upon code by Eric Pollman
- * @ //eric.pollman.net/work/public_domain/
+ * @ http://eric.pollman.net/work/public_domain/
  * and is licensed under the public domain license.
  */
 
@@ -53,9 +53,9 @@ class MyBBXMLParser {
 		$parser = xml_parser_create();
 		xml_parser_set_option($parser, XML_OPTION_SKIP_WHITE, 0);
 		xml_parser_set_option($parser,XML_OPTION_CASE_FOLDING,0);
-		if (!xml_parse_into_struct($parser, $this->data, $vals, $index))
+		if(!xml_parse_into_struct($parser, $this->data, $vals, $index))
 		{
-			return FALSE;
+			return false;
 		}
 
 		$i = -1;
@@ -75,14 +75,14 @@ class MyBBXMLParser {
 	{
 		$tag = array('tag' => $thisvals['tag']);
 
-		if (isset($thisvals['attributes']))
+		if(isset($thisvals['attributes']))
 		{
 			$tag['attributes'] = $thisvals['attributes'];
 		}
 
-		if ($type == "complete")
+		if($type == "complete")
 		{
-			if (isset($thisvals['value']))
+			if(isset($thisvals['value']))
 			{
 				$tag['value'] = $thisvals['value'];
 			}
@@ -105,7 +105,7 @@ class MyBBXMLParser {
 	{
 		$children = array();
 
-		if ($i > -1 && isset($vals[$i]['value']))
+		if($i > -1 && isset($vals[$i]['value']))
 		{
 			$children['value'] = $vals[$i]['value'];
 		}
@@ -113,14 +113,14 @@ class MyBBXMLParser {
 		while(++$i < count($vals))
 		{
 			$type = $vals[$i]['type'];
-			if ($type == "cdata")
+			if($type == "cdata")
 			{
 				$children['value'] .= $vals[$i]['value'];
 			}
-			elseif ($type == "complete" || $type == "open")
+			elseif($type == "complete" || $type == "open")
 			{
 				$tag = $this->build_tag($vals[$i], $vals, $i, $type);
-				if ($this->index_numeric)
+				if($this->index_numeric)
 				{
 					$tag['tag'] = $vals[$i]['tag'];
 					$children[] = $tag;
@@ -130,16 +130,16 @@ class MyBBXMLParser {
 					$children[$tag['tag']][] = $tag;
 				}
 			}
-			else if ($type == "close")
+			else if($type == "close")
 			{
 				break;
 			}
 		}
-		if ($this->collapse_dups)
+		if($this->collapse_dups)
 		{
 			foreach($children as $key => $value)
 			{
-				if (is_array($value) && (count($value) == 1))
+				if(is_array($value) && (count($value) == 1))
 				{
 					$children[$key] = $value[0];
 				}
@@ -159,11 +159,11 @@ function kill_tags($array)
 {
 	foreach($array as $key => $val)
 	{
-		if ($key == "tag" || $key == "value")
+		if($key == "tag" || $key == "value")
 		{
 			unset($array[$key]);
 		}
-		else if (is_array($val))
+		else if(is_array($val))
 		{
 			// kill any nested tag or value indexes
 			$array[$key] = kill_tags($val);
@@ -171,7 +171,7 @@ function kill_tags($array)
 			// if the array no longer has any key/val sets
 			// and therefore is at the deepest level, then
 			// store the string value
-			if (is_array($array[$key]) && count($array[$key]) <= 0)
+			if(is_array($array[$key]) && count($array[$key]) <= 0)
 			{
 				$array[$key] = $val['value'];
 			}

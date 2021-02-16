@@ -3,8 +3,8 @@
  * MyBB 1.8
  * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * Website: //www.mybb.com
- * License: //www.mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
  */
 
@@ -30,7 +30,7 @@ function upgrade26_dbchanges()
 	$db->update_query("helpdocs", array('usetranslation' => 1));
 	$db->update_query("helpsections", array('usetranslation' => 1));
 
-	if ($db->type == 'pgsql')
+	if($db->type == 'pgsql')
 	{
 		$db->modify_column("polls", "numvotes", "text", "set");
 	}
@@ -39,7 +39,7 @@ function upgrade26_dbchanges()
 		$db->modify_column("polls", "numvotes", "text NOT NULL");
 	}
 
-	if ($db->field_exists('failedlogin', 'users'))
+	if($db->field_exists('failedlogin', 'users'))
 	{
 		$db->drop_column("users", "failedlogin");
 	}

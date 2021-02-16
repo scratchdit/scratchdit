@@ -1,10 +1,10 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
  * This class is based from reCAPTCHA's PHP library, adapted for use in MyBB.
  *
@@ -31,7 +31,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  *
- * $Id$
  */
 
 class captcha
@@ -40,18 +39,34 @@ class captcha
 	 * Type of CAPTCHA.
 	 *
 	 * 1 = Default CAPTCHA
-	 * 2 = reCAPTCHA
+	 * 4 = NoCATPCHA reCAPTCHA
+	 * 5 = reCAPTCHA invisible
+	 * 6 = hCaptcha
+	 * 7 = hCaptcha invisible
+	 * 8 = reCAPTCHA v3
 	 *
 	 * @var int
 	 */
 	public $type = 0;
 
 	/**
+	 * CAPTCHA constants declaration
+	 * 
+	 * @var int
+	 */
+	const DEFAULT_CAPTCHA = 1;
+	const NOCAPTCHA_RECAPTCHA = 4;
+	const RECAPTCHA_INVISIBLE = 5;
+	const HCAPTCHA = 6;
+	const HCAPTCHA_INVISIBLE = 7;
+	const RECAPTCHA_V3 = 8;
+
+	/**
 	 * The template to display the CAPTCHA in
 	 *
 	 * @var string
 	 */
-	 public $captch_template = '';
+	 public $captcha_template = '';
 
 	/**
 	 * CAPTCHA Server URL
@@ -59,13 +74,6 @@ class captcha
 	 * @var string
 	 */
 	public $server = '';
-
-	/**
-	 * CAPTCHA Secure Server URL
-	 *
-	 * @var string
-	 */
-	public $secure_server = '';
 
 	/**
 	 * CAPTCHA Verify Server
@@ -88,55 +96,96 @@ class captcha
 	 */
 	public $errors = array();
 
-	function __construct($build = FALSE, $template = "")
+	/**
+	 * @param bool   $build
+	 * @param string $template
+	 */
+	function __construct($build = false, $template = "")
 	{
-		global $mybb;
+		global $mybb, $plugins;
 
 		$this->type = $mybb->settings['captchaimage'];
 
+		$args = array(
+			'this' => &$this,
+			'build' => &$build,
+			'template' => &$template,
+		);
+
+		$plugins->run_hooks('captcha_build_start', $args);
+
 		// Prepare the build template
-		if ($template)
+		if($template)
 		{
 			$this->captcha_template = $template;
 
-			if ($this->type == 2)
+			if($this->type == captcha::NOCAPTCHA_RECAPTCHA)
 			{
-				$this->captcha_template .= "_recaptcha";
+				$this->captcha_template .= "_nocaptcha";
+			}
+			elseif($this->type == captcha::RECAPTCHA_INVISIBLE)
+			{
+				$this->captcha_template .= "_recaptcha_invisible";
+			}
+			elseif($this->type == captcha::HCAPTCHA)
+			{
+				$this->captcha_template .= "_hcaptcha";
+			}
+			elseif($this->type == captcha::HCAPTCHA_INVISIBLE)
+			{
+				$this->captcha_template .= "_hcaptcha_invisible";
+			}
+			elseif($this->type == captcha::HCAPTCHA_INVISIBLE)
+			{
+				$this->captcha_template .= "_recaptcha_invisible";
 			}
 		}
 
 		// Work on which CAPTCHA we've got installed
-		if ($this->type == 2 && $mybb->settings['captchapublickey'] && $mybb->settings['captchaprivatekey'])
+		if(in_array($this->type, array(captcha::NOCAPTCHA_RECAPTCHA, captcha::RECAPTCHA_INVISIBLE, captcha::RECAPTCHA_V3)) && $mybb->settings['recaptchapublickey'] && $mybb->settings['recaptchaprivatekey'])
 		{
-			// We want to use reCAPTCHA, set the server options
-			$this->server = "http://www.google.com/recaptcha/api";
-			$this->secure_server = "https://www.google.com/recaptcha/api";
-			$this->verify_server = "www.google.com";
+			// We want to use noCAPTCHA or reCAPTCHA invisible, set the server options
+			$this->server = "//www.google.com/recaptcha/api.js";
+			$this->verify_server = "https://www.google.com/recaptcha/api/siteverify";
 
-			if ($build == TRUE)
+			if($build == true)
 			{
 				$this->build_recaptcha();
 			}
 		}
-		else if ($this->type == 1)
+		elseif(in_array($this->type, array(captcha::HCAPTCHA, captcha::HCAPTCHA_INVISIBLE)) && $mybb->settings['hcaptchapublickey'] && $mybb->settings['hcaptchaprivatekey'])
 		{
-			if (!function_exists("imagecreatefrompng"))
+			// We want to use hCaptcha or hCaptcha invisible, set the server options
+			$this->server = "//www.hcaptcha.com/1/api.js";
+			$this->verify_server = "https://hcaptcha.com/siteverify";
+
+			if($build == true)
+			{
+				$this->build_hcaptcha();
+			}
+		}
+		elseif($this->type == captcha::DEFAULT_CAPTCHA)
+		{
+			if(!function_exists("imagecreatefrompng"))
 			{
 				// We want to use the default CAPTCHA, but it's not installed
-				return FALSE;
+				return;
 			}
-			else if ($build == TRUE)
+			elseif($build == true)
 			{
 				$this->build_captcha();
 			}
 		}
 
-		// Plugin hook
+		$plugins->run_hooks('captcha_build_end', $args);
 	}
 
-	function build_captcha($return = FALSE)
+	/**
+	 * @param bool $return Not used
+	 */
+	function build_captcha($return = false)
 	{
-		global $db, $lang, $templates;
+		global $db, $lang, $templates, $theme, $mybb;
 
 		// This will build a MyBB CAPTCHA
 		$randomstr = random_str(5);
@@ -159,19 +208,35 @@ class captcha
 
 		// This will build a reCAPTCHA
 		$server = $this->server;
-		$public_key = $mybb->settings['captchapublickey'];
+		$public_key = $mybb->settings['recaptchapublickey'];
 
 		eval("\$this->html = \"".$templates->get($this->captcha_template, 1, 0)."\";");
 		//eval("\$this->html = \"".$templates->get("member_register_regimage_recaptcha")."\";");
 	}
 
+	function build_hcaptcha()
+	{
+		global $lang, $mybb, $templates;
+
+		// This will build a hCaptcha
+		$server = $this->server;
+		$public_key = $mybb->settings['hcaptchapublickey'];
+		$captcha_theme = $mybb->settings['hcaptchatheme'];
+		$captcha_size = $mybb->settings['hcaptchasize'];
+		
+		eval("\$this->html = \"".$templates->get($this->captcha_template, 1, 0)."\";");
+	}
+
+	/**
+	 * @return string
+	 */
 	function build_hidden_captcha()
 	{
 		global $db, $mybb, $templates;
 
 		$field = array();
 
-		if ($this->type == 1)
+		if($this->type == captcha::DEFAULT_CAPTCHA)
 		{
 			// Names
 			$hash = "imagehash";
@@ -181,115 +246,185 @@ class captcha
 			$field['hash'] = $db->escape_string($mybb->input['imagehash']);
 			$field['string'] = $db->escape_string($mybb->input['imagestring']);
 		}
-		else if ($this->type == 2)
+		elseif($this->type == 3)
 		{
-			// Names
-			$hash = "recaptcha_challenge_field";
-			$string = "recaptcha_response_field";
-
-			// Values
-			$field['hash'] = $mybb->input['recaptcha_challenge_field'];
-			$field['string'] = $mybb->input['recaptcha_response_field'];
+			// Are You a Human can't be built as a hidden captcha
+			return '';
 		}
 
 		eval("\$this->html = \"".$templates->get("post_captcha_hidden")."\";");
 		return $this->html;
 	}
 
+	/**
+	 * @return bool
+	 */
 	function validate_captcha()
 	{
-		global $db, $lang, $mybb;
+		global $db, $lang, $mybb, $session, $plugins;
 
-		// Plugin hook
+		$plugins->run_hooks('captcha_validate_start', $this);
 
-		if ($this->type == 1)
+		if($this->type == captcha::DEFAULT_CAPTCHA)
 		{
 			// We have a normal CAPTCHA to handle
 			$imagehash = $db->escape_string($mybb->input['imagehash']);
 			$imagestring = $db->escape_string(my_strtolower($mybb->input['imagestring']));
 
-			$query = $db->simple_select("captcha", "*", "imagehash = '{$imagehash}' AND LOWER(imagestring) = '{$imagestring}'");
-			$imgcheck = $db->fetch_array($query);
-
-			if (!$imgcheck['dateline'])
+			switch($db->type)
 			{
-				$this->set_error($lang->invalid_captcha_verify);
+				case 'mysql':
+				case 'mysqli':
+					$field = 'imagestring';
+					break;
+				default:
+					$field = 'LOWER(imagestring)';
+					break;
 			}
 
-			$db->delete_query("captcha", "imagehash = '{$imagehash}'");
-		}
-		elseif ($this->type == 2)
-		{
-			$challenge = $mybb->input['recaptcha_challenge_field'];
-			$response = $mybb->input['recaptcha_response_field'];
+			$query = $db->simple_select("captcha", "*", "imagehash = '{$imagehash}' AND {$field} = '{$imagestring}'");
+			$imgcheck = $db->fetch_array($query);
 
-			if (!$challenge || strlen($challenge) == 0 || !$response || strlen($response) == 0)
+			if(!$imgcheck)
 			{
-				$this->set_error($lang->invalid_captcha);
+				$this->set_error($lang->invalid_captcha_verify);
+				$db->delete_query("captcha", "imagehash = '{$imagehash}'");
+			}
+		}
+		elseif(in_array($this->type, array(captcha::NOCAPTCHA_RECAPTCHA, captcha::RECAPTCHA_INVISIBLE)))
+		{
+			$response = $mybb->input['g-recaptcha-response'];
+			if(!$response || strlen($response) == 0)
+			{
+				$this->set_error($lang->invalid_nocaptcha);
 			}
 			else
 			{
-				// We have a reCAPTCHA to handle
-				$data = $this->_qsencode(array(
-					'privatekey' => $mybb->settings['captchaprivatekey'],
-					'remoteip' => $mybb->session->ipaddress,
-					'challenge' => $challenge,
+				// We have a noCAPTCHA or reCAPTCHA invisible to handle
+				// Contact Google and see if our reCAPTCHA was successful
+				$response = fetch_remote_file($this->verify_server, array(
+					'secret' => $mybb->settings['recaptchaprivatekey'],
+					'remoteip' => $session->ipaddress,
 					'response' => $response
 				));
 
-				// Contact Google and see if our reCAPTCHA was successful
-				$http_request  = "POST /recaptcha/api/verify HTTP/1.0\r\n";
-				$http_request .= "Host: $this->verify_server\r\n";
-				$http_request .= "Content-Type: application/x-www-form-urlencoded;\r\n";
-				$http_request .= "Content-Length: ".strlen($data)."\r\n";
-				$http_request .= "User-Agent: reCAPTCHA/PHP\r\n";
-				$http_request .= "\r\n";
-				$http_request .= $data;
-
-				$fs = @fsockopen($this->verify_server, 80, $errno, $errstr, 10);
-
-				if ($fs == FALSE)
+				if($response == false)
 				{
-					$this->set_error($lang->invalid_captcha_transmit);
+					$this->set_error($lang->invalid_nocaptcha_transmit);
 				}
 				else
 				{
-					// We connected, but is it correct?
-					fwrite($fs, $http_request);
+					$answer = json_decode($response, true);
 
-					while(!feof($fs))
-					{
-						$response .= fgets($fs, 1160);
-					}
-
-					fclose($fs);
-
-					$response = explode("\r\n\r\n", $response, 2);
-					$answer = explode("\n", $response[1]);
-
-					if (trim($answer[0]) != 'TRUE')
+					if($answer['success'] != 'true')
 					{
 						// We got it wrong! Oh no...
-						$this->set_error($lang->invalid_captcha_verify);
+						$this->set_error($lang->invalid_nocaptcha);
 					}
 				}
 			}
 		}
-
-		// Plugin hook
-
-		if (count($this->errors) > 0)
+		elseif($this->type == captcha::HCAPTCHA_INVISIBLE)
 		{
-			return FALSE;
+			$response = $mybb->input['g-recaptcha-response'];
+			if(!$response || strlen($response) == 0)
+			{
+				$this->set_error($lang->invalid_nocaptcha);
+			}
+			else
+			{
+				// We have a reCAPTCHA invisible to handle
+				// Contact Google and see if our reCAPTCHA was successful
+				$response = fetch_remote_file($this->verify_server, array(
+					'secret' => $mybb->settings['recaptchaprivatekey'],
+					'score' => $mybb->settings['recaptchascore'],
+					'remoteip' => $session->ipaddress,
+					'response' => $response
+				));
+
+				if($response === false)
+				{
+					$this->set_error($lang->invalid_nocaptcha_transmit);
+				}
+				else
+				{
+					$answer = json_decode($response, true);
+
+					if($answer['success'] != 'true' || $answer['score'] < $mybb->settings['recaptchascore'])
+					{
+						// We got it wrong! Oh no...
+						$this->set_error($lang->invalid_nocaptcha);
+					}
+				}
+			}
+		}
+		elseif(in_array($this->type, array(captcha::HCAPTCHA, captcha::HCAPTCHA_INVISIBLE)))
+		{
+			$response = $mybb->input['h-captcha-response'];
+			if(!$response || strlen($response) == 0)
+			{
+				$this->set_error($lang->invalid_hcaptcha);
+			}
+			else
+			{
+				// We have an hCaptcha or hCaptcha invisible to handle
+				// Contact hCaptcha and see if our hCaptcha was successful
+				$response = fetch_remote_file($this->verify_server, array(
+					'secret' => $mybb->settings['hcaptchaprivatekey'],
+					'remoteip' => $session->ipaddress,
+					'response' => $response
+				));
+
+				if($response == false)
+				{
+					$this->set_error($lang->invalid_hcaptcha_transmit);
+				}
+				else
+				{
+					$answer = json_decode($response, true);
+					if($answer['success'] != 'true')
+					{
+						// We got it wrong! Oh no...
+						$this->set_error($lang->invalid_hcaptcha);
+					}
+				}
+			}
+		}
+		$plugins->run_hooks('captcha_validate_end', $this);
+
+		if(count($this->errors) > 0)
+		{
+			return false;
 		}
 		else
 		{
-			return TRUE;
+			return true;
 		}
+	}
+
+	function invalidate_captcha()
+	{
+		global $db, $mybb, $plugins;
+
+		if($this->type == captcha::DEFAULT_CAPTCHA)
+		{
+			// We have a normal CAPTCHA to handle
+			$imagehash = $db->escape_string($mybb->input['imagehash']);
+			if($imagehash)
+			{
+				$db->delete_query("captcha", "imagehash = '{$imagehash}'");
+			}
+		}
+		// Not necessary for reCAPTCHA or Are You a Human
+
+		$plugins->run_hooks('captcha_invalidate_end', $this);
 	}
 
 	/**
 	 * Add an error to the error array.
+	 *
+	 * @param string $error
+	 * @param string $data
 	 */
 	function set_error($error, $data='')
 	{
@@ -303,19 +438,20 @@ class captcha
 	 * Returns the error(s) that occurred when handling data
 	 * in a format that MyBB can handle.
 	 *
-	 * @return An array of errors in a MyBB format.
+	 * @return array An array of errors in a MyBB format.
 	 */
 	function get_errors()
 	{
 		global $lang;
 
+		$errors = array();
 		foreach($this->errors as $error)
 		{
 			$lang_string = $error['error_code'];
 
-			if (!$lang_string)
+			if(!$lang_string)
 			{
-				if ($lang->invalid_captcha_verify)
+				if($lang->invalid_captcha_verify)
 				{
 					$lang_string = 'invalid_captcha_verify';
 				}
@@ -325,18 +461,18 @@ class captcha
 				}
 			}
 
-			if (!$lang->$lang_string)
+			if(!isset($lang->$lang_string))
 			{
 				$errors[] = $error['error_code'];
 				continue;
 			}
 
-			if (!empty($error['data']) && !is_array($error['data']))
+			if(!empty($error['data']) && !is_array($error['data']))
 			{
 				$error['data'] = array($error['data']);
 			}
 
-			if (is_array($error['data']))
+			if(is_array($error['data']))
 			{
 				array_unshift($error['data'], $lang->$lang_string);
 				$errors[] = call_user_func_array(array($lang, "sprintf"), $error['data']);
@@ -350,6 +486,11 @@ class captcha
 		return $errors;
 	}
 
+	/**
+	 * @param array $data
+	 *
+	 * @return string
+	 */
 	private function _qsencode($data)
 	{
 		$req = '';
@@ -363,4 +504,3 @@ class captcha
 		return $req;
 	}
 }
-?>

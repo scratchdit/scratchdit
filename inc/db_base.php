@@ -3,8 +3,8 @@
  * MyBB 1.8
  * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * Website: //www.mybb.com
- * License: //www.mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
  */
 
@@ -14,7 +14,7 @@ interface DB_Base
 	 * Connect to the database server.
 	 *
 	 * @param array $config Array of DBMS connection details.
-	 * @return resource|PDOStatement|mysqli_result The DB connection resource. Returns FALSE on fail or -1 on a db connect failure.
+	 * @return resource|PDOStatement|mysqli_result The DB connection resource. Returns false on fail or -1 on a db connect failure.
 	 */
 	function connect($config);
 
@@ -62,7 +62,7 @@ interface DB_Base
 	 * @param string $field The name of the field to return.
 	 * @param int|boolean $row The number of the row to fetch it from.
 	 */
-	function fetch_field($query, $field, $row=FALSE);
+	function fetch_field($query, $field, $row=false);
 
 	/**
 	 * Moves internal row pointer to the next row
@@ -142,7 +142,7 @@ interface DB_Base
 	 * Check if a table exists in a database.
 	 *
 	 * @param string $table The table name.
-	 * @return boolean TRUE when exists, FALSE if not.
+	 * @return boolean True when exists, false if not.
 	 */
 	function table_exists($table);
 
@@ -151,7 +151,7 @@ interface DB_Base
 	 *
 	 * @param string $field The field name.
 	 * @param string $table The table name.
-	 * @return boolean TRUE when exists, FALSE if not.
+	 * @return boolean True when exists, false if not.
 	 */
 	function field_exists($field, $table);
 
@@ -202,7 +202,7 @@ interface DB_Base
 	 * @param boolean $no_quote An option to quote incoming values of the array.
 	 * @return resource|PDOStatement|mysqli_result The query data.
 	 */
-	function update_query($table, $array, $where="", $limit="", $no_quote=FALSE);
+	function update_query($table, $array, $where="", $limit="", $no_quote=false);
 
 	/**
 	 * Build a delete query.
@@ -226,7 +226,7 @@ interface DB_Base
 	 * Frees the resources of a query.
 	 *
 	 * @param resource|PDOStatement|mysqli_result $query The query to destroy.
-	 * @return boolean Returns TRUE on success, FALSE on faliure
+	 * @return boolean Returns true on success, false on faliure
 	 */
 	function free_result($query);
 
@@ -280,7 +280,7 @@ interface DB_Base
 	 *
 	 * @param string $table The name of the table.
 	 * @param string $index Optionally specify the name of the index.
-	 * @return boolean TRUE or FALSE if the table has a fulltext index or not.
+	 * @return boolean True or false if the table has a fulltext index or not.
 	 */
 	function is_fulltext($table, $index="");
 
@@ -288,7 +288,7 @@ interface DB_Base
 	 * Returns whether or not this database engine supports fulltext indexing.
 	 *
 	 * @param string $table The table to be checked.
-	 * @return boolean TRUE or FALSE if supported or not.
+	 * @return boolean True or false if supported or not.
 	 */
 	function supports_fulltext($table);
 
@@ -304,7 +304,7 @@ interface DB_Base
 	 * Returns whether or not this database engine supports boolean fulltext matching.
 	 *
 	 * @param string $table The table to be checked.
-	 * @return boolean TRUE or FALSE if supported or not.
+	 * @return boolean True or false if supported or not.
 	 */
 	function supports_fulltext_boolean($table);
 
@@ -332,7 +332,7 @@ interface DB_Base
 	 * @param boolean $hard Hard drop - no checking
 	 * @param boolean $table_prefix Use table prefix?
 	 */
-	function drop_table($table, $hard=FALSE, $table_prefix=TRUE);
+	function drop_table($table, $hard=false, $table_prefix=true);
 
 	/**
 	 * Renames a table
@@ -341,7 +341,7 @@ interface DB_Base
 	 * @param string $new_table the new table name
 	 * @param boolean $table_prefix Use table prefix?
 	 */
-	function rename_table($old_table, $new_table, $table_prefix=TRUE);
+	function rename_table($old_table, $new_table, $table_prefix=true);
 
 	/**
 	 * Replace contents of table with values
@@ -349,9 +349,9 @@ interface DB_Base
 	 * @param string $table The table
 	 * @param array $replacements The replacements
 	 * @param string|array $default_field The default field(s)
-	 * @param boolean $insert_id Whether or not to return an insert id. TRUE by default
+	 * @param boolean $insert_id Whether or not to return an insert id. True by default
 	 */
-	function replace_query($table, $replacements=array(), $default_field="", $insert_id=TRUE);
+	function replace_query($table, $replacements=array(), $default_field="", $insert_id=true);
 
 	/**
 	 * Drops a column
@@ -376,11 +376,11 @@ interface DB_Base
 	 * @param string $table The table
 	 * @param string $column The column name
 	 * @param string $new_definition the new column definition
-	 * @param boolean|string $new_not_NULL Whether to "drop" or "set" the NOT NULL attribute (no change if FALSE)
-	 * @param boolean|string $new_default_value The new default value, or FALSE to drop the attribute
-	 * @return bool Returns TRUE if all queries are executed successfully or FALSE if one of them failed
+	 * @param boolean|string $new_not_null Whether to "drop" or "set" the NOT NULL attribute (no change if false)
+	 * @param boolean|string $new_default_value The new default value, or false to drop the attribute
+	 * @return bool Returns true if all queries are executed successfully or false if one of them failed
 	 */
-	function modify_column($table, $column, $new_definition, $new_not_NULL=FALSE, $new_default_value=FALSE);
+	function modify_column($table, $column, $new_definition, $new_not_null=false, $new_default_value=false);
 
 	/**
 	 * Renames a column
@@ -389,11 +389,11 @@ interface DB_Base
 	 * @param string $old_column The old column name
 	 * @param string $new_column the new column name
 	 * @param string $new_definition the new column definition
-	 * @param boolean|string $new_not_NULL Whether to "drop" or "set" the NOT NULL attribute (no change if FALSE)
-	 * @param boolean|string $new_default_value The new default value, or FALSE to drop the attribute
-	 * @return bool Returns TRUE if all queries are executed successfully
+	 * @param boolean|string $new_not_null Whether to "drop" or "set" the NOT NULL attribute (no change if false)
+	 * @param boolean|string $new_default_value The new default value, or false to drop the attribute
+	 * @return bool Returns true if all queries are executed successfully
 	 */
-	function rename_column($table, $old_column, $new_column, $new_definition, $new_not_NULL=FALSE, $new_default_value=FALSE);
+	function rename_column($table, $old_column, $new_column, $new_definition, $new_not_null=false, $new_default_value=false);
 
 	/**
 	 * Sets the table prefix used by the simple select, insert, update and delete functions
@@ -413,7 +413,7 @@ interface DB_Base
 	/**
 	 * Fetch a list of database character sets this DBMS supports
 	 *
-	 * @return array|bool Array of supported character sets with array key being the name, array value being display name. FALSE if unsupported
+	 * @return array|bool Array of supported character sets with array key being the name, array value being display name. False if unsupported
 	 */
 	function fetch_db_charsets();
 
@@ -421,7 +421,7 @@ interface DB_Base
 	 * Fetch a database collation for a particular database character set
 	 *
 	 * @param string $charset The database character set
-	 * @return string|bool The matching database collation, FALSE if unsupported
+	 * @return string|bool The matching database collation, false if unsupported
 	 */
 	function fetch_charset_collation($charset);
 

@@ -1,9 +1,8 @@
 <?php
 /**
- * MyBB 1.6 English Language Pack
- * Copyright 2010 MyBB Group, All Rights Reserved
- * 
- * $Id$
+ * MyBB 1.8 English Language Pack
+ * Copyright 2014 MyBB Group, All Rights Reserved
+ *
  */
 
 $l['forum_management'] = "Forum Management";
@@ -32,6 +31,7 @@ $l['order'] = "Order";
 
 $l['subforums'] = "Sub Forums";
 $l['moderators'] = "Moderators";
+$l['forum_thread_prefixes'] = "Thread Prefixes";
 $l['permissions'] = "Permissions";
 $l['delete_forum'] = "Delete Forum";
 
@@ -69,20 +69,39 @@ $l['moderator_permissions'] = "Moderator Permissions";
 $l['forum_desc'] = "Forum the moderator manages.";
 $l['edit_mod_for'] = "Edit moderator options for \"{1}\"";
 $l['can_edit_posts'] = "Can edit posts?";
-$l['can_delete_posts'] = "Can delete posts?";
+$l['can_soft_delete_posts'] = "Can soft delete posts?";
+$l['can_restore_posts'] = "Can restore soft deleted posts?";
+$l['can_delete_posts'] = "Can delete posts permanently?";
+$l['can_soft_delete_threads'] = "Can soft delete threads?";
+$l['can_restore_threads'] = "Can restore soft deleted threads?";
+$l['can_delete_threads'] = "Can delete threads permanently?";
 $l['can_view_ips'] = "Can view IPs?";
-$l['can_open_close_threads'] = "Can open/close and stick/unstick threads?";
+$l['can_view_unapprove'] = "Can view unapproved threads and posts?";
+$l['can_view_deleted'] = "Can view deleted threads and posts?";
+$l['can_open_close_threads'] = "Can open/close threads?";
+$l['can_stick_unstick_threads'] = "Can stick/unstick threads?";
+$l['can_approve_unapprove_threads'] = "Can approve/unapprove threads?";
+$l['can_approve_unapprove_posts'] = "Can approve/unapprove posts?";
+$l['can_approve_unapprove_attachments'] = "Can approve/unapprove attachments?";
 $l['can_manage_threads'] = "Can manage threads (split, move, copy, merge)?";
+$l['can_manage_polls'] = "Can manage polls?";
+$l['can_post_closed_threads'] = "Can post in closed threads?";
 $l['can_move_to_other_forums'] = "Can move threads to another forum this user doesn't moderate?";
 $l['can_use_custom_tools'] = "Can use custom moderator tools?";
+$l['can_manage_announcements'] = "Can manage announcements in this forum?";
+$l['can_manage_reported_posts'] = "Can manage reported posts in this forum?";
+$l['can_view_mod_log'] = "Can view moderator log entries for this forum?";
+$l['moderator_cp_permissions'] = "Moderator CP Permissions";
+$l['moderator_cp_permissions_desc'] = "This user must be able to access the Mod CP and have usergroup permission to access these functions in order for these permissions to take effect.";
+
 $l['save_mod'] = "Save Moderator";
 
 $l['no_forums'] = "There are no forums found.";
 $l['no_moderators'] = "There are no moderators found.";
 
 $l['success_forum_disporder_updated'] = "The forum display orders have been updated successfully.";
-$l['success_forum_deleted'] = "The selected forum has been deleted successfully.";
-$l['success_moderator_deleted'] = "The selected moderator has been deleted successfully.";
+$l['success_forum_deleted'] = "The selected forum has been deleted successfully. Ideally you should now run the <a href=\"index.php?module=tools-recount_rebuild\">Recount &amp; Rebuild</a> tools.";
+$l['success_moderator_deleted'] = "The selected moderator has been deleted successfully.<br />Please remember that this hasn't changed this user's group permission, they may still have moderation powers.";
 $l['success_forum_permissions_updated'] = "The forum permissions have been updated successfully.";
 $l['success_forum_updated'] = "The forum settings have been updated successfully.";
 $l['success_moderator_updated'] = "The selected moderator has been updated successfully.";
@@ -134,11 +153,6 @@ $l['copy_settings_and_properties_desc'] = "Only applies if the destination forum
 $l['copy_user_group_permissions'] = "Copy User Group Permissions";
 $l['copy_user_group_permissions_desc'] = "Use CTRL to select multiple groups.";
 
-$l['moderation_options'] = "Moderation Options";
-$l['mod_new_posts'] = "Yes, moderate new posts";
-$l['mod_new_threads'] = "Yes, moderate new threads";
-$l['mod_new_attachments'] = "Yes, moderate new attachments";
-$l['mod_after_edit'] = "Yes, moderate posts after they've been edited";
 $l['override_user_style'] = "Yes, override the user's selected style for this forum";
 $l['style_options'] = "Style Options";
 $l['forum_specific_style'] = "Forum-Specific Style:";
@@ -198,6 +212,8 @@ $l['allow_post_icons'] = "Yes, allow post icons to be chosen for posts";
 $l['allow_thread_ratings'] = "Yes, allow threads to be rated";
 $l['show_forum_jump'] = "Yes, show this forum in the 'forum jump' menu";
 $l['use_postcounts'] = "Yes, posts in this forum should count towards user post counts";
+$l['use_threadcounts'] = "Yes, threads in this forum should count towards user thread counts";
+$l['require_thread_prefix'] = "Yes, require a thread prefix for all threads";
 
 $l['use_permissions'] = "Use Permissions";
 $l['use_permissions_desc'] = "Select the permissions you would like to use for this user group - inherited permissions (will delete custom permissions) or custom permissions.";
@@ -213,6 +229,7 @@ $l['save_permissions'] = "Save Forum Permissions";
 $l['error_missing_title'] = "You must enter in a title.";
 $l['error_no_parent'] = "You must select a parent forum.";
 $l['error_not_empty'] = "Forums with threads cannot be converted to categories.";
+$l['error_forum_link_not_empty'] = "Forums with threads cannot be redirected to another webpage.";
 
 $l['success_forum_added'] = "The forum has been created successfully.";
 $l['success_moderator_added'] = "The moderator has been added to this forum successfully.";
@@ -228,6 +245,7 @@ $l['error_invalid_destination_forum'] = "Invalid destination forum.";
 $l['group_viewing'] = "Viewing";
 $l['group_posting_rating'] = "Posting / Rating";
 $l['group_editing'] = "Editing";
+$l['group_moderate'] = "Moderation";
 $l['group_polls'] = "Polls";
 $l['group_misc'] = "Miscellaneous";
 
@@ -238,6 +256,7 @@ $l['viewing_field_candlattachments'] = "Can download attachments?";
 
 $l['posting_rating_field_canpostthreads'] = "Can post threads?";
 $l['posting_rating_field_canpostreplys'] = "Can post replies?";
+$l['posting_rating_field_canonlyreplyownthreads'] = "Can only reply to own threads?";
 $l['posting_rating_field_canpostattachments'] = "Can post attachments?";
 $l['posting_rating_field_canratethreads'] = "Can rate threads?";
 
@@ -245,10 +264,17 @@ $l['editing_field_caneditposts'] = "Can edit own posts?";
 $l['editing_field_candeleteposts'] = "Can delete own posts?";
 $l['editing_field_candeletethreads'] = "Can delete own threads?";
 $l['editing_field_caneditattachments'] = "Can update own attachments?";
+$l['editing_field_canviewdeletionnotice'] = "Can view deletion notices?";
+
+$l['moderate_field_modposts'] = "Moderate new posts?";
+$l['moderate_field_modthreads'] = "Moderate new threads?";
+$l['moderate_field_modattachments'] = "Moderate new attachments?";
+$l['moderate_field_mod_edit_posts'] = "Moderate posts after they've been edited?";
 
 $l['polls_field_canpostpolls'] = "Can post polls?";
 $l['polls_field_canvotepolls'] = "Can vote in polls?";
 
 $l['misc_field_cansearch'] = "Can search forum?";
 
-?>
+$l['confirm_proceed_deletion'] = "Click \"Proceed\" to continue the deletion of the forum.";
+$l['automatically_redirecting'] = "Automatically Redirecting&hellip;";

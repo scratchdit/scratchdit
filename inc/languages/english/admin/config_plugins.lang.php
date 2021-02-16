@@ -1,9 +1,8 @@
 <?php
 /**
- * MyBB 1.6 English Language Pack
- * Copyright 2010 MyBB Group, All Rights Reserved
- * 
- * $Id$
+ * MyBB 1.8 English Language Pack
+ * Copyright 2014 MyBB Group, All Rights Reserved
+ *
  */
 
 $l['plugins'] = "Plugins";
@@ -15,6 +14,8 @@ $l['browse_plugins_desc'] = "Here you may browse the official MyBB modifications
 $l['browse_all_plugins'] = "Browse All Plugins";
 
 $l['plugin'] = "Plugin";
+$l['active_plugin'] = "Active Plugins";
+$l['inactive_plugin'] = "Inactive Plugins";
 $l['your_version'] = "Your Version";
 $l['latest_version'] = "Latest Version";
 $l['download'] = "Download";
@@ -24,6 +25,8 @@ $l['install_and_activate'] = "Install &amp; Activate";
 $l['uninstall'] = "Uninstall";
 $l['created_by'] = "Created by";
 $l['no_plugins'] = "There are no plugins on your forum at this time.";
+$l['no_active_plugins'] = "There are no active plugins on your forum.";
+$l['no_inactive_plugins'] = "There are no inactive plugins available.";
 
 $l['plugin_incompatible'] = "This plugin is incompatible with MyBB {1}";
 
@@ -34,6 +37,8 @@ $l['search'] = "Search";
 
 $l['error_vcheck_no_supported_plugins'] = "None of the plugins installed support version checking.";
 $l['error_vcheck_communications_problem'] = "There was a problem communicating with the MyBB modifications version server. Please try again in a few minutes.";
+$l['error_vcheck_vulnerable'] = "[Vulnerable plugin]:";
+$l['error_vcheck_vulnerable_notes'] = "This submission has currently been marked as vulnerable by the MyBB Staff. We recommend complete removal of this modification. Please see the notes below: ";
 $l['error_no_input'] = "Error code 1: No input specified.";
 $l['error_no_pids'] = "Error code 2: No plugin ids specified.";
 $l['error_communication_problem'] = "There was a problem communicating with the MyBB modifications server. Please try again in a few minutes.";
@@ -45,4 +50,3 @@ $l['success_plugin_activated'] = "The selected plugin has been activated success
 $l['success_plugin_deactivated'] = "The selected plugin has been deactivated successfully.";
 $l['success_plugin_installed'] = "The selected plugin has been installed and activated successfully.";
 $l['success_plugin_uninstalled'] = "The selected plugin has been uninstalled successfully.";
-?>

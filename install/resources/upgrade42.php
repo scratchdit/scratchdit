@@ -3,8 +3,8 @@
  * MyBB 1.8
  * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * Website: //www.mybb.com
- * License: //www.mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
  */
 
@@ -29,7 +29,7 @@ function upgrade42_dbchanges()
 	echo "<p>Performing necessary upgrade queries...</p>";
 	flush();
 
-	if ($db->field_exists('ipaddress', 'pollvotes'))
+	if($db->field_exists('ipaddress', 'pollvotes'))
 	{
 		$db->drop_column('pollvotes', 'ipaddress');
 	}

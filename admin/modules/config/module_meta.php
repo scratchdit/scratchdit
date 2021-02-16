@@ -1,12 +1,11 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
- * $Id$
  */
 
 // Disallow direct access to this file for security reasons
@@ -15,6 +14,9 @@ if(!defined("IN_MYBB"))
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
 
+/**
+ * @return bool true
+ */
 function config_meta()
 {
 	global $page, $lang, $plugins;
@@ -36,17 +38,24 @@ function config_meta()
 	$sub_menu['140'] = array("id" => "calendars", "title" => $lang->calendars, "link" => "index.php?module=config-calendars");
 	$sub_menu['150'] = array("id" => "warning", "title" => $lang->warning_system, "link" => "index.php?module=config-warning");
 	$sub_menu['160'] = array("id" => "thread_prefixes", "title" => $lang->thread_prefixes, "link" => "index.php?module=config-thread_prefixes");
+	$sub_menu['170'] = array("id" => "questions", "title" => $lang->security_questions, "link" => "index.php?module=config-questions");
+	$sub_menu['180'] = array("id" => "report_reasons", "title" => $lang->report_reasons, "link" => "index.php?module=config-report_reasons");
 
 	$sub_menu = $plugins->run_hooks("admin_config_menu", $sub_menu);
 
 	$page->add_menu_item($lang->configuration, "config", "index.php?module=config", 10, $sub_menu);
 
-	return TRUE;
+	return true;
 }
 
+/**
+ * @param string $action
+ *
+ * @return string
+ */
 function config_action_handler($action)
 {
-	global $page, $lang, $plugins;
+	global $page, $plugins;
 
 	$page->active_module = "config";
 
@@ -66,7 +75,9 @@ function config_action_handler($action)
 		'mod_tools' => array('active' => 'mod_tools', 'file' => 'mod_tools.php'),
 		'mycode' => array('active' => 'mycode', 'file' => 'mycode.php'),
 		'settings' => array('active' => 'settings', 'file' => 'settings.php'),
-		'thread_prefixes' => array('active' => 'thread_prefixes', 'file' => 'thread_prefixes.php')
+		'thread_prefixes' => array('active' => 'thread_prefixes', 'file' => 'thread_prefixes.php'),
+		'questions' => array('active' => 'questions', 'file' => 'questions.php'),
+		'report_reasons' => array('active' => 'report_reasons', 'file' => 'report_reasons.php')
 	);
 
 	$actions = $plugins->run_hooks("admin_config_action_handler", $actions);
@@ -83,6 +94,9 @@ function config_action_handler($action)
 	}
 }
 
+/**
+ * @return array
+ */
 function config_admin_permissions()
 {
 	global $lang, $plugins;
@@ -103,11 +117,12 @@ function config_admin_permissions()
 		"calendars" => $lang->can_manage_calendars,
 		"warning" => $lang->can_manage_warning_system,
 		"mod_tools" => $lang->can_manage_mod_tools,
-		"thread_prefixes" => $lang->can_manage_thread_prefixes
+		"thread_prefixes" => $lang->can_manage_thread_prefixes,
+		"questions" => $lang->can_manage_security_questions,
+		"report_reasons" => $lang->can_manage_report_reasons
 	);
 
 	$admin_permissions = $plugins->run_hooks("admin_config_permissions", $admin_permissions);
 
 	return array("name" => $lang->configuration, "permissions" => $admin_permissions, "disporder" => 10);
 }
-?>

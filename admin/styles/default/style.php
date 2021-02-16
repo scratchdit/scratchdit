@@ -28,13 +28,37 @@
  */
 
 // Disallow direct access to this file for security reasons
-if (!defined("IN_MYBB"))
+if(!defined("IN_MYBB"))
 {
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
 
 class Page extends DefaultPage
 {
+	function _generate_breadcrumb()
+	{
+		if(!is_array($this->_breadcrumb_trail))
+		{
+			return false;
+		}
+		$trail = "";
+		foreach($this->_breadcrumb_trail as $key => $crumb)
+		{
+			if(!empty($this->_breadcrumb_trail[$key+1]))
+			{
+				$trail .= "<a href=\"".$crumb['url']."\">".$crumb['name']."</a>";
+				if(!empty($this->_breadcrumb_trail[$key+2]))
+				{
+					$trail .= " &raquo; ";
+				}
+			}
+			else
+			{
+				$trail .= " &raquo; <span class=\"active\">".$crumb['name']."</span>";
+			}
+		}
+		return $trail;
+	}
 }
 
 class SidebarItem extends DefaultSidebarItem
@@ -56,4 +80,3 @@ class Form extends DefaultForm
 class FormContainer extends DefaultFormContainer
 {
 }
-?>

@@ -1,5 +1,5 @@
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
-// Distributed under an MIT license: //codemirror.net/LICENSE
+// Distributed under an MIT license: http://codemirror.net/LICENSE
 
 (function(mod) {
   if (typeof exports == "object" && typeof module == "object") // CommonJS
@@ -29,7 +29,7 @@ CodeMirror.defineMode("css", function(config, parserConfig) {
       valueKeywords = parserConfig.valueKeywords || {},
       allowNested = parserConfig.allowNested,
       lineComment = parserConfig.lineComment,
-      supportsAtComponent = parserConfig.supportsAtComponent === TRUE;
+      supportsAtComponent = parserConfig.supportsAtComponent === true;
 
   var type, override;
   function ret(style, tp) { type = tp; return style; }
@@ -40,13 +40,13 @@ CodeMirror.defineMode("css", function(config, parserConfig) {
     var ch = stream.next();
     if (tokenHooks[ch]) {
       var result = tokenHooks[ch](stream, state);
-      if (result !== FALSE) return result;
+      if (result !== false) return result;
     }
     if (ch == "@") {
       stream.eatWhile(/[\w\\\-]/);
       return ret("def", stream.current());
     } else if (ch == "=" || (ch == "~" || ch == "|") && stream.eat("=")) {
-      return ret(NULL, "compare");
+      return ret(null, "compare");
     } else if (ch == "\"" || ch == "'") {
       state.tokenize = tokenString(ch);
       return state.tokenize(stream, state);
@@ -65,18 +65,18 @@ CodeMirror.defineMode("css", function(config, parserConfig) {
         return ret("number", "unit");
       } else if (stream.match(/^-[\w\\\-]+/)) {
         stream.eatWhile(/[\w\\\-]/);
-        if (stream.match(/^\s*:/, FALSE))
+        if (stream.match(/^\s*:/, false))
           return ret("variable-2", "variable-definition");
         return ret("variable-2", "variable");
       } else if (stream.match(/^\w+-/)) {
         return ret("meta", "meta");
       }
     } else if (/[,+>*\/]/.test(ch)) {
-      return ret(NULL, "select-op");
+      return ret(null, "select-op");
     } else if (ch == "." && stream.match(/^-?[_a-z][_a-z0-9-]*/i)) {
       return ret("qualifier", "qualifier");
     } else if (/[:;{}\[\]\(\)]/.test(ch)) {
-      return ret(NULL, ch);
+      return ret(null, ch);
     } else if ((ch == "u" && stream.match(/rl(-prefix)?\(/)) ||
                (ch == "d" && stream.match("omain(")) ||
                (ch == "r" && stream.match("egexp("))) {
@@ -87,32 +87,32 @@ CodeMirror.defineMode("css", function(config, parserConfig) {
       stream.eatWhile(/[\w\\\-]/);
       return ret("property", "word");
     } else {
-      return ret(NULL, NULL);
+      return ret(null, null);
     }
   }
 
   function tokenString(quote) {
     return function(stream, state) {
-      var escaped = FALSE, ch;
-      while ((ch = stream.next()) != NULL) {
+      var escaped = false, ch;
+      while ((ch = stream.next()) != null) {
         if (ch == quote && !escaped) {
           if (quote == ")") stream.backUp(1);
           break;
         }
         escaped = !escaped && ch == "\\";
       }
-      if (ch == quote || !escaped && quote != ")") state.tokenize = NULL;
+      if (ch == quote || !escaped && quote != ")") state.tokenize = null;
       return ret("string", "string");
     };
   }
 
   function tokenParenthesized(stream, state) {
     stream.next(); // Must be '('
-    if (!stream.match(/\s*[\"\')]/, FALSE))
+    if (!stream.match(/\s*[\"\')]/, false))
       state.tokenize = tokenString(")");
     else
-      state.tokenize = NULL;
-    return ret(NULL, "(");
+      state.tokenize = null;
+    return ret(null, "(");
   }
 
   // Context management
@@ -124,7 +124,7 @@ CodeMirror.defineMode("css", function(config, parserConfig) {
   }
 
   function pushContext(state, stream, type, indent) {
-    state.context = new Context(type, stream.indentation() + (indent === FALSE ? 0 : indentUnit), state.context);
+    state.context = new Context(type, stream.indentation() + (indent === false ? 0 : indentUnit), state.context);
     return type;
   }
 
@@ -201,7 +201,7 @@ CodeMirror.defineMode("css", function(config, parserConfig) {
         override = "string-2";
         return "maybeprop";
       } else if (allowNested) {
-        override = stream.match(/^\s*:(?:\s|$)/, FALSE) ? "property" : "tag";
+        override = stream.match(/^\s*:(?:\s|$)/, false) ? "property" : "tag";
         return "block";
       } else {
         override += " error";
@@ -307,7 +307,7 @@ CodeMirror.defineMode("css", function(config, parserConfig) {
     if (type == "}")
       return popAndPass(type, stream, state);
     if (type == "{")
-      return popContext(state) && pushContext(state, stream, allowNested ? "block" : "top", FALSE);
+      return popContext(state) && pushContext(state, stream, allowNested ? "block" : "top", false);
     if (type == "word")
       override = "error";
     return state.context.type;
@@ -331,7 +331,7 @@ CodeMirror.defineMode("css", function(config, parserConfig) {
 
   states.restricted_atBlock = function(type, stream, state) {
     if (type == "}") {
-      state.stateArg = NULL;
+      state.stateArg = null;
       return popContext(state);
     }
     if (type == "word") {
@@ -369,14 +369,14 @@ CodeMirror.defineMode("css", function(config, parserConfig) {
 
   return {
     startState: function(base) {
-      return {tokenize: NULL,
+      return {tokenize: null,
               state: inline ? "block" : "top",
-              stateArg: NULL,
-              context: new Context(inline ? "block" : "top", base || 0, NULL)};
+              stateArg: null,
+              context: new Context(inline ? "block" : "top", base || 0, null)};
     },
 
     token: function(stream, state) {
-      if (!state.tokenize && stream.eatSpace()) return NULL;
+      if (!state.tokenize && stream.eatSpace()) return null;
       var style = (state.tokenize || tokenBase)(stream, state);
       if (style && typeof style == "object") {
         type = style[1];
@@ -418,7 +418,7 @@ CodeMirror.defineMode("css", function(config, parserConfig) {
   function keySet(array) {
     var keys = {};
     for (var i = 0; i < array.length; ++i) {
-      keys[array[i].toLowerCase()] = TRUE;
+      keys[array[i].toLowerCase()] = true;
     }
     return keys;
   }
@@ -692,10 +692,10 @@ CodeMirror.defineMode("css", function(config, parserConfig) {
   CodeMirror.registerHelper("hintWords", "css", allWords);
 
   function tokenCComment(stream, state) {
-    var maybeEnd = FALSE, ch;
-    while ((ch = stream.next()) != NULL) {
+    var maybeEnd = false, ch;
+    while ((ch = stream.next()) != null) {
       if (maybeEnd && ch == "/") {
-        state.tokenize = NULL;
+        state.tokenize = null;
         break;
       }
       maybeEnd = (ch == "*");
@@ -716,7 +716,7 @@ CodeMirror.defineMode("css", function(config, parserConfig) {
     valueKeywords: valueKeywords,
     tokenHooks: {
       "/": function(stream, state) {
-        if (!stream.eat("*")) return FALSE;
+        if (!stream.eat("*")) return false;
         state.tokenize = tokenCComment;
         return tokenCComment(stream, state);
       }
@@ -733,7 +733,7 @@ CodeMirror.defineMode("css", function(config, parserConfig) {
     colorKeywords: colorKeywords,
     valueKeywords: valueKeywords,
     fontProperties: fontProperties,
-    allowNested: TRUE,
+    allowNested: true,
     lineComment: "//",
     tokenHooks: {
       "/": function(stream, state) {
@@ -748,19 +748,19 @@ CodeMirror.defineMode("css", function(config, parserConfig) {
         }
       },
       ":": function(stream) {
-        if (stream.match(/\s*\{/, FALSE))
-          return [NULL, NULL]
-        return FALSE;
+        if (stream.match(/\s*\{/, false))
+          return [null, null]
+        return false;
       },
       "$": function(stream) {
         stream.match(/^[\w-]+/);
-        if (stream.match(/^\s*:/, FALSE))
+        if (stream.match(/^\s*:/, false))
           return ["variable-2", "variable-definition"];
         return ["variable-2", "variable"];
       },
       "#": function(stream) {
-        if (!stream.eat("{")) return FALSE;
-        return [NULL, "interpolation"];
+        if (!stream.eat("{")) return false;
+        return [null, "interpolation"];
       }
     },
     name: "css",
@@ -776,7 +776,7 @@ CodeMirror.defineMode("css", function(config, parserConfig) {
     colorKeywords: colorKeywords,
     valueKeywords: valueKeywords,
     fontProperties: fontProperties,
-    allowNested: TRUE,
+    allowNested: true,
     lineComment: "//",
     tokenHooks: {
       "/": function(stream, state) {
@@ -791,10 +791,10 @@ CodeMirror.defineMode("css", function(config, parserConfig) {
         }
       },
       "@": function(stream) {
-        if (stream.eat("{")) return [NULL, "interpolation"];
-        if (stream.match(/^(charset|document|font-face|import|(-(moz|ms|o|webkit)-)?keyframes|media|namespace|page|supports)\b/, FALSE)) return FALSE;
+        if (stream.eat("{")) return [null, "interpolation"];
+        if (stream.match(/^(charset|document|font-face|import|(-(moz|ms|o|webkit)-)?keyframes|media|namespace|page|supports)\b/, false)) return false;
         stream.eatWhile(/[\w\\\-]/);
-        if (stream.match(/^\s*:/, FALSE))
+        if (stream.match(/^\s*:/, false))
           return ["variable-2", "variable-definition"];
         return ["variable-2", "variable"];
       },
@@ -816,10 +816,10 @@ CodeMirror.defineMode("css", function(config, parserConfig) {
     counterDescriptors: counterDescriptors,
     colorKeywords: colorKeywords,
     valueKeywords: valueKeywords,
-    supportsAtComponent: TRUE,
+    supportsAtComponent: true,
     tokenHooks: {
       "/": function(stream, state) {
-        if (!stream.eat("*")) return FALSE;
+        if (!stream.eat("*")) return false;
         state.tokenize = tokenCComment;
         return tokenCComment(stream, state);
       }

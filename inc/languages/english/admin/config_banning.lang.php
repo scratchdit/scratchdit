@@ -1,11 +1,10 @@
 <?php
 /**
- * MyBB 1.6 English Language Pack
- * Copyright 2010 MyBB Group, All Rights Reserved
- * 
- * $Id$
+ * MyBB 1.8 English Language Pack
+ * Copyright 2014 MyBB Group, All Rights Reserved
+ *
  */
- 
+
 $l['banning'] = "Banning";
 $l['banned_ips'] = "Banned IPs";
 $l['banned_ips_desc'] = "Here you can manage IP addresses which are banned from accessing your board.";
@@ -31,7 +30,7 @@ $l['add_disallowed_email_address'] = "Add a Disallowed Email Address";
 $l['email_address_desc'] = "Note: To indicate a wild card match, use *";
 $l['disallow_email_address'] = "Disallow Email Address";
 $l['ban_an_ip_address'] = "Ban an IP Address";
-$l['ip_address_desc'] = "Note: To ban a range of IP addresses use * (Ex: 127.0.0.*)";
+$l['ip_address_desc'] = "Note: To ban a range of IP addresses use * (Ex: 127.0.0.*) or CIDR notation (Ex: 127.0.0.0/8)";
 $l['ban_ip_address'] = "Ban IP Address";
 
 $l['error_missing_ban_input'] = "You did not enter a value to ban.";
@@ -45,4 +44,3 @@ $l['success_ban_deleted'] = "The specified ban has been deleted successfully.";
 
 $l['confirm_ban_deletion'] = "Are you sure you wish to delete this ban?";
 
-?>

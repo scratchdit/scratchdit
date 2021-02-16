@@ -3,8 +3,8 @@
  * MyBB 1.8
  * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * Website: //www.mybb.com
- * License: //www.mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
  */
 
@@ -33,9 +33,9 @@ function upgrade30_dbchanges()
 	$db->update_query('settings', array('optionscode' => 'forumselect'), 'name IN (\'postmergefignore\', \'portal_announcementsfid\') AND optionscode=\'text\'');
 	$db->update_query('settings', array('optionscode' => 'groupselect'), 'name=\'postmergeuignore\' AND optionscode=\'text\'');
 
-	if ($db->type == "mysql" || $db->type == "mysqli")
+	if($db->type == "mysql" || $db->type == "mysqli")
 	{
-		if ($db->index_exists('posts', 'tiddate'))
+		if($db->index_exists('posts', 'tiddate'))
 		{
 			$db->drop_index('posts', 'tiddate');
 		}
@@ -43,181 +43,181 @@ function upgrade30_dbchanges()
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."posts ADD INDEX (`tid`, `dateline`)");
 	}
 
-	if ($db->field_exists('modposts', 'usergroups'))
+	if($db->field_exists('modposts', 'usergroups'))
 	{
 		$db->drop_column("usergroups", "modposts");
 	}
 
-	if ($db->field_exists('modthreads', 'usergroups'))
+	if($db->field_exists('modthreads', 'usergroups'))
 	{
 		$db->drop_column("usergroups", "modthreads");
 	}
 
-	if ($db->field_exists('mod_edit_posts', 'usergroups'))
+	if($db->field_exists('mod_edit_posts', 'usergroups'))
 	{
 		$db->drop_column("usergroups", "mod_edit_posts");
 	}
 
-	if ($db->field_exists('modattachments', 'usergroups'))
+	if($db->field_exists('modattachments', 'usergroups'))
 	{
 		$db->drop_column("usergroups", "modattachments");
 	}
 
-	if ($db->field_exists('regex', 'profilefields'))
+	if($db->field_exists('regex', 'profilefields'))
 	{
 		$db->drop_column("profilefields", "regex");
 	}
 
-	if ($db->field_exists('allowhtml', 'profilefields'))
+	if($db->field_exists('allowhtml', 'profilefields'))
 	{
 		$db->drop_column("profilefields", "allowhtml");
 	}
 
-	if ($db->field_exists('allowmycode', 'profilefields'))
+	if($db->field_exists('allowmycode', 'profilefields'))
 	{
 		$db->drop_column("profilefields", "allowmycode");
 	}
 
-	if ($db->field_exists('allowsmilies', 'profilefields'))
+	if($db->field_exists('allowsmilies', 'profilefields'))
 	{
 		$db->drop_column("profilefields", "allowsmilies");
 	}
 
-	if ($db->field_exists('allowimgcode', 'profilefields'))
+	if($db->field_exists('allowimgcode', 'profilefields'))
 	{
 		$db->drop_column("profilefields", "allowimgcode");
 	}
 
-	if ($db->field_exists('allowvideocode', 'profilefields'))
+	if($db->field_exists('allowvideocode', 'profilefields'))
 	{
 		$db->drop_column("profilefields", "allowvideocode");
 	}
 
-	if ($db->field_exists('viewableby', 'profilefields'))
+	if($db->field_exists('viewableby', 'profilefields'))
 	{
 		$db->drop_column("profilefields", "viewableby");
 	}
 
-	if ($db->field_exists('editable`', 'profilefields'))
+	if($db->field_exists('editable`', 'profilefields'))
 	{
 		$db->drop_column("profilefields", "editable");
 	}
 
-	if ($db->field_exists('editableby', 'profilefields'))
+	if($db->field_exists('editableby', 'profilefields'))
 	{
 		$db->drop_column("profilefields", "editableby");
 	}
 
-	if ($db->field_exists('oldgroup', 'awaitingactivation'))
+	if($db->field_exists('oldgroup', 'awaitingactivation'))
 	{
 		$db->drop_column("awaitingactivation", "oldgroup");
 	}
 
-	if ($db->field_exists('status', 'forums'))
+	if($db->field_exists('status', 'forums'))
 	{
 		$db->drop_column("forums", "status");
 	}
 
-	if ($db->field_exists('posthash', 'posts'))
+	if($db->field_exists('posthash', 'posts'))
 	{
 		$db->drop_column("posts", "posthash");
 	}
 
-	if ($db->field_exists('isdefault', 'templategroups'))
+	if($db->field_exists('isdefault', 'templategroups'))
 	{
 		$db->drop_column("templategroups", "isdefault");
 	}
 
-	if ($db->table_exists('reportedposts'))
+	if($db->table_exists('reportedposts'))
 	{
-		if ($db->field_exists('type', 'reportedposts'))
+		if($db->field_exists('type', 'reportedposts'))
 		{
 			$db->drop_column("reportedposts", "type");
 		}
 
-		if ($db->field_exists('reports', 'reportedposts'))
+		if($db->field_exists('reports', 'reportedposts'))
 		{
 			$db->drop_column("reportedposts", "reports");
 		}
 
-		if ($db->field_exists('reporters', 'reportedposts'))
+		if($db->field_exists('reporters', 'reportedposts'))
 		{
 			$db->drop_column("reportedposts", "reporters");
 		}
 
-		if ($db->field_exists('lastreport', 'reportedposts'))
+		if($db->field_exists('lastreport', 'reportedposts'))
 		{
 			$db->drop_column("reportedposts", "lastreport");
 		}
 	}
 
-	if ($db->field_exists('warnings', 'promotions'))
+	if($db->field_exists('warnings', 'promotions'))
 	{
 		$db->drop_column("promotions", "warnings");
 	}
 
-	if ($db->field_exists('warningstype', 'promotions'))
+	if($db->field_exists('warningstype', 'promotions'))
 	{
 		$db->drop_column("promotions", "warningstype");
 	}
 
-	if ($db->field_exists('useragent', 'adminsessions'))
+	if($db->field_exists('useragent', 'adminsessions'))
 	{
 		$db->drop_column("adminsessions", "useragent");
 	}
 
-	if ($db->field_exists('deletedthreads', 'forums'))
+	if($db->field_exists('deletedthreads', 'forums'))
 	{
 		$db->drop_column("forums", "deletedthreads");
 	}
 
-	if ($db->field_exists('deletedposts', 'forums'))
+	if($db->field_exists('deletedposts', 'forums'))
 	{
 		$db->drop_column("forums", "deletedposts");
 	}
 
-	if ($db->field_exists('threads', 'promotions'))
+	if($db->field_exists('threads', 'promotions'))
 	{
 		$db->drop_column('promotions', 'threads');
 	}
 
-	if ($db->field_exists('threadtype', 'promotions'))
+	if($db->field_exists('threadtype', 'promotions'))
 	{
 		$db->drop_column('promotions', 'threadtype');
 	}
 
-	if ($db->field_exists('online', 'promotions'))
+	if($db->field_exists('online', 'promotions'))
 	{
 		$db->drop_column('promotions', 'online');
 	}
 
-	if ($db->field_exists('onlinetype', 'promotions'))
+	if($db->field_exists('onlinetype', 'promotions'))
 	{
 		$db->drop_column('promotions', 'onlinetype');
 	}
 
-	if ($db->field_exists('modposts', 'forums'))
+	if($db->field_exists('modposts', 'forums'))
 	{
 		$db->drop_column("forums", "modposts");
 	}
 
-	if ($db->field_exists('modthreads', 'forums'))
+	if($db->field_exists('modthreads', 'forums'))
 	{
 		$db->drop_column("forums", "modthreads");
 	}
 
-	if ($db->field_exists('mod_edit_posts', 'forums'))
+	if($db->field_exists('mod_edit_posts', 'forums'))
 	{
 		$db->drop_column("forums", "mod_edit_posts");
 	}
 
-	if ($db->field_exists('modattachments', 'forums'))
+	if($db->field_exists('modattachments', 'forums'))
 	{
 		$db->drop_column("forums", "modattachments");
 	}
 
 	// Avoid complex convert coding...
-	if ($db->field_exists('hidden', 'profilefields'))
+	if($db->field_exists('hidden', 'profilefields'))
 	{
 		$db->update_query('profilefields', array('hidden' => 2), 'hidden=1');
 		$db->update_query('profilefields', array('hidden' => 1), 'hidden=0');
@@ -250,7 +250,7 @@ function upgrade30_dbchanges()
 			$db->add_column("profilefields", "viewableby", "text NOT NULL default ''");
 			$db->add_column("profilefields", "editableby", "text NOT NULL default ''");
 			$db->add_column("templategroups", "isdefault", "smallint NOT NULL default '0'");
-			if ($db->table_exists('reportedposts'))
+			if($db->table_exists('reportedposts'))
 			{
 				$db->add_column("reportedposts", "type", "varchar(50) NOT NULL default ''");
 				$db->add_column("reportedposts", "reports", "int NOT NULL default '0'");
@@ -281,7 +281,7 @@ function upgrade30_dbchanges()
 			$db->add_column("profilefields", "viewableby", "text NOT NULL default ''");
 			$db->add_column("profilefields", "editableby", "text NOT NULL default ''");
 			$db->add_column("templategroups", "isdefault", "tinyint(1) NOT NULL default '0'");
-			if ($db->table_exists('reportedposts'))
+			if($db->table_exists('reportedposts'))
 			{
 				$db->add_column("reportedposts", "type", "varchar(50) NOT NULL default ''");
 				$db->add_column("reportedposts", "reports", "int NOT NULL default '0'");
@@ -308,7 +308,7 @@ function upgrade30_dbchanges()
 			$db->add_column("profilefields", "viewableby", "text NOT NULL");
 			$db->add_column("profilefields", "editableby", "text NOT NULL");
 			$db->add_column("templategroups", "isdefault", "tinyint(1) NOT NULL default '0'");
-			if ($db->table_exists('reportedposts'))
+			if($db->table_exists('reportedposts'))
 			{
 				$db->add_column("reportedposts", "type", "varchar(50) NOT NULL default ''");
 				$db->add_column("reportedposts", "reports", "int unsigned NOT NULL default '0'");
@@ -330,7 +330,7 @@ function upgrade30_dbchanges()
 	$db->update_query('profilefields', array('viewableby' => '-1', 'editableby' => '-1'));
 
 	global $footer_extra;
-	$footer_extra = "<script type=\"text/javascript\">$(function() { var button = $('.submit_button'); if (button) { button.val('Automatically Redirecting...'); button.prop('disabled', TRUE); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
+	$footer_extra = "<script type=\"text/javascript\">$(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
 
 	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
 	$output->print_footer("30_dbchanges2");
@@ -345,92 +345,92 @@ function upgrade30_dbchanges2()
 	echo "<p>Performing necessary upgrade queries...</p>";
 	flush();
 
-	if ($db->field_exists('ipaddress', 'privatemessages'))
+	if($db->field_exists('ipaddress', 'privatemessages'))
 	{
 		$db->drop_column('privatemessages', 'ipaddress');
 	}
 
-	if ($db->field_exists('canonlyreplyownthreads', 'forumpermissions'))
+	if($db->field_exists('canonlyreplyownthreads', 'forumpermissions'))
 	{
 		$db->drop_column("forumpermissions", "canonlyreplyownthreads");
 	}
 
-	if ($db->field_exists('modposts', 'forumpermissions'))
+	if($db->field_exists('modposts', 'forumpermissions'))
 	{
 		$db->drop_column("forumpermissions", "modposts");
 	}
 
-	if ($db->field_exists('modthreads', 'forumpermissions'))
+	if($db->field_exists('modthreads', 'forumpermissions'))
 	{
 		$db->drop_column("forumpermissions", "modthreads");
 	}
 
-	if ($db->field_exists('mod_edit_posts', 'forumpermissions'))
+	if($db->field_exists('mod_edit_posts', 'forumpermissions'))
 	{
 		$db->drop_column("forumpermissions", "mod_edit_posts");
 	}
 
-	if ($db->field_exists('modattachments', 'forumpermissions'))
+	if($db->field_exists('modattachments', 'forumpermissions'))
 	{
 		$db->drop_column("forumpermissions", "modattachments");
 	}
 
-	if ($db->field_exists('canbereported', 'usergroups'))
+	if($db->field_exists('canbereported', 'usergroups'))
 	{
 		$db->drop_column('usergroups', 'canbereported');
 	}
 
-	if ($db->field_exists('edittimelimit', 'usergroups'))
+	if($db->field_exists('edittimelimit', 'usergroups'))
 	{
 		$db->drop_column("usergroups", "edittimelimit");
 	}
 
-	if ($db->field_exists('maxposts', 'usergroups'))
+	if($db->field_exists('maxposts', 'usergroups'))
 	{
 		$db->drop_column("usergroups", "maxposts");
 	}
 
-	if ($db->field_exists('showmemberlist', 'usergroups'))
+	if($db->field_exists('showmemberlist', 'usergroups'))
 	{
 		$db->drop_column("usergroups", "showmemberlist");
 	}
 
-	if ($db->field_exists('canviewboardclosed', 'usergroups'))
+	if($db->field_exists('canviewboardclosed', 'usergroups'))
 	{
 		$db->drop_column("usergroups", "canviewboardclosed");
 	}
 
-	if ($db->field_exists('deletedposts', 'threads'))
+	if($db->field_exists('deletedposts', 'threads'))
 	{
 		$db->drop_column("threads", "deletedposts");
 	}
 
-	if ($db->field_exists('used', 'captcha'))
+	if($db->field_exists('used', 'captcha'))
 	{
 		$db->drop_column("captcha", "used");
 	}
 
-	if ($db->field_exists('editreason', 'posts'))
+	if($db->field_exists('editreason', 'posts'))
 	{
 		$db->drop_column("posts", "editreason");
 	}
 
-	if ($db->field_exists('usethreadcounts', 'forums'))
+	if($db->field_exists('usethreadcounts', 'forums'))
 	{
 		$db->drop_column("forums", "usethreadcounts");
 	}
 
-	if ($db->field_exists('requireprefix', 'forums'))
+	if($db->field_exists('requireprefix', 'forums'))
 	{
 		$db->drop_column("forums", "requireprefix");
 	}
 
-	if ($db->field_exists('threadnum', 'users'))
+	if($db->field_exists('threadnum', 'users'))
 	{
 		$db->drop_column("users", "threadnum");
 	}
 
-	if ($db->field_exists('canchangewebsite', 'usergroups'))
+	if($db->field_exists('canchangewebsite', 'usergroups'))
 	{
 		$db->drop_column("usergroups", "canchangewebsite");
 	}
@@ -480,7 +480,7 @@ function upgrade30_dbchanges2()
 	$db->update_query('forums', array('usethreadcounts' => 1), 'usepostcounts = 1');
 
 	global $footer_extra;
-	$footer_extra = "<script type=\"text/javascript\">$(function() { var button = $('.submit_button'); if (button) { button.val('Automatically Redirecting...'); button.prop('disabled', TRUE); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
+	$footer_extra = "<script type=\"text/javascript\">$(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
 
 	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
 	$output->print_footer("30_dbchanges3");
@@ -495,82 +495,82 @@ function upgrade30_dbchanges3()
 	echo "<p>Performing necessary upgrade queries...</p>";
 	flush();
 
-	if ($db->field_exists('cansoftdeleteposts', 'moderators'))
+	if($db->field_exists('cansoftdeleteposts', 'moderators'))
 	{
 		$db->drop_column('moderators', 'cansoftdeleteposts');
 	}
 
-	if ($db->field_exists('canrestoreposts', 'moderators'))
+	if($db->field_exists('canrestoreposts', 'moderators'))
 	{
 		$db->drop_column("moderators", "canrestoreposts");
 	}
 
-	if ($db->field_exists('cansoftdeletethreads', 'moderators'))
+	if($db->field_exists('cansoftdeletethreads', 'moderators'))
 	{
 		$db->drop_column('moderators', 'cansoftdeletethreads');
 	}
 
-	if ($db->field_exists('canrestorethreads', 'moderators'))
+	if($db->field_exists('canrestorethreads', 'moderators'))
 	{
 		$db->drop_column("moderators", "canrestorethreads");
 	}
 
-	if ($db->field_exists('candeletethreads', 'moderators'))
+	if($db->field_exists('candeletethreads', 'moderators'))
 	{
 		$db->drop_column("moderators", "candeletethreads");
 	}
 
-	if ($db->field_exists('canviewunapprove', 'moderators'))
+	if($db->field_exists('canviewunapprove', 'moderators'))
 	{
 		$db->drop_column("moderators", "canviewunapprove");
 	}
 
-	if ($db->field_exists('canviewdeleted', 'moderators'))
+	if($db->field_exists('canviewdeleted', 'moderators'))
 	{
 		$db->drop_column("moderators", "canviewdeleted");
 	}
 
-	if ($db->field_exists('canstickunstickthreads', 'moderators'))
+	if($db->field_exists('canstickunstickthreads', 'moderators'))
 	{
 		$db->drop_column("moderators", "canstickunstickthreads");
 	}
 
-	if ($db->field_exists('canapproveunapprovethreads', 'moderators'))
+	if($db->field_exists('canapproveunapprovethreads', 'moderators'))
 	{
 		$db->drop_column("moderators", "canapproveunapprovethreads");
 	}
 
-	if ($db->field_exists('canapproveunapproveposts', 'moderators'))
+	if($db->field_exists('canapproveunapproveposts', 'moderators'))
 	{
 		$db->drop_column("moderators", "canapproveunapproveposts");
 	}
 
-	if ($db->field_exists('canapproveunapproveattachs', 'moderators'))
+	if($db->field_exists('canapproveunapproveattachs', 'moderators'))
 	{
 		$db->drop_column("moderators", "canapproveunapproveattachs");
 	}
 
-	if ($db->field_exists('canmanagepolls', 'moderators'))
+	if($db->field_exists('canmanagepolls', 'moderators'))
 	{
 		$db->drop_column("moderators", "canmanagepolls");
 	}
 
-	if ($db->field_exists('canpostclosedthreads', 'moderators'))
+	if($db->field_exists('canpostclosedthreads', 'moderators'))
 	{
 		$db->drop_column("moderators", "canpostclosedthreads");
 	}
 
-	if ($db->field_exists('canmanageannouncements', 'moderators'))
+	if($db->field_exists('canmanageannouncements', 'moderators'))
 	{
 		$db->drop_column("moderators", "canmanageannouncements");
 	}
 
-	if ($db->field_exists('canmanagereportedposts', 'moderators'))
+	if($db->field_exists('canmanagereportedposts', 'moderators'))
 	{
 		$db->drop_column("moderators", "canmanagereportedposts");
 	}
 
-	if ($db->field_exists('canviewmodlog', 'moderators'))
+	if($db->field_exists('canviewmodlog', 'moderators'))
 	{
 		$db->drop_column("moderators", "canviewmodlog");
 	}
@@ -616,7 +616,7 @@ function upgrade30_dbchanges3()
 	}
 
 	global $footer_extra;
-	$footer_extra = "<script type=\"text/javascript\">$(function() { var button = $('.submit_button'); if (button) { button.val('Automatically Redirecting...'); button.prop('disabled', TRUE); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
+	$footer_extra = "<script type=\"text/javascript\">$(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
 
 	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
 	$output->print_footer("30_dbchanges4");
@@ -631,57 +631,57 @@ function upgrade30_dbchanges4()
 	echo "<p>Performing necessary upgrade queries...</p>";
 	flush();
 
-	if ($db->field_exists('emailfloodtime', 'usergroups'))
+	if($db->field_exists('emailfloodtime', 'usergroups'))
 	{
 		$db->drop_column("usergroups", "emailfloodtime");
 	}
 
-	if ($db->field_exists('canmanageannounce', 'usergroups'))
+	if($db->field_exists('canmanageannounce', 'usergroups'))
 	{
 		$db->drop_column("usergroups", "canmanageannounce");
 	}
 
-	if ($db->field_exists('canmanagemodqueue', 'usergroups'))
+	if($db->field_exists('canmanagemodqueue', 'usergroups'))
 	{
 		$db->drop_column("usergroups", "canmanagemodqueue");
 	}
 
-	if ($db->field_exists('canmanagereportedcontent', 'usergroups'))
+	if($db->field_exists('canmanagereportedcontent', 'usergroups'))
 	{
 		$db->drop_column("usergroups", "canmanagereportedcontent");
 	}
 
-	if ($db->field_exists('canviewmodlogs', 'usergroups'))
+	if($db->field_exists('canviewmodlogs', 'usergroups'))
 	{
 		$db->drop_column("usergroups", "canviewmodlogs");
 	}
 
-	if ($db->field_exists('caneditprofiles', 'usergroups'))
+	if($db->field_exists('caneditprofiles', 'usergroups'))
 	{
 		$db->drop_column("usergroups", "caneditprofiles");
 	}
 
-	if ($db->field_exists('canbanusers', 'usergroups'))
+	if($db->field_exists('canbanusers', 'usergroups'))
 	{
 		$db->drop_column("usergroups", "canbanusers");
 	}
 
-	if ($db->field_exists('canviewwarnlogs', 'usergroups'))
+	if($db->field_exists('canviewwarnlogs', 'usergroups'))
 	{
 		$db->drop_column("usergroups", "canviewwarnlogs");
 	}
 
-	if ($db->field_exists('canuseipsearch', 'usergroups'))
+	if($db->field_exists('canuseipsearch', 'usergroups'))
 	{
 		$db->drop_column("usergroups", "canuseipsearch");
 	}
 
-	if ($db->field_exists('type', 'maillogs'))
+	if($db->field_exists('type', 'maillogs'))
 	{
 		$db->drop_column("maillogs", "type");
 	}
 
-	if ($db->field_exists('groups', 'modtools'))
+	if($db->field_exists('groups', 'modtools'))
 	{
 		$db->drop_column("modtools", "groups");
 	}
@@ -747,7 +747,7 @@ function upgrade30_dbchanges4()
 	$db->update_query("maillogs", $update_array, "tid > '0'");
 
 	global $footer_extra;
-	$footer_extra = "<script type=\"text/javascript\">$(function() { var button = $('.submit_button'); if (button) { button.val('Automatically Redirecting...'); button.prop('disabled', TRUE); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
+	$footer_extra = "<script type=\"text/javascript\">$(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
 
 	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
 	$output->print_footer("30_dbchanges5");
@@ -762,17 +762,17 @@ function upgrade30_dbchanges5()
 	echo "<p>Performing necessary upgrade queries...</p>";
 	flush();
 
-	if ($db->table_exists("questions"))
+	if($db->table_exists("questions"))
 	{
 		$db->drop_table("questions");
 	}
 
-	if ($db->table_exists("questionsessions"))
+	if($db->table_exists("questionsessions"))
 	{
 		$db->drop_table("questionsessions");
 	}
 
-	if ($db->table_exists("spamlog"))
+	if($db->table_exists("spamlog"))
 	{
 		$db->drop_table("spamlog");
 	}
@@ -861,7 +861,7 @@ function upgrade30_dbchanges5()
 	}
 
 	global $footer_extra;
-	$footer_extra = "<script type=\"text/javascript\">$(function() { var button = $('.submit_button'); if (button) { button.val('Automatically Redirecting...'); button.prop('disabled', TRUE); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
+	$footer_extra = "<script type=\"text/javascript\">$(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
 
 	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
 	$output->print_footer("30_dbchanges6");
@@ -876,7 +876,7 @@ function upgrade30_dbchanges6()
 	echo "<p>Performing necessary upgrade queries...</p>";
 	flush();
 
-	if ($db->table_exists("buddyrequests"))
+	if($db->table_exists("buddyrequests"))
 	{
 		$db->drop_table("buddyrequests");
 	}
@@ -915,82 +915,82 @@ function upgrade30_dbchanges6()
 			break;
 	}
 
-	if ($db->field_exists('msn', 'users'))
+	if($db->field_exists('msn', 'users'))
 	{
 		$db->drop_column("users", "msn");
 	}
 
-	if ($db->field_exists('postbit', 'profilefields'))
+	if($db->field_exists('postbit', 'profilefields'))
 	{
 		$db->drop_column("profilefields", "postbit");
 	}
 
-	if ($db->field_exists('skype', 'users'))
+	if($db->field_exists('skype', 'users'))
 	{
 		$db->drop_column("users", "skype");
 	}
 
-	if ($db->field_exists('google', 'users'))
+	if($db->field_exists('google', 'users'))
 	{
 		$db->drop_column("users", "google");
 	}
 
-	if ($db->field_exists('cplanguage', 'adminoptions'))
+	if($db->field_exists('cplanguage', 'adminoptions'))
 	{
 		$db->drop_column("adminoptions", "cplanguage");
 	}
 
-	if ($db->field_exists('showimages', 'users'))
+	if($db->field_exists('showimages', 'users'))
 	{
 		$db->drop_column("users", "showimages");
 	}
 
-	if ($db->field_exists('showvideos', 'users'))
+	if($db->field_exists('showvideos', 'users'))
 	{
 		$db->drop_column("users", "showvideos");
 	}
 
-	if ($db->field_exists('caninvitemembers', 'groupleaders'))
+	if($db->field_exists('caninvitemembers', 'groupleaders'))
 	{
 		$db->drop_column("groupleaders", "caninvitemembers");
 	}
 
-	if ($db->field_exists('invite', 'joinrequests'))
+	if($db->field_exists('invite', 'joinrequests'))
 	{
 		$db->drop_column("joinrequests", "invite");
 	}
 
-	if ($db->field_exists('registration', 'profilefields'))
+	if($db->field_exists('registration', 'profilefields'))
 	{
 		$db->drop_column("profilefields", "registration");
 	}
 
-	if ($db->field_exists('validated', 'awaitingactivation'))
+	if($db->field_exists('validated', 'awaitingactivation'))
 	{
 		$db->drop_column("awaitingactivation", "validated");
 	}
 
-	if ($db->field_exists('sourceeditor', 'users'))
+	if($db->field_exists('sourceeditor', 'users'))
 	{
 		$db->drop_column("users", "sourceeditor");
 	}
 
-	if ($db->field_exists('buddyrequestspm', 'users'))
+	if($db->field_exists('buddyrequestspm', 'users'))
 	{
 		$db->drop_column("users", "buddyrequestspm");
 	}
 
-	if ($db->field_exists('buddyrequestsauto', 'users'))
+	if($db->field_exists('buddyrequestsauto', 'users'))
 	{
 		$db->drop_column("users", "buddyrequestsauto");
 	}
 
-	if ($db->field_exists('ipaddress', 'privatemessages'))
+	if($db->field_exists('ipaddress', 'privatemessages'))
 	{
 		$db->drop_column("privatemessages", "ipaddress");
 	}
 
-	if ($db->field_exists('maxoptions', 'polls'))
+	if($db->field_exists('maxoptions', 'polls'))
 	{
 		$db->drop_column("polls", "maxoptions");
 	}
@@ -1050,7 +1050,7 @@ function upgrade30_dbchanges6()
 	$sql = implode(',', $groups);
 	$db->update_query("templategroups", array('isdefault' => 1), "gid IN ({$sql})");
 
-	if ($db->table_exists('reportedposts'))
+	if($db->table_exists('reportedposts'))
 	{
 		$db->update_query("reportedposts", array('type' => 'post'));
 	}
@@ -1058,45 +1058,45 @@ function upgrade30_dbchanges6()
 	$db->insert_query("questions", array('question' => 'What does 2 + 2 equal?', 'answer' => '4\nFour', 'active' => '1'));
 
 	$query = $db->simple_select("attachtypes", "COUNT(*) as numexists", "extension='psd'");
-	if ($db->fetch_field($query, "numexists") == 0)
+	if($db->fetch_field($query, "numexists") == 0)
 	{
 		$db->insert_query("attachtypes", array('name' => "Adobe Photoshop File", 'mimetype' => 'application/x-photoshop', 'extension' => "psd", 'maxsize' => '1024', 'icon' => 'images/attachtypes/psd.png'));
 	}
 	// SQLite... As we modify tables below we need to close all cursors before...
-	if ($db->type == "sqlite")
+	if($db->type == "sqlite")
 	{
 		$query->closeCursor();
 	}
 
 	$query = $db->simple_select("templategroups", "COUNT(*) as numexists", "prefix='video'");
-	if ($db->fetch_field($query, "numexists") == 0)
+	if($db->fetch_field($query, "numexists") == 0)
 	{
 		$db->insert_query("templategroups", array('prefix' => 'video', 'title' => '<lang:group_video>', 'isdefault' => '1'));
 	}
 	// SQLite... As we modify tables below we need to close all cursors before...
-	if ($db->type == "sqlite")
+	if($db->type == "sqlite")
 	{
 		$query->closeCursor();
 	}
 
 	$query = $db->simple_select("templategroups", "COUNT(*) as numexists", "prefix='php'");
-	if ($db->fetch_field($query, "numexists") != 0)
+	if($db->fetch_field($query, "numexists") != 0)
 	{
 		$db->update_query("templategroups", array('prefix' => 'announcement', 'title' => '<lang:group_announcement>'), "prefix='php'");
 	}
 	// SQLite... As we modify tables below we need to close all cursors before...
-	if ($db->type == "sqlite")
+	if($db->type == "sqlite")
 	{
 		$query->closeCursor();
 	}
 
 	$query = $db->simple_select("templategroups", "COUNT(*) as numexists", "prefix='redirect'");
-	if ($db->fetch_field($query, "numexists") != 0)
+	if($db->fetch_field($query, "numexists") != 0)
 	{
 		$db->update_query("templategroups", array('prefix' => 'posticons', 'title' => '<lang:group_posticons>'), "prefix='redirect'");
 	}
 	// SQLite... As we modify tables below we need to close all cursors before...
-	if ($db->type == "sqlite")
+	if($db->type == "sqlite")
 	{
 		$query->closeCursor();
 	}
@@ -1108,7 +1108,7 @@ function upgrade30_dbchanges6()
 
 	foreach($usergroups as $group)
 	{
-		if ($group['canmodcp'] || $group['isbannedgroup'])
+		if($group['canmodcp'] || $group['isbannedgroup'])
 		{
 			continue;
 		}
@@ -1116,7 +1116,7 @@ function upgrade30_dbchanges6()
 		$groups[] = "'{$group['gid']}'";
 	}
 
-	if (!empty($groups))
+	if(!empty($groups))
 	{
 		$usergroups = implode(',', $groups);
 		$db->update_query('usergroups', array('canbereported' => 1), "gid IN ({$usergroups})");
@@ -1124,38 +1124,38 @@ function upgrade30_dbchanges6()
 
 	$db->update_query('usergroups', array('canviewboardclosed' => 1), 'cancp = 1');
 
-	if ($db->table_exists('reportedposts'))
+	if($db->table_exists('reportedposts'))
 	{
-		if ($db->field_exists("pid", "reportedposts") && !$db->field_exists("id", "reportedposts"))
+		if($db->field_exists("pid", "reportedposts") && !$db->field_exists("id", "reportedposts"))
 		{
 			switch($db->type)
 			{
 				case "pgsql":
-					$db->rename_column("reportedposts", "pid", "id", "int", TRUE, "'0'");
+					$db->rename_column("reportedposts", "pid", "id", "int", true, "'0'");
 					break;
 				default:
 					$db->rename_column("reportedposts", "pid", "id", "int unsigned NOT NULL default '0'");
 			}
 		}
 
-		if ($db->field_exists("tid", "reportedposts") && !$db->field_exists("id2", "reportedposts"))
+		if($db->field_exists("tid", "reportedposts") && !$db->field_exists("id2", "reportedposts"))
 		{
 			switch($db->type)
 			{
 				case "pgsql":
-					$db->rename_column("reportedposts", "tid", "id2", "int", TRUE, "'0'");
+					$db->rename_column("reportedposts", "tid", "id2", "int", true, "'0'");
 					break;
 				default:
 					$db->rename_column("reportedposts", "tid", "id2", "int unsigned NOT NULL default '0'");
 			}
 		}
 
-		if ($db->field_exists("fid", "reportedposts") && !$db->field_exists("id3", "reportedposts"))
+		if($db->field_exists("fid", "reportedposts") && !$db->field_exists("id3", "reportedposts"))
 		{
 			switch($db->type)
 			{
 				case "pgsql":
-					$db->rename_column("reportedposts", "fid", "id3", "int", TRUE, "'0'");
+					$db->rename_column("reportedposts", "fid", "id3", "int", true, "'0'");
 					break;
 				default:
 					$db->rename_column("reportedposts", "fid", "id3", "int unsigned NOT NULL default '0'");
@@ -1163,9 +1163,9 @@ function upgrade30_dbchanges6()
 		}
 	}
 
-	if ($db->table_exists('reportedposts'))
+	if($db->table_exists('reportedposts'))
 	{
-		if ($db->table_exists("reportedcontent"))
+		if($db->table_exists("reportedcontent"))
 		{
 			$db->drop_table("reportedcontent");
 		}
@@ -1243,7 +1243,7 @@ function upgrade30_threadcount()
 
 	$output->print_header("Counting user thread count");
 
-	if (!$_POST['theadspage'])
+	if(!$_POST['theadspage'])
 	{
 		$threads = 500;
 	}
@@ -1252,7 +1252,7 @@ function upgrade30_threadcount()
 		$threads = (int)$_POST['theadspage'];
 	}
 
-	if ($_POST['threadstart'])
+	if($_POST['threadstart'])
 	{
 		$startat = (int)$_POST['threadstart'];
 		$upper = $startat+$threads;
@@ -1268,7 +1268,7 @@ function upgrade30_threadcount()
 	$query = $db->simple_select("users", "COUNT(uid) AS usercount");
 	$cnt = $db->fetch_array($query);
 
-	if ($upper > $cnt['usercount'])
+	if($upper > $cnt['usercount'])
 	{
 		$upper = $cnt['usercount'];
 	}
@@ -1276,7 +1276,7 @@ function upgrade30_threadcount()
 	echo "<p>Counting thread count of user #{$lower} to #{$upper} ({$cnt['usercount']} Total)</p>";
 	flush();
 
-	$threadnum = FALSE;
+	$threadnum = false;
 
 	$query = $db->simple_select("users", "threadnum, uid", "", array('limit_start' => $lower, 'limit' => $threads));
 	while($thread = $db->fetch_array($query))
@@ -1286,11 +1286,11 @@ function upgrade30_threadcount()
 
 		$db->update_query("users", array('threadnum' => $num_threads), "uid = '{$thread['uid']}'");
 
-		$threadnum = TRUE;
+		$threadnum = true;
 	}
 
 	$remaining = $upper-$cnt['usercount'];
-	if ($remaining && $threadnum)
+	if($remaining && $threadnum)
 	{
 		$nextact = "30_threadcount";
 		$startat = $startat+$threads;
@@ -1304,7 +1304,7 @@ function upgrade30_threadcount()
 	$output->print_contents($contents);
 
 	global $footer_extra;
-	$footer_extra = "<script type=\"text/javascript\">$(function() { var button = $('.submit_button'); if (button) { button.val('Automatically Redirecting...'); button.prop('disabled', TRUE); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
+	$footer_extra = "<script type=\"text/javascript\">$(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
 
 	$output->print_footer($nextact);
 }
@@ -1392,10 +1392,10 @@ function upgrade30_dbchanges_optimize1()
 			break;
 	}
 
-	if ($db->type != "pgsql")
+	if($db->type != "pgsql")
 	{
 		// PgSQL doesn't support longtext
-		if ($db->type == "sqlite")
+		if($db->type == "sqlite")
 		{
 			// And SQLite doesn't like text columns without a default value...
 			$db->modify_column("themestylesheets", "stylesheet", "longtext NOT NULL default ''");
@@ -1408,7 +1408,7 @@ function upgrade30_dbchanges_optimize1()
 	}
 
 	global $footer_extra;
-	$footer_extra = "<script type=\"text/javascript\">$(function() { var button = $('.submit_button'); if (button) { button.val('Automatically Redirecting...'); button.prop('disabled', TRUE); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
+	$footer_extra = "<script type=\"text/javascript\">$(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
 
 	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
 	$output->print_footer("30_dbchanges_optimize2");
@@ -1424,17 +1424,17 @@ function upgrade30_dbchanges_optimize2()
 	echo "<p>Adding indexes to tables...</p>";
 	flush();
 
-	if ($db->index_exists('sessions', 'location1'))
+	if($db->index_exists('sessions', 'location1'))
 	{
 		$db->drop_index('sessions', 'location1');
 	}
 
-	if ($db->index_exists('sessions', 'location2'))
+	if($db->index_exists('sessions', 'location2'))
 	{
 		$db->drop_index('sessions', 'location2');
 	}
 
-	if ($db->type == "mysql" || $db->type == "mysqli")
+	if($db->type == "mysql" || $db->type == "mysqli")
 	{
 		$update_data = array(
 			'adminlog' => 'uid',
@@ -1454,23 +1454,23 @@ function upgrade30_dbchanges_optimize2()
 
 		foreach($update_data as $table => $index)
 		{
-			if (!is_array($index))
+			if(!is_array($index))
 			{
 				$index = array($index);
 			}
 
 			foreach($index as $_index => $keys)
 			{
-				if (!is_array($keys))
+				if(!is_array($keys))
 				{
-					if (!$db->index_exists($table, $keys))
+					if(!$db->index_exists($table, $keys))
 					{
 						$db->write_query("ALTER TABLE ".TABLE_PREFIX."{$table} ADD INDEX (`{$keys}`)");
 					}
 				}
 				else
 				{
-					if (!$db->index_exists($table, $_index))
+					if(!$db->index_exists($table, $_index))
 					{
 						$db->write_query("ALTER TABLE ".TABLE_PREFIX."{$table} ADD INDEX `{$_index}`(`".implode('`, `', $keys)."`)");
 					}
@@ -1481,33 +1481,33 @@ function upgrade30_dbchanges_optimize2()
 
 	echo "<p>Dropping old indexes from tables...</p>";
 
-	if ($db->index_exists('attachments', 'posthash'))
+	if($db->index_exists('attachments', 'posthash'))
 	{
 		$db->drop_index('attachments', 'posthash');
 	}
 
-	if ($db->index_exists('reportedcontent', 'dateline'))
+	if($db->index_exists('reportedcontent', 'dateline'))
 	{
 		$db->drop_index('reportedcontent', 'dateline');
 	}
 
-	if ($db->index_exists('reputation', 'pid'))
+	if($db->index_exists('reputation', 'pid'))
 	{
 		$db->drop_index('reputation', 'pid');
 	}
 
-	if ($db->index_exists('reputation', 'dateline'))
+	if($db->index_exists('reputation', 'dateline'))
 	{
 		$db->drop_index('reputation', 'dateline');
 	}
 
-	if ($db->index_exists('users', 'birthday'))
+	if($db->index_exists('users', 'birthday'))
 	{
 		$db->drop_index('users', 'birthday');
 	}
 
 	global $footer_extra;
-	$footer_extra = "<script type=\"text/javascript\">$(function() { var button = $('.submit_button'); if (button) { button.val('Automatically Redirecting...'); button.prop('disabled', TRUE); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
+	$footer_extra = "<script type=\"text/javascript\">$(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
 
 	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
 	$output->print_footer("30_dbchanges_optimize3");
@@ -1562,11 +1562,11 @@ function upgrade30_dbchanges_optimize3()
 		$change_column = array();
 		foreach($columns as $column)
 		{
-			if ($db->type == "pgsql")
+			if($db->type == "pgsql")
 			{
 				$db->modify_column($table, $column, "smallint", "set", "'0'");
 			}
-			else if ($db->type == "sqlite")
+			else if($db->type == "sqlite")
 			{
 				$change_column[] = "CHANGE {$column} {$column} tinyint(1) NOT NULL default '0'";
 			}
@@ -1575,14 +1575,14 @@ function upgrade30_dbchanges_optimize3()
 				$change_column[] = "MODIFY {$column} tinyint(1) NOT NULL default '0'";
 			}
 		}
-		if ($db->type != "pgsql")
+		if($db->type != "pgsql")
 		{
 			$db->write_query("ALTER TABLE ".TABLE_PREFIX."{$table} ".implode(", ", $change_column));
 		}
 	}
 
 	global $footer_extra;
-	$footer_extra = "<script type=\"text/javascript\">$(function() { var button = $('.submit_button'); if (button) { button.val('Automatically Redirecting...'); button.prop('disabled', TRUE); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
+	$footer_extra = "<script type=\"text/javascript\">$(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
 
 	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
 	$output->print_footer("30_dbchanges_optimize4");
@@ -1643,11 +1643,11 @@ function upgrade30_dbchanges_optimize4()
 		$change_column = array();
 		foreach($columns as $column)
 		{
-			if ($db->type == "pgsql")
+			if($db->type == "pgsql")
 			{
 				$db->modify_column($table, $column, "int", "set", "'0'");
 			}
-			else if ($db->type == "sqlite")
+			else if($db->type == "sqlite")
 			{
 				$change_column[] = "CHANGE {$column} {$column} int unsigned NOT NULL default '0'";
 			}
@@ -1656,7 +1656,7 @@ function upgrade30_dbchanges_optimize4()
 				$change_column[] = "MODIFY {$column} int unsigned NOT NULL default '0'";
 			}
 		}
-		if ($db->type != "pgsql")
+		if($db->type != "pgsql")
 		{
 			$db->write_query("ALTER TABLE ".TABLE_PREFIX."{$table} ".implode(", ", $change_column));
 		}
@@ -1675,7 +1675,7 @@ function upgrade30_dbchanges_smilies()
 	echo "<p>Performing necessary upgrade queries...</p>";
 	flush();
 
-	if ($db->type == 'pgsql')
+	if($db->type == 'pgsql')
 	{
 		$db->modify_column("smilies", "find", "text", "set");
 	}
@@ -1685,17 +1685,17 @@ function upgrade30_dbchanges_smilies()
 	}
 
 	$query = $db->simple_select('smilies', 'sid, image, find', '', array('order_by' => 'image, sid'));
-	$last_image = NULL;
+	$last_image = null;
 	$last_sid = 0;
 	$skip = array();
 	while($smilie = $db->fetch_array($query))
 	{
-		if (in_array($smilie['sid'], $skip))
+		if(in_array($smilie['sid'], $skip))
 		{
 			continue;
 		}
 
-		if ($smilie['image'] == $last_image && $smilie['image'] != NULL)
+		if($smilie['image'] == $last_image && $smilie['image'] != null)
 		{
 			$dupe_query = $db->simple_select('smilies', 'sid, find', 'image = "'.$db->escape_string($smilie['image']).'"');
 			$dupes = '';
@@ -1703,7 +1703,7 @@ function upgrade30_dbchanges_smilies()
 			$skip = array();
 			while($dupe = $db->fetch_array($dupe_query))
 			{
-				if ($dupe['sid'] != $last_sid)
+				if($dupe['sid'] != $last_sid)
 				{
 					$dupes .= (int)$dupe['sid'].',';
 					$find[] = trim($dupe['find']);
@@ -1746,14 +1746,14 @@ function upgrade30_dbchanges_ip()
 			echo "<p>Adding database indices (3/3)...</p>";
 			flush();
 
-			if (!$db->index_exists('users', 'lastip'))
+			if(!$db->index_exists('users', 'lastip'))
 			{
 				// This may take a while
-				if ($db->type == "mysql" || $db->type == "mysqli")
+				if($db->type == "mysql" || $db->type == "mysqli")
 				{
 					$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD INDEX lastip (lastip)");
 				}
-				elseif ($db->type == "pgsql")
+				elseif($db->type == "pgsql")
 				{
 					$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD INDEX (`lastip`)");
 				}
@@ -1764,14 +1764,14 @@ function upgrade30_dbchanges_ip()
 			echo "<p>Adding database indices (2/3)...</p>";
 			flush();
 
-			if (!$db->index_exists('users', 'regip'))
+			if(!$db->index_exists('users', 'regip'))
 			{
 				// This may take a while
-				if ($db->type == "mysql" || $db->type == "mysqli")
+				if($db->type == "mysql" || $db->type == "mysqli")
 				{
 					$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD INDEX regip (regip)");
 				}
-				elseif ($db->type == "pgsql")
+				elseif($db->type == "pgsql")
 				{
 					$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD INDEX (`regip`)");
 				}
@@ -1782,14 +1782,14 @@ function upgrade30_dbchanges_ip()
 			echo "<p>Adding database indices (1/3)...</p>";
 			flush();
 
-			if (!$db->index_exists('posts', 'ipaddress'))
+			if(!$db->index_exists('posts', 'ipaddress'))
 			{
 				// This may take a while
-				if ($db->type == "mysql" || $db->type == "mysqli")
+				if($db->type == "mysql" || $db->type == "mysqli")
 				{
 					$db->write_query("ALTER TABLE ".TABLE_PREFIX."posts ADD INDEX ipaddress (ipaddress)");
 				}
-				elseif ($db->type == "pgsql")
+				elseif($db->type == "pgsql")
 				{
 					$db->write_query("ALTER TABLE ".TABLE_PREFIX."posts ADD INDEX (`ipaddress`)");
 				}
@@ -1797,7 +1797,7 @@ function upgrade30_dbchanges_ip()
 			$next_task = 7;
 			break;
 		case 5:
-			if (!$_POST['ipspage'])
+			if(!$_POST['ipspage'])
 			{
 				$ipp = 5000;
 			}
@@ -1806,7 +1806,7 @@ function upgrade30_dbchanges_ip()
 				$ipp = (int)$_POST['ipspage'];
 			}
 
-			if ($_POST['ipstart'])
+			if($_POST['ipstart'])
 			{
 				$startat = (int)$_POST['ipstart'];
 				$upper = $startat+$ipp-1;
@@ -1826,7 +1826,7 @@ function upgrade30_dbchanges_ip()
 					echo "<p>Converting user IPs...</p>";
 					flush();
 					$query = $db->simple_select("users", "COUNT(uid) AS ipcount");
-					if ($db->type == "mysql" || $db->type == "mysqli")
+					if($db->type == "mysql" || $db->type == "mysqli")
 					{
 						$next_task = 6;
 					}
@@ -1868,7 +1868,7 @@ function upgrade30_dbchanges_ip()
 			}
 			$cnt = $db->fetch_array($query);
 
-			if ($upper > $cnt['ipcount'])
+			if($upper > $cnt['ipcount'])
 			{
 				$upper = $cnt['ipcount'];
 			}
@@ -1876,7 +1876,7 @@ function upgrade30_dbchanges_ip()
 			echo "<p>Converting ip {$lower} to {$upper} ({$cnt['ipcount']} Total)</p>";
 			flush();
 
-			$ipaddress = FALSE;
+			$ipaddress = false;
 
 			switch($mybb->input['iptable'])
 			{
@@ -1911,14 +1911,14 @@ function upgrade30_dbchanges_ip()
 					case 7:
 						$ip1 = my_inet_pton($db->unescape_binary($data['regip']));
 						$ip2 = my_inet_pton($db->unescape_binary($data['lastip']));
-						if ($ip1 === FALSE && $ip2 === FALSE)
+						if($ip1 === false && $ip2 === false)
 						{
 							continue 2;
 						}
 						break;
 					case 5:
 						$ip = my_inet_pton($db->unescape_binary($data['ip']));
-						if ($ip === FALSE)
+						if($ip === false)
 						{
 							continue 2;
 						}
@@ -1929,7 +1929,7 @@ function upgrade30_dbchanges_ip()
 					case 2:
 					default:
 						$ip = my_inet_pton($db->unescape_binary($data['ipaddress']));
-						if ($ip === FALSE)
+						if($ip === false)
 						{
 							continue 2;
 						}
@@ -1960,11 +1960,11 @@ function upgrade30_dbchanges_ip()
 						$db->update_query("adminlog", array('ipaddress' => $db->escape_binary($ip)), "ipaddress = '".$db->escape_string($data['ipaddress'])."'");
 						break;
 				}
-				$ipaddress = TRUE;
+				$ipaddress = true;
 			}
 
 			$remaining = $upper-$cnt['ipcount'];
-			if ($remaining && $ipaddress)
+			if($remaining && $ipaddress)
 			{
 				$startat = $startat+$ipp;
 				$ipstart = "<input type=\"hidden\" name=\"ipstart\" value=\"$startat\" />";
@@ -1974,7 +1974,7 @@ function upgrade30_dbchanges_ip()
 			{
 				$iptable = $mybb->input['iptable']+1;
 			}
-			if ($iptable <= 10)
+			if($iptable <= 10)
 			{
 				$iptable = "<input type=\"hidden\" name=\"iptable\" value=\"$iptable\" />";
 			}
@@ -2066,7 +2066,7 @@ function upgrade30_dbchanges_ip()
 			{
 				case "pgsql":
 					// Drop default value before converting the column
-					$db->modify_column($table, $column, FALSE, FALSE);
+					$db->modify_column($table, $column, false, false);
 					$db->modify_column($table, $column, "bytea USING {$column}::bytea", 'set', "''");
 					break;
 				case "sqlite":
@@ -2076,7 +2076,7 @@ function upgrade30_dbchanges_ip()
 					$db->modify_column($table, $column, "varbinary(16) NOT NULL default ''");
 					break;
 			}
-			if ($mybb->input['iptable'] < 10)
+			if($mybb->input['iptable'] < 10)
 			{
 				$iptable = "<input type=\"hidden\" name=\"iptable\" value=\"".($mybb->input['iptable']+1)."\" />";
 			}
@@ -2085,7 +2085,7 @@ function upgrade30_dbchanges_ip()
 			echo "<p>Updating user table (2/4)...</p>";
 			flush();
 
-			if ($db->field_exists('longlastip', 'users'))
+			if($db->field_exists('longlastip', 'users'))
 			{
 				// This may take a while
 				$db->drop_column("users", "longlastip");
@@ -2096,7 +2096,7 @@ function upgrade30_dbchanges_ip()
 			echo "<p>Updating user table (1/4)...</p>";
 			flush();
 
-			if ($db->field_exists('longregip', 'users'))
+			if($db->field_exists('longregip', 'users'))
 			{
 				// This may take a while
 				$db->drop_column("users", "longregip");
@@ -2107,7 +2107,7 @@ function upgrade30_dbchanges_ip()
 			echo "<p>Updating post table (1/2)...</p>";
 			flush();
 
-			if ($db->field_exists('longipaddress', 'posts'))
+			if($db->field_exists('longipaddress', 'posts'))
 			{
 				// This may take a while
 				$db->drop_column("posts", "longipaddress");
@@ -2116,7 +2116,7 @@ function upgrade30_dbchanges_ip()
 			break;
 	}
 
-	if ($next_task == 9)
+	if($next_task == 9)
 	{
 		$contents = "<p>Click next to continue with the upgrade process.</p>";
 		$nextact = "30_updatetheme";
@@ -2126,7 +2126,7 @@ function upgrade30_dbchanges_ip()
 		$contents = "<p><input type=\"hidden\" name=\"iptask\" value=\"{$next_task}\" />{$iptable}{$ipstart}Done. Click Next to continue the IP conversion.</p>";
 
 		global $footer_extra;
-		$footer_extra = "<script type=\"text/javascript\">$(function() { var button = $('.submit_button'); if (button) { button.val('Automatically Redirecting...'); button.prop('disabled', TRUE); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
+		$footer_extra = "<script type=\"text/javascript\">$(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
 		$nextact = "30_dbchanges_ip";
 	}
 
@@ -2139,11 +2139,11 @@ function upgrade30_updatetheme()
 {
 	global $db, $mybb, $output, $config;
 
-	if (file_exists(MYBB_ROOT.$mybb->config['admin_dir']."/inc/functions_themes.php"))
+	if(file_exists(MYBB_ROOT.$mybb->config['admin_dir']."/inc/functions_themes.php"))
 	{
 		require_once MYBB_ROOT.$mybb->config['admin_dir']."/inc/functions_themes.php";
 	}
-	else if (file_exists(MYBB_ROOT."admin/inc/functions_themes.php"))
+	else if(file_exists(MYBB_ROOT."admin/inc/functions_themes.php"))
 	{
 		require_once MYBB_ROOT."admin/inc/functions_themes.php";
 	}
@@ -2160,7 +2160,7 @@ function upgrade30_updatetheme()
 	$contents .= "done.</p>";
 
 	$contents .= "<p>Adding new stylesheets... ";
-
+	
 	$query = $db->simple_select("themes", "*", "tid='1'");
 
 	$theme = $db->fetch_array($query);
@@ -2172,9 +2172,9 @@ function upgrade30_updatetheme()
 	$parser = create_xml_parser($colors);
 	$tree = $parser->get_tree();
 
-	if (is_array($tree) && is_array($tree['theme']))
+	if(is_array($tree) && is_array($tree['theme']))
 	{
-		if (is_array($tree['theme']['stylesheets']))
+		if(is_array($tree['theme']['stylesheets']))
 		{
 			foreach($tree['theme']['stylesheets']['stylesheet'] as $stylesheet)
 			{
@@ -2187,7 +2187,7 @@ function upgrade30_updatetheme()
 					"cachefile" => $db->escape_string($stylesheet['attributes']['name'])
 				);
 
-				if (in_array($new_stylesheet['name'], $old))
+				if(in_array($new_stylesheet['name'], $old))
 				{
 					// We can update the disporder here
 					$properties['disporder'][$stylesheet['attributes']['name']] = $stylesheet['attributes']['disporder'];
@@ -2200,7 +2200,7 @@ function upgrade30_updatetheme()
 
 					$cached = cache_stylesheet(1, $stylesheet['attributes']['name'], $stylesheet['value']);
 
-					if ($cached)
+					if($cached)
 					{
 						$css_url = $cached;
 					}
@@ -2208,7 +2208,7 @@ function upgrade30_updatetheme()
 					// Add to display and stylesheet list
 					$properties['disporder'][$stylesheet['attributes']['name']] = $stylesheet['attributes']['disporder'];
 					$attachedto = $stylesheet['attributes']['attachedto'];
-					if (!$attachedto)
+					if(!$attachedto)
 					{
 						$attachedto = "global";
 					}
@@ -2219,7 +2219,7 @@ function upgrade30_updatetheme()
 					{
 						$attached_actions = explode(",", $attached_file);
 						$attached_file = array_shift($attached_actions);
-						if (count($attached_actions) == 0)
+						if(count($attached_actions) == 0)
 						{
 							$attached_actions = array("global");
 						}
@@ -2252,7 +2252,7 @@ function upgrade30_updatetheme()
 		$stylesheets = my_unserialize($theme['stylesheets']);
 
 		// Disporder already set?
-		if (isset($properties['disporder']) && !empty($properties['disporder']))
+		if(isset($properties['disporder']) && !empty($properties['disporder']))
 		{
 			continue;
 		}
@@ -2268,21 +2268,21 @@ function upgrade30_updatetheme()
 		}
 
 		// Next go through the inherited stylesheets
-		if (!empty($stylesheets))
+		if(!empty($stylesheets))
 		{
 			foreach($stylesheets as $a)
 			{
 				foreach($a as $file => $stylesheet)
 				{
 					// Don't ask me... Throws an error otherwise
-					if (empty($stylesheet))
+					if(empty($stylesheet))
 					{
 						continue;
 					}
 					foreach($stylesheet as $s)
 					{
 						$name = pathinfo($s, PATHINFO_BASENAME);
-						if (empty($properties['disporder']) || !in_array($name, array_keys($properties['disporder'])))
+						if(empty($properties['disporder']) || !in_array($name, array_keys($properties['disporder'])))
 						{
 							$properties['disporder'][$name] = $disporder;
 							$disporder++;
@@ -2302,38 +2302,38 @@ function upgrade30_updatetheme()
 	$query = $db->simple_select("themes", "*", "tid = '2'");
 
 	// Someone deleted the default theme... :o
-	if ($db->num_rows($query) != 0)
+	if($db->num_rows($query) != 0)
 	{
 		$theme = $db->fetch_array($query);
 		$properties = my_unserialize($theme['properties']);
 		$stylesheets = my_unserialize($theme['stylesheets']);
-
+		
 		$properties['editortheme'] = "mybb.css"; // New editor, so reset the theme for it
 		$properties['tablespace'] = 5;
 		$properties['borderwidth'] = 0;
 		// Reset the logo if it's still the default one
-		if ($properties['logo'] == "images/logo.gif")
+		if($properties['logo'] == "images/logo.gif")
 		{
 			$properties['logo'] = "images/logo.png";
 		}
-
+	
 		$colors = @file_get_contents(INSTALL_ROOT.'resources/mybb_theme_colors.xml');
 		$parser = create_xml_parser($colors);
 		$tree = $parser->get_tree();
-
-		if (is_array($tree) && is_array($tree['colors']))
+	
+		if(is_array($tree) && is_array($tree['colors']))
 		{
-			if (is_array($tree['colors']['scheme']))
+			if(is_array($tree['colors']['scheme']))
 			{
 				foreach($tree['colors']['scheme'] as $tag => $value)
 				{
 					$exp = explode("=", $value['value']);
-
+	
 					$properties['colors'][$exp[0]] = $exp[1];
 				}
 			}
-
-			if (is_array($tree['colors']['stylesheets']))
+	
+			if(is_array($tree['colors']['stylesheets']))
 			{
 				$count = count($properties['disporder']) + 1;
 				foreach($tree['colors']['stylesheets']['stylesheet'] as $stylesheet)
@@ -2346,30 +2346,30 @@ function upgrade30_updatetheme()
 						"lastmodified" => TIME_NOW,
 						"cachefile" => $db->escape_string($stylesheet['attributes']['name'])
 					);
-
+	
 					$sid = $db->insert_query("themestylesheets", $new_stylesheet);
 					$css_url = "css.php?stylesheet={$sid}";
-
+	
 					$cached = cache_stylesheet($tid, $stylesheet['attributes']['name'], $stylesheet['value']);
-
-					if ($cached)
+	
+					if($cached)
 					{
 						$css_url = $cached;
 					}
-
+	
 					// Add to display and stylesheet list
 					$properties['disporder'][$stylesheet['attributes']['name']] = $count;
 					$stylesheets[$stylesheet['attributes']['attachedto']]['global'][] = $css_url;
-
+	
 					++$count;
 				}
 			}
-
+	
 			$update_array = array(
 				"properties" => $db->escape_string(my_serialize($properties)),
 				"stylesheets" => $db->escape_string(my_serialize($stylesheets))
 			);
-
+	
 			$db->update_query("themes", $update_array, "tid = '2'");
 		}
 	}
@@ -2386,7 +2386,7 @@ function upgrade30_updatetheme()
 
 	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
 
-	if (!isset($config['secret_pin']) && is_writable(MYBB_ROOT."inc/config.php"))
+	if(!isset($config['secret_pin']) && is_writable(MYBB_ROOT."inc/config.php"))
 	{
 		$output->print_footer("30_acppin");
 	}
@@ -2432,11 +2432,11 @@ function upgrade30_acppin_submit()
 
 	$content = "<p>We're now writing your PIN (if you've entered one) to the config.php file... ";
 
-	if (!is_writable(MYBB_ROOT."inc/config.php"))
+	if(!is_writable(MYBB_ROOT."inc/config.php"))
 	{
 		$content .= "Failed (config.php not writable)";
 	}
-	else if (isset($config['secret_pin']))
+	else if(isset($config['secret_pin']))
 	{
 		$content .= "Skipped (PIN already set)";
 	}
@@ -2456,7 +2456,7 @@ function upgrade30_acppin_submit()
 
 		// Set the pointer before the closing php tag to remove it
 		$pos = strrpos($contents, "?>");
-		if (my_substr($contents_temp, -2) == "?>")
+		if(my_substr($contents_temp, -2) == "?>")
 		{
 			@fseek($file, $pos, SEEK_SET);
 		}
@@ -2473,7 +2473,7 @@ function upgrade30_acppin_submit()
 
 		@fclose($file);
 
-		$content .= "Done";
+		$content .= "Done";		
 	}
 
 	echo $content."</p>";

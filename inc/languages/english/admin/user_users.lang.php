@@ -1,9 +1,8 @@
 <?php
 /**
- * MyBB 1.6 English Language Pack
- * Copyright 2010 MyBB Group, All Rights Reserved
- * 
- * $Id$
+ * MyBB 1.8 English Language Pack
+ * Copyright 2014 MyBB Group, All Rights Reserved
+ *
  */
 
 $l['users'] = "Users";
@@ -16,7 +15,7 @@ $l['find_users_desc'] = "Here you can search for users of your forum. The fewer 
 $l['create_user'] = "Create New User";
 $l['create_user_desc'] = "Here you can create a new user.";
 $l['merge_users'] = "Merge Users";
-$l['merge_users_desc'] = "Here you can merge two user accounts in to one. The \"Source Account\" will  be merged in to the \"Destination Account\" leaving <strong>only</strong> the destination account. The source accounts posts, threads, private messages, calendar events, post count and buddy list will be merged in to the destination account.<br /><span style=\"font-size: 15px;\">Please be aware that this process cannot be undone.</span>";
+$l['merge_users_desc'] = "Here you can merge two user accounts into one. The \"Source Account\" will  be merged into the \"Destination Account\" leaving <strong>only</strong> the destination account. The source accounts posts, threads, private messages, calendar events, post count and buddy list will be merged into the destination account.<br /><span style=\"font-size: 15px;\">Please be aware that this process cannot be undone.</span>";
 $l['edit_user'] = "Edit User";
 $l['edit_user_desc'] = "Here you can edit this users profile, settings, and signature; see general statistics; and visit other pages for further information relating to this user.";
 $l['show_referrers'] = "Show Referrers";
@@ -43,6 +42,8 @@ $l['ban_users'] = "Ban Users";
 $l['users_banned'] = "{1} user(s) have been banned.";
 $l['confirm_multilift'] = "Are you sure you want to lift bans for the user(s) you selected?";
 $l['success_ban_lifted'] = "Bans for {1} user(s) you selected have been lifted.";
+$l['edit_ban'] = "Edit Ban";
+$l['lift_ban'] = "Lift Ban";
 $l['lift_bans'] = "Lift Bans";
 $l['confirm_multidelete'] = "Are you sure you want to delete these {1} user(s)? This cannot be undone.";
 $l['users_deleted'] = "{1} user(s) have been deleted.";
@@ -52,14 +53,14 @@ $l['manual_date'] = "Enter a manual date";
 $l['relative_date'] = "Or select a delete option";
 $l['multi_selected_dates'] = "You've selected both a manual date and a set option. Please select either a manual date or a set option.";
 $l['incorrect_date'] = "The date you entered is invalid. Please enter a valid date, or leave blank and select a set option.";
-$l['prune_complete'] = "Prune completed succesfully.";
+$l['prune_complete'] = "Prune completed successfully.";
 $l['prune_fail'] = "No posts were found for the selected user(s). No posts were pruned.";
 $l['no_prune_option'] = "Please enter a date or select an option to continue.";
 $l['prune_posts'] = "Prune Posts";
 $l['delete_posts'] = "Delete Posts";
 $l['usergroup_info'] = "The following action will affect {1} user(s). By choosing the options below, you will be overwriting the selected users' primary / additional / display usergroup.";
 $l['mass_usergroups'] = "Mass Usergroup Change";
-$l['success_mass_usergroups'] = "User(s) updated succssfully.";
+$l['success_mass_usergroups'] = "User(s) updated successfully.";
 $l['alter_usergroups'] = "Save Changes";
 $l['no_usergroup_changed'] = "None of the user(s) you selected can have their usergroups changed.";
 $l['no_set_option'] = "A valid set date was not selected. Please select an option from the dropdown box or enter a manual date.";
@@ -85,8 +86,9 @@ $l['option_4'] = "More than a year old";
 $l['option_5'] = "More than 18 months old";
 $l['option_6'] = "More than 2 years old";
 
-$l['error_avatartoobig'] = "Sorry but we cannot change your avatar as the new avatar you specified is too big. The maximum dimensions are {1}x{2} (width x height)";
+$l['error_avatartoobig'] = "Sorry, but we cannot change your avatar as the new avatar you specified is too big. The maximum dimensions are {1}x{2} (width x height)";
 $l['error_invalidavatarurl'] = "The URL you entered for your avatar does not appear to be valid. Please ensure you enter a valid URL.";
+$l['error_remote_avatar_not_allowed'] = "Remote avatar URLs have been disabled by the forum administrator.";
 $l['error_invalid_user'] = "You have selected an invalid user.";
 $l['error_no_perms_super_admin'] = "You do not have permission to edit this user because you are not a super administrator.";
 $l['error_invalid_user_source'] = "The source account username you entered does not exist";
@@ -100,8 +102,10 @@ $l['error_invalid_view_perpage'] = "You have entered an invalid number of result
 $l['error_invalid_view_sortby'] = "You have selected an invalid field to sort results by";
 $l['error_invalid_view_sortorder'] = "You have selected an invalid sort order";
 $l['error_invalid_view_delete'] = "You selected an invalid administration view to delete";
-$l['error_cannot_delete_view'] = "You must have atleast 1 administration view.";
+$l['error_cannot_delete_view'] = "You must have at least 1 administration view.";
 $l['error_inline_no_users_selected'] = "Sorry, but you did not select any users. Please select some users and try again.";
+$l['error_cannot_delete_user'] = "This user cannot be deleted.";
+$l['error_no_referred_users'] = "The selected user does not have any referred users.";
 
 $l['user_deletion_confirmation'] = "Are you sure you wish to delete this user?";
 
@@ -110,7 +114,7 @@ $l['success_activated'] = "The selected user has been activated successfully.";
 $l['success_user_created'] = "The user has been created successfully.";
 $l['success_user_updated'] = "The selected user has been updated successfully.";
 $l['success_user_deleted'] = "The selected user has been deleted successfully.";
-$l['success_merged'] = "has successfully been merged in to";
+$l['success_merged'] = "has successfully been merged into";
 $l['succuss_view_set_as_default'] = "The selected administration view has been set as your default successfully";
 $l['success_view_created'] = "The administration view has been created successfully.";
 $l['success_view_updated'] = "The selected administration view has been updated successfully.";
@@ -118,7 +122,7 @@ $l['success_view_deleted'] = "The selected administration view has been deleted 
 
 $l['confirm_view_deletion'] = "Are you sure you want to delete the selected view?";
 
-$l['warning_coppa_user'] = "<p class=\"alert\"><strong>Warning: </strong> This user is awaiting COPPA validation. <a href=\"index.php?module=user-users&amp;action=activate_user&amp;uid={1}\">Activate Account</a></p>";
+$l['warning_coppa_user'] = "<p class=\"alert\"><strong>Warning: </strong> This user is awaiting COPPA validation. <a href=\"index.php?module=user-users&amp;action=activate_user&amp;uid={1}&amp;my_post_key={2}\">Activate Account</a></p>";
 
 $l['required_profile_info'] = "Required Profile Information";
 $l['password'] = "Password";
@@ -139,6 +143,7 @@ $l['avatar'] = "Avatar";
 $l['mod_options'] = "Moderator Options";
 $l['general_account_stats'] = "General Account Statistics";
 $l['local_time'] = "Local Time";
+$l['local_time_format'] = "{1} at {2}";
 $l['posts'] = "Posts";
 $l['age'] = "Age";
 $l['posts_per_day'] = "Posts per day";
@@ -154,23 +159,36 @@ $l['custom_user_title'] = "Custom User Title";
 $l['custom_user_title_desc'] = "If empty, the group user title will be used";
 $l['website'] = "Website";
 $l['icq_number'] = "ICQ Number";
-$l['aim_handle'] = "AIM Handle";
-$l['yahoo_messanger_handle'] = "Yahoo! Messenger Handle";
-$l['msn_messanger_handle'] = "MSN Messenger Handle";
+$l['skype_handle'] = "Skype Handle";
+$l['google_handle'] = "Google Hangouts Handle";
 $l['birthday'] = "Date of Birth";
+
+$l['away_information'] = "Away Information";
+$l['away_status'] = "Away Status:";
+$l['away_status_desc'] = "Allows you to leave an away message if you are going away for a while.";
+$l['im_away'] = "I'm Away";
+$l['im_here'] = "I'm Here";
+$l['away_reason'] = "Away Reason:";
+$l['away_reason_desc'] = "Allows you to enter a small description of why you are away  (max 200 characters).";
+$l['return_date'] = "Return Date:";
+$l['return_date_desc'] = "If you know when you will be back, you can enter your return date here.";
+$l['error_acp_return_date_past'] = "You cannot return in the past!";
 
 $l['hide_from_whos_online'] = "Hide from the Who's Online list";
 $l['login_cookies_privacy'] = "Login, Cookies &amp; Privacy";
 $l['recieve_admin_emails'] = "Receive emails from administrators";
 $l['hide_email_from_others'] = "Hide email address from other members";
 $l['recieve_pms_from_others'] = "Receive private messages from other users";
-$l['recieve_pms_from_buddy'] = "Only receive private messages from buddy list";
+$l['recieve_pms_from_buddy'] = "Only receive private messages from buddy list (this setting has no effect unless there is at least one buddy on the list)";
 $l['alert_new_pms'] = "Alert with notice when new private message is received";
 $l['email_notify_new_pms'] = "Notify by email when new private message is received";
+$l['buddy_requests_pm'] = "Receive PM notifications for new buddy requests";
+$l['buddy_requests_auto'] = "Automatically accept buddy requests (if the above checkbox is ticked, a PM is sent informing of the new buddy connection)";
 $l['default_thread_subscription_mode'] = "Default thread subscription mode";
 $l['do_not_subscribe'] = "Do not subscribe";
-$l['no_email_notification'] = "No email notification";
+$l['no_notification'] = "No notification";
 $l['instant_email_notification'] = "Instant email notification";
+$l['instant_pm_notification'] = "Instant PM notification";
 $l['messaging_and_notification'] = "Messaging &amp; Notification";
 $l['use_default'] = "Use Default";
 $l['date_format'] = "Date Format";
@@ -193,6 +211,9 @@ $l['show_all_threads'] = "Show all threads";
 $l['threads_per_page'] = "Threads Per Page";
 $l['default_thread_age_view'] = "Default Thread Age View";
 $l['forum_display_options'] = "Forum Display Options";
+$l['show_classic_postbit'] = "Display posts in classic mode";
+$l['display_images'] = "Display images in posts";
+$l['display_videos'] = "Display videos in posts";
 $l['display_users_sigs'] = "Display users' signatures in their posts";
 $l['display_users_avatars'] = "Display users' avatars in their posts";
 $l['show_quick_reply'] = "Show the quick reply box at the bottom of the thread view";
@@ -203,6 +224,7 @@ $l['threaded_mode'] = "Threaded Mode";
 $l['thread_view_options'] = "Thread View Options";
 $l['show_redirect'] = "Show friendly redirection pages";
 $l['show_code_buttons'] = "Show MyCode formatting options on posting pages";
+$l['source_editor'] = "Put the editor in source mode by default";
 $l['theme'] = "Theme";
 $l['board_language'] = "Board Language";
 $l['other_options'] = "Other Options";
@@ -216,21 +238,21 @@ $l['suspend_sig_box'] = "Suspend this user's signature";
 $l['suspend_sig_perm'] = "<small>Suspended permanently.</small>";
 $l['suspend_sig_info'] = "If a signature is suspended, the user can't edit it and it won't be shown on their profile or in their posts";
 $l['suspend_sig_extend'] = "<small>Enter a new time below to change, or untick this option to remove this suspension.</small>";
-$l['suspend_expire_info'] = "<small>Expires {1}</small>";
+$l['suspend_expire_info'] = "<small>Remaining: <span style=\"color: {2};\">{1}</span></small>";
 $l['suspend_never_expire'] = "<small>{1}'s suspension will never expire (permanently suspended).</small>";
 $l['suspend_sig_error'] = "You entered an incorrect time to suspend this user's signature for. Please enter a correct time.";
 
 $l['moderate_posts'] = "Moderate Posts";
 $l['moderate_posts_info'] = "Moderate new posts made by {1}.";
 $l['moderate_for'] = "Moderate for:";
-$l['moderated_perm'] = "<p><small>Moderated permanently.<br />Enter a new time below to change or uncheck this option to remove this moderation.</small></p>";
-$l['moderate_length'] = "<p><small>Moderated until {1}.<br />Enter a new time below to change or uncheck this option to remove this moderation.</small></p>";
+$l['moderated_perm'] = "<p><small>Moderated permanently.<br />Enter a new time below to change or untick this option to remove this moderation.</small></p>";
+$l['moderate_length'] = "<p><small>Remaining Moderation: <span style=\"color: {2};\">{1}</span>.<br />Enter a new time below to change or untick this option to remove this moderation.</small></p>";
 
 $l['suspend_posts'] = "Suspend Posts";
 $l['suspend_posts_info'] = "Suspend {1} from making new posts.";
 $l['suspend_for'] = "Suspend for:";
-$l['suspended_perm'] = "<p><small>Suspended permanently.<br />Enter a new time below to change or uncheck this option to remove this suspension.</small></p>";
-$l['suspend_length'] = "<p><small>Suspended until {1}.<br />Enter a new time below to change or uncheck this option to remove this suspension.</small></p>";
+$l['suspended_perm'] = "<p><small>Suspended permanently.<br />Enter a new time below to change or untick this option to remove this suspension.</small></p>";
+$l['suspend_length'] = "<p><small>Remaining Suspension: <span style=\"color: {2};\">{1}</span>.<br />Enter a new time below to change or untick this option to remove this suspension.</small></p>";
 
 $l['suspendsignature_error'] = "You selected to suspend this user's signature, but didn't enter a valid time period. Please enter a valid time to continue or untick the option to cancel.";
 $l['moderateposting_error'] = "You selected to moderate this user's posts, but didn't enter a valid time period. Please enter a valid time to continue or untick the option to cancel.";
@@ -252,6 +274,7 @@ $l['additional_groups'] = "Additional Groups";
 $l['registered'] = "Registered";
 $l['last_active'] = "Last Active";
 $l['post_count'] = "Post Count";
+$l['thread_count'] = "Thread Count";
 $l['reputation'] = "Reputation";
 $l['warning_level'] = "Warning Level";
 $l['registration_ip'] = "Registration IP";
@@ -259,10 +282,8 @@ $l['last_known_ip'] = "Last Known IP";
 $l['registration_date'] = "Registration Date";
 $l['info_on_ip'] = "Information on this IP address";
 
-$l['avatar_gallery'] = "Avatar Gallery";
 $l['current_avatar'] = "Current Avatar";
 $l['user_current_using_uploaded_avatar'] = "This user is currently using an uploaded avatar.";
-$l['user_current_using_gallery_avatar'] = "This user is currently using an avatar from the avatar gallery.";
 $l['user_currently_using_remote_avatar'] = "This user is currently using a remotely linked avatar.";
 $l['max_dimensions_are'] = "The maximum dimensions for avatars are";
 $l['avatar_max_size'] = "Avatars can be a maximum of";
@@ -272,8 +293,7 @@ $l['avatar_auto_resize'] = "If the avatar is too large, it will automatically be
 $l['attempt_to_auto_resize'] = "Attempt to resize this avatar if it is too large?";
 $l['specify_custom_avatar'] = "Specify Custom Avatar";
 $l['upload_avatar'] = "Upload Avatar";
-$l['or_specify_avatar_url'] = "or Specify Avatar URL";
-$l['or_select_avatar_gallery'] = "or select from Avatar Gallery";
+$l['or_specify_avatar_url'] = "or Specify Avatar/Gravatar URL";
 
 $l['user_notes'] = "User Notes";
 
@@ -285,9 +305,9 @@ $l['ban_ip'] = "Ban IP";
 $l['ip_address_for'] = "IP Addresses for";
 
 $l['source_account'] = "Source Account";
-$l['source_account_desc'] = "This is the account that will be merged in to the destination account. It will be removed after this process.";
+$l['source_account_desc'] = "This is the account that will be merged into the destination account. It will be removed after this process.";
 $l['destination_account'] = "Destination Account";
-$l['destination_account_desc'] = "This is the account that the source account will be merged in to. It will remain after this process.";
+$l['destination_account_desc'] = "This is the account that the source account will be merged into. It will remain after this process.";
 $l['merge_user_accounts'] = "Merge User Accounts";
 
 $l['display_options'] = "Display Options";
@@ -304,6 +324,7 @@ $l['manage_views'] = "Manage Views";
 $l['none'] = "None";
 $l['search'] = "Search";
 
+$l['view_profile'] = "View Profile";
 $l['edit_profile_and_settings'] = "Edit Profile &amp; Settings";
 $l['ban_user'] = "Ban User";
 $l['approve_coppa_user'] = "Activate COPPA User";
@@ -314,25 +335,25 @@ $l['show_attachments'] = "Show Attachments";
 $l['table_view'] = "Table View";
 $l['card_view'] = "Card View";
 
-$l['find_users_where'] = "Find users where...";
+$l['find_users_where'] = "Find users where&hellip;";
 $l['username_contains'] = "Username contains";
 $l['email_address_contains'] = "Email address contains";
 $l['is_member_of_groups'] = "Is member of one or more of these user groups";
 $l['website_contains'] = "Website contains";
 $l['icq_number_contains'] = "ICQ number contains";
-$l['aim_handle_contains'] = "AIM handle contains";
-$l['yahoo_contains'] = "Yahoo! Messenger handle contains";
-$l['msn_contains'] = "MSN Messenger handle contains";
+$l['skype_contains'] = "Skype handle contains";
+$l['google_contains'] = "Google Hangouts handle contains";
 $l['signature_contains'] = "Signature contains";
 $l['user_title_contains'] = "Custom user title contains";
 $l['greater_than'] = "Greater than";
 $l['is_exactly'] = "Is exactly";
 $l['less_than'] = "Less than";
 $l['post_count_is'] = "Post count is";
+$l['thread_count_is'] = "Thread count is";
 $l['reg_ip_matches'] = "Registration IP address matches";
-$l['wildcard'] = "* denotes an IP byte wild card: 1.2.*.*";
+$l['wildcard'] = "To search for ranges of IP addresses use * (Ex: 127.0.0.*) or CIDR notation (Ex: 127.0.0.0/8)";
 $l['posted_with_ip'] = "Has posted with the IP address";
-$l['custom_profile_fields_match'] = "Where custom profile fields match...";
+$l['custom_profile_fields_match'] = "Where custom profile fields match&hellip;";
 $l['is_not_blank'] = " is not empty";
 $l['or'] = "or";
 $l['reg_in_x_days'] = "Registered in the last";
@@ -367,4 +388,21 @@ $l['table'] = "Table";
 $l['title'] = "Title";
 
 $l['view_title_1'] = "All Users";
-?>
+
+$l['emailsubject_activateaccount'] = "Account Activation at {1}";
+$l['email_adminactivateaccount'] = "{1},
+
+The administrator has activated your forum account on {2}.
+
+To proceed, please go to
+
+{3}
+
+You will be able to login with the credentials you registered with.
+
+Thank you,
+{2} Staff";
+
+$l['ipaddress_misc_info'] = "Misc. Information for '{1}'";
+$l['ipaddress_host_name'] = "Host Name";
+$l['ipaddress_location'] = "GeoIP Location";

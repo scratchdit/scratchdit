@@ -1,12 +1,11 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
- * $Id$
  */
 
 // Disallow direct access to this file for security reasons
@@ -15,7 +14,12 @@ if(!defined("IN_MYBB"))
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
 
-// Allows us to refresh cache to prevent over flowing
+/**
+ * Allows us to refresh cache to prevent over flowing
+ *
+ * @param resource $fp
+ * @param string $contents
+ */
 function clear_overflow($fp, &$contents)
 {
 	global $mybb;
@@ -52,13 +56,13 @@ $plugins->run_hooks("admin_tools_backupdb_begin");
 
 if($mybb->input['action'] == "dlbackup")
 {
-	$plugins->run_hooks("admin_tools_backupdb_dlbackup");
-
 	if(empty($mybb->input['file']))
 	{
 		flash_message($lang->error_file_not_specified, 'error');
 		admin_redirect("index.php?module=tools-backupdb");
 	}
+
+	$plugins->run_hooks("admin_tools_backupdb_dlbackup");
 
 	$file = basename($mybb->input['file']);
 	$ext = get_extension($file);
@@ -73,7 +77,13 @@ if($mybb->input['action'] == "dlbackup")
 		header('Content-disposition: attachment; filename='.$file);
 		header("Content-type: ".$ext);
 		header("Content-length: ".filesize(MYBB_ADMIN_DIR.'backups/'.$file));
-		echo file_get_contents(MYBB_ADMIN_DIR.'backups/'.$file);
+
+		$handle = fopen(MYBB_ADMIN_DIR.'backups/'.$file, 'rb');
+		while(!feof($handle))
+		{
+			echo fread($handle, 8192);
+		}
+		fclose($handle);
 	}
 	else
 	{
@@ -84,9 +94,7 @@ if($mybb->input['action'] == "dlbackup")
 
 if($mybb->input['action'] == "delete")
 {
-	$plugins->run_hooks("admin_tools_backupdb_delete");
-
-	if($mybb->input['no'])
+	if($mybb->get_input('no'))
 	{
 		admin_redirect("index.php?module=tools-backupdb");
 	}
@@ -98,6 +106,8 @@ if($mybb->input['action'] == "delete")
 		flash_message($lang->error_backup_doesnt_exist, 'error');
 		admin_redirect("index.php?module=tools-backupdb");
 	}
+
+	$plugins->run_hooks("admin_tools_backupdb_delete");
 
 	if($mybb->request_method == "post")
 	{
@@ -131,7 +141,7 @@ if($mybb->input['action'] == "backup")
 
 	if($mybb->request_method == "post")
 	{
-		if(!is_array($mybb->input['tables']))
+		if(empty($mybb->input['tables']) || !is_array($mybb->input['tables']))
 		{
 			flash_message($lang->error_tables_not_selected, 'error');
 			admin_redirect("index.php?module=tools-backupdb&action=backup");
@@ -141,7 +151,7 @@ if($mybb->input['action'] == "backup")
 
 		if($mybb->input['method'] == 'disk')
 		{
-			$file = MYBB_ADMIN_DIR.'backups/backup_'.substr(md5($mybb->user['uid'].TIME_NOW), 0, 10).random_str(54);
+			$file = MYBB_ADMIN_DIR.'backups/backup_'.date("_Ymd_His_").random_str(16);
 
 			if($mybb->input['filetype'] == 'gzip')
 			{
@@ -151,11 +161,11 @@ if($mybb->input['action'] == "backup")
 					admin_redirect("index.php?module=tools-backupdb&action=backup");
 				}
 
-				$fp = gzopen($file.'.sql.gz', 'w9');
+				$fp = gzopen($file.'.incomplete.sql.gz', 'w9');
 			}
 			else
 			{
-				$fp = fopen($file.'.sql', 'w');
+				$fp = fopen($file.'.incomplete.sql', 'w');
 			}
 		}
 		else
@@ -170,7 +180,6 @@ if($mybb->input['action'] == "backup")
 				}
 
 				// Send headers for gzip file
-				header('Content-Encoding: gzip');
 				header('Content-Type: application/x-gzip');
 				header('Content-Disposition: attachment; filename="'.$file.'.sql.gz"');
 			}
@@ -188,6 +197,10 @@ if($mybb->input['action'] == "backup")
 		$contents = $header;
 		foreach($mybb->input['tables'] as $table)
 		{
+			if(!$db->table_exists($db->escape_string($table)))
+			{
+				continue;
+			}
 			if($mybb->input['analyzeoptimize'] == 1)
 			{
 				$db->optimize_table($table);
@@ -206,21 +219,37 @@ if($mybb->input['action'] == "backup")
 			{
 				$structure = $db->show_create_table($table).";\n";
 				$contents .= $structure;
-				clear_overflow($fp, $contents);
+
+				if(isset($fp))
+				{
+					clear_overflow($fp, $contents);
+				}
 			}
 
 			if($mybb->input['contents'] != 'structure')
 			{
-				$query = $db->simple_select($table);
+				if($db->engine == 'mysqli')
+				{
+					$query = mysqli_query($db->read_link, "SELECT * FROM {$db->table_prefix}{$table}", MYSQLI_USE_RESULT);
+				}
+				else
+				{
+					$query = $db->simple_select($table);
+				}
+
 				while($row = $db->fetch_array($query))
 				{
 					$insert = "INSERT INTO {$table} ($fields) VALUES (";
 					$comma = '';
 					foreach($field_list as $field)
 					{
-						if(!isset($row[$field]) || is_NULL($row[$field]))
+						if(!isset($row[$field]) || is_null($row[$field]))
 						{
 							$insert .= $comma."NULL";
+						}
+						else if($db->engine == 'mysqli')
+						{
+							$insert .= $comma."'".mysqli_real_escape_string($db->read_link, $row[$field])."'";
 						}
 						else
 						{
@@ -230,8 +259,13 @@ if($mybb->input['action'] == "backup")
 					}
 					$insert .= ");\n";
 					$contents .= $insert;
-					clear_overflow($fp, $contents);
+
+					if(isset($fp))
+					{
+						clear_overflow($fp, $contents);
+					}
 				}
+				$db->free_result($query);
 			}
 		}
 
@@ -243,11 +277,13 @@ if($mybb->input['action'] == "backup")
 			{
 				gzwrite($fp, $contents);
 				gzclose($fp);
+				rename($file.'.incomplete.sql.gz', $file.'.sql.gz');
 			}
 			else
 			{
 				fwrite($fp, $contents);
 				fclose($fp);
+				rename($file.'.incomplete.sql', $file.'.sql');
 			}
 
 			if($mybb->input['filetype'] == 'gzip')
@@ -297,20 +333,20 @@ if($mybb->input['action'] == "backup")
 		{
 			if(action == 'select')
 			{
-				select_box[i].selected = TRUE;
+				select_box[i].selected = true;
 			}
 			else if(action == 'deselect')
 			{
-				select_box[i].selected = FALSE;
+				select_box[i].selected = false;
 			}
 			else if(action == 'forum' && prefix != 0)
 			{
-				select_box[i].selected = FALSE;
+				select_box[i].selected = false;
 				var row = select_box[i].value;
 				var subString = row.substring(prefix.length, 0);
 				if(subString == prefix)
 				{
-					select_box[i].selected = TRUE;
+					select_box[i].selected = true;
 				}
 			}
 		}
@@ -338,7 +374,7 @@ if($mybb->input['action'] == "backup")
 	{
 		$lang->update_button = '';
 		$page->output_alert($lang->alert_not_writable);
-		$cannot_write = TRUE;
+		$cannot_write = true;
 	}
 
 	$table = new Table;
@@ -354,7 +390,7 @@ if($mybb->input['action'] == "backup")
 
 	$form = new Form("index.php?module=tools-backupdb&amp;action=backup", "post", "table_selection", 0, "table_selection");
 
-	$table->construct_cell("{$lang->table_select_desc}\n<br /><br />\n<a href=\"javascript:changeSelection('select', 0);\">{$lang->select_all}</a><br />\n<a href=\"javascript:changeSelection('deselect', 0);\">{$lang->deselect_all}</a><br />\n<a href=\"javascript:changeSelection('forum', '".TABLE_PREFIX."');\">{$lang->select_forum_tables}</a>\n<br /><br />\n<div class=\"form_row\">".$form->generate_select_box("tables[]", $table_selects, FALSE, array('multiple' => TRUE, 'id' => 'table_select', 'size' => 20))."</div>", array('rowspan' => 5, 'width' => '50%'));
+	$table->construct_cell("{$lang->table_select_desc}\n<br /><br />\n<a href=\"javascript:changeSelection('select', 0);\">{$lang->select_all}</a><br />\n<a href=\"javascript:changeSelection('deselect', 0);\">{$lang->deselect_all}</a><br />\n<a href=\"javascript:changeSelection('forum', '".TABLE_PREFIX."');\">{$lang->select_forum_tables}</a>\n<br /><br />\n<div class=\"form_row\">".$form->generate_select_box("tables[]", $table_selects, false, array('multiple' => true, 'id' => 'table_select', 'size' => 20))."</div>", array('rowspan' => 5, 'width' => '50%', 'style' => 'border-bottom: 0px'));
 	$table->construct_row();
 
 	$table->construct_cell("<strong>{$lang->file_type}</strong><br />\n{$lang->file_type_desc}<br />\n<div class=\"form_row\">".$form->generate_radio_button("filetype", "gzip", $lang->gzip_compressed, array('checked' => 1))."<br />\n".$form->generate_radio_button("filetype", "plain", $lang->plain_text)."</div>", array('width' => '50%'));
@@ -378,8 +414,6 @@ if($mybb->input['action'] == "backup")
 
 if(!$mybb->input['action'])
 {
-	$plugins->run_hooks("admin_tools_backupdb_start");
-
 	$page->add_breadcrumb_item($lang->backups);
 	$page->output_header($lang->database_backups);
 
@@ -394,25 +428,32 @@ if(!$mybb->input['action'])
 		'link' => "index.php?module=tools-backupdb&amp;action=backup",
 	);
 
+	$plugins->run_hooks("admin_tools_backupdb_start");
+
 	$page->output_nav_tabs($sub_tabs, 'database_backup');
 
 	$backups = array();
 	$dir = MYBB_ADMIN_DIR.'backups/';
 	$handle = opendir($dir);
-	while(($file = readdir($handle)) !== FALSE)
+
+	if($handle !== false)
 	{
-		if(filetype(MYBB_ADMIN_DIR.'backups/'.$file) == 'file')
+		while(($file = readdir($handle)) !== false)
 		{
-			$ext = get_extension($file);
-			if($ext == 'gz' || $ext == 'sql')
+			if(filetype(MYBB_ADMIN_DIR.'backups/'.$file) == 'file')
 			{
-				$backups[@filemtime(MYBB_ADMIN_DIR.'backups/'.$file)] = array(
-					"file" => $file,
-					"time" => @filemtime(MYBB_ADMIN_DIR.'backups/'.$file),
-					"type" => $ext
-				);
+				$ext = get_extension($file);
+				if($ext == 'gz' || $ext == 'sql')
+				{
+					$backups[@filemtime(MYBB_ADMIN_DIR.'backups/'.$file)] = array(
+						"file" => $file,
+						"time" => @filemtime(MYBB_ADMIN_DIR.'backups/'.$file),
+						"type" => $ext
+					);
+				}
 			}
 		}
+		closedir($handle);
 	}
 
 	$count = count($backups);
@@ -426,13 +467,10 @@ if(!$mybb->input['action'])
 
 	foreach($backups as $backup)
 	{
+		$time = "-";
 		if($backup['time'])
 		{
-			$time = my_date($mybb->settings['dateformat'].", ".$mybb->settings['timeformat'], $backup['time']);
-		}
-		else
-		{
-			$time = "-";
+			$time = my_date('relative', $backup['time']);
 		}
 
 		$table->construct_cell("<a href=\"index.php?module=tools-backupdb&amp;action=dlbackup&amp;file={$backup['file']}\">{$backup['file']}</a>");
@@ -448,10 +486,6 @@ if(!$mybb->input['action'])
 		$table->construct_row();
 	}
 
-
 	$table->output($lang->existing_database_backups);
-
 	$page->output_footer();
 }
-
-?>

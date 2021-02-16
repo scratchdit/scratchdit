@@ -1,9 +1,8 @@
 <?php
 /**
- * MyBB 1.6 English Language Pack
- * Copyright 2010 MyBB Group, All Rights Reserved
- * 
- * $Id$
+ * MyBB 1.8 English Language Pack
+ * Copyright 2014 MyBB Group, All Rights Reserved
+ *
  */
 
 $l['themes'] = "Themes";
@@ -28,6 +27,20 @@ $l['browse_all_themes'] = "Browse All Themes";
 
 $l['export_theme'] = "Export Theme";
 $l['export_theme_desc'] = "Here you can export your themes and customized templates. Exporting themes is useful if you wish to share them with others or import them to another forum.";
+
+$l['duplicate_theme'] = "Duplicate Theme";
+$l['duplicate_theme_desc'] = "Here you can duplicate your themes. This helps you if you want to develop another version of it.";
+
+$l['colors_manage'] = "Manage Colors";
+$l['colors_attached_to'] = "color setting";
+$l['colors_setting'] = "Base Color";
+$l['colors_setting_desc'] = "Select the color this theme should use as its base color. Stylesheets attached to this color will be used.";
+$l['colors_no_color_setting'] = "There are no colors available. Please create a list of colors below to use this feature.";
+$l['colors_add'] = "Manage Colors";
+$l['colors_add_desc'] = "A list of colors available for this theme. This should be a list of key paired (key=item) colors, for example, <em>blue=Blue</em>. Separate items with a new line.";
+$l['colors_please_select'] = "None";
+$l['colors_add_edit_desc'] = "Select a color to attach this stylesheet to. You can select more than one color.";
+$l['colors_specific_color'] = "Specific color";
 
 $l['include_custom_only'] = "Include customized items only?";
 $l['include_custom_only_desc'] = "If you wish to include items (css and stylesheets) inherited from parent themes select \"no\", otherwise only customized elements will be exported.";
@@ -65,9 +78,16 @@ $l['import_templates'] = "Import Templates";
 $l['import_templates_desc'] = "If this theme contains custom templates should they be imported?";
 $l['import_theme'] = "Import Theme";
 
+$l['new_name_duplicate_desc'] = "A new name for the duplicated theme.";
+$l['duplicate_stylesheets'] = "Duplicate Stylesheets";
+$l['duplicate_stylesheets_desc'] = "If this theme contains custom stylesheets should they be duplicated?";
+$l['duplicate_templates'] = "Duplicate Templates";
+$l['duplicate_templates_desc'] = "If this theme contains custom templates should they be duplicated?";
+
 $l['create_a_theme'] = "Create a Theme";
 $l['name'] = "Name";
 $l['name_desc'] = "Specify a name for the new theme.";
+$l['display_order'] = "Order";
 
 $l['edit_theme_properties'] = "Edit Theme Properties";
 $l['name_desc_edit'] = "Specify a name for the theme.";
@@ -77,7 +97,7 @@ $l['all_user_groups'] = "All User Groups";
 $l['template_set'] = "Template Set";
 $l['template_set_desc'] = "Specify the template set the theme should use. The selected template set defines the markup (HTML) used in presenting the theme.";
 $l['editor_theme'] = "Editor Style";
-$l['editor_theme_desc'] = "Specify the style to be used for the MyCode editor in this theme. Editor styles can be found in the <strong>jscripts/editor_themes</strong> folder.";
+$l['editor_theme_desc'] = "Specify the style to be used for the MyCode editor in this theme. Editor styles can be found in the <strong>jscripts/sceditor/themes</strong> folder.";
 $l['img_directory'] = "Image Directory";
 $l['img_directory_desc'] = "The root directory for the location of the images used in this theme. Note that this only specifies the directory for the images used in templates, not the stylesheets.";
 $l['logo'] = "Board Logo";
@@ -87,6 +107,7 @@ $l['table_spacing_desc'] = "The width of the inner padding of table cells, in pi
 $l['inner_border'] = "Inner Table Border Width";
 $l['inner_border_desc'] = "The amount of padding between each table cell, in pixels. This is HTML's <em>cellspacing</em> attribute of the <em>table</em> tag.";
 $l['save_theme_properties'] = "Save Theme Properties";
+$l['save_stylesheet_order'] = "Save Stylesheet Orders";
 
 $l['background'] = "Background";
 $l['extra_css_atribs'] = "Extra CSS Attributes";
@@ -101,6 +122,7 @@ $l['font_weight'] = "Font Weight";
 $l['stylesheets'] = "Stylesheets";
 $l['inherited_from'] = "Inherited from";
 $l['attached_to'] = "Attached to";
+$l['attached_to_nothing'] = "Attached to nothing";
 $l['attached_to_desc'] = "You can either attach stylesheets globally or to specific files. If you attach it to specific files you can attach it to specific actions within each file.";
 $l['actions'] = "actions";
 $l['of'] = "of";
@@ -114,7 +136,7 @@ $l['stylesheet_inherited'] = "This stylesheet is currently being inherited from 
 $l['globally'] = "Globally";
 $l['specific_files'] = "Specific files";
 $l['specific_actions'] = "Specific actions";
-$l['specific_actions_desc'] = "Actions are seperated by commas";
+$l['specific_actions_desc'] = "Actions are separated by commas";
 $l['file'] = "File";
 $l['add_another'] = "Add another";
 $l['edit_stylesheet_properties_for'] = "Edit Stylesheet Properties for";
@@ -145,8 +167,8 @@ $l['created_by'] = "Created by";
 $l['error_invalid_stylesheet'] = "You have selected an invalid stylesheet.";
 $l['error_invalid_theme'] = "You have selected an invalid theme.";
 $l['error_missing_name'] = "Please enter a name for this theme.";
-$l['error_missing_url'] = "Please enter a theme a import.";
-$l['error_theme_already_exists'] = "The theme specified already exists. Please enter a new name for this theme.";
+$l['error_missing_url'] = "Please enter a valid url to import a theme from.";
+$l['error_theme_already_exists'] = "A theme with the same name already exists. Please specify a different name.";
 $l['error_theme_security_problem'] = "A potential security issue was found in the theme. It was not imported. Please contact the Author or MyBB Group for support.";
 
 $l['error_local_file'] = "Could not open the local file. Does it exist? Please check and try again.";
@@ -166,12 +188,16 @@ $l['error_missing_stylesheet_name'] = "Please enter a name for this stylesheet."
 $l['error_missing_stylesheet_extension'] = "This stylesheet must end with the correct file extension, for example, {1}<em>.css</em>";
 $l['error_invalid_parent_theme'] = "The selected parent theme does not exist. Please select a valid parent theme.";
 $l['error_invalid_templateset'] = "The selected template set does not exist. Please select a valid template set.";
+$l['error_invalid_color'] = "The defined color set \"{1}\" is either having invalid character(s) or not in prescribed format. Only alpha-numeric characters are allowed for naming separated by '='.";
 $l['error_invalid_editortheme'] = "The selected editor theme does not exist. Please select a valid editor theme.";
 $l['error_inheriting_stylesheets'] = "You cannot delete this theme because there are still other themes that are inheriting stylesheets from it.";
 $l['error_cannot_parse'] = "MyBB cannot parse this stylesheet for the simple editor. It can only be edited in advanced mode.";
 $l['error_communication_problem'] = "There was a problem communicating with the MyBB themes server. Please try again in a few minutes.";
 $l['error_no_results_found'] = "No results were found for the specified keyword(s).";
+$l['error_no_color_picked'] = "You didn't specify which colors to attach this stylesheet to.";
+$l['error_no_display_order'] = "There was an error finding the display orders for the stylesheets. Please refresh the page and try again.";
 
+$l['success_duplicated_theme'] = "The selected theme has been duplicated successfully.";
 $l['success_imported_theme'] = "The selected theme has been imported successfully.";
 $l['success_theme_created'] = "The theme has been created successfully.";
 $l['success_theme_deleted'] = "The selected theme has been deleted successfully.";
@@ -182,8 +208,14 @@ $l['success_theme_set_default'] = "The selected theme is now the forum default."
 $l['success_theme_forced'] = "All users have been forced to use the selected theme successfully.";
 $l['success_theme_properties_updated'] = "The properties for the select theme have been updated successfully.";
 $l['success_stylesheet_added'] = "The stylesheet for this theme has been created successfully.";
+$l['success_stylesheet_order_updated'] = "The display orders for the stylesheets have been updated successfully.";
 
 $l['confirm_theme_deletion'] = "Are you sure you want to delete this theme?";
 $l['confirm_stylesheet_deletion'] = "Are you sure you want to delete / revert this stylesheet?";
-$l['confirm_theme_forced'] = "Are you sure you want to force this theme on all users?";
-?>
+$l['confirm_theme_forced'] = "Are you sure you want to force this theme on all users? This may reset the theme's access level.";
+
+$l['theme_info_fetch_error'] = 'There was an error fetching the style info.';
+$l['theme_info_save_error'] = 'There was an error saving the style info.';
+
+$l['saving'] = 'Saving&hellip;';
+

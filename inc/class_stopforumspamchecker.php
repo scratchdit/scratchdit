@@ -3,8 +3,9 @@
  * MyBB 1.8
  * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * Website: //www.mybb.com
- * License: //www.mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
+ *
  */
 
 /**
@@ -12,64 +13,57 @@
  */
 class StopForumSpamChecker
 {
-	/*
+	/**
 	 * The base URL format to the stop forum spam API.
 	 *
 	 * @var string
 	 */
-	private const STOP_FORUM_SPAM_API_URL_FORMAT = '//api.stopforumspam.org/api?username=%s&email=%s&ip=%s&f=json&confidence';
-
-	/*
-	 * @var PluginSystem
+	const STOP_FORUM_SPAM_API_URL_FORMAT = 'https://api.stopforumspam.org/api?username=%s&email=%s&ip=%s&f=json&confidence';
+	/**
+	 * @var pluginSystem
 	 */
-	private $plugins = NULL;
-
+	private $plugins = null;
 	/**
 	 * The minimum weighting before a user is considered to be a spammer.
 	 *
 	 * @var double
 	 */
-	private $min_weighting_before_spam = NULL;
-
+	private $min_weighting_before_spam = null;
 	/**
-	 * Whether to check usernames against StopForumSPam. If set to FALSE, the username weighting won't be used.
+	 * Whether to check usernames against StopForumSPam. If set to false, the username weighting won't be used.
 	 *
-	 * @var boolean
+	 * @var bool
 	 */
-	private $check_usernames = FALSE;
-
+	private $check_usernames = false;
 	/**
-	 * Whether to check email addresses against StopForumSPam. If set to FALSE, the username weighting won't be used.
+	 * Whether to check email addresses against StopForumSPam. If set to false, the username weighting won't be used.
 	 *
-	 * @var boolean
+	 * @var bool
 	 */
-	private $check_emails = TRUE;
-
+	private $check_emails = true;
 	/**
-	 * Whether to check IP addresses against StopForumSPam. If set to FALSE, the username weighting won't be used.
+	 * Whether to check IP addresses against StopForumSPam. If set to false, the username weighting won't be used.
 	 *
-	 * @var boolean
+	 * @var bool
 	 */
-
-	private $check_ips = TRUE;
+	private $check_ips = true;
 	/**
 	 * Whether to log whenever a user is found to be a spammer.
 	 *
-	 * @var boolean
+	 * @var bool
 	 */
-
 	private $log_blocks;
 
 	/**
 	 * Create a new instance of the StopForumSpam.com checker.
 	 *
-	 * @param PluginSystem $plugins                   An instance of the plugin system.
+	 * @param pluginSystem $plugins                   An instance of the plugin system.
 	 * @param double       $min_weighting_before_spam The minimum confidence rating before a user is considered definitely spam.
 	 * @param bool         $check_usernames           Whether to check usernames against StopForumSpam.
 	 * @param bool         $check_emails              Whether to check email address against StopForumSpam.
 	 * @param bool         $check_ips                 Whether to check IP addresses against StopForumSpam.
 	 */
-	public function __construct(&$plugins, $min_weighting_before_spam = 50.00, $check_usernames = FALSE, $check_emails = TRUE, $check_ips = TRUE, $log_blocks = TRUE)
+	public function __construct(&$plugins, $min_weighting_before_spam = 50.00, $check_usernames = false, $check_emails = true, $check_ips = true, $log_blocks = true)
 	{
 		$this->plugins                   = $plugins;
 		$this->min_weighting_before_spam = (double)$min_weighting_before_spam;
@@ -82,33 +76,36 @@ class StopForumSpamChecker
 	/**
 	 * Check a user against the 3rd party service to determine whether they are a spammer.
 	 *
-	 * @param  string $username   The username of the user to check.
-	 * @param  string $email      The email address of the user to check.
-	 * @param  string $ip_address The IP address sof the user to check.
+	 * @param string $username   The username of the user to check.
+	 * @param string $email      The email address of the user to check.
+	 * @param string $ip_address The IP address sof the user to check.
 	 * @return bool Whether the user is considered a spammer or not.
 	 * @throws Exception Thrown when there's an error fetching from the StopForumSpam API or when the data cannot be decoded.
 	 */
 	public function is_user_a_spammer($username = '', $email = '', $ip_address = '')
 	{
-		$is_spammer = FALSE;
-		$checknum   = $confidence = 0;
+		$is_spammer = false;
+		$checknum = $confidence = 0;
 
-		if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+		if(!filter_var($email, FILTER_VALIDATE_EMAIL))
+		{
 			throw new Exception("stopforumspam_invalid_email");
 		}
 
-		if (!filter_var($ip_address, FILTER_VALIDATE_IP)) {
+		if(!filter_var($ip_address, FILTER_VALIDATE_IP))
+		{
 			throw new Exception('stopforumspam_invalid_ip_address');
 		}
 
 		$is_internal_ip = !filter_var(
 			$ip_address,
 			FILTER_VALIDATE_IP,
-			FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE
+			FILTER_FLAG_NO_PRIV_RANGE |  FILTER_FLAG_NO_RES_RANGE
 		);
 
-		if ($is_internal_ip) {
-			return FALSE;
+		if($is_internal_ip)
+		{
+			return false;
 		}
 
 		$username_encoded = urlencode($username);
@@ -118,31 +115,38 @@ class StopForumSpamChecker
 
 		$result = fetch_remote_file($check_url);
 
-		if ($result !== FALSE) {
+		if($result !== false)
+		{
 			$result_json = @json_decode($result);
 
-			if ($result_json != NULL && !isset($result_json->error)) {
-				if ($this->check_usernames && $result_json->username->appears) {
+			if($result_json != null && !isset($result_json->error))
+			{
+				if($this->check_usernames && $result_json->username->appears)
+				{
 					$checknum++;
 					$confidence += $result_json->username->confidence;
 				}
 
-				if ($this->check_emails && $result_json->email->appears) {
+				if($this->check_emails && $result_json->email->appears)
+				{
 					$checknum++;
 					$confidence += $result_json->email->confidence;
 				}
 
-				if ($this->check_ips && $result_json->ip->appears) {
+				if($this->check_ips && $result_json->ip->appears)
+				{
 					$checknum++;
 					$confidence += $result_json->ip->confidence;
 				}
-
-				if ($checknum > 0 && $confidence) {
+				
+				if($checknum > 0 && $confidence)
+				{
 					$confidence = $confidence / $checknum;
 				}
 
-				if ($confidence > $this->min_weighting_before_spam) {
-					$is_spammer = TRUE;
+				if($confidence > $this->min_weighting_before_spam)
+				{
+					$is_spammer = true;
 				}
 			}
 			else
@@ -155,7 +159,8 @@ class StopForumSpamChecker
 			throw new Exception('stopforumspam_error_retrieving');
 		}
 
-		if ($this->plugins) {
+		if($this->plugins)
+		{
 			$params = array(
 				'username'   => &$username,
 				'email'      => &$email,
@@ -167,7 +172,8 @@ class StopForumSpamChecker
 			$this->plugins->run_hooks('stopforumspam_check_spammer_pre_return', $params);
 		}
 
-		if ($this->log_blocks && $is_spammer) {
+		if($this->log_blocks && $is_spammer)
+		{
 			log_spam_block(
 				$username, $email, $ip_address, array(
 					'confidence' => (double)$confidence,
@@ -189,25 +195,29 @@ class StopForumSpamChecker
 
 		foreach($sfsSettingsEnabled as $setting)
 		{
-			if ($setting == 'stopforumspam_check_usernames' && $mybb->settings[$setting]) {
+			if($setting == 'stopforumspam_check_usernames' && $mybb->settings[$setting])
+			{
 				$settingsenabled[] = $lang->sfs_error_username;
 				continue;
 			}
 
-			if ($setting == 'stopforumspam_check_emails' && $mybb->settings[$setting]) {
+			if($setting == 'stopforumspam_check_emails' && $mybb->settings[$setting])
+			{
 				$settingsenabled[] = $lang->sfs_error_email;
 				continue;
 			}
 
-			if ($setting = 'stopforumspam_check_ips' && $mybb->settings[$setting]) {
+			if($setting = 'stopforumspam_check_ips' && $mybb->settings[$setting])
+			{
 				$settingsenabled[] = $lang->sfs_error_ip;
 				continue;
 			}
 		}
 
-		if (sizeof($settingsenabled) > 1) {
-			$lastsetting = $settingsenabled[sizeof($settingsenabled) - 1];
-			unset($settingsenabled[sizeof($settingsenabled) - 1]);
+		if(sizeof($settingsenabled) > 1)
+		{
+			$lastsetting = $settingsenabled[sizeof($settingsenabled)-1];
+			unset($settingsenabled[sizeof($settingsenabled)-1]);
 
 			$stopforumspamerror = implode($lang->comma, $settingsenabled) . " {$lang->sfs_error_or} " . $lastsetting;
 		}
@@ -215,7 +225,6 @@ class StopForumSpamChecker
 		{
 			$stopforumspamerror = $settingsenabled[0];
 		}
-
 		return $stopforumspamerror;
 	}
 }

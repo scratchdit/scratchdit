@@ -3,13 +3,13 @@
  * MyBB 1.8
  * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * Website: //www.mybb.com
- * License: //www.mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
  */
 
 // Disallow direct access to this file for security reasons
-if (!defined("IN_MYBB"))
+if(!defined("IN_MYBB"))
 {
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
@@ -58,7 +58,7 @@ class WarningsHandler extends DataHandler
 	/**
 	* Validate a warning user assets.
 	*
-	* @return boolean TRUE when valid, FALSE when invalid.
+	* @return boolean True when valid, false when invalid.
 	*/
 	function validate_user()
 	{
@@ -68,31 +68,31 @@ class WarningsHandler extends DataHandler
 
 		$user = get_user($warning['uid']);
 
-		if (!$user['uid'])
+		if(!$user['uid'])
 		{
 			$this->set_error('error_invalid_user');
-			return FALSE;
+			return false;
 		}
 
-		if ($user['uid'] == $mybb->user['uid'])
+		if($user['uid'] == $mybb->user['uid'])
 		{
 			$this->set_error('error_cannot_warn_self');
-			return FALSE;
+			return false;
 		}
 
-		if ($user['warningpoints'] >= $mybb->settings['maxwarningpoints'])
+		if($user['warningpoints'] >= $mybb->settings['maxwarningpoints'])
 		{
 			$this->set_error('error_user_reached_max_warning');
-			return FALSE;
+			return false;
 		}
 
-		return TRUE;
+		return true;
 	}
 
 	/**
 	* Validate a warning post.
 	*
-	* @return boolean TRUE when valid, FALSE when invalid.
+	* @return boolean True when valid, false when invalid.
 	*/
 	function validate_post()
 	{
@@ -100,61 +100,61 @@ class WarningsHandler extends DataHandler
 
 		$post = get_post($warning['pid']);
 
-		if (!$post['pid'])
+		if(!$post['pid'])
 		{
 			$this->set_error('error_invalid_post');
-			return FALSE;
+			return false;
 		}
 
-		return TRUE;
+		return true;
 	}
 
 	/**
 	* Validate a warning notes.
 	*
-	* @return boolean TRUE when valid, FALSE when invalid.
+	* @return boolean True when valid, false when invalid.
 	*/
 	function validate_notes()
 	{
 		$warning = &$this->data;
 
-		if (!trim($warning['notes']))
+		if(!trim($warning['notes']))
 		{
 			$this->set_error('error_no_note');
-			return FALSE;
+			return false;
 		}
 
-		return TRUE;
+		return true;
 	}
 
 	/**
 	* Validate maximum warnings per day for current user.
 	*
-	* @return boolean TRUE when valid, FALSE when invalid.
+	* @return boolean True when valid, false when invalid.
 	*/
 	function validate_maximum()
 	{
 		global $mybb, $db, $lang;
 
-		if ($mybb->usergroup['maxwarningsday'] != 0)
+		if($mybb->usergroup['maxwarningsday'] != 0)
 		{
 			$timecut = TIME_NOW-60*60*24;
 			$query = $db->simple_select("warnings", "COUNT(wid) AS given_today", "issuedby='{$mybb->user['uid']}' AND dateline>'$timecut'");
 			$given_today = $db->fetch_field($query, "given_today");
-			if ($given_today >= $mybb->usergroup['maxwarningsday'])
+			if($given_today >= $mybb->usergroup['maxwarningsday'])
 			{
 				$this->set_error('reached_max_warnings_day', array(my_number_format($mybb->usergroup['maxwarningsday'])));
-				return FALSE;
+				return false;
 			}
 		}
 
-		return TRUE;
+		return true;
 	}
 
 	/**
 	* Validate warnings type.
 	*
-	* @return boolean TRUE when valid, FALSE when invalid.
+	* @return boolean True when valid, false when invalid.
 	*/
 	function validate_type()
 	{
@@ -163,48 +163,48 @@ class WarningsHandler extends DataHandler
 		$warning = &$this->data;
 
 		// Issuing a custom warning
-		if ($warning['type'] == 'custom')
+		if($warning['type'] == 'custom')
 		{
-			if ($mybb->settings['allowcustomwarnings'] == 0)
+			if($mybb->settings['allowcustomwarnings'] == 0)
 			{
 				$this->set_error('error_cant_custom_warn');
-				return FALSE;
+				return false;
 			}
 
-			if (!$warning['custom_reason'])
+			if(!$warning['custom_reason'])
 			{
 				$this->set_error('error_no_custom_reason');
-				return FALSE;
+				return false;
 			}
 
 			$warning['title'] = $warning['custom_reason'];
 
-			if (!$warning['custom_points'] || $warning['custom_points'] > $mybb->settings['maxwarningpoints'] || $warning['custom_points'] < 0)
+			if(!$warning['custom_points'] || $warning['custom_points'] > $mybb->settings['maxwarningpoints'] || $warning['custom_points'] < 0)
 			{
 				$this->set_error('error_invalid_custom_points', array(my_number_format($mybb->settings['maxwarningpoints'])));
-				return FALSE;
+				return false;
 			}
 
 			$warning['points'] = round($warning['custom_points']);
 
-			// Build expiry date
-			if ($warning['expires_period'] == "hours")
+			// Build expiry date				
+			if($warning['expires_period'] == "hours")
 			{
 				$warning['expires'] = $warning['expires']*3600 + TIME_NOW;
 			}
-			else if ($warning['expires_period'] == "days")
+			else if($warning['expires_period'] == "days")
 			{
 				$warning['expires'] = $warning['expires']*86400 + TIME_NOW;
 			}
-			else if ($warning['expires_period'] == "weeks")
+			else if($warning['expires_period'] == "weeks")
 			{
 				$warning['expires'] = $warning['expires']*604800 + TIME_NOW;
 			}
-			else if ($warning['expires_period'] == "months")
+			else if($warning['expires_period'] == "months")
 			{
 				$warning['expires'] = $warning['expires']*2592000 + TIME_NOW;
 			}
-			else if ($warning['expires_period'] == "never")
+			else if($warning['expires_period'] == "never")
 			{
 				$warning['expires'] = 0;
 			}
@@ -212,7 +212,7 @@ class WarningsHandler extends DataHandler
 			{
 				// unkown expires_period
 				$this->set_error('error_invalid_expires_period');
-				return FALSE;
+				return false;
 			}
 		}
 		// Using a predefined warning type
@@ -221,29 +221,29 @@ class WarningsHandler extends DataHandler
 			$query = $db->simple_select("warningtypes", "*", "tid='".(int)$warning['type']."'");
 			$this->warning_type = $db->fetch_array($query);
 
-			if (!$this->warning_type)
+			if(!$this->warning_type)
 			{
 				$this->set_error('error_invalid_type');
-				return FALSE;
+				return false;
 			}
 
 			$warning['points'] = $this->warning_type['points'];
 			$warning['title'] = '';
 			$warning['expires'] = 0;
-
-			if ($this->warning_type['expirationtime'])
+			
+			if($this->warning_type['expirationtime'])
 			{
 				$warning['expires'] = TIME_NOW+$this->warning_type['expirationtime'];
 			}
 		}
 
-		return TRUE;
+		return true;
 	}
 
 	/**
 	 * Validate a warning.
 	 *
-	 * @return boolean TRUE when valid, FALSE when invalid.
+	 * @return boolean True when valid, false when invalid.
 	 */
 	function validate_warning()
 	{
@@ -256,11 +256,11 @@ class WarningsHandler extends DataHandler
 		$this->validate_maximum();
 		$this->validate_notes();
 
-		if (array_key_exists('pid', $warning))
+		if(array_key_exists('pid', $warning))
 		{
 			$this->validate_post();
 		}
-		if (array_key_exists('type', $warning))
+		if(array_key_exists('type', $warning))
 		{
 			$this->validate_type();
 		}
@@ -268,38 +268,38 @@ class WarningsHandler extends DataHandler
 		$plugins->run_hooks("datahandler_warnings_validate_warning", $this);
 
 		// We are done validating, return.
-		$this->set_validated(TRUE);
+		$this->set_validated(true);
 
-		if (count($this->get_errors()) > 0)
+		if(count($this->get_errors()) > 0)
 		{
-			return FALSE;
+			return false;
 		}
 
-		return TRUE;
+		return true;
 	}
 
 	/**
 	* Gets a valid warning from the DB engine.
 	*
 	* @param int $wid
-	* @return array|bool array when valid, boolean FALSE when invalid.
+	* @return array|bool array when valid, boolean false when invalid.
 	*/
 	function get($wid)
 	{
 		global $db;
 
 		$wid = (int)$wid;
-		if ($wid <= 0)
+		if($wid <= 0)
 		{
-			return FALSE;
+			return false;
 		}
 
 		$query = $db->simple_select("warnings", "*", "wid='".$wid."'");
 		$this->read_warning_data = $db->fetch_array($query);
 
-		if (!$this->read_warning_data['wid'])
+		if(!$this->read_warning_data['wid'])
 		{
-			return FALSE;
+			return false;
 		}
 
 		return $this->read_warning_data;
@@ -308,7 +308,7 @@ class WarningsHandler extends DataHandler
 	/**
 	* Expire old warnings in the database.
 	*
-	* @return boolean TRUE when finished.
+	* @return boolean True when finished.
 	*/
 	function expire_warnings()
 	{
@@ -329,7 +329,7 @@ class WarningsHandler extends DataHandler
 			);
 			$db->update_query("warnings", $updated_warning, "wid='{$warning['wid']}'");
 
-			if (array_key_exists($warning['uid'], $users))
+			if(array_key_exists($warning['uid'], $users))
 			{
 				$users[$warning['uid']] -= $warning['points'];
 			}
@@ -341,7 +341,7 @@ class WarningsHandler extends DataHandler
 
 		foreach($users as $uid => $warningpoints)
 		{
-			if ($warningpoints < 0)
+			if($warningpoints < 0)
 			{
 				$warningpoints = 0;
 			}
@@ -352,7 +352,7 @@ class WarningsHandler extends DataHandler
 			$db->update_query("users", $updated_user, "uid='".(int)$uid."'");
 		}
 
-		return TRUE;
+		return true;
 	}
 
 	/**
@@ -364,12 +364,12 @@ class WarningsHandler extends DataHandler
 	{
 		global $db, $mybb, $lang, $cache, $groupscache;
 
-		if ($mybb->settings['maxwarningpoints'] < 1)
+		if($mybb->settings['maxwarningpoints'] < 1)
 		{
 			$mybb->settings['maxwarningpoints'] = 10;
 		}
 
-		if (!is_array($groupscache))
+		if(!is_array($groupscache))
 		{
 			$groupscache = $cache->read("usergroups");
 		}
@@ -378,12 +378,12 @@ class WarningsHandler extends DataHandler
 
 		$user = get_user($warning['uid']);
 
-		if ($method == 'insert')
+		if($method == 'insert')
 		{
 			// Build warning level & ensure it doesn't go over 100.
 			$current_level = round($user['warningpoints']/$mybb->settings['maxwarningpoints']*100);
 			$this->new_warning_level = round(($user['warningpoints']+$warning['points'])/$mybb->settings['maxwarningpoints']*100);
-			if ($this->new_warning_level > 100)
+			if($this->new_warning_level > 100)
 			{
 				$this->new_warning_level = 100;
 			}
@@ -397,12 +397,12 @@ class WarningsHandler extends DataHandler
 			$query = $db->simple_select("warninglevels", "*", "percentage<={$this->new_warning_level}", array("order_by" => "percentage", "order_dir" => "desc"));
 			$new_level = $db->fetch_array($query);
 
-			if (!empty($new_level) && $new_level['lid'])
+			if(!empty($new_level) && $new_level['lid'])
 			{
 				$expiration = 0;
 				$action = my_unserialize($new_level['action']);
 
-				if ($action['length'] > 0)
+				if($action['length'] > 0)
 				{
 					$expiration = TIME_NOW+$action['length'];
 				}
@@ -416,15 +416,15 @@ class WarningsHandler extends DataHandler
 						$existing_ban = $db->fetch_array($query);
 
 						// Only perform if no previous ban or new ban expires later than existing ban
-						if (($expiration > $existing_ban['lifted'] && $existing_ban['lifted'] != 0) || $expiration == 0 || !$existing_ban['uid'])
+						if(($expiration > $existing_ban['lifted'] && $existing_ban['lifted'] != 0) || $expiration == 0 || !$existing_ban['uid'])
 						{
-							if (!$warning['title'])
+							if(!$warning['title'])
 							{
 								$warning['title'] = $this->warning_type['title'];
 							}
 
 							// Never lift the ban?
-							if ($action['length'] <= 0)
+							if($action['length'] <= 0)
 							{
 								$bantime = '---';
 							}
@@ -433,29 +433,29 @@ class WarningsHandler extends DataHandler
 								$bantimes = fetch_ban_times();
 								foreach($bantimes as $date => $string)
 								{
-									if ($date == '---')
+									if($date == '---')
 									{
 										continue;
 									}
 
 									$time = 0;
 									list($day, $month, $year) = explode('-', $date);
-									if ($day > 0)
+									if($day > 0)
 									{
 										$time += 60*60*24*$day;
 									}
 
-									if ($month > 0)
+									if($month > 0)
 									{
 										$time += 60*60*24*30*$month;
 									}
 
-									if ($year > 0)
+									if($year > 0)
 									{
 										$time += 60*60*24*365*$year;
 									}
 
-									if ($time == $action['length'])
+									if($time == $action['length'])
 									{
 										$bantime = $date;
 										break;
@@ -476,7 +476,7 @@ class WarningsHandler extends DataHandler
 								"reason" => $db->escape_string($warning['title'])
 							);
 							// Delete old ban for this user, taking details
-							if ($existing_ban['uid'])
+							if($existing_ban['uid'])
 							{
 								$db->delete_query("banned", "uid='{$user['uid']}' AND gid='{$action['usergroup']}'");
 								// Override new ban details with old group info
@@ -488,7 +488,7 @@ class WarningsHandler extends DataHandler
 							$period = $lang->expiration_never;
 							$ban_length = fetch_friendly_expiration($action['length']);
 
-							if ($ban_length['time'])
+							if($ban_length['time'])
 							{
 								$lang_str = "expiration_".$ban_length['period'];
 								$period = $lang->sprintf($lang->result_period, $ban_length['time'], $lang->$lang_str);
@@ -506,14 +506,14 @@ class WarningsHandler extends DataHandler
 					// Suspend posting privileges
 					case 2:
 						// Only perform if the expiration time is greater than the users current suspension period
-						if ($expiration == 0 || $expiration > $user['suspensiontime'])
+						if($expiration == 0 || $expiration > $user['suspensiontime'])
 						{
-							if (($user['suspensiontime'] != 0 && $user['suspendposting']) || !$user['suspendposting'])
+							if(($user['suspensiontime'] != 0 && $user['suspendposting']) || !$user['suspendposting'])
 							{
 								$period = $lang->expiration_never;
 								$ban_length = fetch_friendly_expiration($action['length']);
 
-								if ($ban_length['time'])
+								if($ban_length['time'])
 								{
 									$lang_str = "expiration_".$ban_length['period'];
 									$period = $lang->sprintf($lang->result_period, $ban_length['time'], $lang->$lang_str);
@@ -529,14 +529,14 @@ class WarningsHandler extends DataHandler
 					// Moderate new posts
 					case 3:
 						// Only perform if the expiration time is greater than the users current suspension period
-						if ($expiration == 0 || $expiration > $user['moderationtime'])
+						if($expiration == 0 || $expiration > $user['moderationtime'])
 						{
-							if (($user['moderationtime'] != 0 && $user['moderateposts']) || !$user['suspendposting'])
+							if(($user['moderationtime'] != 0 && $user['moderateposts']) || !$user['suspendposting'])
 							{
 								$period = $lang->expiration_never;
 								$ban_length = fetch_friendly_expiration($action['length']);
 
-								if ($ban_length['time'])
+								if($ban_length['time'])
 								{
 									$lang_str = "expiration_".$ban_length['period'];
 									$period = $lang->sprintf($lang->result_period, $ban_length['time'], $lang->$lang_str);
@@ -555,10 +555,10 @@ class WarningsHandler extends DataHandler
 		else
 		{
 			// Warning is still active, lower users point count
-			if ($warning['expired'] != 1)
+			if($warning['expired'] != 1)
 			{
 				$new_warning_points = $user['warningpoints']-$warning['points'];
-				if ($new_warning_points < 0)
+				if($new_warning_points < 0)
 				{
 					$new_warning_points = 0;
 				}
@@ -572,7 +572,7 @@ class WarningsHandler extends DataHandler
 				$current_level = round($user['warningpoints']/$mybb->settings['maxwarningpoints']*100);
 				$this->new_warning_level = round($new_warning_points/$mybb->settings['maxwarningpoints']*100);
 				$query = $db->simple_select("warninglevels", "action", "percentage>{$this->new_warning_level} AND percentage<=$current_level");
-				if ($db->num_rows($query))
+				if($db->num_rows($query))
 				{
 					// we have some warning levels we need to revoke
 					$max_expiration_times = $check_levels = array();
@@ -586,7 +586,7 @@ class WarningsHandler extends DataHandler
 					// now that we've got all the info, do necessary stuff
 					for($i = 1; $i <= 3; ++$i)
 					{
-						if ($check_levels[$i])
+						if($check_levels[$i])
 						{
 							switch($i)
 							{
@@ -604,26 +604,26 @@ class WarningsHandler extends DataHandler
 							}
 
 							// if the thing isn't in force, don't bother with trying to update anything
-							if (!$user[$current_inforce_field])
+							if(!$user[$current_inforce_field])
 							{
 								continue;
 							}
 
-							if ($lower_levels[$i])
+							if($lower_levels[$i])
 							{
 								// lessen the expiration time if necessary
 
-								if (!$lower_expiration_times[$i])
+								if(!$lower_expiration_times[$i])
 								{
 									// doesn't expire - enforce this
 									$this->updated_user[$current_expiry_field] = 0;
 									continue;
 								}
 
-								if ($max_expiration_times[$i])
+								if($max_expiration_times[$i])
 								{
 									// if the old level did have an expiry time...
-									if ($max_expiration_times[$i] <= $lower_expiration_times[$i])
+									if($max_expiration_times[$i] <= $lower_expiration_times[$i])
 									{
 										// if the lower expiration time is actually higher than the upper expiration time -> skip
 										continue;
@@ -636,7 +636,7 @@ class WarningsHandler extends DataHandler
 									// the old level never expired, not much we can do but try to estimate a new expiry time... which will just happen to be starting from today...
 									$expire_offset = TIME_NOW + $lower_expiration_times[$i];
 									// if the user's expiry time is already less than what we're going to set it to, skip
-									if ($user[$current_expiry_field] <= $expire_offset)
+									if($user[$current_expiry_field] <= $expire_offset)
 									{
 										continue;
 									}
@@ -644,7 +644,7 @@ class WarningsHandler extends DataHandler
 
 								$this->updated_user[$current_expiry_field] = $user[$current_expiry_field] + $expire_offset;
 								// double-check if it's expired already
-								if ($this->updated_user[$current_expiry_field] < TIME_NOW)
+								if($this->updated_user[$current_expiry_field] < TIME_NOW)
 								{
 									$this->updated_user[$current_expiry_field] = 0;
 									$this->updated_user[$current_inforce_field] = 0;
@@ -716,9 +716,9 @@ class WarningsHandler extends DataHandler
 		$warning = &$this->data;
 
 		$warning['wid'] = (int)$warning['wid'];
-		if ($warning['wid'] <= 0)
+		if($warning['wid'] <= 0)
 		{
-			return FALSE;
+			return false;
 		}
 
 		$this->write_warning_data = array(

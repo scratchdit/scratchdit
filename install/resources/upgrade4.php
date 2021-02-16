@@ -1,12 +1,11 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
- * $Id$
  */
 
 /**
@@ -35,37 +34,37 @@ function upgrade4_dbchanges()
 	$db->write_query("UPDATE ".TABLE_PREFIX."forums SET style='0' WHERE style='-1';");
 	$query = $db->simple_select("adminoptions", "uid='0'");
 	$test = $db->fetch_array($query);
-	if (!isset($test['uid']))
+	if(!isset($test['uid']))
 	{
 		$db->write_query("UPDATE ".TABLE_PREFIX."adminoptions SET uid='0' WHERE uid='-1';");
 	}
 
-	if ($db->field_exists('messageindex', "threads"))
+	if($db->field_exists('messageindex', "threads"))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."threads DROP messageindex;");
 	}
-	if ($db->field_exists('subjectindex', "threads"))
+	if($db->field_exists('subjectindex', "threads"))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."threads DROP subjectindex;");
 	}
-	if ($db->field_exists('moderators', "forums"))
+	if($db->field_exists('moderators', "forums"))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."forums DROP moderators;");
 	}
 
-	if ($db->field_exists('version', "templates"))
+	if($db->field_exists('version', "templates"))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."templates DROP version;");
 	}
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."templates ADD version varchar(20) NOT NULL default '0';");
 
-	if ($db->field_exists('status', "templates"))
+	if($db->field_exists('status', "templates"))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."templates DROP status;");
 	}
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."templates ADD status varchar(10) NOT NULL default '';");
 
-	if ($db->field_exists('dateline', "templates"))
+	if($db->field_exists('dateline', "templates"))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."templates DROP dateline;");
 	}
@@ -80,4 +79,3 @@ function upgrade4_dbchanges()
 	$output->print_footer("4_done");
 }
 
-?>

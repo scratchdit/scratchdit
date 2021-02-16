@@ -4,124 +4,124 @@ var inlineReports = {
 		inlineReports.cookieName = 'inlinereports';
 		var inputs = $('input');
 
-		if (!inputs.length)
+		if(!inputs.length)
 		{
-			return FALSE;
+			return false;
 		}
 
 		var inlineIds = inlineReports.getCookie(inlineReports.cookieName);
 		var removedIds = inlineReports.getCookie(inlineReports.cookieName+'_removed');
-		var allChecked = TRUE;
+		var allChecked = true;
 
 		$(inputs).each(function() {
 			var element = $(this);
-			if ((element.attr('name') != 'allbox') && (element.attr('type') == 'checkbox') && (element.attr('id')) && (element.attr('id').split('_')[0] == 'reports'))
+			if((element.attr('name') != 'allbox') && (element.attr('type') == 'checkbox') && (element.attr('id')) && (element.attr('id').split('_')[0] == 'reports'))
 			{
 				$(element).on('click', inlineReports.checkItem);
 			}
 
-			if (element.attr('id'))
+			if(element.attr('id'))
 			{
 				var inlineCheck = element.attr('id').split('_');
 				var id = inlineCheck[1];
 
-				if (inlineCheck[0] == 'reports')
+				if(inlineCheck[0] == 'reports')
 				{
-					if (inlineIds.indexOf(id) != -1 || (inlineIds.indexOf('ALL') != -1 && removedIds.indexOf(id) == -1))
+					if(inlineIds.indexOf(id) != -1 || (inlineIds.indexOf('ALL') != -1 && removedIds.indexOf(id) == -1))
 					{
-						element.prop('checked', TRUE);
+						element.prop('checked', true);
 						var report = element.parents('.inline_row');
-						if (report.length)
+						if(report.length)
 						{
 							report.addClass('trow_selected');
 						}
 					}
 					else
 					{
-						element.prop('checked', FALSE);
+						element.prop('checked', false);
 						var report = element.parents('.inline_row');
-						if (report.length)
+						if(report.length)
 						{
 							report.removeClass('trow_selected');
 						}
 					}
-					allChecked = FALSE;
+					allChecked = false;
 				}
 			}
 		});
 
 		inlineReports.updateCookies(inlineIds, removedIds);
 
-		if (inlineIds.indexOf('ALL') != -1 && removedIds.length == 0)
+		if(inlineIds.indexOf('ALL') != -1 && removedIds.length == 0)
 		{
 			var allSelectedRow = $('#allSelectedrow');
-			if (allSelectedRow)
+			if(allSelectedRow)
 			{
 				allSelectedRow.show();
 			}
 		}
-		else if (inlineIds.indexOf('ALL') == -1 && allChecked == TRUE)
+		else if(inlineIds.indexOf('ALL') == -1 && allChecked == true)
 		{
 			var selectRow = $('#selectAllrow');
-			if (selectRow)
+			if(selectRow)
 			{
 				selectRow.show();
 			}
 		}
-		return TRUE;
+		return true;
 	},
 
 	checkItem: function()
 	{
 		var element = $(this);
 
-		if (!element || !element.attr('id'))
+		if(!element || !element.attr('id'))
 		{
-			return FALSE;
+			return false;
 		}
 
 		var inlineCheck = element.attr('id').split('_');
 		var id = inlineCheck[1];
 
-		if (!id)
+		if(!id)
 		{
-			return FALSE;
+			return false;
 		}
 
 		var inlineIds = inlineReports.getCookie(inlineReports.cookieName);
 		var removedIds = inlineReports.getCookie(inlineReports.cookieName+'_removed');
 
-		if (element.prop('checked') == TRUE)
+		if(element.prop('checked') == true)
 		{
-			if (inlineIds.indexOf('ALL') == -1)
+			if(inlineIds.indexOf('ALL') == -1)
 			{
 				inlineIds = inlineReports.addId(inlineIds, id);
 			}
 			else
 			{
 				removedIds = inlineReports.removeId(removedIds, id);
-				if (removedIds.length == 0)
+				if(removedIds.length == 0)
 				{
 					var allSelectedRow = $('#allSelectedrow');
-					if (allSelectedRow)
+					if(allSelectedRow)
 					{
 						allSelectedRow.show();
 					}
 				}
 			}
 			var report = element.parents('.inline_row');
-			if (report.length)
+			if(report.length)
 			{
 				report.addClass('trow_selected');
 			}
 		}
 		else
 		{
-			if (inlineIds.indexOf('ALL') == -1)
+			if(inlineIds.indexOf('ALL') == -1)
 			{
 				inlineIds = inlineReports.removeId(inlineIds, id);
 				var selectRow = $('#selectAllrow');
-				if (selectRow)
+				if(selectRow)
 				{
 					selectRow.hide();
 				}
@@ -130,13 +130,13 @@ var inlineReports = {
 			{
 				removedIds = inlineReports.addId(removedIds, id);
 				var allSelectedRow = $('#allSelectedrow');
-				if (allSelectedRow)
+				if(allSelectedRow)
 				{
 					allSelectedRow.hide();
 				}
 			}
 			var report = element.parents('.inline_row');
-			if (report.length)
+			if(report.length)
 			{
 				report.removeClass('trow_selected');
 			}
@@ -144,7 +144,7 @@ var inlineReports = {
 
 		inlineReports.updateCookies(inlineIds, removedIds);
 
-		return TRUE;
+		return true;
 	},
 
 	clearChecked: function()
@@ -154,17 +154,17 @@ var inlineReports = {
 
 		var inputs = $('input');
 
-		if (!inputs.length)
+		if(!inputs.length)
 		{
-			return FALSE;
+			return false;
 		}
 
 		$(inputs).each(function() {
 			var element = $(this);
-			if (!element.val()) return;
-			if (element.attr('type') == 'checkbox' && ((element.attr('id') && element.attr('id').split('_')[0] == 'reports') || element.attr('name') == 'allbox'))
+			if(!element.val()) return;
+			if(element.attr('type') == 'checkbox' && ((element.attr('id') && element.attr('id').split('_')[0] == 'reports') || element.attr('name') == 'allbox'))
 			{
-				element.prop('checked', FALSE);
+				element.prop('checked', false);
 			}
 		});
 
@@ -176,7 +176,7 @@ var inlineReports = {
 		Cookie.unset(inlineReports.cookieName);
 		Cookie.unset(inlineReports.cookieName + '_removed');
 
-		return TRUE;
+		return true;
 	},
 
 	checkAll: function(master)
@@ -184,9 +184,9 @@ var inlineReports = {
 		inputs = $('input');
 		master = $(master);
 
-		if (!inputs.length)
+		if(!inputs.length)
 		{
-			return FALSE;
+			return false;
 		}
 
 		var inlineIds = inlineReports.getCookie(inlineReports.cookieName);
@@ -195,18 +195,18 @@ var inlineReports = {
 		var newIds = new Array();
 		$(inputs).each(function() {
 			var element = $(this);
-			if (!element.val() || !element.attr('id')) return;
+			if(!element.val() || !element.attr('id')) return;
 			inlineCheck = element.attr('id').split('_');
-			if ((element.attr('name') != 'allbox') && (element.attr('type') == 'checkbox') && (inlineCheck[0] == 'reports'))
+			if((element.attr('name') != 'allbox') && (element.attr('type') == 'checkbox') && (inlineCheck[0] == 'reports'))
 			{
 				var id = inlineCheck[1];
 				var changed = (element.prop('checked') != master.prop('checked'));
 				element.prop('checked', master.prop('checked'));
 
 				var report = element.parents('.inline_row');
-				if (report.length)
+				if(report.length)
 				{
-					if (master.prop('checked') == TRUE)
+					if(master.prop('checked') == true)
 					{
 						report.addClass('trow_selected');
 					}
@@ -216,11 +216,11 @@ var inlineReports = {
 					}
 				}
 
-				if (changed)
+				if(changed)
 				{
-					if (master.prop('checked') == TRUE)
+					if(master.prop('checked') == true)
 					{
-						if (inlineIds.indexOf('ALL') == -1)
+						if(inlineIds.indexOf('ALL') == -1)
 						{
 							inlineIds = inlineReports.addId(inlineIds, id);
 						}
@@ -231,7 +231,7 @@ var inlineReports = {
 					}
 					else
 					{
-						if (inlineIds.indexOf('ALL') == -1)
+						if(inlineIds.indexOf('ALL') == -1)
 						{
 							inlineIds = inlineReports.removeId(inlineIds, id);
 						}
@@ -246,12 +246,12 @@ var inlineReports = {
 
 		var count = inlineReports.updateCookies(inlineIds, removedIds);
 
-		if (count < all_text)
+		if(count < all_text)
 		{
 			var selectRow = $('#selectAllrow');
-			if (selectRow.length)
+			if(selectRow.length)
 			{
-				if (master.prop('checked') == TRUE)
+				if(master.prop('checked') == true)
 				{
 					selectRow.show();
 				}
@@ -262,11 +262,11 @@ var inlineReports = {
 			}
 		}
 
-		if (inlineIds.indexOf('ALL') == -1 || removedIds.length != 0)
+		if(inlineIds.indexOf('ALL') == -1 || removedIds.length != 0)
 		{
 			$('#allSelectedrow').hide();
 		}
-		else if (inlineIds.indexOf('ALL') != -1 && removedIds.length == 0)
+		else if(inlineIds.indexOf('ALL') != -1 && removedIds.length == 0)
 		{
 			$('#allSelectedrow').show();
 		}
@@ -285,11 +285,11 @@ var inlineReports = {
 		var inlineCookie = Cookie.get(name);
 
 		var ids = new Array();
-		if (inlineCookie)
+		if(inlineCookie)
 		{
 			var inlineIds = inlineCookie.split('|');
 			$.each(inlineIds, function(index, item) {
-				if (item != '' && item != NULL)
+				if(item != '' && item != null)
 				{
 					ids.push(item);
 				}
@@ -300,7 +300,7 @@ var inlineReports = {
 
 	setCookie: function(name, array)
 	{
-		if (array.length != 0)
+		if(array.length != 0)
 		{
 			var data = '|'+array.join('|')+'|';
 			Cookie.set(name, data, 60 * 60 * 1000);
@@ -313,7 +313,7 @@ var inlineReports = {
 
 	updateCookies: function(inlineIds, removedIds)
 	{
-		if (inlineIds.indexOf('ALL') != -1)
+		if(inlineIds.indexOf('ALL') != -1)
 		{
 			var count = all_text - removedIds.length;
 		}
@@ -321,12 +321,12 @@ var inlineReports = {
 		{
 			var count = inlineIds.length;
 		}
-		if (count < 0)
+		if(count < 0)
 		{
 			count = 0;
 		}
 		$('#inline_read').val(mark_read_text+' ('+count+')');
-		if (count == 0)
+		if(count == 0)
 		{
 			inlineReports.clearChecked();
 		}
@@ -340,7 +340,7 @@ var inlineReports = {
 
 	addId: function(array, id)
 	{
-		if (array.indexOf(id) == -1)
+		if(array.indexOf(id) == -1)
 		{
 			array.push(id);
 		}
@@ -350,7 +350,7 @@ var inlineReports = {
 	removeId: function(array, id)
 	{
 		var position = array.indexOf(id);
-		if (position != -1)
+		if(position != -1)
 		{
 			array.splice(position, 1);
 		}

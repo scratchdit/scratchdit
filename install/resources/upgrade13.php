@@ -1,12 +1,11 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * Website: http://www.mybboard.com
- * License: http://mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
- * $Id$
  */
 
 /**
@@ -31,26 +30,26 @@ function upgrade13_dbchanges()
 	echo "<p>Performing necessary upgrade queries..</p>";
 	flush();
 
-	if ($db->type == "mysql" || $db->type == "mysqli")
+	if($db->type == "mysql" || $db->type == "mysqli")
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."adminsessions ADD INDEX ( `uid` )");
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."adminsessions ADD INDEX ( `dateline` )");
 	}
 
-	if ($db->type != "sqlite")
+	if($db->type != "sqlite")
 	{
-		if ($db->index_exists("users", "username"))
+		if($db->index_exists("users", "username"))
 		{
 			$db->write_query("ALTER TABLE ".TABLE_PREFIX."users DROP KEY username");
 		}
 
-		$query = $db->simple_select("users", "username, uid", "1=1 GROUP BY username HAVING count(*) > 1");
+		$query = $db->simple_select("users", "username, uid", "1=1 GROUP BY uid, username HAVING count(*) > 1");
 		while($user = $db->fetch_array($query))
 		{
 			$db->update_query("users", array('username' => $user['username']."_dup".$user['uid']), "uid='{$user['uid']}'", 1);
 		}
 
-		if ($db->type == "pgsql")
+		if($db->type == "pgsql")
 		{
 			$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD UNIQUE(username)");
 		}
@@ -60,7 +59,7 @@ function upgrade13_dbchanges()
 		}
 	}
 
-	if ($db->type == "pgsql")
+	if($db->type == "pgsql")
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."users CHANGE longregip longregip int NOT NULL default '0'");
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."users CHANGE longlastip longlastip int NOT NULL default '0'");
@@ -86,18 +85,18 @@ function upgrade13_dbchanges1()
 
 	$output->print_header("Post IP Repair Conversion");
 
-	if (!$_POST['ipspage'])
+	if(!$_POST['ipspage'])
 	{
 		$ipp = 5000;
 	}
 	else
 	{
-		$ipp = $_POST['ipspage'];
+		$ipp = (int)$_POST['ipspage'];
 	}
 
-	if ($_POST['ipstart'])
+	if($_POST['ipstart'])
 	{
-		$startat = $_POST['ipstart'];
+		$startat = (int)$_POST['ipstart'];
 		$upper = $startat+$ipp;
 		$lower = $startat;
 	}
@@ -111,7 +110,7 @@ function upgrade13_dbchanges1()
 	$query = $db->simple_select("posts", "COUNT(pid) AS ipcount");
 	$cnt = $db->fetch_array($query);
 
-	if ($upper > $cnt['ipcount'])
+	if($upper > $cnt['ipcount'])
 	{
 		$upper = $cnt['ipcount'];
 	}
@@ -119,21 +118,21 @@ function upgrade13_dbchanges1()
 	echo "<p>Repairing ip {$lower} to {$upper} ({$cnt['ipcount']} Total)</p>";
 	flush();
 
-	$ipaddress = FALSE;
+	$ipaddress = false;
 
 	$query = $db->simple_select("posts", "ipaddress, longipaddress, pid", "", array('limit_start' => $lower, 'limit' => $ipp));
 	while($post = $db->fetch_array($query))
 	{
 		// Have we already converted this ip?
-		if (my_ip2long($post['ipaddress']) < 0)
+		if(my_ip2long($post['ipaddress']) < 0)
 		{
 			$db->update_query("posts", array('longipaddress' => my_ip2long($post['ipaddress'])), "pid = '{$post['pid']}'");
 		}
-		$ipaddress = TRUE;
+		$ipaddress = true;
 	}
 
 	$remaining = $upper-$cnt['ipcount'];
-	if ($remaining && $ipaddress)
+	if($remaining && $ipaddress)
 	{
 		$nextact = "13_dbchanges1";
 		$startat = $startat+$ipp;
@@ -147,7 +146,7 @@ function upgrade13_dbchanges1()
 	$output->print_contents($contents);
 
 	global $footer_extra;
-	$footer_extra = "<script type=\"text/javascript\">window.onload = function() { var button = $$('.submit_button'); if (button[0]) { button[0].value = 'Automatically Redirecting...'; button[0].disabled = TRUE; button[0].style.color = '#aaa'; button[0].style.borderColor = '#aaa'; document.forms[0].submit(); }}</script>";
+	$footer_extra = "<script type=\"text/javascript\">$(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
 
 	$output->print_footer($nextact);
 }
@@ -158,18 +157,18 @@ function upgrade13_dbchanges2()
 
 	$output->print_header("User IP Repair Conversion");
 
-	if (!$_POST['ipspage'])
+	if(!$_POST['ipspage'])
 	{
 		$ipp = 5000;
 	}
 	else
 	{
-		$ipp = $_POST['ipspage'];
+		$ipp = (int)$_POST['ipspage'];
 	}
 
-	if ($_POST['ipstart'])
+	if($_POST['ipstart'])
 	{
-		$startat = $_POST['ipstart'];
+		$startat = (int)$_POST['ipstart'];
 		$upper = $startat+$ipp;
 		$lower = $startat;
 	}
@@ -183,41 +182,41 @@ function upgrade13_dbchanges2()
 	$query = $db->simple_select("users", "COUNT(uid) AS ipcount");
 	$cnt = $db->fetch_array($query);
 
-	if ($upper > $cnt['ipcount'])
+	if($upper > $cnt['ipcount'])
 	{
 		$upper = $cnt['ipcount'];
 	}
 
 	$contents .= "<p>Repairing ip {$lower} to {$upper} ({$cnt['ipcount']} Total)</p>";
 
-	$ipaddress = FALSE;
+	$ipaddress = false;
 	$update_array = array();
 
 	$query = $db->simple_select("users", "regip, lastip, longlastip, longregip, uid", "", array('limit_start' => $lower, 'limit' => $ipp));
 	while($user = $db->fetch_array($query))
 	{
 		// Have we already converted this ip?
-		if (my_ip2long($user['regip']) < 0)
+		if(my_ip2long($user['regip']) < 0)
 		{
-			$update_array['longregip'] = intval(my_ip2long($user['regip']));
+			$update_array['longregip'] = (int)my_ip2long($user['regip']);
 		}
 
-		if (my_ip2long($user['lastip']) < 0)
+		if(my_ip2long($user['lastip']) < 0)
 		{
-			$update_array['longlastip'] = intval(my_ip2long($user['lastip']));
+			$update_array['longlastip'] = (int)my_ip2long($user['lastip']);
 		}
 
-		if (!empty($update_array))
+		if(!empty($update_array))
 		{
 			$db->update_query("users", $update_array, "uid = '{$user['uid']}'");
 		}
 
 		$update_array = array();
-		$ipaddress = TRUE;
+		$ipaddress = true;
 	}
 
 	$remaining = $upper-$cnt['ipcount'];
-	if ($remaining && $ipaddress)
+	if($remaining && $ipaddress)
 	{
 		$nextact = "13_dbchanges2";
 		$startat = $startat+$ipp;
@@ -231,9 +230,8 @@ function upgrade13_dbchanges2()
 	$output->print_contents($contents);
 
 	global $footer_extra;
-	$footer_extra = "<script type=\"text/javascript\">window.onload = function() { var button = $$('.submit_button'); if (button[0]) { button[0].value = 'Automatically Redirecting...'; button[0].disabled = TRUE; button[0].style.color = '#aaa'; button[0].style.borderColor = '#aaa'; document.forms[0].submit(); }}</script>";
+	$footer_extra = "<script type=\"text/javascript\">$(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
 
 	$output->print_footer($nextact);
 }
 
-?>

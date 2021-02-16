@@ -1,9 +1,8 @@
 <?php
 /**
- * MyBB 1.6 English Language Pack
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8 English Language Pack
+ * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * $Id$
  */
 
 $l['nav_pms'] = "Private Messages";
@@ -26,12 +25,13 @@ $l['private_messaging'] = "Private Messaging";
 $l['inbox'] = "Inbox";
 $l['compose_message2'] = "Compose Message";
 $l['manage_folders'] = "Manage Folders";
-$l['pms_in_folder'] = "Private Messages in folder <em>{1}</em>";
 $l['pm_search_results'] = "Private Message Search Results";
 $l['message_title'] = "Message Title";
 $l['sender'] = "Sender";
 $l['sentto'] = "Sent To";
 $l['date_sent'] = "Date/Time Sent";
+$l['desc'] = "desc";
+$l['asc'] = "asc";
 $l['delete_pm'] = "Delete";
 $l['move_to'] = "Move To";
 $l['or'] = "or";
@@ -51,7 +51,7 @@ $l['date_limit_days'] = "days";
 $l['export_unread'] = "Export Unread Messages?";
 $l['delete_archived'] = "Delete Exported Messages?";
 $l['delete_archived_note'] = "Do you want to delete the messages from your folders once they have been exported?";
-$l['export_format'] = "Export File Format";
+$l['export_format'] = "Export File Format:";
 $l['export_format_note'] = "Please choose the file type of which to download attachments.";
 $l['export_html'] = "HTML File (.html)";
 $l['export_txt'] = "Text File (.txt)";
@@ -66,9 +66,8 @@ $l['export_messages2'] = "Download Messages";
 $l['empty_folders'] = "Empty Private Messaging Folders";
 $l['empty_folders2'] = "Empty Folders";
 $l['empty_note'] = "Here you can delete private messages from selected folders at one time. Simply select the folders you wish the messages to be deleted from and click 'Delete'. You cannot undo these changes.<br /><strong>Note: Once these messages are deleted there is no way to recover them.</strong>";
-$l['num_messages'] = "No. Messages:";
-$l['nobody'] = "Nobody";
-$l['empty_q'] = "Empty?";
+$l['num_messages'] = "Message Count";
+$l['empty_q'] = "Empty Folder?";
 $l['keep_unread'] = "Keep Unread Messages";
 $l['pm_folders'] = "Private Messaging Folders";
 $l['existing_folders'] = "Existing Folders";
@@ -79,7 +78,7 @@ $l['update_folders'] = "Update Folders";
 $l['cannot_be_removed'] = "Cannot be removed";
 $l['reached_warning'] = "Warning. You have reached your message limit.";
 $l['reached_warning2'] = "To be able to receive messages you will need to delete old messages.";
-$l['deny_receipt'] = "[deny receipt]";
+$l['deny_receipt'] = "[Deny Receipt]";
 $l['viewing_pm'] = "Viewing PM:";
 $l['reply'] = "Reply";
 $l['reply_to_all'] = "Reply to All";
@@ -115,7 +114,7 @@ $l['export_date_sent'] = "Date";
 $l['export_folder'] = "Folder";
 $l['export_subject'] = "Subject";
 $l['export_to'] = "To";
-$l['export_from'] ="From";
+$l['export_from'] = "From";
 $l['export_message'] = "Message";
 $l['not_sent'] = "N/A (not sent)";
 $l['at'] = "at";
@@ -135,6 +134,7 @@ $l['you_forwarded'] = "You forwarded this message {1}";
 $l['select_from_buddies'] = "Select from Buddies";
 $l['no_readmessages'] = "You currently do not have any read messages being tracked.";
 $l['no_unreadmessages'] = "You currently do not have any unread messages being tracked.";
+$l['stop_tracking_all'] = "Stop Tracking all messages";
 
 $l['enter_keywords'] = "Enter Keywords";
 $l['advanced_search'] = "Advanced Search";
@@ -164,12 +164,14 @@ $l['error_nopmsarchive'] = "Sorry, but there are no private messages matching th
 $l['error_invalidpmfoldername'] = "Sorry, but a folder name you have entered contains characters which are not allowed.";
 $l['error_emptypmfoldername'] = "Sorry, but a folder name you have entered does not contain any text.  Please enter a name for the folder, or completely blank the name to delete the folder.";
 $l['error_invalidpmrecipient'] = "The recipient you entered is either invalid or doesn't exist. Please go back and enter a correct one.";
+$l['error_invalidmovefid'] = "The folder you are trying to move your message(s) to is invalid. Please go back and try again.";
 $l['error_invalidpm'] = "Invalid PM";
 $l['error_pmrecipientreachedquota'] = "You cannot send a private message to {1} because he/she has reached their private messaging quota. They cannot be sent any message until their messages have been cleared out. An email has been sent to the user about this. Please try sending your message at a later stage.";
 $l['error_recipientpmturnedoff'] = "{1} has chosen not to receive private messages or may not be allowed to do so. Therefore you may not send your private message to this user.";
 $l['error_pmsturnedoff'] = "You currently have private messages disabled in your profile.<br />To be able to use the private messaging system this setting must be enabled.";
 $l['error_recipientignoring'] = "We are sorry but we cannot process your private message to {1}. You do not have permission to perform this action.";
-$l['error_pm_already_submitted'] = "You have already submitted the same private message to the same recipient within the last 5 minutes.";
+$l['error_pm_already_submitted'] = "You have already submitted the same private message to the same recipient within the last 5 hours.";
+$l['error_nopms'] = "You must have one or more private messages in order to access this function.";
 
 $l['error_minsearchlength'] = "One or more of your search terms were shorter than the minimum length. The minimum search term length is {1} characters.<br /><br />If you're trying to search for an entire phrase, enclose it within double quotes. For example \"The quick brown fox jumps over the lazy dog\".";
 $l['error_nosearchresults'] = "Sorry, but no results were returned using the query information you provided. Please redefine your search terms and try again.";
@@ -182,6 +184,7 @@ $l['error_invalidsearch'] = "An invalid search was specified.  Please go back an
 $l['redirect_pmsaved'] = "The private message has been saved in your Drafts folder.";
 $l['redirect_pmstrackingstopped'] = "Tracking of the selected PMs has been stopped.";
 $l['redirect_pmstrackingcanceled'] = "The selected unread PMs have been deleted from the recipient's inbox.";
+$l['redirect_allpmstrackingstopped'] = "Tracking of all read PMs has been stopped.";
 $l['redirect_pmsmoved'] = "The selected private messages have been moved.";
 $l['redirect_pmsdeleted'] = "The selected private messages have been deleted.";
 $l['redirect_pmsent'] = "Thank you, your private message has successfully been sent.<br />You will now be returned to your private message inbox.";
@@ -189,4 +192,11 @@ $l['redirect_pmfoldersupdated'] = "Thank you, your private messaging folders hav
 $l['redirect_pmfoldersemptied'] = "The selected private messaging folders have successfully been emptied.<br />You will now be taken back to your Private Messaging Inbox.";
 $l['redirect_searchresults'] = "Thank you, your search has been submitted and you will now be taken to the results list.";
 
-?>
+$l['quick_reply'] = "Quick Reply";
+$l['message_note'] = "Type your reply to this message here.";
+$l['send_reply'] = "Send Reply";
+$l['quickreply_signature'] = "Signature";
+$l['quickreply_disable_smilies'] = "Disable Smilies";
+$l['quickreply_save_copy'] = "Save a Copy";
+$l['quickreply_read_receipt'] = "<strong>Request Read Receipt</strong>";
+

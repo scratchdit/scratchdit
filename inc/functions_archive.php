@@ -1,20 +1,19 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
- * $Id$
  */
 
 /**
  * Output the archive page header.
  *
- * @param string The page title.
- * @param string The full page title.
- * @param string The full page URL.
+ * @param string $title The page title.
+ * @param string $fulltitle The full page title.
+ * @param string $fullurl The full page URL.
  */
 function archive_header($title="", $fulltitle="", $fullurl="")
 {
@@ -24,7 +23,7 @@ function archive_header($title="", $fulltitle="", $fullurl="")
 	$nav = archive_navigation();
 
 	// If there is a title, append it to the bbname.
-	if (!$title)
+	if(!$title)
 	{
 		$title = $mybb->settings['bbname'];
 	}
@@ -34,7 +33,7 @@ function archive_header($title="", $fulltitle="", $fullurl="")
 	}
 
 	// If the language doesn't have a charset, make it UTF-8.
-	if ($lang->settings['charset'])
+	if($lang->settings['charset'])
 	{
 		$charset = $lang->settings['charset'];
 	}
@@ -44,12 +43,12 @@ function archive_header($title="", $fulltitle="", $fullurl="")
 	}
 
 	$dir = '';
-	if ($lang->settings['rtl'] == 1)
+	if($lang->settings['rtl'] == 1)
 	{
 		$dir = " dir=\"rtl\"";
 	}
 
-	if ($lang->settings['htmllang'])
+	if($lang->settings['htmllang'])
 	{
 		$htmllang = " xml:lang=\"".$lang->settings['htmllang']."\" lang=\"".$lang->settings['htmllang']."\"";
 	}
@@ -88,14 +87,15 @@ function archive_navigation()
 	global $navbits, $mybb, $lang;
 
 	$navsep = " &gt; ";
-	if (is_array($navbits))
+	$nav = $activesep = '';
+	if(is_array($navbits))
 	{
 		reset($navbits);
 		foreach($navbits as $key => $navbit)
 		{
-			if ($navbits[$key+1])
+			if(!empty($navbits[$key+1]))
 			{
-				if ($navbits[$key+2])
+				if(!empty($navbits[$key+2]))
 				{
 					$sep = $navsep;
 				}
@@ -106,10 +106,10 @@ function archive_navigation()
 				$nav .= "<a href=\"".$navbit['url']."\">".$navbit['name']."</a>$sep";
 			}
 		}
+		$navsize = count($navbits);
+		$navbit = $navbits[$navsize-1];
 	}
-	$navsize = count($navbits);
-	$navbit = $navbits[$navsize-1];
-	if ($nav)
+	if(!empty($nav))
 	{
 		$activesep = $navsep;
 	}
@@ -121,22 +121,23 @@ function archive_navigation()
 /**
  * Output multipage navigation.
  *
- * @param int The total number of items.
- * @param int The items per page.
- * @param int The current page.
- * @param string The URL base.
+ * @param int $count The total number of items.
+ * @param int $perpage The items per page.
+ * @param int $page The current page.
+ * @param string $url The URL base.
 */
 function archive_multipage($count, $perpage, $page, $url)
 {
 	global $lang;
-	if ($count > $perpage)
+	if($count > $perpage)
 	{
 		$pages = $count / $perpage;
 		$pages = ceil($pages);
 
+		$mppage = null;
 		for($i = 1; $i <= $pages; ++$i)
 		{
-			if ($i == $page)
+			if($i == $page)
 			{
 				$mppage .= "<strong>$i</strong> ";
 			}
@@ -158,7 +159,7 @@ function archive_footer()
 {
 	global $mybb, $lang, $db, $nav, $maintimer, $fulltitle, $fullurl, $sent_header;
 	$totaltime = $maintimer->stop();
-	if ($mybb->settings['showvernum'] == 1)
+	if($mybb->settings['showvernum'] == 1)
 	{
 		$mybbversion = ' '.$mybb->version;
 	}
@@ -169,16 +170,9 @@ function archive_footer()
 ?>
 </div>
 <div class="navigation"><?php echo $nav; ?></div>
-<div id="printinfo">
-<strong><?php echo $lang->archive_reference_urls; ?></strong>
-<ul>
-<li><strong><?php echo $mybb->settings['bbname']; ?>:</strong> <?php echo $mybb->settings['bburl']."/index.php"; ?></li>
-<?php if ($fullurl != $mybb->settings['bburl']) { ?><li><strong><?php echo $fulltitle; ?>:</strong> <?php echo $fullurl; ?></li><?php } ?>
-</ul>
-</div>
 </div>
 <div id="footer">
-<?php echo $lang->powered_by; ?> <a href="http://mybb.com">MyBB</a><?php echo $mybbversion; ?>, &copy; 2002-<?php echo date("Y"); ?> <a href="http://mybb.com">MyBB Group</a>
+<?php echo $lang->powered_by; ?> <a href="https://mybb.com">MyBB</a><?php echo $mybbversion; ?>, &copy; 2002-<?php echo date("Y"); ?> <a href="https://mybb.com">MyBB Group</a>
 </div>
 </body>
 </html>
@@ -188,12 +182,12 @@ function archive_footer()
 /**
  * Output an archive error.
  *
- * @param string The error language string identifier.
+ * @param string $error The error language string identifier.
  */
 function archive_error($error)
 {
 	global $lang, $mybb, $sent_header;
-	if (!$sent_header)
+	if(!$sent_header)
 	{
 		archive_header("", $mybb->settings['bbname'], $mybb->settings['bburl']."/index.php");
 	}
@@ -212,55 +206,41 @@ function archive_error($error)
  */
 function archive_error_no_permission()
 {
-	global $lang;
+	global $lang, $db, $session;
+
+	$noperm_array = array (
+		"nopermission" => '1',
+		"location1" => 0,
+		"location2" => 0
+	);
+
+	$db->update_query("sessions", $noperm_array, "sid='{$session->sid}'");
+
 	archive_error($lang->archive_nopermission);
 }
 
 /**
  * Check the password given on a certain forum for validity
  *
- * @param int The forum ID
- * @param boolean The Parent ID
+ * @param int $fid The forum ID
+ * @param int $pid The Parent ID
+ * @return bool Returns false on failure
  */
 function check_forum_password_archive($fid, $pid=0)
 {
-	global $forum_cache;
+	global $forum_cache, $mybb;
 
-	if (!is_array($forum_cache))
+	if(!is_array($forum_cache))
 	{
 		$forum_cache = cache_forums();
-		if (!$forum_cache)
+		if(!$forum_cache)
 		{
-			return FALSE;
+			return false;
 		}
 	}
 
-	// Loop through each of parent forums to ensure we have a password for them too
-	$parents = explode(',', $forum_cache[$fid]['parentlist']);
-	rsort($parents);
-	if (!empty($parents))
+	if(!forum_password_validated($forum_cache[$fid], true, true))
 	{
-		foreach($parents as $parent_id)
-		{
-			if ($parent_id == $fid || $parent_id == $pid)
-			{
-				continue;
-			}
-
-			if ($forum_cache[$parent_id]['password'] != "")
-			{
-				check_forum_password_archive($parent_id, $fid);
-			}
-		}
-	}
-
-	$password = $forum_cache[$fid]['password'];
-	if ($password)
-	{
-		if (!$mybb->cookies['forumpass'][$fid] || ($mybb->cookies['forumpass'][$fid] && md5($mybb->user['uid'].$password) != $mybb->cookies['forumpass'][$fid]))
-		{
-			archive_error_no_permission();
-		}
+		archive_error_no_permission();
 	}
 }
-?>

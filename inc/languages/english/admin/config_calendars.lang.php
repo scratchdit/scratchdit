@@ -1,9 +1,8 @@
 <?php
 /**
- * MyBB 1.6 English Language Pack
- * Copyright 2010 MyBB Group, All Rights Reserved
- * 
- * $Id$
+ * MyBB 1.8 English Language Pack
+ * Copyright 2014 MyBB Group, All Rights Reserved
+ *
  */
 
 $l['calendars'] = "Calendars";
@@ -21,6 +20,7 @@ $l['save_calendar_orders'] = "Save Calendar Display Order";
 
 $l['name'] = "Name";
 $l['display_order'] = "Display Order";
+$l['display_order_desc'] = "The order the calendars are shown in the calendar selection. The calendar with display order 1 will be shown on the calendar page by default.";
 $l['week_start'] = "Start of Week";
 $l['week_start_desc'] = "Here you can set the day weeks should start on for this calendar.";
 $l['sunday'] = "Sunday";
@@ -67,4 +67,3 @@ $l['success_calendar_orders_updated'] = "The calendar display orders have been u
 
 $l['confirm_calendar_deletion'] = "Are you sure you wish to delete this calendar?";
 
-?>

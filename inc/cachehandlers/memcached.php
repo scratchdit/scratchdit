@@ -3,8 +3,8 @@
  * MyBB 1.8
  * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * Website: //www.mybb.com
- * License: //www.mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
  */
 
@@ -31,10 +31,10 @@ class memcachedCacheHandler implements CacheHandlerInterface
 	{
 		global $mybb;
 
-		if (!function_exists("memcached_connect"))
+		if(!function_exists("memcached_connect"))
 		{
 			// Check if our Memcached extension is loaded
-			if (!extension_loaded("Memcached"))
+			if(!extension_loaded("Memcached"))
 			{
 				// Throw our super awesome cache loading error
 				$mybb->trigger_generic_error("memcached_load_error");
@@ -46,7 +46,7 @@ class memcachedCacheHandler implements CacheHandlerInterface
 	/**
 	 * Connect and initialize this handler.
 	 *
-	 * @return boolean TRUE if successful, FALSE on failure
+	 * @return boolean True if successful, false on failure
 	 */
 	function connect()
 	{
@@ -54,7 +54,7 @@ class memcachedCacheHandler implements CacheHandlerInterface
 
 		$this->memcached = new Memcached;
 
-		if ($mybb->config['memcache']['host'])
+		if($mybb->config['memcache']['host'])
 		{
 			$mybb->config['memcache'][0] = $mybb->config['memcache'];
 			unset($mybb->config['memcache']['host']);
@@ -63,21 +63,21 @@ class memcachedCacheHandler implements CacheHandlerInterface
 
 		foreach($mybb->config['memcache'] as $memcached)
 		{
-			if (!$memcached['host'])
+			if(!$memcached['host'])
 			{
 				$message = "Please configure the memcache settings in inc/config.php before attempting to use this cache handler";
 				$error_handler->trigger($message, MYBB_CACHEHANDLER_LOAD_ERROR);
 				die;
 			}
 
-			if (!isset($memcached['port']))
+			if(!isset($memcached['port']))
 			{
 				$memcached['port'] = "11211";
 			}
 
 			$this->memcached->addServer($memcached['host'], $memcached['port']);
 
-			if (!$this->memcached)
+			if(!$this->memcached)
 			{
 				$message = "Unable to connect to the memcached server on {$memcached['memcache_host']}:{$memcached['memcache_port']}. Are you sure it is running?";
 				$error_handler->trigger($message, MYBB_CACHEHANDLER_LOAD_ERROR);
@@ -88,22 +88,22 @@ class memcachedCacheHandler implements CacheHandlerInterface
 		// Set a unique identifier for all queries in case other forums are using the same memcache server
 		$this->unique_id = md5(MYBB_ROOT);
 
-		return TRUE;
+		return true;
 	}
 
 	/**
 	 * Retrieve an item from the cache.
 	 *
 	 * @param string $name The name of the cache
-	 * @return mixed Cache data if successful, FALSE if failure
+	 * @return mixed Cache data if successful, false if failure
 	 */
 	function fetch($name)
 	{
 		$data = $this->memcached->get($this->unique_id."_".$name);
 
-		if ($data === FALSE)
+		if($data === false)
 		{
-			return FALSE;
+			return false;
 		}
 		else
 		{
@@ -116,7 +116,7 @@ class memcachedCacheHandler implements CacheHandlerInterface
 	 *
 	 * @param string $name The name of the cache
 	 * @param mixed $contents The data to write to the cache item
-	 * @return boolean TRUE on success, FALSE on failure
+	 * @return boolean True on success, false on failure
 	 */
 	function put($name, $contents)
 	{
@@ -127,7 +127,7 @@ class memcachedCacheHandler implements CacheHandlerInterface
 	 * Delete a cache
 	 *
 	 * @param string $name The name of the cache
-	 * @return boolean TRUE on success, FALSE on failure
+	 * @return boolean True on success, false on failure
 	 */
 	function delete($name)
 	{

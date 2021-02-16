@@ -1,32 +1,33 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
- * $Id$
  */
 
 /**
  * Xcache Cache Handler
  */
-class xcacheCacheHandler
+class xcacheCacheHandler implements CacheHandlerInterface
 {
 	/**
 	 * Unique identifier representing this copy of MyBB
+	 *
+	 * @var string
 	 */
 	public $unique_id;
 
-	function xcacheCacheHandler($silent=FALSE)
+	function __construct()
 	{
 		global $mybb;
 
-		if (!function_exists("xcache_get"))
+		if(!function_exists("xcache_get"))
 		{
 			// Check if our DB engine is loaded
-			if (!extension_loaded("XCache"))
+			if(!extension_loaded("XCache"))
 			{
 				// Throw our super awesome cache loading error
 				$mybb->trigger_generic_error("xcache_load_error");
@@ -38,31 +39,27 @@ class xcacheCacheHandler
 	/**
 	 * Connect and initialize this handler.
 	 *
-	 * @return boolean TRUE if successful, FALSE on failure
+	 * @return boolean True if successful, false on failure
 	 */
 	function connect()
 	{
-		global $mybb;
-
 		// Set a unique identifier for all queries in case other forums on this server also use this cache handler
 		$this->unique_id = md5(MYBB_ROOT);
 
-		return TRUE;
+		return true;
 	}
 
 	/**
 	 * Retrieve an item from the cache.
 	 *
-	 * @param string The name of the cache
-	 * @param boolean TRUE if we should do a hard refresh
-	 * @return mixed Cache data if successful, FALSE if failure
+	 * @param string $name The name of the cache
+	 * @return mixed Cache data if successful, false if failure
 	 */
-
-	function fetch($name, $hard_refresh=FALSE)
+	function fetch($name)
 	{
-		if (!xcache_isset($this->unique_id."_".$name))
+		if(!xcache_isset($this->unique_id."_".$name))
 		{
-			return FALSE;
+			return false;
 		}
 		return xcache_get($this->unique_id."_".$name);
 	}
@@ -70,9 +67,9 @@ class xcacheCacheHandler
 	/**
 	 * Write an item to the cache.
 	 *
-	 * @param string The name of the cache
-	 * @param mixed The data to write to the cache item
-	 * @return boolean TRUE on success, FALSE on failure
+	 * @param string $name The name of the cache
+	 * @param mixed $contents The data to write to the cache item
+	 * @return boolean True on success, false on failure
 	 */
 	function put($name, $contents)
 	{
@@ -82,8 +79,8 @@ class xcacheCacheHandler
 	/**
 	 * Delete a cache
 	 *
-	 * @param string The name of the cache
-	 * @return boolean TRUE on success, FALSE on failure
+	 * @param string $name The name of the cache
+	 * @return boolean True on success, false on failure
 	 */
 	function delete($name)
 	{
@@ -92,17 +89,23 @@ class xcacheCacheHandler
 
 	/**
 	 * Disconnect from the cache
+	 *
+	 * @return bool
 	 */
 	function disconnect()
 	{
-		return TRUE;
+		return true;
 	}
 
-	function size_of($name)
+	/**
+	 * @param string $name
+	 *
+	 * @return string
+	 */
+	function size_of($name='')
 	{
 		global $lang;
 
 		return $lang->na;
 	}
 }
-?>

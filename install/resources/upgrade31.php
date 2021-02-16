@@ -3,8 +3,8 @@
  * MyBB 1.8
  * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * Website: //www.mybb.com
- * License: //www.mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
  */
 
@@ -29,7 +29,7 @@ function upgrade31_dbchanges()
 	flush();
 
 	$query = $db->simple_select("templategroups", "COUNT(*) as numexists", "prefix='sendthread'");
-	if ($db->fetch_field($query, "numexists") == 0)
+	if($db->fetch_field($query, "numexists") == 0)
 	{
 		$db->insert_query("templategroups", array('prefix' => 'sendthread', 'title' => '<lang:group_sendthread>', 'isdefault' => '1'));
 	}
@@ -48,7 +48,7 @@ function upgrade31_dbchanges()
 	// Update help documents
 	$query = $db->simple_select('helpdocs', 'document', 'hid=\'3\'');
 	$helpdoc = $db->fetch_array($query);
-	if (my_strpos($helpdoc['document'], ';key={1}') !== FALSE)
+	if(my_strpos($helpdoc['document'], ';key={1}') !== false)
 	{
 		$helpdoc['document'] = str_replace(';key={1}', ';my_post_key={1}', $helpdoc['document']);
 	}

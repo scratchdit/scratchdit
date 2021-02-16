@@ -13,23 +13,23 @@ $(function ($) {
 			},
 			'Facebook': {
 				'match': /facebook\.com\/(?:photo.php\?v=|video\/video.php\?v=|video\/embed\?video_id=|v\/?)(\d+)/,
-				'url': '//www.facebook.com/video/embed?video_id=',
+				'url': 'https://www.facebook.com/video/embed?video_id=',
 				'html': '<iframe src="{url}" width="625" height="350" frameborder="0" data-mybb-vt="{type}" data-mybb-vsrc="{src}"></iframe>'
 			},
 			'Liveleak': {
 				'match': /liveleak\.com\/(?:view\?[a-z]=)([^\/]+)/,
-				'url': '//www.liveleak.com/ll_embed?i=',
+				'url': 'http://www.liveleak.com/ll_embed?i=',
 				'html': '<iframe width="500" height="300" src="{url}" frameborder="0" data-mybb-vt="{type}" data-mybb-vsrc="{src}"></iframe>'
 			},
 			'MetaCafe': {
 				'match': /metacafe\.com\/watch\/([^\/]+)/,
-				'url': '//www.metacafe.com/embed/',
+				'url': 'http://www.metacafe.com/embed/',
 				'html': '<iframe src="{url}" width="440" height="248" frameborder=0 data-mybb-vt="{type}" data-mybb-vsrc="{src}"></iframe>'
 			},
 			'Mixer': {
 				'match': /mixer\.com\/([^\/]+)/,
 				'url': '//mixer.com/embed/player/',
-				'html': '<iframe allowfullscreen="TRUE" src="{url}" width="620" height="349" frameborder="0" data-mybb-vt="{type}" data-mybb-vsrc="{src}"></iframe>'
+				'html': '<iframe allowfullscreen="true" src="{url}" width="620" height="349" frameborder="0" data-mybb-vt="{type}" data-mybb-vsrc="{src}"></iframe>'
 			},
 			'Vimeo': {
 				'match': /vimeo.com\/(\d+)($|\/)/,
@@ -60,7 +60,7 @@ $(function ($) {
 			html: function (element, attrs, content) {
 				return '<div align="' + ($.sceditor.escapeEntities(attrs.defaultattr) || 'left') + '">' + content + '</div>';
 			},
-			isInline: FALSE
+			isInline: false
 		});
 	$.each(mybbCmd.align, function (i, val) {
 		$.sceditor.formats.bbcode.set(val, {
@@ -83,17 +83,17 @@ $(function ($) {
 
 				return '<' + type + '>' + content + '</' + type + '>';
 			},
-			isInline: FALSE,
-			skipLastLineBreak: TRUE,
-			breakStart: TRUE,
-			breakAfter: TRUE,
+			isInline: false,
+			skipLastLineBreak: true,
+			breakStart: true,
+			breakAfter: true,
 		})
 		.set('ul', {
 			format: '[list]{0}[/list]',
-			isInline: FALSE,
-			skipLastLineBreak: TRUE,
-			breakStart: TRUE,
-			breakAfter: TRUE,
+			isInline: false,
+			skipLastLineBreak: true,
+			breakStart: true,
+			breakAfter: true,
 		})
 		.set('ol', {
 			format: function ($elm, content) {
@@ -101,22 +101,22 @@ $(function ($) {
 
 				return '[list=' + type + ']' + content + '[/list]';
 			},
-			isInline: FALSE,
-			skipLastLineBreak: TRUE,
-			breakStart: TRUE,
-			breakAfter: TRUE,
+			isInline: false,
+			skipLastLineBreak: true,
+			breakStart: true,
+			breakAfter: true,
 		})
 		.set('li', {
 			format: '[*]{0}',
-			isInline: FALSE,
-			skipLastLineBreak: TRUE,
+			isInline: false,
+			skipLastLineBreak: true,
 		})
 		.set('*', {
 			html: '<li>{0}</li>',
-			isInline: FALSE,
-			excludeClosing: TRUE,
-			skipLastLineBreak: TRUE,
-			breakAfter: FALSE,
+			isInline: false,
+			excludeClosing: true,
+			skipLastLineBreak: true,
+			breakAfter: false,
 		});
 
 	$.sceditor.command
@@ -159,7 +159,7 @@ $(function ($) {
 				// Eliminate redundant [size] tags for unformatted text.
 				// Part of the fix for the browser-dependent bug of issue #4184.
 				// Also fixes the browser-dependent bug described here:
-				//   <//community.mybb.com/thread-229726.html>
+				//   <https://community.mybb.com/thread-229726.html>
 				fontsize = -1;
 			} else if (!isNaN(size) && size >= 1 && size <= mybbCmd.fsStr.length) {
 				fontsize = mybbCmd.fsStr[size - 1];
@@ -198,7 +198,7 @@ $(function ($) {
 			var content = $('<div />'),
 				clickFunc = function (e) {
 					callback($(this).data('size'));
-					editor.closeDropDown(TRUE);
+					editor.closeDropDown(true);
 					e.preventDefault();
 				};
 
@@ -279,8 +279,8 @@ $(function ($) {
 
 			return quoteChar + val + quoteChar;
 		},
-		breakStart: TRUE,
-		breakEnd: TRUE
+		breakStart: true,
+		breakEnd: true
 	});
 
 	// Update font tag to allow limiting to only first in stack
@@ -347,15 +347,15 @@ $(function ($) {
 		},
 		html: function (token, attrs, content) {
 			return '<font color="' +
-				$.sceditor.escapeEntities(_normaliseColour(attrs.defaultattr), TRUE) +
+				$.sceditor.escapeEntities(_normaliseColour(attrs.defaultattr), true) +
 				'">' + content + '</font>';
 		}
 	});
 
 	// Add MyBB PHP command
 	$.sceditor.formats.bbcode.set('php', {
-		allowsEmpty: TRUE,
-		isInline: FALSE,
+		allowsEmpty: true,
+		isInline: false,
 		allowedChildren: ['#', '#newline'],
 		format: '[php]{0}[/php]',
 		html: '<code class="phpcodeblock">{0}</code>'
@@ -386,11 +386,11 @@ $(function ($) {
 
 				if (val) {
 					before = before + val + end;
-					end = NULL;
+					end = null;
 				}
 
 				editor.insert(before, end);
-				editor.closeDropDown(TRUE);
+				editor.closeDropDown(true);
 				e.preventDefault();
 			});
 
@@ -409,11 +409,11 @@ $(function ($) {
 
 	// Update code to support PHP
 	$.sceditor.formats.bbcode.set('code', {
-		allowsEmpty: TRUE,
+		allowsEmpty: true,
 		tags: {
-			code: NULL
+			code: null
 		},
-		isInline: FALSE,
+		isInline: false,
 		allowedChildren: ['#', '#newline'],
 		format: function (element, content) {
 			if ($(element).hasClass('phpcodeblock')) {
@@ -449,11 +449,11 @@ $(function ($) {
 
 				if (val) {
 					before = before + val + end;
-					end = NULL;
+					end = null;
 				}
 
 				editor.insert(before, end);
-				editor.closeDropDown(TRUE);
+				editor.closeDropDown(true);
 				e.preventDefault();
 			});
 
@@ -505,7 +505,7 @@ $(function ($) {
 						editor.execCommand('createlink', 'mailto:' + val);
 				}
 
-				editor.closeDropDown(TRUE);
+				editor.closeDropDown(true);
 				e.preventDefault();
 			});
 
@@ -518,11 +518,11 @@ $(function ($) {
 
 	// Add MyBB video command
 	$.sceditor.formats.bbcode.set('video', {
-		allowsEmpty: TRUE,
+		allowsEmpty: true,
 		allowedChildren: ['#', '#newline'],
 		tags: {
 			iframe: {
-				'data-mybb-vt': NULL
+				'data-mybb-vt': null
 			}
 		},
 		format: function ($element, content) {
@@ -534,7 +534,7 @@ $(function ($) {
 			var n = (attrs.defaultattr == 'dailymotion') ? 2 : 1;
 			if (typeof params !== "undefined") {
 				matches = content.match(params['match']);
-				url = matches ? params['url'] + matches[n] : FALSE;
+				url = matches ? params['url'] + matches[n] : false;
 			}
 			if (url) {
 				return params['html'].replace('{url}', url).replace('{src}', content).replace('{type}', attrs.defaultattr);
@@ -558,7 +558,7 @@ $(function ($) {
 				'</div>' +
 				'<div>' +
 				'<label for="link">' + editor._('Video URL:') + '</label> ' +
-				'<input type="text" id="videourl" placeholder="//" />' +
+				'<input type="text" id="videourl" placeholder="http://" />' +
 				'</div>' +
 				'<div><input type="button" class="button" value="' + editor._('Insert') + '" /></div>' +
 				'</div>'
@@ -568,10 +568,10 @@ $(function ($) {
 				videourl = $content.find('#videourl').val();
 				videotype = $content.find('#videotype').val();
 
-				if (videourl !== '' && videourl !== '//')
+				if (videourl !== '' && videourl !== 'http://')
 					editor.insert('[video=' + videotype + ']' + videourl + '[/video]');
 
-				editor.closeDropDown(TRUE);
+				editor.closeDropDown(true);
 				e.preventDefault();
 			});
 
@@ -621,8 +621,8 @@ $(function ($) {
 
 				if (width !== undefined && height !== undefined && width > 0 && height > 0) {
 					attribs +=
-						' width="' + $.sceditor.escapeEntities(width, TRUE) + '"' +
-						' height="' + $.sceditor.escapeEntities(height, TRUE) + '"';
+						' width="' + $.sceditor.escapeEntities(width, true) + '"' +
+						' height="' + $.sceditor.escapeEntities(height, true) + '"';
 				}
 			}
 
@@ -642,7 +642,7 @@ $(function ($) {
 				'<div>' +
 				'<div>' +
 				'<label for="image">' + editor._('URL') + ':</label> ' +
-				'<input type="text" id="image" placeholder="//" />' +
+				'<input type="text" id="image" placeholder="https://" />' +
 				'</div>' +
 				'<div>' +
 				'<label for="width">' + editor._('Width (optional)') + ':</label> ' +
@@ -672,7 +672,7 @@ $(function ($) {
 				if (url)
 					editor.insert('[img' + attrs + ']' + url + '[/img]');
 
-				editor.closeDropDown(TRUE);
+				editor.closeDropDown(true);
 				e.preventDefault();
 			});
 

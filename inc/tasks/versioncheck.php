@@ -3,8 +3,8 @@
  * MyBB 1.8
  * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * Website: //www.mybb.com
- * License: //www.mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
  */
 
@@ -19,12 +19,12 @@ function task_versioncheck($task)
 	);
 
 	// Check for the latest version
-	$contents = fetch_remote_file("//mybb.com/version_check.php");
+	$contents = fetch_remote_file("https://mybb.com/version_check.php");
 
-	if (!$contents)
+	if(!$contents)
 	{
 		add_task_log($task, $lang->task_versioncheck_ran_errors);
-		return FALSE;
+		return false;
 	}
 
 	$contents = trim($contents);
@@ -34,7 +34,7 @@ function task_versioncheck($task)
 
 	$latest_code = (int)$tree['mybb']['version_code']['value'];
 	$latest_version = "<strong>".htmlspecialchars_uni($tree['mybb']['latest_version']['value'])."</strong> (".$latest_code.")";
-	if ($latest_code > $mybb->version_code)
+	if($latest_code > $mybb->version_code)
 	{
 		$latest_version = "<span style=\"color: #C00;\">".$latest_version."</span>";
 		$version_warn = 1;
@@ -50,14 +50,14 @@ function task_versioncheck($task)
 	require_once MYBB_ROOT."inc/class_feedparser.php";
 
 	$feed_parser = new FeedParser();
-	$feed_parser->parse_feed("//feeds.feedburner.com/MyBBDevelopmentBlog");
+	$feed_parser->parse_feed("http://feeds.feedburner.com/MyBBDevelopmentBlog");
 
 	$updated_cache['news'] = array();
 
 	require_once MYBB_ROOT . '/inc/class_parser.php';
 	$post_parser = new postParser();
 
-	if ($feed_parser->error == '')
+	if($feed_parser->error == '')
 	{
 		foreach($feed_parser->items as $item)
 		{

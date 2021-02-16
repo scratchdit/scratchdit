@@ -3,8 +3,8 @@
  * MyBB 1.8
  * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * Website: //www.mybb.com
- * License: //www.mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
  */
 
@@ -28,22 +28,22 @@ function upgrade36_dbchanges()
 	echo "<p>Performing necessary upgrade queries...</p>";
 	flush();
 
-	if ($db->field_exists('enabled', 'attachtypes'))
+	if($db->field_exists('enabled', 'attachtypes'))
 	{
 		$db->drop_column('attachtypes', 'enabled');
 	}
 
-	if ($db->field_exists('groups', 'attachtypes'))
+	if($db->field_exists('groups', 'attachtypes'))
 	{
 		$db->drop_column('attachtypes', 'groups');
 	}
 
-	if ($db->field_exists('forums', 'attachtypes'))
+	if($db->field_exists('forums', 'attachtypes'))
 	{
 		$db->drop_column('attachtypes', 'forums');
 	}
 
-	if ($db->field_exists('avatarfile', 'attachtypes'))
+	if($db->field_exists('avatarfile', 'attachtypes'))
 	{
 		$db->drop_column('attachtypes', 'avatarfile');
 	}
@@ -68,10 +68,10 @@ function upgrade36_dbchanges()
 
 	$db->update_query('attachtypes', array('avatarfile' => 1), "atid IN (2, 4, 7, 11)");
 
-	if ($mybb->settings['username_method'] == 1 || $mybb->settings['username_method'] == 2)
+	if($mybb->settings['username_method'] == 1 || $mybb->settings['username_method'] == 2)
 	{
 		$query = $db->simple_select('users', 'email, COUNT(email) AS duplicates', "email!=''", array('group_by' => 'email HAVING duplicates>1'));
-		if ($db->num_rows($query))
+		if($db->num_rows($query))
 		{
 			$db->update_query('settings', array('value' => 0), "name='username_method'");
 		}
@@ -82,7 +82,7 @@ function upgrade36_dbchanges()
 	}
 
 	$query = $db->simple_select("templategroups", "COUNT(*) as numexists", "prefix='mycode'");
-	if ($db->fetch_field($query, "numexists") == 0)
+	if($db->fetch_field($query, "numexists") == 0)
 	{
 		$db->insert_query("templategroups", array('prefix' => 'mycode', 'title' => '<lang:group_mycode>', 'isdefault' => '1'));
 	}
@@ -99,7 +99,7 @@ function upgrade36_dbchanges2()
 	echo "<p>Performing necessary upgrade queries...</p>";
 	flush();
 
-	if ($db->field_exists('reasonid', 'reportedcontent'))
+	if($db->field_exists('reasonid', 'reportedcontent'))
 	{
 		$db->drop_column("reportedcontent", "reasonid");
 	}
@@ -116,7 +116,7 @@ function upgrade36_dbchanges2()
 	}
 
 
-	if ($db->table_exists("reportreasons"))
+	if($db->table_exists("reportreasons"))
 	{
 		$db->drop_table("reportreasons");
 	}
@@ -209,19 +209,19 @@ function upgrade36_dbchanges2()
 		$templang->set_language($langname);
 		$templang->load("report");
 
-		if (!empty($templang->report_reason_rules) && $templang->report_reason_rules != '')
+		if(!empty($templang->report_reason_rules) && $templang->report_reason_rules != '')
 		{
 			$db->update_query("reportedcontent", array("reasonid" => 2, "reason" => ''), "reason = '".$db->escape_string("\n".$templang->report_reason_rules)."'");
 		}
-		if (!empty($templang->report_reason_bad) && $templang->report_reason_bad != '')
+		if(!empty($templang->report_reason_bad) && $templang->report_reason_bad != '')
 		{
 			$db->update_query("reportedcontent", array("reasonid" => 3, "reason" => ''), "reason = '".$db->escape_string("\n".$templang->report_reason_bad)."'");
 		}
-		if (!empty($templang->report_reason_spam) && $templang->report_reason_spam != '')
+		if(!empty($templang->report_reason_spam) && $templang->report_reason_spam != '')
 		{
 			$db->update_query("reportedcontent", array("reasonid" => 4, "reason" => ''), "reason = '".$db->escape_string("\n".$templang->report_reason_spam)."'");
 		}
-		if (!empty($templang->report_reason_wrong) && $templang->report_reason_wrong != '')
+		if(!empty($templang->report_reason_wrong) && $templang->report_reason_wrong != '')
 		{
 			$db->update_query("reportedcontent", array("reasonid" => 5, "reason" => ''), "reason = '".$db->escape_string("\n".$templang->report_reason_wrong)."'");
 		}

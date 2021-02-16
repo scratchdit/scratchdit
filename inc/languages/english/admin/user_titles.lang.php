@@ -1,9 +1,8 @@
 <?php
 /**
- * MyBB 1.6 English Language Pack
- * Copyright 2010 MyBB Group, All Rights Reserved
- * 
- * $Id$
+ * MyBB 1.8 English Language Pack
+ * Copyright 2014 MyBB Group, All Rights Reserved
+ *
  */
 
 $l['user_titles'] = "User Titles";
@@ -13,6 +12,7 @@ $l['add_new_user_title_desc'] = "This section allows you to add a new user title
 
 $l['error_missing_title'] = "You did not enter a title for this user title";
 $l['error_missing_posts'] = "You did not enter the minimum number of posts for this user title";
+$l['error_cannot_have_same_posts'] = "This user title cannot have the same minimum number of posts as another title";
 $l['error_invalid_user_title'] = "You have specified an invalid user title";
 
 $l['success_user_title_created'] = "The new user title has been created successfully.";
@@ -35,4 +35,3 @@ $l['manage_user_titles'] = "Manage User Titles";
 $l['user_title'] = "User Title";
 $l['no_user_titles'] = "You do not have any user titles defined at the moment";
 
-?>

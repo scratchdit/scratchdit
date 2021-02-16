@@ -1,12 +1,11 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
- * $Id$
  */
 
 // Disallow direct access to this file for security reasons
@@ -45,17 +44,15 @@ if($mybb->input['action'] == "browse")
 	$page->output_nav_tabs($sub_tabs, 'browse_plugins');
 
 	// Process search requests
-	require_once MYBB_ROOT."inc/class_xml.php";
-
 	$keywords = "";
-	if($mybb->input['keywords'])
+	if($mybb->get_input('keywords'))
 	{
 		$keywords = "&keywords=".urlencode($mybb->input['keywords']);
 	}
 
-	if($mybb->input['page'])
+	if($mybb->get_input('page'))
 	{
-		$url_page = "&page=".intval($mybb->input['page']);
+		$url_page = "&page=".$mybb->get_input('page', MyBB::INPUT_INT);
 	}
 	else
 	{
@@ -64,16 +61,11 @@ if($mybb->input['action'] == "browse")
 	}
 
 	// Gets the major version code. i.e. 1410 -> 1400 or 121 -> 1200
-	if($mybb->version_code >= 1000)
-	{
-		$major_version_code = round($mybb->version_code/100, 0)*100;
-	}
-	else
-	{
-		$major_version_code = round($mybb->version_code/10, 0)*100;
-	}
+	$major_version_code = round($mybb->version_code/100, 0)*100;
+	// Convert to mods site version codes
+	$search_version = ($major_version_code/100).'x';
 
-	$contents = fetch_remote_file("http://mods.mybb.com/xmlbrowse.php?type=mod&version={$major_version_code}{$keywords}{$url_page}", $post_data);
+	$contents = fetch_remote_file("https://community.mybb.com/xmlbrowse.php?api=2&type=plugins&version={$search_version}{$keywords}{$url_page}");
 
 	if(!$contents)
 	{
@@ -87,10 +79,10 @@ if($mybb->input['action'] == "browse")
 	$table->construct_header($lang->latest_version, array("class" => "align_center", 'width' => 125));
 	$table->construct_header($lang->controls, array("class" => "align_center", 'width' => 125));
 
-	$parser = new XMLParser($contents);
+	$parser = create_xml_parser($contents);
 	$tree = $parser->get_tree();
 
-	if(!array_key_exists("results", $tree))
+	if(!is_array($tree) || !isset($tree['results']))
 	{
 		$page->output_inline_error($lang->error_communication_problem);
 		$page->output_footer();
@@ -106,24 +98,36 @@ if($mybb->input['action'] == "browse")
 			$tree['results']['result'][0] = $only_plugin;
 		}
 
+		require_once MYBB_ROOT . '/inc/class_parser.php';
+		$post_parser = new postParser();
+
 		foreach($tree['results']['result'] as $result)
 		{
-			$table->construct_cell("<strong>{$result['name']['value']}</strong><br /><small>{$result['description']['value']}</small><br /><i><small>{$lang->created_by} {$result['author']['value']}</small></i>");
+			$result['name']['value'] = htmlspecialchars_uni($result['name']['value']);
+			$result['description']['value'] = htmlspecialchars_uni($result['description']['value']);
+			$result['author']['url']['value'] = htmlspecialchars_uni($result['author']['url']['value']);
+			$result['author']['name']['value'] = htmlspecialchars_uni($result['author']['name']['value']);
+			$result['version']['value'] = htmlspecialchars_uni($result['version']['value']);
+			$result['download_url']['value'] = htmlspecialchars_uni(html_entity_decode($result['download_url']['value']));
+
+			$table->construct_cell("<strong>{$result['name']['value']}</strong><br /><small>{$result['description']['value']}</small><br /><i><small>{$lang->created_by} <a href=\"{$result['author']['url']['value']}\" target=\"_blank\" rel=\"noopener\">{$result['author']['name']['value']}</a></small></i>");
 			$table->construct_cell($result['version']['value'], array("class" => "align_center"));
-			$table->construct_cell("<strong><a href=\"http://mods.mybb.com/view/{$result['download_url']['value']}\" target=\"_blank\">{$lang->download}</a></strong>", array("class" => "align_center"));
+			$table->construct_cell("<strong><a href=\"https://community.mybb.com/{$result['download_url']['value']}\" target=\"_blank\" rel=\"noopener\">{$lang->download}</a></strong>", array("class" => "align_center"));
 			$table->construct_row();
 		}
 	}
 
+	$no_results = false;
 	if($table->num_rows() == 0)
 	{
 		$table->construct_cell($lang->error_no_results_found, array("colspan" => 3));
 		$table->construct_row();
+		$no_results = true;
 	}
 
 	$search = new Form("index.php?module=config-plugins&amp;action=browse", 'post', 'search_form');
 	echo "<div style=\"padding-bottom: 3px; margin-top: -9px; text-align: right;\">";
-	if($mybb->input['keywords'])
+	if($mybb->get_input('keywords'))
 	{
 		$default_class = '';
 		$value = htmlspecialchars_uni($mybb->input['keywords']);
@@ -135,38 +139,41 @@ if($mybb->input['action'] == "browse")
 	}
 	echo $search->generate_text_box('keywords', $value, array('id' => 'search_keywords', 'class' => "{$default_class} field150 field_small"))."\n";
 	echo "<input type=\"submit\" class=\"search_button\" value=\"{$lang->search}\" />\n";
-	echo "<script type='text/javascript'>
-		var form = document.getElementById('search_form');
-		form.onsubmit = function() {
-			var search = document.getElementById('search_keywords');
-			if(search.value == '' || search.value == '{$lang->search_for_plugins}')
+	echo "<script type=\"text/javascript\">
+		var form = $(\"#search_form\");
+		form.on('submit', function()
+		{
+			var search = $(\"#search_keywords\");
+			if(search.val() == '' || search.val() == '{$lang->search_for_plugins}')
 			{
-				search.focus();
-				return FALSE;
+				search.trigger('focus');
+				return false;
 			}
-		}
+		});
 
-		var search = document.getElementById('search_keywords');
-		search.onfocus = function()
+		var search = $(\"#search_keywords\");
+		search.on('focus', function()
 		{
-			if(this.value == '{$lang->search_for_plugins}')
+			var searched_focus = $(this);
+			if(searched_focus.val() == '{$lang->search_for_plugins}')
 			{
-				$(this).removeClassName('search_default');
-				this.value = '';
+				searched_focus.removeClass(\"search_default\");
+				searched_focus.val(\"\");
 			}
-		}
-		search.onblur = function()
+		}).on('blur', function()
 		{
-			if(this.value == '')
+			var searched_blur = $(this);
+			if(searched_blur.val() == \"\")
 			{
-				$(this).addClassName('search_default');
-				this.value = '{$lang->search_for_plugins}';
+				searched_blur.addClass('search_default');
+				searched_blur.val('{$lang->search_for_plugins}');
 			}
-		}
+		});
+
 		// fix the styling used if we have a different default value
-        if(search.value != '{$lang->search_for_plugins}')
+        if(search.val() != '{$lang->search_for_plugins}')
         {
-            $(search).removeClassName('search_default');
+            search.removeClass('search_default');
         }
 		</script>\n";
 	echo "</div>\n";
@@ -175,14 +182,17 @@ if($mybb->input['action'] == "browse")
 	// Recommended plugins = Default; Otherwise search results & pagination
 	if($mybb->request_method == "post")
 	{
-		$table->output("<span style=\"float: right;\"><small><a href=\"http://mods.mybb.com/mods\" target=\"_blank\">{$lang->browse_all_plugins}</a></small></span>".$lang->sprintf($lang->browse_results_for_mybb, $mybb->version));
+		$table->output("<span style=\"float: right;\"><small><a href=\"https://community.mybb.com/mods.php?action=browse&category=plugins\" target=\"_blank\" rel=\"noopener\">{$lang->browse_all_plugins}</a></small></span>".$lang->sprintf($lang->browse_results_for_mybb, $mybb->version));
 	}
 	else
 	{
-		$table->output("<span style=\"float: right;\"><small><a href=\"http://mods.mybb.com/mods\" target=\"_blank\">{$lang->browse_all_plugins}</a></small></span>".$lang->sprintf($lang->recommended_plugins_for_mybb, $mybb->version));
+		$table->output("<span style=\"float: right;\"><small><a href=\"https://community.mybb.com/mods.php?action=browse&category=plugins\" target=\"_blank\" rel=\"noopener\">{$lang->browse_all_plugins}</a></small></span>".$lang->sprintf($lang->recommended_plugins_for_mybb, $mybb->version));
 	}
 
-	echo "<br />".draw_admin_pagination($mybb->input['page'], 15, $tree['results']['attributes']['total'], "index.php?module=config-plugins&amp;action=browse{$keywords}&amp;page={page}");
+	if(!$no_results)
+	{
+		echo "<br />".draw_admin_pagination($mybb->input['page'], 15, $tree['results']['attributes']['total'], "index.php?module=config-plugins&amp;action=browse{$keywords}&amp;page={page}");
+	}
 
 	$page->output_footer();
 }
@@ -208,11 +218,17 @@ if($mybb->input['action'] == "check")
 				continue;
 			}
 			$plugininfo = $infofunc();
-			$plugininfo['guid'] = trim($plugininfo['guid']);
+			$plugininfo['guid'] = isset($plugininfo['guid']) ? trim($plugininfo['guid']) : null;
+			$plugininfo['codename'] = trim($plugininfo['codename']);
 
-			if($plugininfo['guid'] != "")
+			if($plugininfo['codename'] != "")
 			{
-				$info[] = $plugininfo['guid'];
+				$info[]	= $plugininfo['codename'];
+				$names[$plugininfo['codename']] = array('name' => $plugininfo['name'], 'version' => $plugininfo['version']);
+			}
+			elseif($plugininfo['guid'] != "")
+			{
+				$info[] =  $plugininfo['guid'];
 				$names[$plugininfo['guid']] = array('name' => $plugininfo['name'], 'version' => $plugininfo['version']);
 			}
 		}
@@ -225,14 +241,8 @@ if($mybb->input['action'] == "check")
 		admin_redirect("index.php?module=config-plugins");
 	}
 
-	$url = "http://mods.mybb.com/version_check.php?";
-	foreach($info as $guid)
-	{
-		$url .= "info[]=".urlencode($guid)."&";
-	}
-	$url = substr($url, 0, -1);
-
-	require_once MYBB_ROOT."inc/class_xml.php";
+	$url = "https://community.mybb.com/version_check.php?";
+	$url .= http_build_query(array("info" => $info))."&";
 	$contents = fetch_remote_file($url);
 
 	if(!$contents)
@@ -241,8 +251,16 @@ if($mybb->input['action'] == "check")
 		admin_redirect("index.php?module=config-plugins");
 	}
 
-	$parser = new XMLParser($contents);
+	$contents = trim($contents);
+
+	$parser = create_xml_parser($contents);
 	$tree = $parser->get_tree();
+
+	if(!is_array($tree) || !isset($tree['plugins']))
+	{
+		flash_message($lang->error_communication_problem, 'error');
+		admin_redirect("index.php?module=config-plugins");
+	}
 
 	if(array_key_exists('error', $tree['plugins']))
 	{
@@ -257,7 +275,6 @@ if($mybb->input['action'] == "check")
 			default:
 				$error_msg = "";
 		}
-
 		flash_message($lang->error_communication_problem.$error_msg, 'error');
 		admin_redirect("index.php?module=config-plugins");
 	}
@@ -283,12 +300,36 @@ if($mybb->input['action'] == "check")
 
 	foreach($tree['plugins']['plugin'] as $plugin)
 	{
-		if(version_compare($names[$plugin['attributes']['guid']]['version'], $plugin['version']['value'], "<"))
+		$compare_by = array_key_exists("codename", $plugin['attributes']) ? "codename" : "guid";
+		$is_vulnerable = array_key_exists("vulnerable", $plugin) ? true : false;
+
+		if(version_compare($names[$plugin['attributes'][$compare_by]]['version'], $plugin['version']['value'], "<"))
 		{
-			$table->construct_cell("<strong>{$names[$plugin['attributes']['guid']]['name']}</strong>");
-			$table->construct_cell("{$names[$plugin['attributes']['guid']]['version']}", array("class" => "align_center"));
+			$plugin['download_url']['value'] = htmlspecialchars_uni($plugin['download_url']['value']);
+			$plugin['vulnerable']['value'] = htmlspecialchars_uni($plugin['vulnerable']['value']);
+			$plugin['version']['value'] = htmlspecialchars_uni($plugin['version']['value']);
+
+			if($is_vulnerable)
+			{
+				$table->construct_cell("<div class=\"error\" id=\"flash_message\">
+										{$lang->error_vcheck_vulnerable} {$names[$plugin['attributes'][$compare_by]]['name']}
+										</div>
+										<p>	<b>{$lang->error_vcheck_vulnerable_notes}</b> <br /><br /> {$plugin['vulnerable']['value']}</p>");
+			}
+			else
+			{
+				$table->construct_cell("<strong>{$names[$plugin['attributes'][$compare_by]]['name']}</strong>");
+			}
+			$table->construct_cell("{$names[$plugin['attributes'][$compare_by]]['version']}", array("class" => "align_center"));
 			$table->construct_cell("<strong><span style=\"color: #C00\">{$plugin['version']['value']}</span></strong>", array("class" => "align_center"));
-			$table->construct_cell("<strong><a href=\"http://mods.mybb.com/view/{$plugin['download_url']['value']}\" target=\"_blank\">{$lang->download}</a></strong>", array("class" => "align_center"));
+			if($is_vulnerable)
+			{
+				$table->construct_cell("<a href=\"index.php?module=config-plugins\"><b>{$lang->deactivate}</b></a>", array("class" => "align_center", "width" => 150));
+			}
+			else
+			{
+				$table->construct_cell("<strong><a href=\"https://community.mybb.com/{$plugin['download_url']['value']}\" target=\"_blank\" rel=\"noopener\">{$lang->download}</a></strong>", array("class" => "align_center"));
+			}
 			$table->construct_row();
 		}
 	}
@@ -357,36 +398,36 @@ if($mybb->input['action'] == "activate" || $mybb->input['action'] == "deactivate
 	}
 
 	$plugins_cache = $cache->read("plugins");
-	$active_plugins = $plugins_cache['active'];
+	$active_plugins = isset($plugins_cache['active']) ? $plugins_cache['active'] : array();
 
 	require_once MYBB_ROOT."inc/plugins/$file";
 
 	$installed_func = "{$codename}_is_installed";
-	$installed = TRUE;
-	if(function_exists($installed_func) && $installed_func() != TRUE)
+	$installed = true;
+	if(function_exists($installed_func) && $installed_func() != true)
 	{
-		$installed = FALSE;
+		$installed = false;
 	}
 
-	$install_uninstall = FALSE;
+	$install_uninstall = false;
 
 	if($mybb->input['action'] == "activate")
 	{
 		$message = $lang->success_plugin_activated;
 
 		// Plugin is compatible with this version?
-		if($plugins->is_compatible($codename) == FALSE)
+		if($plugins->is_compatible($codename) == false)
 		{
-			flash_message($lang->sprintf($lang->plugin_incompatible, $mybb->version_code), 'error');
+			flash_message($lang->sprintf($lang->plugin_incompatible, $mybb->version), 'error');
 			admin_redirect("index.php?module=config-plugins");
 		}
 
 		// If not installed and there is a custom installation function
-		if($installed == FALSE && function_exists("{$codename}_install"))
+		if($installed == false && function_exists("{$codename}_install"))
 		{
 			call_user_func("{$codename}_install");
 			$message = $lang->success_plugin_installed;
-			$install_uninstall = TRUE;
+			$install_uninstall = true;
 		}
 
 		if(function_exists("{$codename}_activate"))
@@ -406,11 +447,11 @@ if($mybb->input['action'] == "activate" || $mybb->input['action'] == "deactivate
 			call_user_func("{$codename}_deactivate");
 		}
 
-		if($mybb->input['uninstall'] == 1 && function_exists("{$codename}_uninstall"))
+		if($mybb->get_input('uninstall') == 1 && function_exists("{$codename}_uninstall"))
 		{
 			call_user_func("{$codename}_uninstall");
 			$message = $lang->success_plugin_uninstalled;
-			$install_uninstall = TRUE;
+			$install_uninstall = true;
 		}
 
 		unset($active_plugins[$codename]);
@@ -459,126 +500,103 @@ if(!$mybb->input['action'])
 
 	$page->output_nav_tabs($sub_tabs, 'plugins');
 
+	// Let's make things easier for our user - show them active
+	// and inactive plugins in different lists
 	$plugins_cache = $cache->read("plugins");
-	$active_plugins = $plugins_cache['active'];
+	$active_plugins = array();
+	if(!empty($plugins_cache['active']))
+	{
+		$active_plugins = $plugins_cache['active'];
+	}
 
 	$plugins_list = get_plugins_list();
 
 	$plugins->run_hooks("admin_config_plugins_plugin_list");
 
-	$table = new Table;
-	$table->construct_header($lang->plugin);
-	$table->construct_header($lang->controls, array("colspan" => 2, "class" => "align_center", "width" => 300));
-
 	if(!empty($plugins_list))
 	{
+		$a_plugins = $i_plugins = array();
+
 		foreach($plugins_list as $plugin_file)
 		{
 			require_once MYBB_ROOT."inc/plugins/".$plugin_file;
 			$codename = str_replace(".php", "", $plugin_file);
 			$infofunc = $codename."_info";
+
 			if(!function_exists($infofunc))
 			{
 				continue;
 			}
 
 			$plugininfo = $infofunc();
-			if($plugininfo['website'])
-			{
-				$plugininfo['name'] = "<a href=\"".$plugininfo['website']."\">".$plugininfo['name']."</a>";
-			}
+			$plugininfo['codename'] = $codename;
 
-			if($plugininfo['authorsite'])
+			if(isset($active_plugins[$codename]))
 			{
-				$plugininfo['author'] = "<a href=\"".$plugininfo['authorsite']."\">".$plugininfo['author']."</a>";
-			}
+				// This is an active plugin
+				$plugininfo['is_active'] = 1;
 
-			if($plugins->is_compatible($codename) == FALSE)
-			{
-				$compatibility_warning = "<span style=\"color: red;\">".$lang->sprintf($lang->plugin_incompatible, $mybb->version)."</span>";
+				$a_plugins[] = $plugininfo;
 			}
 			else
 			{
-				$compatibility_warning = "";
+				// Either installed and not active or completely inactive
+				$plugininfo['is_active'] = 0;
+				$i_plugins[] = $plugininfo;
 			}
+		}
 
-			$installed_func = "{$codename}_is_installed";
-			$install_func = "{$codename}_install";
-			$uninstall_func = "{$codename}_uninstall";
+		$table = new Table;
+		$table->construct_header($lang->plugin);
+		$table->construct_header($lang->controls, array("colspan" => 2, "class" => "align_center", "width" => 300));
 
-			$installed = TRUE;
-			$install_button = FALSE;
-			$uninstall_button = FALSE;
-
-			if(function_exists($installed_func) && $installed_func() != TRUE)
-			{
-				$installed = FALSE;
-			}
-
-			if(function_exists($install_func))
-			{
-				$install_button = TRUE;
-			}
-
-			if(function_exists($uninstall_func))
-			{
-				$uninstall_button = TRUE;
-			}
-
-			$table->construct_cell("<strong>{$plugininfo['name']}</strong> ({$plugininfo['version']})<br /><small>{$plugininfo['description']}</small><br /><i><small>{$lang->created_by} {$plugininfo['author']}</small></i>");
-
-			// Plugin is not installed at all
-			if($installed == FALSE)
-			{
-				if($compatibility_warning)
-				{
-					$table->construct_cell("{$compatibility_warning}", array("class" => "align_center", "colspan" => 2));
-				}
-				else
-				{
-					$table->construct_cell("<a href=\"index.php?module=config-plugins&amp;action=activate&amp;plugin={$codename}&amp;my_post_key={$mybb->post_code}\">{$lang->install_and_activate}</a>", array("class" => "align_center", "colspan" => 2));
-				}
-			}
-			// Plugin is activated and installed
-			else if($active_plugins[$codename])
-			{
-				$table->construct_cell("<a href=\"index.php?module=config-plugins&amp;action=deactivate&amp;plugin={$codename}&amp;my_post_key={$mybb->post_code}\">{$lang->deactivate}</a>", array("class" => "align_center", "width" => 150));
-				if($uninstall_button)
-				{
-					$table->construct_cell("<a href=\"index.php?module=config-plugins&amp;action=deactivate&amp;uninstall=1&amp;plugin={$codename}&amp;my_post_key={$mybb->post_code}\">{$lang->uninstall}</a>", array("class" => "align_center", "width" => 150));
-				}
-				else
-				{
-					$table->construct_cell("&nbsp;", array("class" => "align_center", "width" => 150));
-				}
-			}
-			// Plugin is installed but not active
-			else if($installed == TRUE)
-			{
-				$table->construct_cell("<a href=\"index.php?module=config-plugins&amp;action=activate&amp;plugin={$codename}&amp;my_post_key={$mybb->post_code}\">{$lang->activate}</a>", array("class" => "align_center", "width" => 150));
-				if($uninstall_button)
-				{
-					$table->construct_cell("<a href=\"index.php?module=config-plugins&amp;action=deactivate&amp;uninstall=1&amp;plugin={$codename}&amp;my_post_key={$mybb->post_code}\">{$lang->uninstall}</a>", array("class" => "align_center", "width" => 150));
-				}
-				else
-				{
-					$table->construct_cell("&nbsp;", array("class" => "align_center", "width" => 150));
-				}
-			}
+		if(empty($a_plugins))
+		{
+			$table->construct_cell($lang->no_active_plugins, array('colspan' => 3));
 			$table->construct_row();
 		}
-	}
+		else
+		{
+			build_plugin_list($a_plugins);
+		}
 
-	if($table->num_rows() == 0)
+		$table->output($lang->active_plugin);
+
+		$table = new Table;
+		$table->construct_header($lang->plugin);
+		$table->construct_header($lang->controls, array("colspan" => 2, "class" => "align_center", "width" => 300));
+
+		if(empty($i_plugins))
+		{
+			$table->construct_cell($lang->no_inactive_plugins, array('colspan' => 3));
+			$table->construct_row();
+		}
+		else
+		{
+			build_plugin_list($i_plugins);
+		}
+
+		$table->output($lang->inactive_plugin);
+	}
+	else
 	{
+		// No plugins
+		$table = new Table;
+		$table->construct_header($lang->plugin);
+		$table->construct_header($lang->controls, array("colspan" => 2, "class" => "align_center", "width" => 300));
+
 		$table->construct_cell($lang->no_plugins, array('colspan' => 3));
 		$table->construct_row();
+
+		$table->output($lang->plugins);
 	}
-	$table->output($lang->plugins);
 
 	$page->output_footer();
 }
 
+/**
+ * @return array
+ */
 function get_plugins_list()
 {
 	// Get a list of the plugin files which exist in the plugins directory
@@ -599,4 +617,105 @@ function get_plugins_list()
 
 	return $plugins_list;
 }
-?>
+
+/**
+ * @param array $plugin_list
+ */
+function build_plugin_list($plugin_list)
+{
+	global $lang, $mybb, $plugins, $table;
+
+	foreach($plugin_list as $plugininfo)
+	{
+		if($plugininfo['website'])
+		{
+			$plugininfo['name'] = "<a href=\"".$plugininfo['website']."\">".$plugininfo['name']."</a>";
+		}
+
+		if($plugininfo['authorsite'])
+		{
+			$plugininfo['author'] = "<a href=\"".$plugininfo['authorsite']."\">".$plugininfo['author']."</a>";
+		}
+
+		if($plugins->is_compatible($plugininfo['codename']) == false)
+		{
+			$compatibility_warning = "<span style=\"color: red;\">".$lang->sprintf($lang->plugin_incompatible, $mybb->version)."</span>";
+		}
+		else
+		{
+			$compatibility_warning = "";
+		}
+
+		$installed_func = "{$plugininfo['codename']}_is_installed";
+		$install_func = "{$plugininfo['codename']}_install";
+		$uninstall_func = "{$plugininfo['codename']}_uninstall";
+
+		$installed = true;
+		$install_button = false;
+		$uninstall_button = false;
+
+		if(function_exists($installed_func) && $installed_func() != true)
+		{
+			$installed = false;
+		}
+
+		if(function_exists($install_func))
+		{
+			$install_button = true;
+		}
+
+		if(function_exists($uninstall_func))
+		{
+			$uninstall_button = true;
+		}
+
+		$table->construct_cell("<strong>{$plugininfo['name']}</strong> ({$plugininfo['version']})<br /><small>{$plugininfo['description']}</small><br /><i><small>{$lang->created_by} {$plugininfo['author']}</small></i>");
+
+		// Plugin is not installed at all
+		if($installed == false)
+		{
+			if($compatibility_warning)
+			{
+				$table->construct_cell("{$compatibility_warning}", array("class" => "align_center", "colspan" => 2));
+			}
+			else
+			{
+				$table->construct_cell("<a href=\"index.php?module=config-plugins&amp;action=activate&amp;plugin={$plugininfo['codename']}&amp;my_post_key={$mybb->post_code}\">{$lang->install_and_activate}</a>", array("class" => "align_center", "colspan" => 2));
+			}
+		}
+		// Plugin is activated and installed
+		else if($plugininfo['is_active'])
+		{
+			$table->construct_cell("<a href=\"index.php?module=config-plugins&amp;action=deactivate&amp;plugin={$plugininfo['codename']}&amp;my_post_key={$mybb->post_code}\">{$lang->deactivate}</a>", array("class" => "align_center", "width" => 150));
+			if($uninstall_button)
+			{
+				$table->construct_cell("<a href=\"index.php?module=config-plugins&amp;action=deactivate&amp;uninstall=1&amp;plugin={$plugininfo['codename']}&amp;my_post_key={$mybb->post_code}\">{$lang->uninstall}</a>", array("class" => "align_center", "width" => 150));
+			}
+			else
+			{
+				$table->construct_cell("&nbsp;", array("class" => "align_center", "width" => 150));
+			}
+		}
+		// Plugin is installed but not active
+		else if($installed == true)
+		{
+			if($compatibility_warning && !$uninstall_button)
+			{
+				$table->construct_cell("{$compatibility_warning}", array("class" => "align_center", "colspan" => 2));
+			}
+			else
+			{
+				$table->construct_cell("<a href=\"index.php?module=config-plugins&amp;action=activate&amp;plugin={$plugininfo['codename']}&amp;my_post_key={$mybb->post_code}\">{$lang->activate}</a>", array("class" => "align_center", "width" => 150));
+				if($uninstall_button)
+				{
+					$table->construct_cell("<a href=\"index.php?module=config-plugins&amp;action=deactivate&amp;uninstall=1&amp;plugin={$plugininfo['codename']}&amp;my_post_key={$mybb->post_code}\">{$lang->uninstall}</a>", array("class" => "align_center", "width" => 150));
+				}
+				else
+				{
+					$table->construct_cell("&nbsp;", array("class" => "align_center", "width" => 150));
+				}
+			}
+		}
+		$table->construct_row();
+	}
+}

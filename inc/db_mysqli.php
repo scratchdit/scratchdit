@@ -1,15 +1,14 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
- * $Id$
  */
 
-class DB_MySQLi
+class DB_MySQLi implements DB_Base
 {
 	/**
 	 * The title of this layer.
@@ -56,23 +55,30 @@ class DB_MySQLi
 	/**
 	 * The read database connection resource.
 	 *
-	 * @var resource
+	 * @var mysqli
 	 */
 	public $read_link;
 
 	/**
 	 * The write database connection resource
 	 *
-	 * @var resource
+	 * @var mysqli
 	 */
 	public $write_link;
 
 	/**
 	 * Reference to the last database connection resource used.
 	 *
-	 * @var resource
+	 * @var mysqli
 	 */
 	public $current_link;
+
+	/**
+	 * The database name.
+	 *
+	 * @var string
+	 */
+	public $database;
 
 	/**
 	 * Explanation of a query.
@@ -114,7 +120,7 @@ class DB_MySQLi
 	 *
 	 * @var boolean
 	 */
-	public $can_search = TRUE;
+	public $can_search = true;
 
 	/**
 	 * The database encoding currently in use (if supported)
@@ -131,15 +137,22 @@ class DB_MySQLi
 	public $query_time = 0;
 
 	/**
+	 * Stores previous run query type: 1 => write; 0 => read
+	 *
+	 * @var int
+	 */
+	protected $last_query_type = 0;
+
+	/**
 	 * Connect to the database server.
 	 *
-	 * @param array Array of DBMS connection details.
-	 * @return resource The DB connection resource. Returns FALSE on fail or -1 on a db connect failure.
+	 * @param array $config Array of DBMS connection details.
+	 * @return mysqli The DB connection resource. Returns false on fail or -1 on a db connect failure.
 	 */
 	function connect($config)
 	{
 		// Simple connection to one server
-		if (array_key_exists('hostname', $config))
+		if(array_key_exists('hostname', $config))
 		{
 			$connections['read'][] = $config;
 		}
@@ -147,11 +160,14 @@ class DB_MySQLi
 		// Connecting to more than one server
 		{
 			// Specified multiple servers, but no specific read/write servers
-			if (!array_key_exists('read', $config))
+			if(!array_key_exists('read', $config))
 			{
 				foreach($config as $key => $settings)
 				{
-					if (is_int($key)) $connections['read'][] = $settings;
+					if(is_int($key))
+					{
+						$connections['read'][] = $settings;
+					}
 				}
 			}
 			// Specified both read & write servers
@@ -166,15 +182,15 @@ class DB_MySQLi
 		// Actually connect to the specified servers
 		foreach(array('read', 'write') as $type)
 		{
-			if (!is_array($connections[$type]))
+			if(!isset($connections[$type]) || !is_array($connections[$type]))
 			{
 				break;
 			}
 
-			if (array_key_exists('hostname', $connections[$type]))
+			if(array_key_exists('hostname', $connections[$type]))
 			{
 				$details = $connections[$type];
-				unset($connections);
+				unset($connections[$type]);
 				$connections[$type][] = $details;
 			}
 
@@ -186,18 +202,23 @@ class DB_MySQLi
 			{
 				$connect_function = "mysqli_connect";
 				$persist = "";
-				if ($single_connection['pconnect'] && version_compare(PHP_VERSION, '5.3.0', '>='))
+				if(!empty($single_connection['pconnect']) && version_compare(PHP_VERSION, '5.3.0', '>='))
 				{
-					$persist = "p:";
+					$persist = 'p:';
 				}
 
-				$link = $type."_link";
+				$link = "{$type}_link";
 
-				$this->get_execution_time();
+				get_execution_time();
 
 				// Specified a custom port for this connection?
-				list($hostname, $port) = explode(":", $single_connection['hostname'], 2);
-				if ($port)
+				$port = 0;
+				if(strstr($single_connection['hostname'],':'))
+				{
+					list($hostname, $port) = explode(":", $single_connection['hostname'], 2);
+				}
+
+				if($port)
 				{
 					$this->$link = @$connect_function($persist.$hostname, $single_connection['username'], $single_connection['password'], "", $port);
 				}
@@ -206,13 +227,13 @@ class DB_MySQLi
 					$this->$link = @$connect_function($persist.$single_connection['hostname'], $single_connection['username'], $single_connection['password']);
 				}
 
-				$time_spent = $this->get_execution_time();
+				$time_spent = get_execution_time();
 				$this->query_time += $time_spent;
 
 				// Successful connection? break down brother!
-				if ($this->$link)
+				if($this->$link)
 				{
-					$this->connections[] = "[".strtoupper($type)."] {$single_connection['username']}@{$single_connection['hostname']} (Connected in ".number_format($time_spent, 0)."s)";
+					$this->connections[] = "[".strtoupper($type)."] {$single_connection['username']}@{$single_connection['hostname']} (Connected in ".format_time_duration($time_spent).")";
 					break;
 				}
 				else
@@ -223,26 +244,26 @@ class DB_MySQLi
 		}
 
 		// No write server was specified (simple connection or just multiple servers) - mirror write link
-		if (!array_key_exists('write', $connections))
+		if(!array_key_exists('write', $connections))
 		{
 			$this->write_link = &$this->read_link;
 		}
 
 		// Have no read connection?
-		if (!$this->read_link)
+		if(!$this->read_link)
 		{
 			$this->error("[READ] Unable to connect to MySQL server");
-			return FALSE;
+			return false;
 		}
 		// No write?
-		else if (!$this->write_link)
+		else if(!$this->write_link)
 		{
 			$this->error("[WRITE] Unable to connect to MySQL server");
-			return FALSE;
+			return false;
 		}
 
 		// Select databases
-		if (!$this->select_db($config['database']))
+		if(!$this->select_db($config['database']))
 		{
 			return -1;
 		}
@@ -254,32 +275,32 @@ class DB_MySQLi
 	/**
 	 * Selects the database to use.
 	 *
-	 * @param string The database name.
-	 * @return boolean TRUE when successfully connected, FALSE if not.
+	 * @param string $database The database name.
+	 * @return boolean True when successfully connected, false if not.
 	 */
 	function select_db($database)
 	{
-		global $mybb;
+		$this->database = $database;
 
 		$master_success = @mysqli_select_db($this->read_link, $database) or $this->error("[READ] Unable to select database", $this->read_link);
-		if ($this->write_link)
+		if($this->write_link)
 		{
 			$slave_success = @mysqli_select_db($this->write_link, $database) or $this->error("[WRITE] Unable to select slave database", $this->write_link);
 
-			$success = ($master_success && $slave_success ? TRUE : FALSE);
+			$success = ($master_success && $slave_success ? true : false);
 		}
 		else
 		{
 			$success = $master_success;
 		}
 
-		if ($success && $this->db_encoding)
+		if($success && $this->db_encoding)
 		{
-			$this->query("SET NAMES '{$this->db_encoding}'");
+			@mysqli_set_charset($this->read_link, $this->db_encoding);
 
-			if ($slave_success && count($this->connections) > 1)
+			if($slave_success && count($this->connections) > 1)
 			{
-				$this->write_query("SET NAMES '{$this->db_encoding}'");
+				@mysqli_set_charset($this->write_link, $this->db_encoding);
 			}
 		}
 		return $success;
@@ -288,19 +309,19 @@ class DB_MySQLi
 	/**
 	 * Query the database.
 	 *
-	 * @param string The query SQL.
-	 * @param boolean 1 if hide errors, 0 if not.
-	 * @param integer 1 if executes on slave database, 0 if not.
-	 * @return resource The query data.
+	 * @param string $string The query SQL.
+	 * @param boolean|int $hide_errors 1 if hide errors, 0 if not.
+	 * @param integer $write_query 1 if executes on master database, 0 if not.
+	 * @return mysqli_result The query data.
 	 */
 	function query($string, $hide_errors=0, $write_query=0)
 	{
-		global $pagestarttime, $db, $mybb;
+		global $mybb;
 
-		$this->get_execution_time();
+		get_execution_time();
 
-		// Only execute write queries on slave server
-		if ($write_query && $this->write_link)
+		// Only execute write queries on master server
+		if(($write_query || $this->last_query_type) && $this->write_link)
 		{
 			$this->current_link = &$this->write_link;
 			$query = @mysqli_query($this->write_link, $string);
@@ -311,17 +332,26 @@ class DB_MySQLi
 			$query = @mysqli_query($this->read_link, $string);
 		}
 
-		if ($this->error_number() && !$hide_errors)
+		if($this->error_number() && !$hide_errors)
 		{
 			$this->error($string);
 			exit;
 		}
 
-		$query_time = $this->get_execution_time();
+		if($write_query)
+		{
+			$this->last_query_type = 1;
+		}
+		else
+		{
+			$this->last_query_type = 0;
+		}
+
+		$query_time = get_execution_time();
 		$this->query_time += $query_time;
 		$this->query_count++;
 
-		if ($mybb->debug_mode)
+		if($mybb->debug_mode)
 		{
 			$this->explain_query($string, $query_time);
 		}
@@ -329,11 +359,11 @@ class DB_MySQLi
 	}
 
 	/**
-	 * Execute a write query on the slave database
+	 * Execute a write query on the master database
 	 *
-	 * @param string The query SQL.
-	 * @param boolean 1 if hide errors, 0 if not.
-	 * @return resource The query data.
+	 * @param string $query The query SQL.
+	 * @param boolean|int $hide_errors 1 if hide errors, 0 if not.
+	 * @return mysqli_result The query data.
 	 */
 	function write_query($query, $hide_errors=0)
 	{
@@ -343,17 +373,19 @@ class DB_MySQLi
 	/**
 	 * Explain a query on the database.
 	 *
-	 * @param string The query SQL.
-	 * @param string The time it took to perform the query.
+	 * @param string $string The query SQL.
+	 * @param string $qtime The time it took to perform the query.
 	 */
 	function explain_query($string, $qtime)
 	{
 		global $plugins;
-		if ($plugins->current_hook)
+
+		$debug_extra = '';
+		if($plugins->current_hook)
 		{
 			$debug_extra = "<div style=\"float_right\">(Plugin Hook: {$plugins->current_hook})</div>";
 		}
-		if (preg_match("#^\s*select#i", $string))
+		if(preg_match("#^\s*select#i", $string))
 		{
 			$query = mysqli_query($this->current_link, "EXPLAIN $string");
 			$this->explain .= "<table style=\"background-color: #666;\" width=\"95%\" cellpadding=\"4\" cellspacing=\"1\" align=\"center\">\n".
@@ -361,16 +393,16 @@ class DB_MySQLi
 				"<td colspan=\"8\" style=\"background-color: #ccc;\">{$debug_extra}<div><strong>#".$this->query_count." - Select Query</strong></div></td>\n".
 				"</tr>\n".
 				"<tr>\n".
-				"<td colspan=\"8\" style=\"background-color: #fefefe;\"><span style=\"font-family: Courier; font-size: 14px;\">".$string."</span></td>\n".
+				"<td colspan=\"8\" style=\"background-color: #fefefe;\"><span style=\"font-family: Courier; font-size: 14px;\">".htmlspecialchars_uni($string)."</span></td>\n".
 				"</tr>\n".
 				"<tr style=\"background-color: #efefef;\">\n".
-				"<td><strong>table</strong></td>\n".
-				"<td><strong>type</strong></td>\n".
-				"<td><strong>possible_keys</strong></td>\n".
-				"<td><strong>key</strong></td>\n".
-				"<td><strong>key_len</strong></td>\n".
-				"<td><strong>ref</strong></td>\n".
-				"<td><strong>rows</strong></td>\n".
+				"<td><strong>Table</strong></td>\n".
+				"<td><strong>Type</strong></td>\n".
+				"<td><strong>Possible Keys</strong></td>\n".
+				"<td><strong>Key</strong></td>\n".
+				"<td><strong>Key Length</strong></td>\n".
+				"<td><strong>Ref</strong></td>\n".
+				"<td><strong>Rows</strong></td>\n".
 				"<td><strong>Extra</strong></td>\n".
 				"</tr>\n";
 
@@ -390,7 +422,7 @@ class DB_MySQLi
 			}
 			$this->explain .=
 				"<tr>\n".
-				"<td colspan=\"8\" style=\"background-color: #fff;\">Query Time: ".$qtime."</td>\n".
+				"<td colspan=\"8\" style=\"background-color: #fff;\">Query Time: ".format_time_duration($qtime)."</td>\n".
 				"</tr>\n".
 				"</table>\n".
 				"<br />\n";
@@ -405,7 +437,7 @@ class DB_MySQLi
 				"<td><span style=\"font-family: Courier; font-size: 14px;\">".htmlspecialchars_uni($string)."</span></td>\n".
 				"</tr>\n".
 				"<tr>\n".
-				"<td bgcolor=\"#ffffff\">Query Time: ".$qtime."</td>\n".
+				"<td bgcolor=\"#ffffff\">Query Time: ".format_time_duration($qtime)."</td>\n".
 				"</tr>\n".
 				"</table>\n".
 				"<br />\n";
@@ -415,42 +447,57 @@ class DB_MySQLi
 		$this->querylist[$this->query_count]['time'] = $qtime;
 	}
 
-
 	/**
 	 * Return a result array for a query.
 	 *
-	 * @param resource The query data.
-	 * @param constant The type of array to return.
+	 * @param mysqli_result $query The query data.
+	 * @param int $resulttype The type of array to return. Either MYSQLI_NUM, MYSQLI_BOTH or MYSQLI_ASSOC
 	 * @return array The array of results.
 	 */
-	function fetch_array($query)
+	function fetch_array($query, $resulttype=MYSQLI_ASSOC)
 	{
-		$array = mysqli_fetch_assoc($query);
+		switch($resulttype)
+		{
+			case MYSQLI_NUM:
+			case MYSQLI_BOTH:
+				break;
+			default:
+				$resulttype = MYSQLI_ASSOC;
+				break;
+		}
+
+		$array = mysqli_fetch_array($query, $resulttype);
+
 		return $array;
 	}
 
 	/**
 	 * Return a specific field from a query.
 	 *
-	 * @param resource The query ID.
-	 * @param string The name of the field to return.
-	 * @param int The number of the row to fetch it from.
+	 * @param mysqli_result $query The query ID.
+	 * @param string $field The name of the field to return.
+	 * @param int|bool $row The number of the row to fetch it from.
 	 */
-	function fetch_field($query, $field, $row=FALSE)
+	function fetch_field($query, $field, $row=false)
 	{
-		if ($row !== FALSE)
+		if($row !== false)
 		{
 			$this->data_seek($query, $row);
 		}
 		$array = $this->fetch_array($query);
-		return $array[$field];
+		if($array !== null)
+		{
+			return $array[$field];
+		}
+		return null;
 	}
 
 	/**
 	 * Moves internal row pointer to the next row
 	 *
-	 * @param resource The query ID.
-	 * @param int The pointer to move the row to.
+	 * @param mysqli_result $query The query ID.
+	 * @param int $row The pointer to move the row to.
+	 * @return bool
 	 */
 	function data_seek($query, $row)
 	{
@@ -460,7 +507,7 @@ class DB_MySQLi
 	/**
 	 * Return the number of rows resulting from a query.
 	 *
-	 * @param resource The query data.
+	 * @param mysqli_result $query The query data.
 	 * @return int The number of rows in the result.
 	 */
 	function num_rows($query)
@@ -486,7 +533,7 @@ class DB_MySQLi
 	function close()
 	{
 		@mysqli_close($this->read_link);
-		if ($this->write_link)
+		if($this->write_link)
 		{
 			@mysqli_close($this->write_link);
 		}
@@ -499,7 +546,7 @@ class DB_MySQLi
 	 */
 	function error_number()
 	{
-		if ($this->current_link)
+		if($this->current_link)
 		{
 			return mysqli_errno($this->current_link);
 		}
@@ -516,7 +563,7 @@ class DB_MySQLi
 	 */
 	function error_string()
 	{
-		if ($this->current_link)
+		if($this->current_link)
 		{
 			return mysqli_error($this->current_link);
 		}
@@ -529,17 +576,18 @@ class DB_MySQLi
 	/**
 	 * Output a database error.
 	 *
-	 * @param string The string to present as an error.
+	 * @param string $string The string to present as an error.
+	 * @return bool Whether error reporting is enabled or not
 	 */
 	function error($string="")
 	{
-		if ($this->error_reporting)
+		if($this->error_reporting)
 		{
-			if (class_exists("errorHandler"))
+			if(class_exists("errorHandler"))
 			{
 				global $error_handler;
 
-				if (!is_object($error_handler))
+				if(!is_object($error_handler))
 				{
 					require_once MYBB_ROOT."inc/class_error.php";
 					$error_handler = new errorHandler();
@@ -556,13 +604,14 @@ class DB_MySQLi
 			{
 				trigger_error("<strong>[SQL] [".$this->error_number()."] ".$this->error_string()."</strong><br />{$string}", E_USER_ERROR);
 			}
+
+			return true;
 		}
 		else
 		{
-			return FALSE;
+			return false;
 		}
 	}
-
 
 	/**
 	 * Returns the number of affected rows in a query.
@@ -574,11 +623,10 @@ class DB_MySQLi
 		return mysqli_affected_rows($this->current_link);
 	}
 
-
 	/**
 	 * Return the number of fields.
 	 *
-	 * @param resource The query data.
+	 * @param mysqli_result $query The query data.
 	 * @return int The number of fields.
 	 */
 	function num_fields($query)
@@ -587,61 +635,81 @@ class DB_MySQLi
 	}
 
 	/**
-	 * Lists all functions in the database.
+	 * Lists all tables in the database.
 	 *
-	 * @param string The database name.
-	 * @param string Prefix of the table (optional)
+	 * @param string $database The database name.
+	 * @param string $prefix Prefix of the table (optional)
 	 * @return array The table list.
 	 */
 	function list_tables($database, $prefix='')
 	{
-		if ($prefix)
+		if($prefix)
 		{
-			$query = $this->query("SHOW TABLES FROM `$database` LIKE '".$this->escape_string($prefix)."%'");
+			if(version_compare($this->get_version(), '5.0.2', '>='))
+			{
+				$query = $this->query("SHOW FULL TABLES FROM `$database` WHERE table_type = 'BASE TABLE' AND `Tables_in_$database` LIKE '".$this->escape_string($prefix)."%'");
+			}
+			else
+			{
+				$query = $this->query("SHOW TABLES FROM `$database` LIKE '".$this->escape_string($prefix)."%'");
+			}
 		}
 		else
 		{
-			$query = $this->query("SHOW TABLES FROM `$database`");
+			if(version_compare($this->get_version(), '5.0.2', '>='))
+			{
+				$query = $this->query("SHOW FULL TABLES FROM `$database` WHERE table_type = 'BASE TABLE'");
+			}
+			else
+			{
+				$query = $this->query("SHOW TABLES FROM `$database`");
+			}
 		}
 
+		$tables = array();
 		while(list($table) = mysqli_fetch_array($query))
 		{
 			$tables[] = $table;
 		}
+
 		return $tables;
 	}
 
 	/**
 	 * Check if a table exists in a database.
 	 *
-	 * @param string The table name.
-	 * @return boolean TRUE when exists, FALSE if not.
+	 * @param string $table The table name.
+	 * @return boolean True when exists, false if not.
 	 */
 	function table_exists($table)
 	{
 		// Execute on master server to ensure if we've just created a table that we get the correct result
-		$query = $this->write_query("
-			SHOW TABLES
-			LIKE '{$this->table_prefix}$table'
-		");
-		$exists = $this->num_rows($query);
-
-		if ($exists > 0)
+		if(version_compare($this->get_version(), '5.0.2', '>='))
 		{
-			return TRUE;
+			$query = $this->query("SHOW FULL TABLES FROM `".$this->database."` WHERE table_type = 'BASE TABLE' AND `Tables_in_".$this->database."` = '{$this->table_prefix}$table'");
 		}
 		else
 		{
-			return FALSE;
+			$query = $this->query("SHOW TABLES LIKE '{$this->table_prefix}$table'");
+		}
+
+		$exists = $this->num_rows($query);
+		if($exists > 0)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
 		}
 	}
 
 	/**
 	 * Check if a field exists in a database.
 	 *
-	 * @param string The field name.
-	 * @param string The table name.
-	 * @return boolean TRUE when exists, FALSE if not.
+	 * @param string $field The field name.
+	 * @param string $table The table name.
+	 * @return boolean True when exists, false if not.
 	 */
 	function field_exists($field, $table)
 	{
@@ -652,26 +720,26 @@ class DB_MySQLi
 		");
 		$exists = $this->num_rows($query);
 
-		if ($exists > 0)
+		if($exists > 0)
 		{
-			return TRUE;
+			return true;
 		}
 		else
 		{
-			return FALSE;
+			return false;
 		}
 	}
 
 	/**
 	 * Add a shutdown query.
 	 *
-	 * @param resource The query data.
-	 * @param string An optional name for the query.
+	 * @param mysqli_result $query The query data.
+	 * @param string $name An optional name for the query.
 	 */
-	function shutdown_query($query, $name=0)
+	function shutdown_query($query, $name="")
 	{
 		global $shutdown_queries;
-		if ($name)
+		if($name)
 		{
 			$shutdown_queries[$name] = $query;
 		}
@@ -684,36 +752,40 @@ class DB_MySQLi
 	/**
 	 * Performs a simple select query.
 	 *
-	 * @param string The table name to be queried.
-	 * @param string Comma delimetered list of fields to be selected.
-	 * @param string SQL formatted list of conditions to be matched.
-	 * @param array List of options, order by, order direction, limit, limit start.
-	 * @return resource The query data.
+	 * @param string $table The table name to be queried.
+	 * @param string $fields Comma delimetered list of fields to be selected.
+	 * @param string $conditions SQL formatted list of conditions to be matched.
+	 * @param array $options List of options: group by, order by, order direction, limit, limit start.
+	 * @return mysqli_result The query data.
 	 */
-
 	function simple_select($table, $fields="*", $conditions="", $options=array())
 	{
 		$query = "SELECT ".$fields." FROM ".$this->table_prefix.$table;
 
-		if ($conditions != "")
+		if($conditions != "")
 		{
 			$query .= " WHERE ".$conditions;
 		}
 
-		if (isset($options['order_by']))
+		if(isset($options['group_by']))
+		{
+			$query .= " GROUP BY ".$options['group_by'];
+		}
+
+		if(isset($options['order_by']))
 		{
 			$query .= " ORDER BY ".$options['order_by'];
-			if (isset($options['order_dir']))
+			if(isset($options['order_dir']))
 			{
 				$query .= " ".my_strtoupper($options['order_dir']);
 			}
 		}
 
-		if (isset($options['limit_start']) && isset($options['limit']))
+		if(isset($options['limit_start']) && isset($options['limit']))
 		{
 			$query .= " LIMIT ".$options['limit_start'].", ".$options['limit'];
 		}
-		else if (isset($options['limit']))
+		else if(isset($options['limit']))
 		{
 			$query .= " LIMIT ".$options['limit'];
 		}
@@ -724,22 +796,42 @@ class DB_MySQLi
 	/**
 	 * Build an insert query from an array.
 	 *
-	 * @param string The table name to perform the query on.
-	 * @param array An array of fields and their values.
+	 * @param string $table The table name to perform the query on.
+	 * @param array $array An array of fields and their values.
 	 * @return int The insert ID if available
 	 */
 	function insert_query($table, $array)
 	{
-		if (!is_array($array))
+		global $mybb;
+
+		if(!is_array($array))
 		{
-			return FALSE;
+			return false;
 		}
+
+		foreach($array as $field => $value)
+		{
+			if(isset($mybb->binary_fields[$table][$field]) && $mybb->binary_fields[$table][$field])
+			{
+				if($value[0] != 'X') // Not escaped?
+				{
+					$value = $this->escape_binary($value);
+				}
+				
+				$array[$field] = $value;
+			}
+			else
+			{
+				$array[$field] = $this->quote_val($value);
+			}
+		}
+
 		$fields = "`".implode("`,`", array_keys($array))."`";
-		$values = implode("','", $array);
+		$values = implode(",", $array);
 		$this->write_query("
 			INSERT
 			INTO {$this->table_prefix}{$table} (".$fields.")
-			VALUES ('".$values."')
+			VALUES (".$values.")
 		");
 		return $this->insert_id();
 	}
@@ -747,15 +839,17 @@ class DB_MySQLi
 	/**
 	 * Build one query for multiple inserts from a multidimensional array.
 	 *
-	 * @param string The table name to perform the query on.
-	 * @param array An array of inserts.
-	 * @return int The insert ID if available
+	 * @param string $table The table name to perform the query on.
+	 * @param array $array An array of inserts.
+	 * @return void
 	 */
 	function insert_query_multiple($table, $array)
 	{
-		if (!is_array($array))
+		global $mybb;
+
+		if(!is_array($array))
 		{
-			return FALSE;
+			return;
 		}
 		// Field names
 		$fields = array_keys($array[0]);
@@ -764,7 +858,23 @@ class DB_MySQLi
 		$insert_rows = array();
 		foreach($array as $values)
 		{
-			$insert_rows[] = "('".implode("','", $values)."')";
+			foreach($values as $field => $value)
+			{
+				if(isset($mybb->binary_fields[$table][$field]) && $mybb->binary_fields[$table][$field])
+				{
+					if($value[0] != 'X') // Not escaped?
+					{
+						$value = $this->escape_binary($value);
+					}
+				
+					$values[$field] = $value;
+				}
+				else
+				{
+					$values[$field] = $this->quote_val($value);
+				}
+			}
+			$insert_rows[] = "(".implode(",", $values).")";
 		}
 		$insert_rows = implode(", ", $insert_rows);
 
@@ -778,41 +888,57 @@ class DB_MySQLi
 	/**
 	 * Build an update query from an array.
 	 *
-	 * @param string The table name to perform the query on.
-	 * @param array An array of fields and their values.
-	 * @param string An optional where clause for the query.
-	 * @param string An optional limit clause for the query.
-	 * @param boolean An option to quote incoming values of the array.
-	 * @return resource The query data.
+	 * @param string $table The table name to perform the query on.
+	 * @param array $array An array of fields and their values.
+	 * @param string $where An optional where clause for the query.
+	 * @param string $limit An optional limit clause for the query.
+	 * @param boolean $no_quote An option to quote incoming values of the array.
+	 * @return mysqli_result The query data.
 	 */
-	function update_query($table, $array, $where="", $limit="", $no_quote=FALSE)
+	function update_query($table, $array, $where="", $limit="", $no_quote=false)
 	{
-		if (!is_array($array))
+		global $mybb;
+
+		if(!is_array($array))
 		{
-			return FALSE;
+			return false;
 		}
 
 		$comma = "";
 		$query = "";
 		$quote = "'";
 
-		if ($no_quote == TRUE)
+		if($no_quote == true)
 		{
 			$quote = "";
 		}
 
 		foreach($array as $field => $value)
 		{
-			$query .= $comma."`".$field."`={$quote}{$value}{$quote}";
+			if(isset($mybb->binary_fields[$table][$field]) && $mybb->binary_fields[$table][$field])
+			{
+				if($value[0] != 'X') // Not escaped?
+				{
+					$value = $this->escape_binary($value);
+				}
+				
+				$query .= $comma."`".$field."`={$value}";
+			}
+			else
+			{
+				$quoted_value = $this->quote_val($value, $quote);
+
+				$query .= $comma."`".$field."`={$quoted_value}";
+			}
 			$comma = ', ';
 		}
 
-		if (!empty($where))
+		if(!empty($where))
 		{
 			$query .= " WHERE $where";
 		}
 
-		if (!empty($limit))
+		if(!empty($limit))
 		{
 			$query .= " LIMIT $limit";
 		}
@@ -824,21 +950,41 @@ class DB_MySQLi
 	}
 
 	/**
+	 * @param int|string $value
+	 * @param string $quote
+	 *
+	 * @return int|string
+	 */
+	private function quote_val($value, $quote="'")
+	{
+		if(is_int($value))
+		{
+			$quoted = $value;
+		}
+		else
+		{
+			$quoted = $quote . $value . $quote;
+		}
+
+		return $quoted;
+	}
+
+	/**
 	 * Build a delete query.
 	 *
-	 * @param string The table name to perform the query on.
-	 * @param string An optional where clause for the query.
-	 * @param string An optional limit clause for the query.
-	 * @return resource The query data.
+	 * @param string $table The table name to perform the query on.
+	 * @param string $where An optional where clause for the query.
+	 * @param string $limit An optional limit clause for the query.
+	 * @return mysqli_result The query data.
 	 */
 	function delete_query($table, $where="", $limit="")
 	{
 		$query = "";
-		if (!empty($where))
+		if(!empty($where))
 		{
 			$query .= " WHERE $where";
 		}
-		if (!empty($limit))
+		if(!empty($limit))
 		{
 			$query .= " LIMIT $limit";
 		}
@@ -848,12 +994,21 @@ class DB_MySQLi
 	/**
 	 * Escape a string according to the MySQL escape format.
 	 *
-	 * @param string The string to be escaped.
+	 * @param string $string The string to be escaped.
 	 * @return string The escaped string.
 	 */
 	function escape_string($string)
 	{
-		if (function_exists("mysqli_real_escape_string") && $this->read_link)
+		if($this->db_encoding == 'utf8')
+		{
+			$string = validate_utf8_string($string, false);
+		}
+		elseif($this->db_encoding == 'utf8mb4')
+		{
+			$string = validate_utf8_string($string);
+		}
+
+		if(function_exists("mysqli_real_escape_string") && $this->read_link)
 		{
 			$string = mysqli_real_escape_string($this->read_link, $string);
 		}
@@ -867,23 +1022,24 @@ class DB_MySQLi
 	/**
 	 * Frees the resources of a MySQLi query.
 	 *
-	 * @param object The query to destroy.
-	 * @return boolean Returns TRUE on success, FALSE on faliure
+	 * @param mysqli_result $query The query to destroy.
+	 * @return boolean Returns true
 	 */
 	function free_result($query)
 	{
-		return mysqli_free_result($query);
+		mysqli_free_result($query);
+		return true; // Kept for compatibility reasons
 	}
 
 	/**
 	 * Escape a string used within a like command.
 	 *
-	 * @param string The string to be escaped.
+	 * @param string $string The string to be escaped.
 	 * @return string The escaped string.
 	 */
 	function escape_string_like($string)
 	{
-		return $this->escape_string(str_replace(array('%', '_') , array('\\%' , '\\_') , $string));
+		return $this->escape_string(str_replace(array('\\', '%', '_') , array('\\\\', '\\%' , '\\_') , $string));
 	}
 
 	/**
@@ -893,16 +1049,19 @@ class DB_MySQLi
 	 */
 	function get_version()
 	{
-		if ($this->version)
+		if($this->version)
 		{
 			return $this->version;
 		}
+
 		$query = $this->query("SELECT VERSION() as version");
 		$ver = $this->fetch_array($query);
-		if ($ver['version'])
+		$version = $ver['version'];
+
+		if($version)
 		{
-			$version = explode(".", $ver['version'], 3);
-			$this->version = intval($version[0]).".".intval($version[1]).".".intval($version[2]);
+			$version = explode(".", $version, 3);
+			$this->version = (int)$version[0].".".(int)$version[1].".".(int)$version[2];
 		}
 		return $this->version;
 	}
@@ -910,7 +1069,7 @@ class DB_MySQLi
 	/**
 	 * Optimizes a specific table.
 	 *
-	 * @param string The name of the table to be optimized.
+	 * @param string $table The name of the table to be optimized.
 	 */
 	function optimize_table($table)
 	{
@@ -920,7 +1079,7 @@ class DB_MySQLi
 	/**
 	 * Analyzes a specific table.
 	 *
-	 * @param string The name of the table to be analyzed.
+	 * @param string $table The name of the table to be analyzed.
 	 */
 	function analyze_table($table)
 	{
@@ -930,7 +1089,7 @@ class DB_MySQLi
 	/**
 	 * Show the "create table" command for a specific table.
 	 *
-	 * @param string The name of the table.
+	 * @param string $table The name of the table.
 	 * @return string The MySQL command to create the specified table.
 	 */
 	function show_create_table($table)
@@ -944,12 +1103,13 @@ class DB_MySQLi
 	/**
 	 * Show the "show fields from" command for a specific table.
 	 *
-	 * @param string The name of the table.
-	 * @return string Field info for that table
+	 * @param string $table The name of the table.
+	 * @return array Field info for that table
 	 */
 	function show_fields_from($table)
 	{
 		$query = $this->write_query("SHOW FIELDS FROM ".$this->table_prefix.$table."");
+		$field_info = array();
 		while($field = $this->fetch_array($query))
 		{
 			$field_info[] = $field;
@@ -960,36 +1120,36 @@ class DB_MySQLi
 	/**
 	 * Returns whether or not the table contains a fulltext index.
 	 *
-	 * @param string The name of the table.
-	 * @param string Optionally specify the name of the index.
-	 * @return boolean TRUE or FALSE if the table has a fulltext index or not.
+	 * @param string $table The name of the table.
+	 * @param string $index Optionally specify the name of the index.
+	 * @return boolean True or false if the table has a fulltext index or not.
 	 */
 	function is_fulltext($table, $index="")
 	{
 		$structure = $this->show_create_table($table);
-		if ($index != "")
+		if($index != "")
 		{
-			if (preg_match("#FULLTEXT KEY (`?)$index(`?)#i", $structure))
+			if(preg_match("#FULLTEXT KEY (`?)$index(`?)#i", $structure))
 			{
-				return TRUE;
+				return true;
 			}
 			else
 			{
-				return FALSE;
+				return false;
 			}
 		}
-		if (preg_match('#FULLTEXT KEY#i', $structure))
+		if(preg_match('#FULLTEXT KEY#i', $structure))
 		{
-			return TRUE;
+			return true;
 		}
-		return FALSE;
+		return false;
 	}
 
 	/**
 	 * Returns whether or not this database engine supports fulltext indexing.
 	 *
-	 * @param string The table to be checked.
-	 * @return boolean TRUE or FALSE if supported or not.
+	 * @param string $table The table to be checked.
+	 * @return boolean True or false if supported or not.
 	 */
 
 	function supports_fulltext($table)
@@ -998,63 +1158,68 @@ class DB_MySQLi
 		$query = $this->write_query("SHOW TABLE STATUS LIKE '{$this->table_prefix}$table'");
 		$status = $this->fetch_array($query);
 		$table_type = my_strtoupper($status['Engine']);
-		if ($version >= '3.23.23' && $table_type == 'MYISAM')
+		if(version_compare($version, '3.23.23', '>=') && ($table_type == 'MYISAM' || $table_type == 'ARIA'))
 		{
-			return TRUE;
+			return true;
 		}
-		return FALSE;
+		elseif(version_compare($version, '5.6', '>=') && $table_type == 'INNODB')
+		{
+			return true;
+		}
+		return false;
 	}
 
 	/**
 	 * Returns whether or not this database engine supports boolean fulltext matching.
 	 *
-	 * @param string The table to be checked.
-	 * @return boolean TRUE or FALSE if supported or not.
+	 * @param string $table The table to be checked.
+	 * @return boolean True or false if supported or not.
 	 */
 	function supports_fulltext_boolean($table)
 	{
 		$version = $this->get_version();
 		$supports_fulltext = $this->supports_fulltext($table);
-		if ($version >= '4.0.1' && $supports_fulltext == TRUE)
+		if(version_compare($version, '4.0.1', '>=') && $supports_fulltext == true)
 		{
-			return TRUE;
+			return true;
 		}
-		return FALSE;
+		return false;
 	}
 
 	/**
 	 * Checks to see if an index exists on a specified table
 	 *
-	 * @param string The name of the table.
-	 * @param string The name of the index.
+	 * @param string $table The name of the table.
+	 * @param string $index The name of the index.
+	 * @return bool Returns whether index exists
 	 */
 	function index_exists($table, $index)
 	{
-		$index_exists = FALSE;
+		$index_exists = false;
 		$query = $this->write_query("SHOW INDEX FROM {$this->table_prefix}{$table}");
 		while($ukey = $this->fetch_array($query))
 		{
-			if ($ukey['Key_name'] == $index)
+			if($ukey['Key_name'] == $index)
 			{
-				$index_exists = TRUE;
+				$index_exists = true;
 				break;
 			}
 		}
 
-		if ($index_exists)
+		if($index_exists)
 		{
-			return TRUE;
+			return true;
 		}
 
-		return FALSE;
+		return false;
 	}
 
 	/**
 	 * Creates a fulltext index on the specified column in the specified table with optional index name.
 	 *
-	 * @param string The name of the table.
-	 * @param string Name of the column to be indexed.
-	 * @param string The index name, optional.
+	 * @param string $table The name of the table.
+	 * @param string $column Name of the column to be indexed.
+	 * @param string $name The index name, optional.
 	 */
 	function create_fulltext_index($table, $column, $name="")
 	{
@@ -1064,8 +1229,8 @@ class DB_MySQLi
 	/**
 	 * Drop an index with the specified name from the specified table
 	 *
-	 * @param string The name of the table.
-	 * @param string The name of the index.
+	 * @param string $table The name of the table.
+	 * @param string $name The name of the index.
 	 */
 	function drop_index($table, $name)
 	{
@@ -1075,12 +1240,13 @@ class DB_MySQLi
 	/**
 	 * Drop an table with the specified table
 	 *
-	 * @param boolean hard drop - no checking
-	 * @param boolean use table prefix
+	 * @param string $table The table to drop
+	 * @param boolean $hard hard drop - no checking
+	 * @param boolean $table_prefix use table prefix
 	 */
-	function drop_table($table, $hard=FALSE, $table_prefix=TRUE)
+	function drop_table($table, $hard=false, $table_prefix=true)
 	{
-		if ($table_prefix == FALSE)
+		if($table_prefix == false)
 		{
 			$table_prefix = "";
 		}
@@ -1089,7 +1255,7 @@ class DB_MySQLi
 			$table_prefix = $this->table_prefix;
 		}
 
-		if ($hard == FALSE)
+		if($hard == false)
 		{
 			$this->write_query('DROP TABLE IF EXISTS '.$table_prefix.$table);
 		}
@@ -1100,25 +1266,64 @@ class DB_MySQLi
 	}
 
 	/**
+	 * Renames a table
+	 *
+	 * @param string $old_table The old table name
+	 * @param string $new_table the new table name
+	 * @param boolean $table_prefix use table prefix
+	 * @return mysqli_result
+	 */
+	function rename_table($old_table, $new_table, $table_prefix=true)
+	{
+		if($table_prefix == false)
+		{
+			$table_prefix = "";
+		}
+		else
+		{
+			$table_prefix = $this->table_prefix;
+		}
+
+		return $this->write_query("RENAME TABLE {$table_prefix}{$old_table} TO {$table_prefix}{$new_table}");
+	}
+
+	/**
 	 * Replace contents of table with values
 	 *
-	 * @param string The table
-	 * @param array The replacements
+	 * @param string $table The table
+	 * @param array $replacements The replacements
+	 * @param string|array $default_field The default field(s)
+	 * @param boolean $insert_id Whether or not to return an insert id. True by default
+	 * @return mysqli_result|bool
 	 */
-	function replace_query($table, $replacements=array())
+	function replace_query($table, $replacements=array(), $default_field="", $insert_id=true)
 	{
+		global $mybb;
+
 		$values = '';
 		$comma = '';
 		foreach($replacements as $column => $value)
 		{
-			$values .= $comma."`".$column."`='".$value."'";
+			if(isset($mybb->binary_fields[$table][$column]) && $mybb->binary_fields[$table][$column])
+			{
+				if($value[0] != 'X') // Not escaped?
+				{
+					$value = $this->escape_binary($value);
+				}
+				
+				$values .= $comma."`".$column."`=".$value;
+			}
+			else
+			{
+				$values .= $comma."`".$column."`=".$this->quote_val($value);
+			}
 
 			$comma = ',';
 		}
 
-		if (empty($replacements))
+		if(empty($replacements))
 		{
-			 return FALSE;
+			 return false;
 		}
 
 		return $this->write_query("REPLACE INTO {$this->table_prefix}{$table} SET {$values}");
@@ -1127,55 +1332,122 @@ class DB_MySQLi
 	/**
 	 * Drops a column
 	 *
-	 * @param string The table
-	 * @param string The column name
+	 * @param string $table The table
+	 * @param string $column The column name
+	 * @return mysqli_result
 	 */
 	function drop_column($table, $column)
 	{
-		return $this->write_query("ALTER TABLE {$this->table_prefix}{$table} DROP {$column}");
+		$column = trim($column, '`');
+
+		return $this->write_query("ALTER TABLE {$this->table_prefix}{$table} DROP `{$column}`");
 	}
 
 	/**
 	 * Adds a column
 	 *
-	 * @param string The table
-	 * @param string The column name
-	 * @param string the new column definition
+	 * @param string $table The table
+	 * @param string $column The column name
+	 * @param string $definition the new column definition
+	 * @return mysqli_result
 	 */
 	function add_column($table, $column, $definition)
 	{
-		return $this->write_query("ALTER TABLE {$this->table_prefix}{$table} ADD {$column} {$definition}");
+		$column = trim($column, '`');
+
+		return $this->write_query("ALTER TABLE {$this->table_prefix}{$table} ADD `{$column}` {$definition}");
 	}
 
 	/**
 	 * Modifies a column
 	 *
-	 * @param string The table
-	 * @param string The column name
-	 * @param string the new column definition
+	 * @param string $table The table
+	 * @param string $column The column name
+	 * @param string $new_definition the new column definition
+	 * @param boolean|string $new_not_null Whether to "drop" or "set" the NOT NULL attribute (no change if false)
+	 * @param boolean|string $new_default_value The new default value, or false to drop the attribute
+	 * @return bool Returns true if all queries are executed successfully or false if one of them failed
 	 */
-	function modify_column($table, $column, $new_definition)
+	function modify_column($table, $column, $new_definition, $new_not_null=false, $new_default_value=false)
 	{
-		return $this->write_query("ALTER TABLE {$this->table_prefix}{$table} MODIFY {$column} {$new_definition}");
+		$column = trim($column, '`');
+
+		if($new_not_null !== false)
+		{
+			if(strtolower($new_not_null) == "set")
+			{
+				$not_null = "NOT NULL";
+			}
+			else
+			{
+				$not_null = "NULL";
+			}
+		}
+		else
+		{
+			$not_null = '';
+		}
+
+		if($new_default_value !== null)
+		{
+			$default = "DEFAULT ".$new_default_value;
+		}
+		else
+		{
+			$default = '';
+		}
+
+		return (bool)$this->write_query("ALTER TABLE {$this->table_prefix}{$table} MODIFY `{$column}` {$new_definition} {$not_null}");
 	}
 
 	/**
 	 * Renames a column
 	 *
-	 * @param string The table
-	 * @param string The old column name
-	 * @param string the new column name
-	 * @param string the new column definition
+	 * @param string $table The table
+	 * @param string $old_column The old column name
+	 * @param string $new_column the new column name
+	 * @param string $new_definition the new column definition
+	 * @param boolean|string $new_not_null Whether to "drop" or "set" the NOT NULL attribute (no change if false)
+	 * @param boolean|string $new_default_value The new default value, or false to drop the attribute
+	 * @return bool Returns true if all queries are executed successfully
 	 */
-	function rename_column($table, $old_column, $new_column, $new_definition)
+	function rename_column($table, $old_column, $new_column, $new_definition, $new_not_null=false, $new_default_value=false)
 	{
-		return $this->write_query("ALTER TABLE {$this->table_prefix}{$table} CHANGE {$old_column} {$new_column} {$new_definition}");
+		$old_column = trim($old_column, '`');
+		$new_column = trim($new_column, '`');
+
+		if($new_not_null !== false)
+		{
+			if(strtolower($new_not_null) == "set")
+			{
+				$not_null = "NOT NULL";
+			}
+			else
+			{
+				$not_null = "NULL";
+			}
+		}
+		else
+		{
+			$not_null = '';
+		}
+
+		if($new_default_value !== false)
+		{
+			$default = "DEFAULT ".$new_default_value;
+		}
+		else
+		{
+			$default = '';
+		}
+
+		return (bool)$this->write_query("ALTER TABLE {$this->table_prefix}{$table} CHANGE `{$old_column}` `{$new_column}` {$new_definition} {$not_null} {$default}");
 	}
 
 	/**
 	 * Sets the table prefix used by the simple select, insert, update and delete functions
 	 *
-	 * @param string The new table prefix
+	 * @param string $prefix The new table prefix
 	 */
 	function set_table_prefix($prefix)
 	{
@@ -1185,12 +1457,12 @@ class DB_MySQLi
 	/**
 	 * Fetched the total size of all mysql tables or a specific table
 	 *
-	 * @param string The table (optional)
+	 * @param string $table The table (optional)
 	 * @return integer the total size of all mysql tables or a specific table
 	 */
 	function fetch_size($table='')
 	{
-		if ($table != '')
+		if($table != '')
 		{
 			$query = $this->query("SHOW TABLE STATUS LIKE '".$this->table_prefix.$table."'");
 		}
@@ -1209,13 +1481,13 @@ class DB_MySQLi
 	/**
 	 * Fetch a list of database character sets this DBMS supports
 	 *
-	 * @return array Array of supported character sets with array key being the name, array value being display name. FALSE if unsupported
+	 * @return array|bool Array of supported character sets with array key being the name, array value being display name. False if unsupported
 	 */
 	function fetch_db_charsets()
 	{
-		if ($this->link && version_compare($this->get_version(), "4.1", "<"))
+		if($this->write_link && version_compare($this->get_version(), "4.1", "<"))
 		{
-			return FALSE;
+			return false;
 		}
 		return array(
 			'big5' => 'Big5 Traditional Chinese',
@@ -1223,7 +1495,7 @@ class DB_MySQLi
 			'cp850' => 'DOS West European',
 			'hp8' => 'HP West European',
 			'koi8r' => 'KOI8-R Relcom Russian',
-			'latin1' => 'cp1252 West European',
+			'latin1' => 'ISO 8859-1 Latin 1',
 			'latin2' => 'ISO 8859-2 Central European',
 			'swe7' => '7bit Swedish',
 			'ascii' => 'US ASCII',
@@ -1240,6 +1512,7 @@ class DB_MySQLi
 			'latin5' => 'ISO 8859-9 Turkish',
 			'armscii8' => 'ARMSCII-8 Armenian',
 			'utf8' => 'UTF-8 Unicode',
+			'utf8mb4' => '4-Byte UTF-8 Unicode (requires MySQL 5.5.3 or above)',
 			'ucs2' => 'UCS-2 Unicode',
 			'cp866' => 'DOS Russian',
 			'keybcs2' => 'DOS Kamenicky Czech-Slovak',
@@ -1250,7 +1523,6 @@ class DB_MySQLi
 			'cp1251' => 'Windows Cyrillic',
 			'cp1256' => 'Windows Arabic',
 			'cp1257' => 'Windows Baltic',
-			'binary' => 'Binary pseudo charset',
 			'geostd8' => 'GEOSTD8 Georgian',
 			'cp932' => 'SJIS for Windows Japanese',
 			'eucjpms' => 'UJIS for Windows Japanese',
@@ -1260,8 +1532,8 @@ class DB_MySQLi
 	/**
 	 * Fetch a database collation for a particular database character set
 	 *
-	 * @param string The database character set
-	 * @return string The matching database collation, FALSE if unsupported
+	 * @param string $charset The database character set
+	 * @return string|bool The matching database collation, false if unsupported
 	 */
 	function fetch_charset_collation($charset)
 	{
@@ -1288,6 +1560,7 @@ class DB_MySQLi
 			'latin5' => 'latin5_turkish_ci',
 			'armscii8' => 'armscii8_general_ci',
 			'utf8' => 'utf8_general_ci',
+			'utf8mb4' => 'utf8mb4_general_ci',
 			'ucs2' => 'ucs2_general_ci',
 			'cp866' => 'cp866_general_ci',
 			'keybcs2' => 'keybcs2_general_ci',
@@ -1298,16 +1571,15 @@ class DB_MySQLi
 			'cp1251' => 'cp1251_general_ci',
 			'cp1256' => 'cp1256_general_ci',
 			'cp1257' => 'cp1257_general_ci',
-			'binary' => 'binary',
 			'geostd8' => 'geostd8_general_ci',
 			'cp932' => 'cp932_japanese_ci',
 			'eucjpms' => 'eucjpms_japanese_ci',
 		);
-		if ($collations[$charset])
+		if($collations[$charset])
 		{
 			return $collations[$charset];
 		}
-		return FALSE;
+		return false;
 	}
 
 	/**
@@ -1317,13 +1589,13 @@ class DB_MySQLi
 	 */
 	function build_create_table_collation()
 	{
-		if (!$this->db_encoding)
+		if(!$this->db_encoding)
 		{
 			return '';
 		}
 
 		$collation = $this->fetch_charset_collation($this->db_encoding);
-		if (!$collation)
+		if(!$collation)
 		{
 			return '';
 		}
@@ -1333,30 +1605,34 @@ class DB_MySQLi
 	/**
 	 * Time how long it takes for a particular piece of code to run. Place calls above & below the block of code.
 	 *
-	 * @return float The time taken
+	 * @deprecated
 	 */
 	function get_execution_time()
 	{
-		static $time_start;
+		return get_execution_time();
+	}
 
-		$time = microtime(TRUE);
+	/**
+	 * Binary database fields require special attention.
+	 *
+	 * @param string $string Binary value
+	 * @return string Encoded binary value
+	 */
+	function escape_binary($string)
+	{
+		return "X'".$this->escape_string(bin2hex($string))."'";
+	}
 
-
-		// Just starting timer, init and return
-		if (!$time_start)
-		{
-			$time_start = $time;
-			return;
-		}
-		// Timer has run, return execution time
-		else
-		{
-			$total = $time-$time_start;
-			if ($total < 0) $total = 0;
-			$time_start = 0;
-			return $total;
-		}
+	/**
+	 * Unescape binary data.
+	 *
+	 * @param string $string Binary value
+	 * @return string Encoded binary value
+	 */
+	function unescape_binary($string)
+	{
+		// Nothing to do
+		return $string;
 	}
 }
 
-?>

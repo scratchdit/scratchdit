@@ -1,12 +1,11 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
- * $Id$
  */
 
 /**
@@ -25,9 +24,9 @@ class DataHandler
 	/**
 	 * Whether or not the data has been validated. Note: "validated" != "valid".
 	 *
-	 * @var boolean TRUE when validated, FALSE when not validated.
+	 * @var boolean True when validated, false when not validated.
 	 */
-	public $is_validated = FALSE;
+	public $is_validated = false;
 
 	/**
 	 * The errors that occurred when handling data.
@@ -41,7 +40,7 @@ class DataHandler
 	 *
 	 * @var boolean
 	 */
-	public $admin_override = FALSE;
+	public $admin_override = false;
 
 	/**
 	 * Defines if we're performing an update or an insert.
@@ -61,11 +60,11 @@ class DataHandler
 	/**
 	 * Constructor for the data handler.
 	 *
-	 * @param string The method we're performing with this object.
+	 * @param string $method The method we're performing with this object.
 	 */
 	function __construct($method="insert")
 	{
-		if ($method != "update" && $method != "insert")
+		if($method != "update" && $method != "insert" && $method != "get" && $method != "delete")
 		{
 			die("A valid method was not supplied to the data handler.");
 		}
@@ -75,22 +74,24 @@ class DataHandler
 	/**
 	 * Sets the data to be used for the data handler
 	 *
-	 * @param array The data.
+	 * @param array $data The data.
+	 * @return bool
 	 */
 	function set_data($data)
 	{
-		if (!is_array($data))
+		if(!is_array($data))
 		{
-			return FALSE;
+			return false;
 		}
 		$this->data = $data;
-		return TRUE;
+		return true;
 	}
 
 	/**
 	 * Add an error to the error array.
 	 *
-	 * @param string The error name.
+	 * @param string $error The error name.
+	 * @param string $data
 	 */
 	function set_error($error, $data='')
 	{
@@ -103,7 +104,7 @@ class DataHandler
 	/**
 	 * Returns the error(s) that occurred when handling data.
 	 *
-	 * @return string|array An array of errors.
+	 * @return array An array of errors.
 	 */
 	function get_errors()
 	{
@@ -114,33 +115,34 @@ class DataHandler
 	 * Returns the error(s) that occurred when handling data
 	 * in a format that MyBB can handle.
 	 *
-	 * @return An array of errors in a MyBB format.
+	 * @return array An array of errors in a MyBB format.
 	 */
 	function get_friendly_errors()
 	{
 		global $lang;
 
 		// Load the language pack we need
-		if ($this->language_file)
+		if($this->language_file)
 		{
-			$lang->load($this->language_file, TRUE);
+			$lang->load($this->language_file, true);
 		}
 		// Prefix all the error codes with the language prefix.
+		$errors = array();
 		foreach($this->errors as $error)
 		{
 			$lang_string = $this->language_prefix.'_'.$error['error_code'];
-			if (!$lang->$lang_string)
+			if(!$lang->$lang_string)
 			{
 				$errors[] = $error['error_code'];
 				continue;
 			}
 
-			if (!empty($error['data']) && !is_array($error['data']))
+			if(!empty($error['data']) && !is_array($error['data']))
 			{
 				$error['data'] = array($error['data']);
 			}
 
-			if (is_array($error['data']))
+			if(is_array($error['data']))
 			{
 				array_unshift($error['data'], $lang->$lang_string);
 				$errors[] = call_user_func_array(array($lang, "sprintf"), $error['data']);
@@ -156,9 +158,9 @@ class DataHandler
 	/**
 	 * Sets whether or not we are done validating.
 	 *
-	 * @param boolean TRUE when done, FALSE when not done.
+	 * @param boolean True when done, false when not done.
 	 */
-	function set_validated($validated = TRUE)
+	function set_validated($validated = true)
 	{
 		$this->is_validated = $validated;
 	}
@@ -166,34 +168,34 @@ class DataHandler
 	/**
 	 * Returns whether or not we are done validating.
 	 *
-	 * @return boolean TRUE when done, FALSE when not done.
+	 * @return boolean True when done, false when not done.
 	 */
 	function get_validated()
 	{
-		if ($this->is_validated == TRUE)
+		if($this->is_validated == true)
 		{
-			return TRUE;
+			return true;
 		}
 		else
 		{
-			return FALSE;
+			return false;
 		}
 	}
 
 	/**
 	* Verifies if yes/no options haven't been modified.
 	*
-	* @param array The user options array.
-	* @param string The specific option to check.
-	* @param string Optionally specify if the default should be used.
+	* @param array $options The user options array.
+	* @param string $option The specific option to check.
+	* @param int|bool $default Optionally specify if the default should be used.
 	*/
 	function verify_yesno_option(&$options, $option, $default=1)
 	{
-		if ($this->method == "insert" || array_key_exists($option, $options))
+		if($this->method == "insert" || array_key_exists($option, $options))
 		{
-			if ($options[$option] != $default && $options[$option] != "")
+			if(isset($options[$option]) && $options[$option] != $default && $options[$option] != "")
 			{
-				if ($default == 1)
+				if($default == 1)
 				{
 					$options[$option] = 0;
 				}
@@ -202,7 +204,7 @@ class DataHandler
 					$options[$option] = 1;
 				}
 			}
-			else if (@array_key_exists($option, $options) && $options[$option] == '')
+			else if(@array_key_exists($option, $options) && $options[$option] == '')
 			{
 				$options[$option] = 0;
 			}
@@ -213,4 +215,3 @@ class DataHandler
 		}
 	}
 }
-?>

@@ -1,12 +1,11 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
- * $Id$
  */
 
 class templates
@@ -35,7 +34,7 @@ class templates
 	/**
 	 * Cache the templates.
 	 *
-	 * @param string A list of templates to cache.
+	 * @param string $templates A list of templates to cache.
 	 */
 	function cache($templates)
 	{
@@ -57,9 +56,9 @@ class templates
 	/**
 	 * Gets templates.
 	 *
-	 * @param string The title of the template to get.
-	 * @param boolean TRUE if template contents must be escaped, FALSE if not.
-	 * @param boolean TRUE to output HTML comments, FALSE to not output.
+	 * @param string $title The title of the template to get.
+	 * @param boolean|int $eslashes True if template contents must be escaped, false if not.
+	 * @param boolean|int $htmlcomments True to output HTML comments, false to not output.
 	 * @return string The template HTML.
 	 */
 	function get($title, $eslashes=1, $htmlcomments=1)
@@ -69,26 +68,34 @@ class templates
 		//
 		// DEVELOPMENT MODE
 		//
-		if ($mybb->dev_mode == 1)
+		if($mybb->dev_mode == 1)
 		{
 			$template = $this->dev_get($title);
-			if ($template !== FALSE)
+			if($template !== false)
 			{
 				$this->cache[$title] = $template;
 			}
 		}
 
-		if (!isset($this->cache[$title]))
+		if(!isset($this->cache[$title]))
 		{
-			$query = $db->simple_select("templates", "template", "title='".$db->escape_string($title)."' AND sid IN ('-2','-1','".$theme['templateset']."')", array('order_by' => 'sid', 'order_dir' => 'DESC', 'limit' => 1));
+			// Only load master and global templates if template is needed in Admin CP
+			if(empty($theme['templateset']))
+			{
+				$query = $db->simple_select("templates", "template", "title='".$db->escape_string($title)."' AND sid IN ('-2','-1')", array('order_by' => 'sid', 'order_dir' => 'DESC', 'limit' => 1));
+			}
+			else
+			{
+				$query = $db->simple_select("templates", "template", "title='".$db->escape_string($title)."' AND sid IN ('-2','-1','".$theme['templateset']."')", array('order_by' => 'sid', 'order_dir' => 'DESC', 'limit' => 1));
+			}
 
 			$gettemplate = $db->fetch_array($query);
-			if ($mybb->debug_mode)
+			if($mybb->debug_mode)
 			{
 				$this->uncached_templates[$title] = $title;
 			}
 
-			if (!$gettemplate)
+			if(!$gettemplate)
 			{
 				$gettemplate['template'] = "";
 			}
@@ -97,9 +104,9 @@ class templates
 		}
 		$template = $this->cache[$title];
 
-		if ($htmlcomments)
+		if($htmlcomments)
 		{
-			if ($mybb->settings['tplhtmlcomments'] == 1)
+			if($mybb->settings['tplhtmlcomments'] == 1)
 			{
 				$template = "<!-- start: ".htmlspecialchars_uni($title)." -->\n{$template}\n<!-- end: ".htmlspecialchars_uni($title)." -->";
 			}
@@ -109,33 +116,48 @@ class templates
 			}
 		}
 
-		if ($eslashes)
+		if($eslashes)
 		{
 			$template = str_replace("\\'", "'", addslashes($template));
 		}
 		return $template;
 	}
+	
+	/**
+	 * Prepare a template for rendering to a variable.
+	 *
+	 * @param string $template The name of the template to get.
+	 * @param boolean $eslashes True if template contents must be escaped, false if not.
+	 * @param boolean $htmlcomments True to output HTML comments, false to not output.
+	 * @return string The eval()-ready PHP code for rendering the template
+	 */
+	function render($template, $eslashes=true, $htmlcomments=true)
+	{
+		return 'return "'.$this->get($template, $eslashes, $htmlcomments).'";';
+	}
 
 	/**
 	 * Fetch a template directly from the install/resources/mybb_theme.xml directory if it exists (DEVELOPMENT MODE)
+	 *
+	 * @param string $title
+	 * @return string|bool
 	 */
 	function dev_get($title)
 	{
 		static $template_xml;
 
-		if (!$template_xml)
+		if(!$template_xml)
 		{
-			if (@file_exists(MYBB_ROOT."install/resources/mybb_theme.xml"))
+			if(@file_exists(MYBB_ROOT."install/resources/mybb_theme.xml"))
 			{
 				$template_xml = simplexml_load_file(MYBB_ROOT."install/resources/mybb_theme.xml");
 			}
 			else
 			{
-				return FALSE;
+				return false;
 			}
 		}
 		$res = $template_xml->xpath("//template[@name='{$title}']");
 		return $res[0];
 	}
 }
-?>

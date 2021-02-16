@@ -1,9 +1,8 @@
 <?php
 /**
- * MyBB 1.6 English Language Pack
- * Copyright 2010 MyBB Group, All Rights Reserved
- * 
- * $Id$
+ * MyBB 1.8 English Language Pack
+ * Copyright 2014 MyBB Group, All Rights Reserved
+ *
  */
 
 $l['mass_mail'] = "Mass Mail";
@@ -45,13 +44,22 @@ $l['auto_gen_plain_text'] = "Attempt to automatically generate text version";
 $l['define_text_version'] = "Define the Text Version";
 $l['define_text_version_desc'] = "Enter the Text version of the message";
 $l['define_the_recipients'] = "Define the Recipients";
-$l['username_contains'] = "Username contains...";
-$l['email_addr_contains'] = "Email address contains...";
-$l['members_of'] = "Members of the following groups...";
+$l['username_contains'] = "Username contains&hellip;";
+$l['email_addr_contains'] = "Email address contains&hellip;";
+$l['members_of'] = "Members of the following groups&hellip;";
 $l['greater_than'] = "Greater Than";
 $l['is_exactly'] = "Is Exactly";
 $l['less_than'] = "Less Than";
+$l['more_than'] = "More Than";
 $l['post_count_is'] = "Post Count is";
+$l['hours'] = "Hours";
+$l['days'] = "Days";
+$l['weeks'] = "Weeks";
+$l['months'] = "Months";
+$l['years'] = "Years";
+$l['ago'] = "ago";
+$l['user_last_active'] = "User was Last Active";
+$l['user_registered'] = "User Registered";
 $l['save_mass_mail'] = "Save Mass Mail";
 
 $l['step_four'] = "Step 4";
@@ -62,6 +70,7 @@ $l['subject'] = "Subject";
 $l['message'] = "Message";
 $l['text_based'] = "Text Based";
 $l['preview'] = "Preview";
+$l['mass_mail_preview'] = "Mass Email Preview";
 $l['html_based'] = "HTML Based";
 $l['total_recipients'] = "Total Recipients";
 $l['change_recipient_conds'] = "Change recipient conditions";
@@ -109,4 +118,3 @@ $l['success_mass_mail_canceled'] = "The mass mailing delivery has been canceled 
 
 $l['mass_mail_deletion_confirmation'] = "Are you sure you want to delete this mass mailing?";
 
-?>

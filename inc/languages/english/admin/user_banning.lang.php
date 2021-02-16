@@ -1,9 +1,8 @@
 <?php
 /**
- * MyBB 1.6 English Language Pack
- * Copyright 2010 MyBB Group, All Rights Reserved
- * 
- * $Id$
+ * MyBB 1.8 English Language Pack
+ * Copyright 2014 MyBB Group, All Rights Reserved
+ *
  */
 
 // Tabs
@@ -61,5 +60,3 @@ $l['prune_threads_and_posts'] = "Prune Threads &amp; Posts";
 // Buttons
 $l['ban_user'] = "Ban User";
 $l['update_ban'] = "Update Ban";
-
-?>

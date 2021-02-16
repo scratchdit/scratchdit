@@ -1,12 +1,11 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
- * $Id$
  */
 
 define("IN_MYBB", 1);
@@ -26,43 +25,47 @@ $max_size = 32;
 $min_angle = -30;
 $max_angle = 30;
 
-if ($mybb->input['imagehash'] == "test")
+$mybb->input['imagehash'] = $mybb->get_input('imagehash');
+if($mybb->input['imagehash'])
 {
-	$imagestring = "MyBB";
-}
-elseif ($mybb->input['imagehash'])
-{
-	$query = $db->simple_select("captcha", "*", "imagehash='".$db->escape_string(strval($mybb->input['imagehash']))."'", array("limit" => 1));
+	$query = $db->simple_select("captcha", "*", "imagehash='".$db->escape_string($mybb->get_input('imagehash'))."' AND used=0", array("limit" => 1));
 	$regimage = $db->fetch_array($query);
+	if(!$regimage)
+	{
+		exit;
+	}
+	// Mark captcha as used
+	$db->update_query('captcha', array('used' => 1), "imagehash='".$db->escape_string($regimage['imagehash'])."'");
 	$imagestring = $regimage['imagestring'];
 }
 else
 {
-	return FALSE;
+	exit;
 }
 
 $ttf_fonts = array();
 
-// We have support for TRUE-type fonts (FreeType 2)
-if (function_exists("imagefttext"))
+// We have support for true-type fonts (FreeType 2)
+if(function_exists("imagefttext"))
 {
 	// Get a list of the files in the 'catpcha_fonts' directory
 	$ttfdir  = @opendir(MYBB_ROOT."inc/captcha_fonts");
-	if ($ttfdir)
+	if($ttfdir !== false)
 	{
-		while($file = readdir($ttfdir))
+		while(($file = readdir($ttfdir)) !== false)
 		{
 			// If this file is a ttf file, add it to the list
-			if (is_file(MYBB_ROOT."inc/captcha_fonts/".$file) && get_extension($file) == "ttf")
+			if(is_file(MYBB_ROOT."inc/captcha_fonts/".$file) && get_extension($file) == "ttf")
 			{
 				$ttf_fonts[] = MYBB_ROOT."inc/captcha_fonts/".$file;
 			}
 		}
+		closedir($ttfdir);
 	}
 }
 
 // Have one or more TTF fonts in our array, we can use TTF captha's
-if (count($ttf_fonts) > 0)
+if(count($ttf_fonts) > 0)
 {
 	$use_ttf = 1;
 }
@@ -72,9 +75,9 @@ else
 }
 
 // Check for GD >= 2, create base image
-if (gd_version() >= 2)
+if(gd_version() >= 2)
 {
-	$im = imagecreateTRUEcolor($img_width, $img_height);
+	$im = imagecreatetruecolor($img_width, $img_height);
 }
 else
 {
@@ -82,7 +85,7 @@ else
 }
 
 // No GD support, die.
-if (!$im)
+if(!$im)
 {
 	die("No GD support.");
 }
@@ -92,12 +95,12 @@ $bg_color = imagecolorallocate($im, 255, 255, 255);
 imagefill($im, 0, 0, $bg_color);
 
 // Draw random circles, squares or lines?
-$to_draw = my_rand(0, 2);
-if ($to_draw == 1)
+$to_draw = rand(0, 2);
+if($to_draw == 1)
 {
 	draw_circles($im);
 }
-else if ($to_draw == 2)
+else if($to_draw == 2)
 {
 	draw_squares($im);
 }
@@ -120,12 +123,11 @@ imagerectangle($im, 0, 0, $img_width-1, $img_height-1, $border_color);
 header("Content-type: image/png");
 imagepng($im);
 imagedestroy($im);
-exit;
 
 /**
  * Draws a random number of lines on the image.
  *
- * @param resource The image.
+ * @param resource $im The image.
  */
 function draw_lines(&$im)
 {
@@ -133,12 +135,12 @@ function draw_lines(&$im)
 
 	for($i = 10; $i < $img_width; $i += 10)
 	{
-		$color = imagecolorallocate($im, my_rand(150, 255), my_rand(150, 255), my_rand(150, 255));
+		$color = imagecolorallocate($im, rand(150, 255), rand(150, 255), rand(150, 255));
 		imageline($im, $i, 0, $i, $img_height, $color);
 	}
 	for($i = 10; $i < $img_height; $i += 10)
 	{
-		$color = imagecolorallocate($im, my_rand(150, 255), my_rand(150, 255), my_rand(150, 255));
+		$color = imagecolorallocate($im, rand(150, 255), rand(150, 255), rand(150, 255));
 		imageline($im, 0, $i, $img_width, $i, $color);
 	}
 }
@@ -146,7 +148,7 @@ function draw_lines(&$im)
 /**
  * Draws a random number of circles on the image.
  *
- * @param resource The image.
+ * @param resource $im The image.
  */
 function draw_circles(&$im)
 {
@@ -155,19 +157,19 @@ function draw_circles(&$im)
 	$circles = $img_width*$img_height / 100;
 	for($i = 0; $i <= $circles; ++$i)
 	{
-		$color = imagecolorallocate($im, my_rand(180, 255), my_rand(180, 255), my_rand(180, 255));
-		$pos_x = my_rand(1, $img_width);
-		$pos_y = my_rand(1, $img_height);
-		$circ_width = ceil(my_rand(1, $img_width)/2);
-		$circ_height = my_rand(1, $img_height);
-		imagearc($im, $pos_x, $pos_y, $circ_width, $circ_height, 0, my_rand(200, 360), $color);
+		$color = imagecolorallocate($im, rand(180, 255), rand(180, 255), rand(180, 255));
+		$pos_x = rand(1, $img_width);
+		$pos_y = rand(1, $img_height);
+		$circ_width = ceil(rand(1, $img_width)/2);
+		$circ_height = rand(1, $img_height);
+		imagearc($im, $pos_x, $pos_y, $circ_width, $circ_height, 0, rand(200, 360), $color);
 	}
 }
 
 /**
  * Draws a random number of dots on the image.
  *
- * @param resource The image.
+ * @param resource $im The image.
  */
 function draw_dots(&$im)
 {
@@ -176,15 +178,15 @@ function draw_dots(&$im)
 	$dot_count = $img_width*$img_height/5;
 	for($i = 0; $i <= $dot_count; ++$i)
 	{
-		$color = imagecolorallocate($im, my_rand(200, 255), my_rand(200, 255), my_rand(200, 255));
-		imagesetpixel($im, my_rand(0, $img_width), my_rand(0, $img_height), $color);
+		$color = imagecolorallocate($im, rand(200, 255), rand(200, 255), rand(200, 255));
+		imagesetpixel($im, rand(0, $img_width), rand(0, $img_height), $color);
 	}
 }
 
 /**
  * Draws a random number of squares on the image.
  *
- * @param resource The image.
+ * @param resource $im The image.
  */
 function draw_squares(&$im)
 {
@@ -193,10 +195,10 @@ function draw_squares(&$im)
 	$square_count = 30;
 	for($i = 0; $i <= $square_count; ++$i)
 	{
-		$color = imagecolorallocate($im, my_rand(150, 255), my_rand(150, 255), my_rand(150, 255));
-		$pos_x = my_rand(1, $img_width);
-		$pos_y = my_rand(1, $img_height);
-		$sq_width = $sq_height = my_rand(10, 20);
+		$color = imagecolorallocate($im, rand(150, 255), rand(150, 255), rand(150, 255));
+		$pos_x = rand(1, $img_width);
+		$pos_y = rand(1, $img_height);
+		$sq_width = $sq_height = rand(10, 20);
 		$pos_x2 = $pos_x + $sq_height;
 		$pos_y2 = $pos_y + $sq_width;
 		imagefilledrectangle($im, $pos_x, $pos_y, $pos_x2, $pos_y2, $color);
@@ -206,16 +208,18 @@ function draw_squares(&$im)
 /**
  * Writes text to the image.
  *
- * @param resource The image.
- * @param string The string to be written
+ * @param resource $im The image.
+ * @param string $string The string to be written
+ *
+ * @return bool False if string is empty, true otherwise
  */
 function draw_string(&$im, $string)
 {
 	global $use_ttf, $min_size, $max_size, $min_angle, $max_angle, $ttf_fonts, $img_height, $img_width;
 
-	if (empty($string))
+	if(empty($string))
 	{
-		return FALSE;
+		return false;
 	}
 
 	$spacing = $img_width / my_strlen($string);
@@ -223,22 +227,22 @@ function draw_string(&$im, $string)
 	for($i = 0; $i < $string_length; ++$i)
 	{
 		// Using TTF fonts
-		if ($use_ttf)
+		if($use_ttf)
 		{
 			// Select a random font size
-			$font_size = my_rand($min_size, $max_size);
+			$font_size = rand($min_size, $max_size);
 
 			// Select a random font
 			$font = array_rand($ttf_fonts);
 			$font = $ttf_fonts[$font];
 
 			// Select a random rotation
-			$rotation = my_rand($min_angle, $max_angle);
+			$rotation = rand($min_angle, $max_angle);
 
 			// Set the colour
-			$r = my_rand(0, 200);
-			$g = my_rand(0, 200);
-			$b = my_rand(0, 200);
+			$r = rand(0, 200);
+			$g = rand(0, 200);
+			$b = rand(0, 200);
 			$color = imagecolorallocate($im, $r, $g, $b);
 
 			// Fetch the dimensions of the character being added
@@ -252,8 +256,8 @@ function draw_string(&$im, $string)
 			$pos_y = ceil(($img_height-$string_height/2));
 
 			// Draw a shadow
-			$shadow_x = my_rand(-3, 3) + $pos_x;
-			$shadow_y = my_rand(-3, 3) + $pos_y;
+			$shadow_x = rand(-3, 3) + $pos_x;
+			$shadow_y = rand(-3, 3) + $pos_y;
 			$shadow_color = imagecolorallocate($im, $r+20, $g+20, $b+20);
 			imagefttext($im, $font_size, $rotation, $shadow_x, $shadow_y, $shadow_color, $font, $string[$i], array());
 
@@ -268,12 +272,12 @@ function draw_string(&$im, $string)
 
 			// Calculate character offsets
 			$pos_x = $spacing / 4 + $i * $spacing;
-			$pos_y = $img_height / 2 - $string_height -10 + my_rand(-3, 3);
+			$pos_y = $img_height / 2 - $string_height -10 + rand(-3, 3);
 
 			// Create a temporary image for this character
-			if (gd_version() >= 2)
+			if(gd_version() >= 2)
 			{
-				$temp_im = imagecreateTRUEcolor(15, 20);
+				$temp_im = imagecreatetruecolor(15, 20);
 			}
 			else
 			{
@@ -284,14 +288,14 @@ function draw_string(&$im, $string)
 			imagecolortransparent($temp_im, $bg_color);
 
 			// Set the colour
-			$r = my_rand(0, 200);
-			$g = my_rand(0, 200);
-			$b = my_rand(0, 200);
+			$r = rand(0, 200);
+			$g = rand(0, 200);
+			$b = rand(0, 200);
 			$color = imagecolorallocate($temp_im, $r, $g, $b);
 
 			// Draw a shadow
-			$shadow_x = my_rand(-1, 1);
-			$shadow_y = my_rand(-1, 1);
+			$shadow_x = rand(-1, 1);
+			$shadow_y = rand(-1, 1);
 			$shadow_color = imagecolorallocate($temp_im, $r+50, $g+50, $b+50);
 			imagestring($temp_im, 5, 1+$shadow_x, 1+$shadow_y, $string[$i], $shadow_color);
 
@@ -302,6 +306,6 @@ function draw_string(&$im, $string)
 			imagedestroy($temp_im);
 		}
 	}
+	return true;
 }
 
-?>

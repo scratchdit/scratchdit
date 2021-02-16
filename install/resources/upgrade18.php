@@ -1,12 +1,11 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * Website: http://www.mybboard.com
- * License: http://mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
- * $Id$
  */
 
 /**
@@ -30,7 +29,7 @@ function upgrade18_dbchanges()
 	echo "<p>Performing necessary upgrade queries...</p>";
 
 	// Update the usergroup sequence for pgSQL - #1094
-	if ($mybb->config['database']['type'] == "pgsql")
+	if($mybb->config['database']['type'] == "pgsql")
 	{
 		$query = $db->simple_select("usergroups", "COUNT(gid) AS group_count");
 		$group_count = $db->fetch_field($query, "group_count");
@@ -57,4 +56,3 @@ function upgrade18_updatecache()
 	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
  	$output->print_footer("18_done");
 }
-?>

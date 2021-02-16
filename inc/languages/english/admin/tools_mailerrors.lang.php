@@ -1,9 +1,8 @@
 <?php
 /**
- * MyBB 1.6 English Language Pack
- * Copyright 2010 MyBB Group, All Rights Reserved
- * 
- * $Id$
+ * MyBB 1.8 English Language Pack
+ * Copyright 2014 MyBB Group, All Rights Reserved
+ *
  */
 
 $l['system_email_log'] = "System Email Log";
@@ -30,4 +29,3 @@ $l['to_address_contains'] = "To Address contains";
 $l['from_address_contains'] = "From Address contains";
 $l['find_emails_to_addr'] = "Find all emails sent to this address";
 
-?>

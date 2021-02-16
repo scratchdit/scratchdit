@@ -3,8 +3,8 @@
  * MyBB 1.8
  * Copyright 2020 MyBB Group, All Rights Reserved
  *
- * Website: //www.mybb.com
- * License: //www.mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
  */
 
@@ -24,10 +24,10 @@ class apcuCacheHandler implements CacheHandlerInterface
 	{
 		global $mybb;
 
-		if (!function_exists('apcu_fetch'))
+		if(!function_exists('apcu_fetch'))
 		{
 			// Check if the APCu extension is loaded
-			if (!extension_loaded('apcu'))
+			if(!extension_loaded('apcu'))
 			{
 				$mybb->trigger_generic_error('apcu_load_error');
 				die;
@@ -38,30 +38,30 @@ class apcuCacheHandler implements CacheHandlerInterface
 	/**
 	 * Connect and initialize this handler.
 	 *
-	 * @return boolean TRUE if successful, FALSE on failure
+	 * @return boolean True if successful, false on failure
 	 */
 	function connect()
 	{
 		// Set a unique identifier for all queries in case other forums on this server also use this cache handler
 		$this->unique_id = md5(MYBB_ROOT);
 
-		return TRUE;
+		return true;
 	}
 
 	/**
 	 * Connect and initialize this handler.
 	 *
 	 * @param string $name
-	 * @return mixed The cache content if successful, FALSE on failure
+	 * @return mixed The cache content if successful, false on failure
 	 */
 	function fetch($name)
 	{
-		if (apcu_exists("{$this->unique_id}_{$name}"))
+		if(apcu_exists("{$this->unique_id}_{$name}"))
 		{
 			return apcu_fetch("{$this->unique_id}_{$name}");
 		}
 
-		return FALSE;
+		return false;
 	}
 
 	/**
@@ -69,7 +69,7 @@ class apcuCacheHandler implements CacheHandlerInterface
 	 *
 	 * @param string $name The name of the cache
 	 * @param mixed $contents The data to write to the cache item
-	 * @return boolean TRUE on success, FALSE on failure
+	 * @return boolean True on success, false on failure
 	 */
 	function put($name, $contents)
 	{
@@ -80,7 +80,7 @@ class apcuCacheHandler implements CacheHandlerInterface
 	 * Delete a cache
 	 *
 	 * @param string $name The name of the cache
-	 * @return boolean TRUE on success, FALSE on failure
+	 * @return boolean True on success, false on failure
 	 */
 	function delete($name)
 	{
@@ -94,7 +94,7 @@ class apcuCacheHandler implements CacheHandlerInterface
 	 */
 	function disconnect()
 	{
-		return TRUE;
+		return true;
 	}
 
 	/**
@@ -104,18 +104,18 @@ class apcuCacheHandler implements CacheHandlerInterface
 	 */
 	function size_of($name='')
 	{
-		if (empty($name))
+		if(empty($name))
 		{
 			// get total size of cache, using an APCUIterator
 			$iterator = new APCUIterator("/^{$this->unique_id}_.*/");
 			return $iterator->getTotalSize();
 		}
-
+		
 		global $lang;
 
 		$info = apcu_cache_info();
 
-		if (empty($info['cache_list']))
+		if(empty($info['cache_list']))
 		{
 			return $lang->na;
 		}
@@ -124,7 +124,7 @@ class apcuCacheHandler implements CacheHandlerInterface
 
 		foreach($info['cache_list'] as $entry)
 		{
-			if (isset($entry['info']) && $entry['info'] === $actual_name && isset($entry['mem_size']))
+			if(isset($entry['info']) && $entry['info'] === $actual_name && isset($entry['mem_size']))
 			{
 				return $entry['mem_size'];
 			}

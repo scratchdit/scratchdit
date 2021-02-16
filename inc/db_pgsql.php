@@ -1,15 +1,14 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * Website: http://www.mybboard.com
- * License: http://www.mybboard.com/license.php
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
- * $Id$
  */
 
-class DB_PgSQL
+class DB_PgSQL implements DB_Base
 {
 	/**
 	 * The title of this layer.
@@ -128,7 +127,7 @@ class DB_PgSQL
 	 *
 	 * @var boolean
 	 */
-	public $can_search = TRUE;
+	public $can_search = true;
 
 	/**
 	 * The database encoding currently in use (if supported)
@@ -145,15 +144,22 @@ class DB_PgSQL
 	public $query_time = 0;
 
 	/**
+	 * The last result run on the database (needed for affected_rows)
+	 *
+	 * @var resource
+	 */
+	public $last_result;
+
+	/**
 	 * Connect to the database server.
 	 *
-	 * @param array Array of DBMS connection details.
-	 * @return resource The DB connection resource. Returns FALSE on failure
+	 * @param array $config Array of DBMS connection details.
+	 * @return resource The DB connection resource. Returns false on failure
 	 */
 	function connect($config)
 	{
 		// Simple connection to one server
-		if (array_key_exists('hostname', $config))
+		if(array_key_exists('hostname', $config))
 		{
 			$connections['read'][] = $config;
 		}
@@ -161,11 +167,11 @@ class DB_PgSQL
 		// Connecting to more than one server
 		{
 			// Specified multiple servers, but no specific read/write servers
-			if (!array_key_exists('read', $config))
+			if(!array_key_exists('read', $config))
 			{
 				foreach($config as $key => $settings)
 				{
-					if (is_int($key)) $connections['read'][] = $settings;
+					if(is_int($key)) $connections['read'][] = $settings;
 				}
 			}
 			// Specified both read & write servers
@@ -175,20 +181,23 @@ class DB_PgSQL
 			}
 		}
 
-		$this->db_encoding = $config['encoding'];
+		if(isset($config['encoding']))
+		{
+			$this->db_encoding = $config['encoding'];
+		}
 
 		// Actually connect to the specified servers
 		foreach(array('read', 'write') as $type)
 		{
-			if (!is_array($connections[$type]))
+			if(!isset($connections[$type]) || !is_array($connections[$type]))
 			{
 				break;
 			}
 
-			if (array_key_exists('hostname', $connections[$type]))
+			if(array_key_exists('hostname', $connections[$type]))
 			{
 				$details = $connections[$type];
-				unset($connections);
+				unset($connections[$type]);
 				$connections[$type][] = $details;
 			}
 
@@ -199,45 +208,49 @@ class DB_PgSQL
 			foreach($connections[$type] as $single_connection)
 			{
 				$connect_function = "pg_connect";
-				if ($single_connection['pconnect'])
+				if(isset($single_connection['pconnect']))
 				{
 					$connect_function = "pg_pconnect";
 				}
 
 				$link = $type."_link";
 
-				$this->get_execution_time();
+				get_execution_time();
 
 				$this->connect_string = "dbname={$single_connection['database']} user={$single_connection['username']}";
 
-				if (strpos($single_connection['hostname'], ':') !== FALSE)
+				if(strpos($single_connection['hostname'], ':') !== false)
 				{
 					list($single_connection['hostname'], $single_connection['port']) = explode(':', $single_connection['hostname']);
 				}
+				else
+				{
+					$single_connection['port'] = null;
+				}
 
-				if ($single_connection['port'])
+				if($single_connection['port'])
 				{
 					$this->connect_string .= " port={$single_connection['port']}";
 				}
 
-				if ($single_connection['hostname'] != "")
+				if($single_connection['hostname'] != "")
 				{
 					$this->connect_string .= " host={$single_connection['hostname']}";
 				}
 
-				if ($single_connection['password'])
+				if($single_connection['password'])
 				{
 					$this->connect_string .= " password={$single_connection['password']}";
 				}
 				$this->$link = @$connect_function($this->connect_string);
 
-				$time_spent = $this->get_execution_time();
+				$time_spent = get_execution_time();
 				$this->query_time += $time_spent;
 
 				// Successful connection? break down brother!
-				if ($this->$link)
+				if($this->$link)
 				{
-					$this->connections[] = "[".strtoupper($type)."] {$single_connection['username']}@{$single_connection['hostname']} (Connected in ".number_format($time_spent, 0)."s)";
+					$this->connections[] = "[".strtoupper($type)."] {$single_connection['username']}@{$single_connection['hostname']} (Connected in ".format_time_duration($time_spent).")";
 					break;
 				}
 				else
@@ -248,22 +261,22 @@ class DB_PgSQL
 		}
 
 		// No write server was specified (simple connection or just multiple servers) - mirror write link
-		if (!array_key_exists('write', $connections))
+		if(!array_key_exists('write', $connections))
 		{
 			$this->write_link = &$this->read_link;
 		}
 
 		// Have no read connection?
-		if (!$this->read_link)
+		if(!$this->read_link)
 		{
 			$this->error("[READ] Unable to connect to PgSQL server");
-			return FALSE;
+			return false;
 		}
 		// No write?
-		else if (!$this->write_link)
+		else if(!$this->write_link)
 		{
 			$this->error("[WRITE] Unable to connect to PgSQL server");
-			return FALSE;
+			return false;
 		}
 
 		$this->current_link = &$this->read_link;
@@ -273,31 +286,31 @@ class DB_PgSQL
 	/**
 	 * Query the database.
 	 *
-	 * @param string The query SQL.
-	 * @param boolean 1 if hide errors, 0 if not.
-	 * @param integer 1 if executes on slave database, 0 if not.
+	 * @param string $string The query SQL.
+	 * @param boolean|int $hide_errors 1 if hide errors, 0 if not.
+	 * @param integer $write_query 1 if executes on slave database, 0 if not.
 	 * @return resource The query data.
 	 */
 	function query($string, $hide_errors=0, $write_query=0)
 	{
-		global $pagestarttime, $db, $mybb;
+		global $mybb;
 
-		$string = preg_replace("#LIMIT ([0-9]+),([ 0-9]+)#i", "LIMIT $2 OFFSET $1", $string);
+		$string = preg_replace("#LIMIT (\s*)([0-9]+),(\s*)([0-9]+);?$#im", "LIMIT $4 OFFSET $2", trim($string));
 
 		$this->last_query = $string;
 
-		$this->get_execution_time();
+		get_execution_time();
 
-		if (strtolower(substr(ltrim($string), 0, 5)) == 'alter')
+		if(strtolower(substr(ltrim($string), 0, 5)) == 'alter')
 		{
 			$string = preg_replace("#\sAFTER\s([a-z_]+?)(;*?)$#i", "", $string);
-			if (strstr($string, 'CHANGE') !== FALSE)
+			if(strstr($string, 'CHANGE') !== false)
 			{
 				$string = str_replace(' CHANGE ', ' ALTER ', $string);
 			}
 		}
 
-		if ($write_query && $this->write_link)
+		if($write_query && $this->write_link)
 		{
 			while(pg_connection_busy($this->write_link));
 			$this->current_link = &$this->write_link;
@@ -312,17 +325,18 @@ class DB_PgSQL
 			$query = pg_get_result($this->current_link);
 		}
 
-		if ((pg_result_error($query) && !$hide_errors))
+		if((pg_result_error($query) && !$hide_errors))
 		{
 			$this->error($string, $query);
 			exit;
 		}
 
-		$query_time = $this->get_execution_time();
+		$query_time = get_execution_time();
 		$this->query_time += $query_time;
 		$this->query_count++;
+		$this->last_result = $query;
 
-		if ($mybb->debug_mode)
+		if($mybb->debug_mode)
 		{
 			$this->explain_query($string, $query_time);
 		}
@@ -332,8 +346,8 @@ class DB_PgSQL
 	/**
 	 * Execute a write query on the slave database
 	 *
-	 * @param string The query SQL.
-	 * @param boolean 1 if hide errors, 0 if not.
+	 * @param string $query The query SQL.
+	 * @param boolean|int $hide_errors 1 if hide errors, 0 if not.
 	 * @return resource The query data.
 	 */
 	function write_query($query, $hide_errors=0)
@@ -344,12 +358,12 @@ class DB_PgSQL
 	/**
 	 * Explain a query on the database.
 	 *
-	 * @param string The query SQL.
-	 * @param string The time it took to perform the query.
+	 * @param string $string The query SQL.
+	 * @param string $qtime The time it took to perform the query.
 	 */
 	function explain_query($string, $qtime)
 	{
-		if (preg_match("#^\s*select#i", $string))
+		if(preg_match("#^\s*select#i", $string))
 		{
 			$query = pg_query($this->current_link, "EXPLAIN $string");
 			$this->explain .= "<table style=\"background-color: #666;\" width=\"95%\" cellpadding=\"4\" cellspacing=\"1\" align=\"center\">\n".
@@ -357,7 +371,7 @@ class DB_PgSQL
 				"<td colspan=\"8\" style=\"background-color: #ccc;\"><strong>#".$this->query_count." - Select Query</strong></td>\n".
 				"</tr>\n".
 				"<tr>\n".
-				"<td colspan=\"8\" style=\"background-color: #fefefe;\"><span style=\"font-family: Courier; font-size: 14px;\">".$string."</span></td>\n".
+				"<td colspan=\"8\" style=\"background-color: #fefefe;\"><span style=\"font-family: Courier; font-size: 14px;\">".htmlspecialchars_uni($string)."</span></td>\n".
 				"</tr>\n".
 				"<tr style=\"background-color: #efefef;\">\n".
 				"<td><strong>Info</strong></td>\n".
@@ -372,7 +386,7 @@ class DB_PgSQL
 			}
 			$this->explain .=
 				"<tr>\n".
-				"<td colspan=\"8\" style=\"background-color: #fff;\">Query Time: ".$qtime."</td>\n".
+				"<td colspan=\"8\" style=\"background-color: #fff;\">Query Time: ".format_time_duration($qtime)."</td>\n".
 				"</tr>\n".
 				"</table>\n".
 				"<br />\n";
@@ -387,7 +401,7 @@ class DB_PgSQL
 				"<td><span style=\"font-family: Courier; font-size: 14px;\">".htmlspecialchars_uni($string)."</span></td>\n".
 				"</tr>\n".
 				"<tr>\n".
-				"<td bgcolor=\"#ffffff\">Query Time: ".$qtime."</td>\n".
+				"<td bgcolor=\"#ffffff\">Query Time: ".format_time_duration($qtime)."</td>\n".
 				"</tr>\n".
 				"</table>\n".
 				"<br />\n";
@@ -397,33 +411,48 @@ class DB_PgSQL
 		$this->querylist[$this->query_count]['time'] = $qtime;
 	}
 
-
 	/**
 	 * Return a result array for a query.
 	 *
-	 * @param resource The query ID.
-	 * @param constant The type of array to return.
-	 * @return array The array of results.
+	 * @param resource $query The query ID.
+	 * @param int $resulttype The type of array to return. Either PGSQL_NUM, PGSQL_BOTH or PGSQL_ASSOC
+	 * @return array The array of results. Note that all fields are returned as string: http://php.net/manual/en/function.pg-fetch-array.php
 	 */
-	function fetch_array($query)
+	function fetch_array($query, $resulttype=PGSQL_ASSOC)
 	{
-		$array = pg_fetch_assoc($query);
+		switch($resulttype)
+		{
+			case PGSQL_NUM:
+			case PGSQL_BOTH:
+				break;
+			default:
+				$resulttype = PGSQL_ASSOC;
+				break;
+		}
+
+		$array = pg_fetch_array($query, NULL, $resulttype);
+
 		return $array;
 	}
 
 	/**
 	 * Return a specific field from a query.
 	 *
-	 * @param resource The query ID.
-	 * @param string The name of the field to return.
-	 * @param int The number of the row to fetch it from.
+	 * @param resource $query The query ID.
+	 * @param string $field The name of the field to return.
+	 * @param int|bool The number of the row to fetch it from.
+	 * @return string|bool|null As per http://php.net/manual/en/function.pg-fetch-result.php
 	 */
-	function fetch_field($query, $field, $row=FALSE)
+	function fetch_field($query, $field, $row=false)
 	{
-		if ($row === FALSE)
+		if($row === false)
 		{
 			$array = $this->fetch_array($query);
-			return $array[$field];
+			if($array !== null && $array !== false)
+			{
+				return $array[$field];
+			}
+			return null;
 		}
 		else
 		{
@@ -434,8 +463,9 @@ class DB_PgSQL
 	/**
 	 * Moves internal row pointer to the next row
 	 *
-	 * @param resource The query ID.
-	 * @param int The pointer to move the row to.
+	 * @param resource $query The query ID.
+	 * @param int $row The pointer to move the row to.
+	 * @return bool
 	 */
 	function data_seek($query, $row)
 	{
@@ -445,7 +475,7 @@ class DB_PgSQL
 	/**
 	 * Return the number of rows resulting from a query.
 	 *
-	 * @param resource The query ID.
+	 * @param resource $query The query ID.
 	 * @return int The number of rows in the result.
 	 */
 	function num_rows($query)
@@ -460,8 +490,7 @@ class DB_PgSQL
 	 */
 	function insert_id()
 	{
-		$this->last_query = str_replace(array("\r", "\n", "\t"), '', $this->last_query);
-		preg_match('#INSERT INTO ([a-zA-Z0-9_\-]+)#i', $this->last_query, $matches);
+		preg_match('#INSERT\s+INTO\s+([a-zA-Z0-9_\-]+)#i', $this->last_query, $matches);
 
 		$table = $matches[1];
 
@@ -469,12 +498,12 @@ class DB_PgSQL
 		$field = $this->fetch_field($query, 'column_name');
 
 		// Do we not have a primary field?
-		if (!$field)
+		if(!$field)
 		{
-			return;
+			return 0;
 		}
 
-		$id = $this->write_query("SELECT currval('{$table}_{$field}_seq') AS last_value");
+		$id = $this->write_query("SELECT currval(pg_get_serial_sequence('{$table}', '{$field}')) AS last_value");
 		return $this->fetch_field($id, 'last_value');
 	}
 
@@ -485,7 +514,7 @@ class DB_PgSQL
 	function close()
 	{
 		@pg_close($this->read_link);
-		if ($this->write_link)
+		if($this->write_link)
 		{
 			@pg_close($this->write_link);
 		}
@@ -494,11 +523,12 @@ class DB_PgSQL
 	/**
 	 * Return an error number.
 	 *
+	 * @param resource $query
 	 * @return int The error number of the current error.
 	 */
-	function error_number($query="")
+	function error_number($query=null)
 	{
-		if (!$query || !function_exists("pg_result_error_field"))
+		if($query != null || !function_exists("pg_result_error_field"))
 		{
 			return 0;
 		}
@@ -509,16 +539,17 @@ class DB_PgSQL
 	/**
 	 * Return an error string.
 	 *
+	 * @param resource $query
 	 * @return string The explanation for the current error.
 	 */
-	function error_string($query="")
+	function error_string($query=null)
 	{
-		if ($query)
+		if($query != null)
 		{
 			return pg_result_error($query);
 		}
 
-		if ($this->current_link)
+		if($this->current_link)
 		{
 			return pg_last_error($this->current_link);
 		}
@@ -531,17 +562,18 @@ class DB_PgSQL
 	/**
 	 * Output a database error.
 	 *
-	 * @param string The string to present as an error.
+	 * @param string $string The string to present as an error.
+	 * @param resource $query
 	 */
-	function error($string="", $query="")
+	function error($string="", $query=null)
 	{
-		if ($this->error_reporting)
+		if($this->error_reporting)
 		{
-			if (class_exists("errorHandler"))
+			if(class_exists("errorHandler"))
 			{
 				global $error_handler;
 
-				if (!is_object($error_handler))
+				if(!is_object($error_handler))
 				{
 					require_once MYBB_ROOT."inc/class_error.php";
 					$error_handler = new errorHandler();
@@ -561,7 +593,6 @@ class DB_PgSQL
 		}
 	}
 
-
 	/**
 	 * Returns the number of affected rows in a query.
 	 *
@@ -569,13 +600,13 @@ class DB_PgSQL
 	 */
 	function affected_rows()
 	{
-		return pg_affected_rows($this->current_link);
+		return pg_affected_rows($this->last_result);
 	}
 
 	/**
 	 * Return the number of fields.
 	 *
-	 * @param resource The query ID.
+	 * @param resource $query The query ID.
 	 * @return int The number of fields.
 	 */
 	function num_fields($query)
@@ -584,15 +615,15 @@ class DB_PgSQL
 	}
 
 	/**
-	 * Lists all functions in the database.
+	 * Lists all tables in the database.
 	 *
-	 * @param string The database name.
-	 * @param string Prefix of the table (optional)
+	 * @param string $database The database name.
+	 * @param string $prefix Prefix of the table (optional)
 	 * @return array The table list.
 	 */
 	function list_tables($database, $prefix='')
 	{
-		if ($prefix)
+		if($prefix)
 		{
 			$query = $this->query("SELECT table_name FROM information_schema.tables WHERE table_schema='public' AND table_name LIKE '".$this->escape_string($prefix)."%'");
 		}
@@ -601,6 +632,7 @@ class DB_PgSQL
 			$query = $this->query("SELECT table_name FROM information_schema.tables WHERE table_schema='public'");
 		}
 
+		$tables = array();
 		while($table = $this->fetch_array($query))
 		{
 			$tables[] = $table['table_name'];
@@ -612,8 +644,8 @@ class DB_PgSQL
 	/**
 	 * Check if a table exists in a database.
 	 *
-	 * @param string The table name.
-	 * @return boolean TRUE when exists, FALSE if not.
+	 * @param string $table The table name.
+	 * @return boolean True when exists, false if not.
 	 */
 	function table_exists($table)
 	{
@@ -622,22 +654,22 @@ class DB_PgSQL
 
 		$exists = $this->fetch_field($query, 'table_names');
 
-		if ($exists > 0)
+		if($exists > 0)
 		{
-			return TRUE;
+			return true;
 		}
 		else
 		{
-			return FALSE;
+			return false;
 		}
 	}
 
 	/**
 	 * Check if a field exists in a database.
 	 *
-	 * @param string The field name.
-	 * @param string The table name.
-	 * @return boolean TRUE when exists, FALSE if not.
+	 * @param string $field The field name.
+	 * @param string $table The table name.
+	 * @return boolean True when exists, false if not.
 	 */
 	function field_exists($field, $table)
 	{
@@ -645,26 +677,26 @@ class DB_PgSQL
 
 		$exists = $this->fetch_field($query, "column_names");
 
-		if ($exists > 0)
+		if($exists > 0)
 		{
-			return TRUE;
+			return true;
 		}
 		else
 		{
-			return FALSE;
+			return false;
 		}
 	}
 
 	/**
 	 * Add a shutdown query.
 	 *
-	 * @param resource The query data.
-	 * @param string An optional name for the query.
+	 * @param resource $query The query data.
+	 * @param string $name An optional name for the query.
 	 */
-	function shutdown_query($query, $name=0)
+	function shutdown_query($query, $name="")
 	{
 		global $shutdown_queries;
-		if ($name)
+		if($name)
 		{
 			$shutdown_queries[$name] = $query;
 		}
@@ -677,34 +709,39 @@ class DB_PgSQL
 	/**
 	 * Performs a simple select query.
 	 *
-	 * @param string The table name to be queried.
-	 * @param string Comma delimetered list of fields to be selected.
-	 * @param string SQL formatted list of conditions to be matched.
-	 * @param array List of options, order by, order direction, limit, limit start
+	 * @param string $table The table name to be queried.
+	 * @param string $fields Comma delimetered list of fields to be selected.
+	 * @param string $conditions SQL formatted list of conditions to be matched.
+	 * @param array $options List of options: group by, order by, order direction, limit, limit start.
+	 * @return resource The query data.
 	 */
-
 	function simple_select($table, $fields="*", $conditions="", $options=array())
 	{
 		$query = "SELECT ".$fields." FROM ".$this->table_prefix.$table;
-		if ($conditions != "")
+		if($conditions != "")
 		{
 			$query .= " WHERE ".$conditions;
 		}
 
-		if (isset($options['order_by']))
+		if(isset($options['group_by']))
+		{
+			$query .= " GROUP BY ".$options['group_by'];
+		}
+
+		if(isset($options['order_by']))
 		{
 			$query .= " ORDER BY ".$options['order_by'];
-			if (isset($options['order_dir']))
+			if(isset($options['order_dir']))
 			{
 				$query .= " ".my_strtoupper($options['order_dir']);
 			}
 		}
 
-		if (isset($options['limit_start']) && isset($options['limit']))
+		if(isset($options['limit_start']) && isset($options['limit']))
 		{
 			$query .= " LIMIT ".$options['limit_start'].", ".$options['limit'];
 		}
-		else if (isset($options['limit']))
+		else if(isset($options['limit']))
 		{
 			$query .= " LIMIT ".$options['limit'];
 		}
@@ -715,48 +752,64 @@ class DB_PgSQL
 	/**
 	 * Build an insert query from an array.
 	 *
-	 * @param string The table name to perform the query on.
-	 * @param array An array of fields and their values.
-	 * @param boolean Whether or not to return an insert id. TRUE by default
-	 * @return int The insert ID if available
+	 * @param string $table The table name to perform the query on.
+	 * @param array $array An array of fields and their values.
+	 * @param boolean $insert_id Whether or not to return an insert id. True by default
+	 * @return int|bool The insert ID if available. False on failure and true if $insert_id is false
 	 */
-	function insert_query($table, $array, $insert_id=TRUE)
+	function insert_query($table, $array, $insert_id=true)
 	{
-		if (!is_array($array))
+		global $mybb;
+
+		if(!is_array($array))
 		{
-			return FALSE;
+			return false;
+		}
+
+		foreach($array as $field => $value)
+		{
+			if(isset($mybb->binary_fields[$table][$field]) && $mybb->binary_fields[$table][$field])
+			{
+				$array[$field] = $value;
+			}
+			else
+			{
+				$array[$field] = $this->quote_val($value);
+			}
 		}
 
 		$fields = implode(",", array_keys($array));
-		$values = implode("','", $array);
+		$values = implode(",", $array);
 		$this->write_query("
 			INSERT
 			INTO {$this->table_prefix}{$table} (".$fields.")
-			VALUES ('".$values."')
+			VALUES (".$values.")
 		");
 
-		if ($insert_id != FALSE)
+		if($insert_id != false)
 		{
 			return $this->insert_id();
 		}
 		else
 		{
-			return TRUE;
+			return true;
 		}
 	}
 
 	/**
 	 * Build one query for multiple inserts from a multidimensional array.
 	 *
-	 * @param string The table name to perform the query on.
-	 * @param array An array of inserts.
-	 * @return int The insert ID if available
+	 * @param string $table The table name to perform the query on.
+	 * @param array $array An array of inserts.
+	 * @return void
 	 */
 	function insert_query_multiple($table, $array)
 	{
-		if (!is_array($array))
+		global $mybb;
+
+		if(!is_array($array))
 		{
-			return FALSE;
+			return;
 		}
 		// Field names
 		$fields = array_keys($array[0]);
@@ -765,7 +818,18 @@ class DB_PgSQL
 		$insert_rows = array();
 		foreach($array as $values)
 		{
-			$insert_rows[] = "('".implode("','", $values)."')";
+			foreach($values as $field => $value)
+			{
+				if(isset($mybb->binary_fields[$table][$field]) && $mybb->binary_fields[$table][$field])
+				{
+					$values[$field] = $value;
+				}
+				else
+				{
+					$values[$field] = $this->quote_val($value);
+				}
+			}
+			$insert_rows[] = "(".implode(",", $values).")";
 		}
 		$insert_rows = implode(", ", $insert_rows);
 
@@ -779,35 +843,46 @@ class DB_PgSQL
 	/**
 	 * Build an update query from an array.
 	 *
-	 * @param string The table name to perform the query on.
-	 * @param array An array of fields and their values.
-	 * @param string An optional where clause for the query.
-	 * @param string An optional limit clause for the query.
-	 * @param boolean An option to quote incoming values of the array.
+	 * @param string $table The table name to perform the query on.
+	 * @param array $array An array of fields and their values.
+	 * @param string $where An optional where clause for the query.
+	 * @param string $limit An optional limit clause for the query.
+	 * @param boolean $no_quote An option to quote incoming values of the array.
 	 * @return resource The query data.
 	 */
-	function update_query($table, $array, $where="", $limit="", $no_quote=FALSE)
+	function update_query($table, $array, $where="", $limit="", $no_quote=false)
 	{
-		if (!is_array($array))
+		global $mybb;
+
+		if(!is_array($array))
 		{
-			return FALSE;
+			return false;
 		}
 
 		$comma = "";
 		$query = "";
 		$quote = "'";
 
-		if ($no_quote == TRUE)
+		if($no_quote == true)
 		{
 			$quote = "";
 		}
 
 		foreach($array as $field => $value)
 		{
-			$query .= $comma.$field."={$quote}".$value."{$quote}";
+			if(isset($mybb->binary_fields[$table][$field]) && $mybb->binary_fields[$table][$field])
+			{
+				$query .= $comma.$field."={$value}";
+			}
+			else
+			{
+				$quoted_value = $this->quote_val($value, $quote);
+
+				$query .= $comma.$field."={$quoted_value}";
+			}
 			$comma = ', ';
 		}
-		if (!empty($where))
+		if(!empty($where))
 		{
 			$query .= " WHERE $where";
 		}
@@ -818,17 +893,37 @@ class DB_PgSQL
 	}
 
 	/**
+	 * @param int|string $value
+	 * @param string $quote
+	 *
+	 * @return int|string
+	 */
+	private function quote_val($value, $quote="'")
+	{
+		if(is_int($value))
+		{
+			$quoted = $value;
+		}
+		else
+		{
+			$quoted = $quote . $value . $quote;
+		}
+
+		return $quoted;
+	}
+
+	/**
 	 * Build a delete query.
 	 *
-	 * @param string The table name to perform the query on.
-	 * @param string An optional where clause for the query.
-	 * @param string An optional limit clause for the query.
+	 * @param string $table The table name to perform the query on.
+	 * @param string $where An optional where clause for the query.
+	 * @param string $limit An optional limit clause for the query.
 	 * @return resource The query data.
 	 */
 	function delete_query($table, $where="", $limit="")
 	{
 		$query = "";
-		if (!empty($where))
+		if(!empty($where))
 		{
 			$query .= " WHERE $where";
 		}
@@ -843,12 +938,12 @@ class DB_PgSQL
 	/**
 	 * Escape a string according to the pg escape format.
 	 *
-	 * @param string The string to be escaped.
+	 * @param string $string The string to be escaped.
 	 * @return string The escaped string.
 	 */
 	function escape_string($string)
 	{
-		if (function_exists("pg_escape_string"))
+		if(function_exists("pg_escape_string"))
 		{
 			$string = pg_escape_string($string);
 		}
@@ -860,10 +955,10 @@ class DB_PgSQL
 	}
 
 	/**
-	 * Frees the resources of a MySQLi query.
+	 * Frees the resources of a PgSQL query.
 	 *
-	 * @param object The query to destroy.
-	 * @return boolean Returns TRUE on success, FALSE on faliure
+	 * @param resource $query The query to destroy.
+	 * @return boolean Returns true on success, false on failure
 	 */
 	function free_result($query)
 	{
@@ -873,12 +968,12 @@ class DB_PgSQL
 	/**
 	 * Escape a string used within a like command.
 	 *
-	 * @param string The string to be escaped.
+	 * @param string $string The string to be escaped.
 	 * @return string The escaped string.
 	 */
 	function escape_string_like($string)
 	{
-		return $this->escape_string(str_replace(array('%', '_') , array('\\%' , '\\_') , $string));
+		return $this->escape_string(str_replace(array('\\', '%', '_') , array('\\\\', '\\%' , '\\_') , $string));
 	}
 
 	/**
@@ -888,7 +983,7 @@ class DB_PgSQL
 	 */
 	function get_version()
 	{
-		if ($this->version)
+		if($this->version)
 		{
 			return $this->version;
 		}
@@ -903,7 +998,7 @@ class DB_PgSQL
 	/**
 	 * Optimizes a specific table.
 	 *
-	 * @param string The name of the table to be optimized.
+	 * @param string $table The name of the table to be optimized.
 	 */
 	function optimize_table($table)
 	{
@@ -913,7 +1008,7 @@ class DB_PgSQL
 	/**
 	 * Analyzes a specific table.
 	 *
-	 * @param string The name of the table to be analyzed.
+	 * @param string $table The name of the table to be analyzed.
 	 */
 	function analyze_table($table)
 	{
@@ -923,13 +1018,13 @@ class DB_PgSQL
 	/**
 	 * Show the "create table" command for a specific table.
 	 *
-	 * @param string The name of the table.
+	 * @param string $table The name of the table.
 	 * @return string The pg command to create the specified table.
 	 */
 	function show_create_table($table)
 	{
 		$query = $this->write_query("
-			SELECT a.attnum, a.attname as field, t.typname as type, a.attlen as length, a.atttypmod as lengthvar, a.attnotNULL as notNULL
+			SELECT a.attnum, a.attname as field, t.typname as type, a.attlen as length, a.atttypmod as lengthvar, a.attnotnull as notnull
 			FROM pg_class c
 			LEFT JOIN pg_attribute a ON (a.attrelid = c.oid)
 			LEFT JOIN pg_type t ON (a.atttypid = t.oid)
@@ -950,7 +1045,7 @@ class DB_PgSQL
 				WHERE c.relname = '{$this->table_prefix}{$table}' AND d.adnum = '{$row['attnum']}'
 			");
 
-			if (!$query2)
+			if(!$query2)
 			{
 				unset($row['rowdefault']);
 			}
@@ -959,7 +1054,7 @@ class DB_PgSQL
 				$row['rowdefault'] = $this->fetch_field($query2, 'rowdefault');
 			}
 
-			if ($row['type'] == 'bpchar')
+			if($row['type'] == 'bpchar')
 			{
 				// Stored in the engine as bpchar, but in the CREATE TABLE statement it's char
 				$row['type'] = 'char';
@@ -967,25 +1062,25 @@ class DB_PgSQL
 
 			$line = "  {$row['field']} {$row['type']}";
 
-			if (strpos($row['type'], 'char') !== FALSE)
+			if(strpos($row['type'], 'char') !== false)
 			{
-				if ($row['lengthvar'] > 0)
+				if($row['lengthvar'] > 0)
 				{
 					$line .= '('.($row['lengthvar'] - 4).')';
 				}
 			}
 
-			if (strpos($row['type'], 'numeric') !== FALSE)
+			if(strpos($row['type'], 'numeric') !== false)
 			{
 				$line .= '('.sprintf("%s,%s", (($row['lengthvar'] >> 16) & 0xffff), (($row['lengthvar'] - 4) & 0xffff)).')';
 			}
 
-			if (!empty($row['rowdefault']))
+			if(!empty($row['rowdefault']))
 			{
 				$line .= " DEFAULT {$row['rowdefault']}";
 			}
 
-			if ($row['notNULL'] == 't')
+			if($row['notnull'] == 't')
 			{
 				$line .= ' NOT NULL';
 			}
@@ -1006,20 +1101,33 @@ class DB_PgSQL
 		");
 
 		$primary_key = array();
+		$primary_key_name = '';
+
+		$unique_keys = array();
 
 		// We do this in two steps. It makes placing the comma easier
 		while($row = $this->fetch_array($query))
 		{
-			if ($row['primary_key'] == 't')
+			if($row['primary_key'] == 't')
 			{
 				$primary_key[] = $row['column_name'];
 				$primary_key_name = $row['index_name'];
 			}
+
+			if($row['unique_key'] == 't')
+			{
+				$unique_keys[$row['index_name']][] = $row['column_name'];
+			}
 		}
 
-		if (!empty($primary_key))
+		if(!empty($primary_key))
 		{
 			$lines[] = "  CONSTRAINT $primary_key_name PRIMARY KEY (".implode(', ', $primary_key).")";
+		}
+
+		foreach($unique_keys as $key_name => $key_columns)
+		{
+			$lines[] = "  CONSTRAINT $key_name UNIQUE (".implode(', ', $key_columns).")";
 		}
 
 		$table_lines .= implode(", \n", $lines);
@@ -1031,8 +1139,8 @@ class DB_PgSQL
 	/**
 	 * Show the "show fields from" command for a specific table.
 	 *
-	 * @param string The name of the table.
-	 * @return string Field info for that table
+	 * @param string $table The name of the table.
+	 * @return array Field info for that table
 	 */
 	function show_fields_from($table)
 	{
@@ -1044,9 +1152,10 @@ class DB_PgSQL
 			FROM information_schema.columns
 			WHERE table_name = '{$this->table_prefix}{$table}'
 		");
+		$field_info = array();
 		while($field = $this->fetch_array($query))
 		{
-			if ($field['field'] == $primary_key)
+			if($field['field'] == $primary_key)
 			{
 				$field['extra'] = 'auto_increment';
 			}
@@ -1060,55 +1169,56 @@ class DB_PgSQL
 	/**
 	 * Returns whether or not the table contains a fulltext index.
 	 *
-	 * @param string The name of the table.
-	 * @param string Optionally specify the name of the index.
-	 * @return boolean TRUE or FALSE if the table has a fulltext index or not.
+	 * @param string $table The name of the table.
+	 * @param string $index Optionally specify the name of the index.
+	 * @return boolean True or false if the table has a fulltext index or not.
 	 */
 	function is_fulltext($table, $index="")
 	{
-		return FALSE;
+		return false;
 	}
 
 	/**
 	 * Returns whether or not this database engine supports fulltext indexing.
 	 *
-	 * @param string The table to be checked.
-	 * @return boolean TRUE or FALSE if supported or not.
+	 * @param string $table The table to be checked.
+	 * @return boolean True or false if supported or not.
 	 */
 
 	function supports_fulltext($table)
 	{
-		return FALSE;
+		return false;
 	}
 
 	/**
 	 * Returns whether or not this database engine supports boolean fulltext matching.
 	 *
-	 * @param string The table to be checked.
-	 * @return boolean TRUE or FALSE if supported or not.
+	 * @param string $table The table to be checked.
+	 * @return boolean True or false if supported or not.
 	 */
 	function supports_fulltext_boolean($table)
 	{
-		return FALSE;
+		return false;
 	}
 
 	/**
 	 * Creates a fulltext index on the specified column in the specified table with optional index name.
 	 *
-	 * @param string The name of the table.
-	 * @param string Name of the column to be indexed.
-	 * @param string The index name, optional.
+	 * @param string $table The name of the table.
+	 * @param string $column Name of the column to be indexed.
+	 * @param string $name The index name, optional.
+	 * @return bool
 	 */
 	function create_fulltext_index($table, $column, $name="")
 	{
-		return FALSE;
+		return false;
 	}
 
 	/**
 	 * Drop an index with the specified name from the specified table
 	 *
-	 * @param string The name of the table.
-	 * @param string The name of the index.
+	 * @param string $table The name of the table.
+	 * @param string $name The name of the index.
 	 */
 	function drop_index($table, $name)
 	{
@@ -1121,8 +1231,9 @@ class DB_PgSQL
 	/**
 	 * Checks to see if an index exists on a specified table
 	 *
-	 * @param string The name of the table.
-	 * @param string The name of the index.
+	 * @param string $table The name of the table.
+	 * @param string $index The name of the index.
+	 * @return bool Returns whether index exists
 	 */
 	function index_exists($table, $index)
 	{
@@ -1134,26 +1245,26 @@ class DB_PgSQL
 		$exists = $this->fetch_field($query, $index);
 		$this->error_reporting = $err;
 
-		if ($exists)
+		if($exists)
 		{
-			return TRUE;
+			return true;
 		}
 		else
 		{
-			return FALSE;
+			return false;
 		}
 	}
 
 	/**
 	 * Drop an table with the specified table
 	 *
-	 * @param string The name of the table.
-	 * @param boolean hard drop - no checking
-	 * @param boolean use table prefix
+	 * @param string $table The name of the table.
+	 * @param boolean $hard hard drop - no checking
+	 * @param boolean $table_prefix use table prefix
 	 */
-	function drop_table($table, $hard=FALSE, $table_prefix=TRUE)
+	function drop_table($table, $hard=false, $table_prefix=true)
 	{
-		if ($table_prefix == FALSE)
+		if($table_prefix == false)
 		{
 			$table_prefix = "";
 		}
@@ -1162,9 +1273,9 @@ class DB_PgSQL
 			$table_prefix = $this->table_prefix;
 		}
 
-		if ($hard == FALSE)
+		if($hard == false)
 		{
-			if ($this->table_exists($table))
+			if($this->table_exists($table))
 			{
 				$this->write_query('DROP TABLE '.$table_prefix.$table);
 			}
@@ -1178,23 +1289,48 @@ class DB_PgSQL
 		$field = $this->fetch_field($query, 'column_name');
 
 		// Do we not have a primary field?
-		if ($field)
+		if($field)
 		{
 			$this->write_query('DROP SEQUENCE {$table}_{$field}_id_seq');
 		}
 	}
 
 	/**
+	 * Renames a table
+	 *
+	 * @param string $old_table The old table name
+	 * @param string $new_table the new table name
+	 * @param boolean $table_prefix use table prefix
+	 * @return resource
+	 */
+	function rename_table($old_table, $new_table, $table_prefix=true)
+	{
+		if($table_prefix == false)
+		{
+			$table_prefix = "";
+		}
+		else
+		{
+			$table_prefix = $this->table_prefix;
+		}
+
+		return $this->write_query("ALTER TABLE {$table_prefix}{$old_table} RENAME TO {$table_prefix}{$new_table}");
+	}
+
+	/**
 	 * Replace contents of table with values
 	 *
-	 * @param string The table
-	 * @param array The replacements
-	 * @param mixed The default field(s)
-	 * @param boolean Whether or not to return an insert id. TRUE by default
+	 * @param string $table The table
+	 * @param array $replacements The replacements
+	 * @param string|array $default_field The default field(s)
+	 * @param boolean $insert_id Whether or not to return an insert id. True by default
+	 * @return int|resource|bool Returns either the insert id (if a new row is inserted and $insert_id is true), a boolean (if $insert_id is wrong) or the query resource (if a row is updated)
 	 */
-	function replace_query($table, $replacements=array(), $default_field="", $insert_id=TRUE)
+	function replace_query($table, $replacements=array(), $default_field="", $insert_id=true)
 	{
-		if ($default_field == "")
+		global $mybb;
+
+		if($default_field == "")
 		{
 			$query = $this->write_query("SELECT column_name FROM information_schema.constraint_column_usage WHERE table_name = '{$this->table_prefix}{$table}' and constraint_name = '{$this->table_prefix}{$table}_pkey' LIMIT 1");
 			$main_field = $this->fetch_field($query, 'column_name');
@@ -1204,47 +1340,35 @@ class DB_PgSQL
 			$main_field = $default_field;
 		}
 
-		$update = FALSE;
-		if (is_array($main_field) && !empty($main_field))
-		{
-			$search_bit = array();
-			$string = '';
-			foreach($main_field as $field)
-			{
-				$search_bit[] = "{$field} = '".$replacements[$field]."'";
-			}
+		$update = false;
+		$search_bit = array();
 
-			$search_bit = implode(" AND ", $search_bit);
-			$query = $this->write_query("SELECT COUNT(".$main_field[0].") as count FROM {$this->table_prefix}{$table} WHERE {$search_bit} LIMIT 1");
-			if ($this->fetch_field($query, "count") == 1)
-			{
-				$update = TRUE;
-			}
-		}
-		else
+		if(!is_array($main_field))
 		{
-			$query = $this->write_query("SELECT {$main_field} FROM {$this->table_prefix}{$table}");
-
-			while($column = $this->fetch_array($query))
-			{
-				if ($column[$main_field] == $replacements[$main_field])
-				{
-					$update = TRUE;
-					break;
-				}
-			}
+			$main_field = array($main_field);
 		}
 
-		if ($update === TRUE)
+		foreach($main_field as $field)
 		{
-			if (is_array($main_field))
+			if(isset($mybb->binary_fields[$table][$field]) && $mybb->binary_fields[$table][$field])
 			{
-				return $this->update_query($table, $replacements, $search_bit);
+				$search_bit[] = "{$field} = ".$replacements[$field];
 			}
 			else
 			{
-				return $this->update_query($table, $replacements, "{$main_field}='".$replacements[$main_field]."'");
+				$search_bit[] = "{$field} = ".$this->quote_val($replacements[$field]);
 			}
+		}
+		$search_bit = implode(" AND ", $search_bit);
+		$query = $this->write_query("SELECT COUNT(".$main_field[0].") as count FROM {$this->table_prefix}{$table} WHERE {$search_bit} LIMIT 1");
+		if($this->fetch_field($query, "count") == 1)
+		{
+			$update = true;
+		}
+
+		if($update === true)
+		{
+			return $this->update_query($table, $replacements, $search_bit);
 		}
 		else
 		{
@@ -1252,10 +1376,16 @@ class DB_PgSQL
 		}
 	}
 
+	/**
+	 * @param string $table
+	 * @param string $append
+	 *
+	 * @return string
+	 */
 	function build_fields_string($table, $append="")
 	{
 		$fields = $this->show_fields_from($table);
-		$comma = '';
+		$comma = $fieldstring = '';
 
 		foreach($fields as $key => $field)
 		{
@@ -1269,8 +1399,9 @@ class DB_PgSQL
 	/**
 	 * Drops a column
 	 *
-	 * @param string The table
-	 * @param string The column name
+	 * @param string $table The table
+	 * @param string $column The column name
+	 * @return resource
 	 */
 	function drop_column($table, $column)
 	{
@@ -1280,9 +1411,10 @@ class DB_PgSQL
 	/**
 	 * Adds a column
 	 *
-	 * @param string The table
-	 * @param string The column name
-	 * @param string the new column definition
+	 * @param string $table The table
+	 * @param string $column The column name
+	 * @param string $definition the new column definition
+	 * @return resource
 	 */
 	function add_column($table, $column, $definition)
 	{
@@ -1292,26 +1424,27 @@ class DB_PgSQL
 	/**
 	 * Modifies a column
 	 *
-	 * @param string The table
-	 * @param string The column name
-	 * @param string the new column definition
-	 * @param boolean Whether to drop or set a column
-	 * @param boolean The new default value (if one is to be set)
+	 * @param string $table The table
+	 * @param string $column The column name
+	 * @param string $new_definition the new column definition
+	 * @param boolean|string $new_not_null Whether to "drop" or "set" the NOT NULL attribute (no change if false)
+	 * @param boolean|string $new_default_value The new default value, or false to drop the attribute
+	 * @return bool Returns true if all queries are executed successfully or false if one of them failed
 	 */
-	function modify_column($table, $column, $new_definition, $new_not_NULL=FALSE, $new_default_value=FALSE)
+	function modify_column($table, $column, $new_definition, $new_not_null=false, $new_default_value=false)
 	{
-		$result1 = $result2 = $result3 = TRUE;
+		$result1 = $result2 = $result3 = true;
 
-		if ($new_definition !== FALSE)
+		if($new_definition !== false)
 		{
 			$result1 = $this->write_query("ALTER TABLE {$this->table_prefix}{$table} ALTER COLUMN {$column} TYPE {$new_definition}");
 		}
 
-		if ($new_not_NULL !== FALSE)
+		if($new_not_null !== false)
 		{
 			$set_drop = "DROP";
 
-			if (strtolower($new_not_NULL) == "set")
+			if(strtolower($new_not_null) == "set")
 			{
 				$set_drop = "SET";
 			}
@@ -1319,13 +1452,16 @@ class DB_PgSQL
 			$result2 = $this->write_query("ALTER TABLE {$this->table_prefix}{$table} ALTER COLUMN {$column} {$set_drop} NOT NULL");
 		}
 
-		if ($new_default_value !== FALSE)
+		if($new_default_value !== null)
 		{
-			$result3 = $this->write_query("ALTER TABLE {$this->table_prefix}{$table} ALTER COLUMN {$column} SET DEFAULT {$new_default_value}");
-		}
-		else
-		{
-			$result3 = $this->write_query("ALTER TABLE {$this->table_prefix}{$table} ALTER COLUMN {$column} DROP DEFAULT");
+			if($new_default_value !== false)
+			{
+				$result3 = $this->write_query("ALTER TABLE {$this->table_prefix}{$table} ALTER COLUMN {$column} SET DEFAULT {$new_default_value}");
+			}
+			else
+			{
+				$result3 = $this->write_query("ALTER TABLE {$this->table_prefix}{$table} ALTER COLUMN {$column} DROP DEFAULT");
+			}
 		}
 
 		return $result1 && $result2 && $result3;
@@ -1334,24 +1470,25 @@ class DB_PgSQL
 	/**
 	 * Renames a column
 	 *
-	 * @param string The table
-	 * @param string The old column name
-	 * @param string the new column name
-	 * @param string the new column definition
-	 * @param boolean Whether to drop or set a column
-	 * @param boolean The new default value (if one is to be set)
+	 * @param string $table The table
+	 * @param string $old_column The old column name
+	 * @param string $new_column the new column name
+	 * @param string $new_definition the new column definition
+	 * @param boolean|string $new_not_null Whether to "drop" or "set" the NOT NULL attribute (no change if false)
+	 * @param boolean|string $new_default_value The new default value, or false to drop the attribute
+	 * @return bool Returns true if all queries are executed successfully
 	 */
-	function rename_column($table, $old_column, $new_column, $new_definition, $new_not_NULL=FALSE, $new_default_value=FALSE)
+	function rename_column($table, $old_column, $new_column, $new_definition, $new_not_null=false, $new_default_value=false)
 	{
 		$result1 = $this->write_query("ALTER TABLE {$this->table_prefix}{$table} RENAME COLUMN {$old_column} TO {$new_column}");
-		$result2 = $this->modify_column($table, $new_column, $new_definition, $new_not_NULL, $new_default_value);
+		$result2 = $this->modify_column($table, $new_column, $new_definition, $new_not_null, $new_default_value);
 		return ($result1 && $result2);
 	}
 
 	/**
 	 * Sets the table prefix used by the simple select, insert, update and delete functions
 	 *
-	 * @param string The new table prefix
+	 * @param string $prefix The new table prefix
 	 */
 	function set_table_prefix($prefix)
 	{
@@ -1361,12 +1498,12 @@ class DB_PgSQL
 	/**
 	 * Fetched the total size of all mysql tables or a specific table
 	 *
-	 * @param string The table (optional)
+	 * @param string $table The table (optional)
 	 * @return integer the total size of all mysql tables or a specific table
 	 */
 	function fetch_size($table='')
 	{
-		if ($table != '')
+		if($table != '')
 		{
 			$query = $this->query("SELECT reltuples, relpages FROM pg_class WHERE relname = '".$this->table_prefix.$table."'");
 		}
@@ -1385,22 +1522,22 @@ class DB_PgSQL
 	/**
 	 * Fetch a list of database character sets this DBMS supports
 	 *
-	 * @return array Array of supported character sets with array key being the name, array value being display name. FALSE if unsupported
+	 * @return array|bool Array of supported character sets with array key being the name, array value being display name. False if unsupported
 	 */
 	function fetch_db_charsets()
 	{
-		return FALSE;
+		return false;
 	}
 
 	/**
 	 * Fetch a database collation for a particular database character set
 	 *
-	 * @param string The database character set
-	 * @return string The matching database collation, FALSE if unsupported
+	 * @param string $charset The database character set
+	 * @return string|bool The matching database collation, false if unsupported
 	 */
 	function fetch_charset_collation($charset)
 	{
-		return FALSE;
+		return false;
 	}
 
 	/**
@@ -1416,30 +1553,42 @@ class DB_PgSQL
 	/**
 	 * Time how long it takes for a particular piece of code to run. Place calls above & below the block of code.
 	 *
-	 * @return float The time taken
+	 * @deprecated
 	 */
 	function get_execution_time()
 	{
-		static $time_start;
+		return get_execution_time();
+	}
 
-		$time = microtime(TRUE);
+	/**
+	 * Binary database fields require special attention.
+	 *
+	 * @param string $string Binary value
+	 * @return string Encoded binary value
+	 */
+	function escape_binary($string)
+	{
+		return "'".pg_escape_bytea($string)."'";
+	}
 
-
-		// Just starting timer, init and return
-		if (!$time_start)
+	/**
+	 * Unescape binary data.
+	 *
+	 * @param string $string Binary value
+	 * @return string Encoded binary value
+	 */
+	function unescape_binary($string)
+	{
+		// hex format
+		if(substr($string, 0, 2) == '\x')
 		{
-			$time_start = $time;
-			return;
+			return pack('H*', substr($string, 2));
 		}
-		// Timer has run, return execution time
+		// escape format
 		else
 		{
-			$total = $time-$time_start;
-			if ($total < 0) $total = 0;
-			$time_start = 0;
-			return $total;
+			return pg_unescape_bytea($string);
 		}
 	}
 }
 
-?>

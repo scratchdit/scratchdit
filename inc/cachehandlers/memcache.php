@@ -1,37 +1,40 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
- * $Id$
  */
 
 /**
  * Memcache Cache Handler
  */
-class memcacheCacheHandler
+class memcacheCacheHandler implements CacheHandlerInterface
 {
 	/**
 	 * The memcache server resource
+	 *
+	 * @var Memcache
 	 */
 	public $memcache;
 
 	/**
 	 * Unique identifier representing this copy of MyBB
+	 *
+	 * @var string
 	 */
 	public $unique_id;
 
-	function memcacheCacheHandler($silent=FALSE)
+	function __construct()
 	{
 		global $mybb;
 
-		if (!function_exists("memcache_connect"))
+		if(!function_exists("memcache_connect"))
 		{
 			// Check if our DB engine is loaded
-			if (!extension_loaded("Memcache"))
+			if(!extension_loaded("Memcache"))
 			{
 				// Throw our super awesome cache loading error
 				$mybb->trigger_generic_error("memcache_load_error");
@@ -43,7 +46,7 @@ class memcacheCacheHandler
 	/**
 	 * Connect and initialize this handler.
 	 *
-	 * @return boolean TRUE if successful, FALSE on failure
+	 * @return boolean True if successful, false on failure
 	 */
 	function connect()
 	{
@@ -51,7 +54,7 @@ class memcacheCacheHandler
 
 		$this->memcache = new Memcache;
 
-		if ($mybb->config['memcache']['host'])
+		if($mybb->config['memcache']['host'])
 		{
 			$mybb->config['memcache'][0] = $mybb->config['memcache'];
 			unset($mybb->config['memcache']['host']);
@@ -60,21 +63,21 @@ class memcacheCacheHandler
 
 		foreach($mybb->config['memcache'] as $memcache)
 		{
-			if (!$memcache['host'])
+			if(!$memcache['host'])
 			{
 				$message = "Please configure the memcache settings in inc/config.php before attempting to use this cache handler";
 				$error_handler->trigger($message, MYBB_CACHEHANDLER_LOAD_ERROR);
 				die;
 			}
 
-			if (!$memcache['port'])
+			if(!isset($memcache['port']))
 			{
 				$memcache['port'] = "11211";
 			}
 
 			$this->memcache->addServer($memcache['host'], $memcache['port']);
 
-			if (!$this->memcache)
+			if(!$this->memcache)
 			{
 				$message = "Unable to connect to the memcache server on {$memcache['memcache_host']}:{$memcache['memcache_port']}. Are you sure it is running?";
 				$error_handler->trigger($message, MYBB_CACHEHANDLER_LOAD_ERROR);
@@ -85,24 +88,22 @@ class memcacheCacheHandler
 		// Set a unique identifier for all queries in case other forums are using the same memcache server
 		$this->unique_id = md5(MYBB_ROOT);
 
-		return TRUE;
+		return true;
 	}
 
 	/**
 	 * Retrieve an item from the cache.
 	 *
-	 * @param string The name of the cache
-	 * @param boolean TRUE if we should do a hard refresh
-	 * @return mixed Cache data if successful, FALSE if failure
+	 * @param string $name The name of the cache
+	 * @return mixed Cache data if successful, false if failure
 	 */
-
-	function fetch($name, $hard_refresh=FALSE)
+	function fetch($name)
 	{
 		$data = $this->memcache->get($this->unique_id."_".$name);
 
-		if ($data === FALSE)
+		if($data === false)
 		{
-			return FALSE;
+			return false;
 		}
 		else
 		{
@@ -113,20 +114,20 @@ class memcacheCacheHandler
 	/**
 	 * Write an item to the cache.
 	 *
-	 * @param string The name of the cache
-	 * @param mixed The data to write to the cache item
-	 * @return boolean TRUE on success, FALSE on failure
+	 * @param string $name The name of the cache
+	 * @param mixed $contents The data to write to the cache item
+	 * @return boolean True on success, false on failure
 	 */
 	function put($name, $contents)
 	{
-		return $this->memcache->set($this->unique_id."_".$name, $contents, MEMCACHE_COMPRESSED);
+		return $this->memcache->set($this->unique_id."_".$name, $contents);
 	}
 
 	/**
 	 * Delete a cache
 	 *
-	 * @param string The name of the cache
-	 * @return boolean TRUE on success, FALSE on failure
+	 * @param string $name The name of the cache
+	 * @return boolean True on success, false on failure
 	 */
 	function delete($name)
 	{
@@ -141,7 +142,12 @@ class memcacheCacheHandler
 		@$this->memcache->close();
 	}
 
-	function size_of($name)
+	/**
+	 * @param string $name
+	 *
+	 * @return string
+	 */
+	function size_of($name='')
 	{
 		global $lang;
 
@@ -149,4 +155,3 @@ class memcacheCacheHandler
 	}
 }
 
-?>

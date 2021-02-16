@@ -1,27 +1,29 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
- * $Id$
  */
 
 define("IN_MYBB", 1);
 define('THIS_SCRIPT', 'online.php');
 
-$templatelist = "online,online_row,online_row_ip,online_today,online_today_row,online_iplookup,mostonline";
+$templatelist = "online,online_row,online_row_ip,online_today,online_today_row,online_row_ip_lookup,online_refresh,multipage,multipage_end,multipage_start";
+$templatelist .= ",multipage_jump_page,multipage_nextpage,multipage_page,multipage_page_current,multipage_page_link_current,multipage_prevpage";
+
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
 require_once MYBB_ROOT."inc/functions_online.php";
 require_once MYBB_ROOT."inc/class_parser.php";
 $parser = new postParser;
+
 // Load global language phrases
 $lang->load("online");
 
-if ($mybb->usergroup['canviewonline'] == 0)
+if($mybb->usergroup['canviewonline'] == 0)
 {
 	error_no_permission();
 }
@@ -29,7 +31,7 @@ if ($mybb->usergroup['canviewonline'] == 0)
 // Make navigation
 add_breadcrumb($lang->nav_online, "online.php");
 
-if ($mybb->input['action'] == "today")
+if($mybb->get_input('action') == "today")
 {
 	add_breadcrumb($lang->nav_onlinetoday);
 
@@ -42,15 +44,20 @@ if ($mybb->input['action'] == "today")
 	$query = $db->simple_select("users", "COUNT(uid) AS users", "lastactive > '{$threshold}' AND invisible = '1'");
 	$invis_count = $db->fetch_field($query, "users");
 
+	if(!$mybb->settings['threadsperpage'] || (int)$mybb->settings['threadsperpage'] < 1)
+	{
+		$mybb->settings['threadsperpage'] = 20;
+	}
+
 	// Add pagination
 	$perpage = $mybb->settings['threadsperpage'];
 
-	if (intval($mybb->input['page']) > 0)
+	if($mybb->get_input('page', MyBB::INPUT_INT) > 0)
 	{
-		$page = intval($mybb->input['page']);
+		$page = $mybb->get_input('page', MyBB::INPUT_INT);
 		$start = ($page-1) * $perpage;
 		$pages = ceil($todaycount / $perpage);
-		if ($page > $pages)
+		if($page > $pages)
 		{
 			$start = 0;
 			$page = 1;
@@ -68,23 +75,27 @@ if ($mybb->input['action'] == "today")
 	while($online = $db->fetch_array($query))
 	{
 		$invisiblemark = '';
-		if ($online['invisible'] == 1)
+		if($online['invisible'] == 1 && $mybb->usergroup['canbeinvisible'] == 1)
 		{
 			$invisiblemark = "*";
 		}
 
-		if ($online['invisible'] != 1 || $mybb->usergroup['canviewwolinvis'] == 1 || $online['uid'] == $mybb->user['uid'])
+		if($online['invisible'] != 1 || $mybb->usergroup['canviewwolinvis'] == 1 || $online['uid'] == $mybb->user['uid'])
 		{
-			$username = $online['username'];
-			$username = format_name($username, $online['usergroup'], $online['displaygroup']);
+			$username = format_name(htmlspecialchars_uni($online['username']), $online['usergroup'], $online['displaygroup']);
 			$online['profilelink'] = build_profile_link($username, $online['uid']);
-			$onlinetime = my_date($mybb->settings['timeformat'], $online['lastactive']);
+			$onlinetime = my_date('normal', $online['lastactive']);
 
 			eval("\$todayrows .= \"".$templates->get("online_today_row")."\";");
 		}
 	}
 
-	if ($todaycount == 1)
+	$multipage = multipage($todaycount, $perpage, $page, "online.php?action=today");
+
+	$todaycount = my_number_format($todaycount);
+	$invis_count = my_number_format($invis_count);
+
+	if($todaycount == 1)
 	{
 		$onlinetoday = $lang->member_online_today;
 	}
@@ -93,19 +104,17 @@ if ($mybb->input['action'] == "today")
 		$onlinetoday = $lang->sprintf($lang->members_were_online_today, $todaycount);
 	}
 
-	if ($invis_count)
+	if($invis_count)
 	{
 		$string = $lang->members_online_hidden;
 
-		if ($invis_count == 1)
+		if($invis_count == 1)
 		{
 			$string = $lang->member_online_hidden;
 		}
 
 		$onlinetoday .= $lang->sprintf($string, $invis_count);
 	}
-
-	$multipage = multipage($todaycount, $perpage, $page, "online.php?action=today");
 
 	$plugins->run_hooks("online_today_end");
 
@@ -117,12 +126,12 @@ else
 	$plugins->run_hooks("online_start");
 
 	// Custom sorting options
-	if ($mybb->input['sortby'] == "username")
+	if($mybb->get_input('sortby') == "username")
 	{
 		$sql = "u.username ASC, s.time DESC";
 		$refresh_string = "?sortby=username";
 	}
-	elseif ($mybb->input['sortby'] == "location")
+	elseif($mybb->get_input('sortby') == "location")
 	{
 		$sql = "s.location, s.time DESC";
 		$refresh_string = "?sortby=location";
@@ -134,10 +143,10 @@ else
 		{
 			case "sqlite":
 			case "pgsql":
-				$sql = "s.time DESC";
+				$sql = "CASE WHEN s.uid > 0 THEN 1 ELSE 0 END DESC, s.time DESC";
 				break;
 			default:
-				$sql = "if ( s.uid >0, 1, 0 ) DESC, s.time DESC";
+				$sql = "IF( s.uid >0, 1, 0 ) DESC, s.time DESC";
 				break;
 		}
 		$refresh_string = '';
@@ -145,35 +154,31 @@ else
 
 	$timesearch = TIME_NOW - $mybb->settings['wolcutoffmins']*60;
 
-	// Exactly how many users are currently online?
-	switch($db->type)
+	$query = $db->query("
+		SELECT COUNT(*) AS online FROM (
+			SELECT 1
+			FROM " . TABLE_PREFIX . "sessions
+			WHERE time > $timesearch
+			GROUP BY uid, ip
+		) s
+	");
+
+	$online_count = $db->fetch_field($query, "online");
+
+	if(!$mybb->settings['threadsperpage'] || (int)$mybb->settings['threadsperpage'] < 1)
 	{
-		case "sqlite":
-			$sessions = array();
-			$query = $db->simple_select("sessions", "sid", "time > {$timesearch}");
-			while($sid = $db->fetch_field($query, "sid"))
-			{
-				$sessions[$sid] = 1;
-			}
-			$online_count = count($sessions);
-			unset($sessions);
-			break;
-		case "pgsql":
-		default:
-			$query = $db->simple_select("sessions", "COUNT(sid) as online", "time > {$timesearch}");
-			$online_count = $db->fetch_field($query, "online");
-			break;
+		$mybb->settings['threadsperpage'] = 20;
 	}
 
 	// How many pages are there?
 	$perpage = $mybb->settings['threadsperpage'];
 
-	if (intval($mybb->input['page']) > 0)
+	if($mybb->get_input('page', MyBB::INPUT_INT) > 0)
 	{
-		$page = intval($mybb->input['page']);
+		$page = $mybb->get_input('page', MyBB::INPUT_INT);
 		$start = ($page-1) * $perpage;
 		$pages = ceil($online_count / $perpage);
-		if ($page > $pages)
+		if($page > $pages)
 		{
 			$start = 0;
 			$page = 1;
@@ -189,14 +194,58 @@ else
 	$multipage = multipage($online_count, $perpage, $page, "online.php".$refresh_string);
 
 	// Query for active sessions
-	$query = $db->query("
-		SELECT DISTINCT s.sid, s.ip, s.uid, s.time, s.location, u.username, s.nopermission, u.invisible, u.usergroup, u.displaygroup
-		FROM ".TABLE_PREFIX."sessions s
-		LEFT JOIN ".TABLE_PREFIX."users u ON (s.uid=u.uid)
-		WHERE s.time>'$timesearch'
-		ORDER BY $sql
-		LIMIT {$start}, {$perpage}
-	");
+	$dbversion = $db->get_version();
+	if(
+		(
+			$db->type == 'mysqli' && (
+				version_compare($dbversion, '10.2.0', '>=') || ( // MariaDB
+					version_compare($dbversion, '10', '<') &&
+					version_compare($dbversion, '8.0.2', '>=')
+				)
+			)
+		) ||
+		($db->type == 'pgsql' && version_compare($dbversion, '8.4.0', '>=')) ||
+		($db->type == 'sqlite' && version_compare($dbversion, '3.25.0', '>='))
+	)
+	{
+		$sql = str_replace('u.username', 's.username', $sql);
+
+		$query = $db->query("
+			SELECT * FROM (
+				SELECT
+					s.sid, s.ip, s.uid, s.time, s.location, u.username, s.nopermission, u.invisible, u.usergroup, u.displaygroup,
+					row_number() OVER (PARTITION BY s.uid, s.ip ORDER BY time DESC) AS row_num
+				FROM
+					".TABLE_PREFIX."sessions s
+					LEFT JOIN ".TABLE_PREFIX."users u ON (s.uid = u.uid)
+				WHERE s.time > $timesearch
+			) s
+			WHERE row_num = 1
+			ORDER BY $sql
+			LIMIT {$start}, {$perpage}
+		");
+	}
+	else
+	{
+		$query = $db->query("
+			SELECT
+				s.sid, s.ip, s.uid, s.time, s.location, u.username, s.nopermission, u.invisible, u.usergroup, u.displaygroup
+			FROM
+				".TABLE_PREFIX."sessions s
+				INNER JOIN (
+					SELECT
+						MIN(s2.sid) AS sid
+					FROM
+						".TABLE_PREFIX."sessions s2
+						LEFT JOIN ".TABLE_PREFIX."sessions s3 ON (s2.sid = s3.sid AND s2.time < s3.time)
+					WHERE s2.time > $timesearch AND s3.sid IS NULL
+					GROUP BY s2.uid, s2.ip
+				) s2 ON (s.sid = s2.sid)
+				LEFT JOIN ".TABLE_PREFIX."users u ON (s.uid = u.uid)
+			ORDER BY $sql
+			LIMIT {$start}, {$perpage}
+		");
+	}
 
 	// Fetch spiders
 	$spiders = $cache->read("spiders");
@@ -211,15 +260,15 @@ else
 		$botkey = my_strtolower(str_replace("bot=", '', $user['sid']));
 
 		// Have a registered user
-		if ($user['uid'] > 0)
+		if($user['uid'] > 0)
 		{
-			if ($users[$user['uid']]['time'] < $user['time'] || !$users[$user['uid']])
+			if(empty($users[$user['uid']]) || $users[$user['uid']]['time'] < $user['time'])
 			{
 				$users[$user['uid']] = $user;
 			}
 		}
 		// Otherwise this session is a bot
-		else if (my_strpos($user['sid'], "bot=") !== FALSE && $spiders[$botkey])
+		else if(my_strpos($user['sid'], "bot=") !== false && $spiders[$botkey])
 		{
 			$user['bot'] = $spiders[$botkey]['name'];
 			$user['usergroup'] = $spiders[$botkey]['usergroup'];
@@ -234,7 +283,7 @@ else
 
 	// Now we build the actual online rows - we do this separately because we need to query all of the specific activity and location information
 	$online_rows = '';
-	if (is_array($users))
+	if(isset($users) && is_array($users))
 	{
 		reset($users);
 		foreach($users as $user)
@@ -242,7 +291,7 @@ else
 			$online_rows .= build_wol_row($user);
 		}
 	}
-	if (is_array($guests))
+	if(isset($guests) && is_array($guests))
 	{
 		reset($guests);
 		foreach($guests as $user)
@@ -254,14 +303,13 @@ else
 	// Fetch the most online information
 	$most_online = $cache->read("mostonline");
 	$record_count = $most_online['numusers'];
-	$record_date = my_date($mybb->settings['dateformat'], $most_online['time']);
-	$record_time = my_date($mybb->settings['timeformat'], $most_online['time']);
+	$record_date = my_date('relative', $most_online['time']);
 
 	// Set automatic refreshing if enabled
-	if ($mybb->settings['refreshwol'] > 0)
+	if($mybb->settings['refreshwol'] > 0)
 	{
 		$refresh_time = $mybb->settings['refreshwol'] * 60;
-		$refresh = "<meta http-equiv=\"refresh\" content=\"{$refresh_time};URL=online.php{$refresh_string}\" />";
+		eval("\$refresh = \"".$templates->get("online_refresh")."\";");
 	}
 
 	$plugins->run_hooks("online_end");
@@ -269,4 +317,3 @@ else
 	eval("\$online = \"".$templates->get("online")."\";");
 	output_page($online);
 }
-?>

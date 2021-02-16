@@ -1,12 +1,11 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
- * $Id$
  */
 
 class timer {
@@ -61,32 +60,32 @@ class timer {
 	 */
 	function add()
 	{
-		if (!$this->start)
+		if(!$this->start)
 		{
-			$this->start = microtime(TRUE);
+			$this->start = microtime(true);
 		}
 	}
 
 	/**
 	 * Gets the time for which the timer has run up until this point.
 	 *
-	 * @return string|boolean The formatted time up until now or FALSE when timer is no longer running.
+	 * @return string|boolean The formatted time up until now or false when timer is no longer running.
 	 */
 	function getTime()
 	{
-		if ($this->end) // timer has been stopped
+		if($this->end) // timer has been stopped
 		{
 			return $this->totaltime;
 		}
-		elseif ($this->start && !$this->end) // timer is still going
+		elseif($this->start && !$this->end) // timer is still going
 		{
-			$currenttime = microtime(TRUE);
+			$currenttime = microtime(true);
 			$totaltime = $currenttime - $this->start;
 			return $this->format($totaltime);
 		}
 		else
 		{
-			return FALSE;
+			return false;
 		}
 	}
 
@@ -97,14 +96,15 @@ class timer {
 	 */
 	function stop()
 	{
-		if ($this->start)
+		if($this->start)
 		{
-			$this->end = microtime(TRUE);
+			$this->end = microtime(true);
 			$totaltime = $this->end - $this->start;
 			$this->totaltime = $totaltime;
 			$this->formatted = $this->format($totaltime);
 			return $this->formatted;
 		}
+		return '';
 	}
 
 	/**
@@ -123,12 +123,11 @@ class timer {
 	/**
 	 * Formats the timer time in a pretty way.
 	 *
-	 * @param string The time string.
-	 * @return The formatted time string.
+	 * @param string $string The time string.
+	 * @return string The formatted time string.
 	 */
 	function format($string)
 	{
 		return number_format($string, 7);
 	}
 }
-?>

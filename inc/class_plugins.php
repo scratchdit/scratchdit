@@ -1,25 +1,19 @@
 <?php
-
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
- *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
- *
- * $Id$
+ * MyBB 1.8
+ * Copyright 2014 MyBB Group, All Rights Reserved
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  */
 
-class PluginSystem
+class pluginSystem
 {
-
 	/**
 	 * The hooks to which plugins can be attached.
 	 *
 	 * @var array
 	 */
 	public $hooks;
-
 	/**
 	 * The current hook which we're in (if any)
 	 *
@@ -27,122 +21,188 @@ class PluginSystem
 	 */
 	public $current_hook;
 
-
 	/**
 	 * Load all plugins.
 	 */
 	function load()
 	{
-		global $cache;
-		$pluginlist = $cache->read("plugins");
-		if (array_key_exists('active', $pluginlist) && is_array($pluginlist['active'])) {
-			foreach ($pluginlist['active'] as $plugin) {
-				if ($plugin != "" && file_exists(MYBB_ROOT . "inc/plugins/$plugin.php")) {
-					include_once MYBB_ROOT . "inc/plugins/$plugin.php";
+		global $cache, $plugins;
+
+		$plugin_list = $cache->read("plugins");
+		if(!empty($plugin_list['active']) && is_array($plugin_list['active']))
+		{
+			foreach($plugin_list['active'] as $plugin)
+			{
+				if($plugin != "" && file_exists(MYBB_ROOT."inc/plugins/".$plugin.".php"))
+				{
+					require_once MYBB_ROOT."inc/plugins/".$plugin.".php";
 				}
 			}
 		}
 	}
-
 
 	/**
 	 * Add a hook onto which a plugin can be attached.
 	 *
-	 * @param string The hook name.
-	 * @param string The function of this hook.
-	 * @param int The priority this hook has.
-	 * @param string The optional file belonging to this hook.
-	 *
-	 * @return boolean Always TRUE.
+	 * @param string       $hook     The hook name.
+	 * @param array|string $function The function of this hook.
+	 * @param int          $priority The priority this hook has.
+	 * @param string       $file     The optional file belonging to this hook.
+	 * @return boolean Whether the hook was added.
 	 */
-	function add_hook($hook, $function, $priority = 10, $file = "")
+	function add_hook($hook, $function, $priority=10, $file="")
 	{
-		// Check to see if we already have this hook running at this priority
-		if (!empty($this->hooks[$hook][$priority][$function]) && is_array($this->hooks[$hook][$priority][$function])) {
-			return TRUE;
+		if(is_array($function))
+		{
+			if(!count($function) == 2)
+			{ // must be an array of two items!
+				return false;
+			}
+
+			if(is_string($function[0]))
+			{
+				// Static class method
+				$method_representation = sprintf('%s::%s', $function[0], $function[1]);
+			}
+			elseif(is_object($function[0]))
+			{
+				// Instance class method
+				$method_representation = sprintf('%s->%s', spl_object_hash($function[0]), $function[1]);
+			}
+			else
+			{
+				// Unknown array type
+				return false;
+			}
+
+			// Check to see if we already have this hook running at this priority
+			if(!empty($this->hooks[$hook][$priority][$method_representation]) && is_array($this->hooks[$hook][$priority][$method_representation]))
+			{
+				return true;
+			}
+
+			// Add the hook
+			$this->hooks[$hook][$priority][$method_representation] = array(
+				'class_method' => $function,
+				'file'         => $file
+			);
+		}
+		else
+		{
+			// Check to see if we already have this hook running at this priority
+			if(!empty($this->hooks[$hook][$priority][$function]) && is_array($this->hooks[$hook][$priority][$function]))
+			{
+				return true;
+			}
+
+			// Add the hook
+			$this->hooks[$hook][$priority][$function] = array(
+				'function' => $function,
+				'file'     => $file
+			);
 		}
 
-		// Add the hook
-		$this->hooks[$hook][$priority][$function] = array(
-			"function" => $function,
-			"file" => $file
-		);
-		return TRUE;
+		return true;
 	}
-
 
 	/**
 	 * Run the hooks that have plugins.
 	 *
-	 * @param string The name of the hook that is run.
-	 * @param string The argument for the hook that is run. The passed value MUST be a variable
-	 *
-	 * @return string The arguments for the hook.
+	 * @param string $hook      The name of the hook that is run.
+	 * @param mixed $arguments The argument for the hook that is run. The passed value MUST be a variable
+	 * @return mixed The arguments for the hook.
 	 */
-	function run_hooks($hook, &$arguments = "")
+	function run_hooks($hook, &$arguments="")
 	{
-		if (!isset($this->hooks) || !array_key_exists($hook, $this->hooks) || !is_array($this->hooks[$hook])) {
+		if(!isset($this->hooks[$hook]) || !is_array($this->hooks[$hook]))
+		{
 			return $arguments;
 		}
-
 		$this->current_hook = $hook;
 		ksort($this->hooks[$hook]);
-		foreach (array_values($this->hooks[$hook]) as $hooks) {
-			if (is_array($hooks)) {
-				foreach ($hooks as $hook) {
-					if ($hook['file']) {
-						include_once $hook['file'];
+		foreach($this->hooks[$hook] as $priority => $hooks)
+		{
+			if(is_array($hooks))
+			{
+				foreach($hooks as $key => $hook)
+				{
+					if($hook['file'])
+					{
+						require_once $hook['file'];
 					}
 
-					$func       = $hook['function'];
-					$returnargs = $func($arguments);
+					if(array_key_exists('class_method', $hook))
+					{
+						$return_args = call_user_func_array($hook['class_method'], array(&$arguments));
+					}
+					else
+					{
+						$func = $hook['function'];
 
-					if ($returnargs) {
-						$arguments = $returnargs;
+						$return_args = $func($arguments);
+					}
+
+					if($return_args)
+					{
+						$arguments = $return_args;
 					}
 				}
 			}
 		}
-
 		$this->current_hook = '';
+
 		return $arguments;
 	}
-
-
-	/**
-	 * Run hooks by ref
-	 * Wrapper for run hooks to maintain backwards compatibility
-	 */
-	function run_hooks_by_ref($hook, &$arguments)
-	{
-		$this->run_hooks($hook, $arguments);
-	}
-
 
 	/**
 	 * Remove a specific hook.
 	 *
-	 * @param string The name of the hook.
-	 * @param string The function of the hook.
-	 * @param string The filename of the plugin.
-	 * @param int The priority of the hook.
+	 * @param string       $hook     The name of the hook.
+	 * @param array|string $function The function of the hook.
+	 * @param string       $file     The filename of the plugin.
+	 * @param int          $priority The priority of the hook.
+	 * @return bool Whether the hook was removed successfully.
 	 */
-	function remove_hook($hook, $function, $file = "", $priority = 10)
+	function remove_hook($hook, $function, $file="", $priority=10)
 	{
-		// Check to see if we don't already have this hook running at this priority
-		if (!isset($this->hooks[$hook][$priority][$function])) {
-			return TRUE;
+		if(is_array($function))
+		{
+			if(is_string($function[0]))
+			{ // Static class method
+				$method_representation = sprintf('%s::%s', $function[0], $function[1]);
+			}
+			elseif(is_object($function[0]))
+			{ // Instance class method
+				$method_representation = sprintf('%s->%s', get_class($function[0]), $function[1]);
+			}
+			else
+			{ // Unknown array type
+				return false;
+			}
+
+			if(!isset($this->hooks[$hook][$priority][$method_representation]))
+			{
+				return true;
+			}
+			unset($this->hooks[$hook][$priority][$method_representation]);
+		}
+		else
+		{
+			// Check to see if we don't already have this hook running at this priority
+			if(!isset($this->hooks[$hook][$priority][$function]))
+			{
+				return true;
+			}
+			unset($this->hooks[$hook][$priority][$function]);
 		}
 
-		unset($this->hooks[$hook][$priority][$function]);
+		return true;
 	}
-
 
 	/**
 	 * Establishes if a particular plugin is compatible with this version of MyBB.
 	 *
-	 * @param string The name of the plugin.
-	 *
+	 * @param string $plugin The name of the plugin.
 	 * @return boolean TRUE if compatible, FALSE if incompatible.
 	 */
 	function is_compatible($plugin)
@@ -150,35 +210,39 @@ class PluginSystem
 		global $mybb;
 
 		// Ignore potentially missing plugins.
-		if (!file_exists(MYBB_ROOT . "inc/plugins/$plugin.php")) {
-			return TRUE;
+		if(!file_exists(MYBB_ROOT."inc/plugins/".$plugin.".php"))
+		{
+			return true;
 		}
 
-		include_once MYBB_ROOT . "inc/plugins/$plugin.php";
+		require_once MYBB_ROOT."inc/plugins/".$plugin.".php";
 
 		$info_func = "{$plugin}_info";
-		if (!function_exists($info_func)) {
-			return FALSE;
+		if(!function_exists($info_func))
+		{
+			return false;
 		}
-
 		$plugin_info = $info_func();
 
 		// No compatibility set or compatibility = * - assume compatible
-		if (!$plugin_info['compatibility'] || $plugin_info['compatibility'] == "*") {
-			return TRUE;
+		if(!$plugin_info['compatibility'] || $plugin_info['compatibility'] == "*")
+		{
+			return true;
 		}
-
 		$compatibility = explode(",", $plugin_info['compatibility']);
-		foreach ($compatibility as $version) {
+		foreach($compatibility as $version)
+		{
 			$version = trim($version);
 			$version = str_replace("*", ".+", preg_quote($version));
 			$version = str_replace("\.+", ".+", $version);
-			if (preg_match("#{$version}#i", $mybb->version_code)) {
-				return TRUE;
+			if(preg_match("#{$version}#i", $mybb->version_code))
+			{
+				return true;
 			}
 		}
 
 		// Nothing matches
-		return FALSE;
+		return false;
 	}
 }
+

@@ -3,8 +3,8 @@
  * MyBB 1.8
  * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * Website: //www.mybb.com
- * License: //www.mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
  */
 
@@ -55,12 +55,12 @@ function upgrade50_dbchanges()
 	$db->update_query("settings", array('optionscode' => 'select\r\n0=No CAPTCHA\r\n1=MyBB Default CAPTCHA\r\n2=reCAPTCHA\r\n3=NoCAPTCHA reCAPTCHA\r\n4=reCAPTCHA invisible\r\n5=hCAPTCHA\r\n6=hCAPTCHA invisible\r\n7=reCAPTCHA v3'), "name='captchaimage'");
 
 	// If using fulltext then enforce minimum word length given by database
-	if ($mybb->settings['minsearchword'] > 0 && $mybb->settings['searchtype'] == "fulltext" && $db->supports_fulltext_boolean("posts") && $db->supports_fulltext("threads"))
+	if($mybb->settings['minsearchword'] > 0 && $mybb->settings['searchtype'] == "fulltext" && $db->supports_fulltext_boolean("posts") && $db->supports_fulltext("threads"))
 	{
 		// Attempt to determine minimum word length from MySQL for fulltext searches
 		$query = $db->query("SHOW VARIABLES LIKE 'ft_min_word_len';");
 		$min_length = $db->fetch_field($query, 'Value');
-		if (is_numeric($min_length) && $mybb->settings['minsearchword'] < $min_length)
+		if(is_numeric($min_length) && $mybb->settings['minsearchword'] < $min_length)
 		{
 			$min_length = (int) $min_length;
 			$old_min_length = (int) $mybb->settings['minsearchword'];
@@ -79,15 +79,15 @@ function upgrade50_verify_email()
 
 	$output->print_header("Admin Email");
 
-	if (!is_array($errors))
+	if(!is_array($errors))
 	{
 		echo "<p>Checking if Admin Email setting is set correctly...</p>";
 		flush();
 	}
-
-	if (empty($mybb->settings['adminemail']))
+	
+	if(empty($mybb->settings['adminemail']))
 	{
-		if (is_array($errors))
+		if(is_array($errors))
 		{
 			$error_list = "<ul>\n";
 			foreach($errors as $error)
@@ -121,13 +121,13 @@ function upgrade50_verify_email()
 		<td class="first"><label for="usepresetemail">Select an option:</label></td>
 		<td class="alt_col last" width="70%">
 			<input type="radio" name="usepresetemail" value="current_user"'.$checked['current_user'].' />Use current user email: '.htmlspecialchars_uni($mybb->user['email']).'<br />';
-
-		if ($mybb->settings['mail_handler'] == 'smtp' && !empty($mybb->settings['smtp_user']) && filter_var($mybb->settings['smtp_user'], FILTER_VALIDATE_EMAIL) !== FALSE)
+		
+		if($mybb->settings['mail_handler'] == 'smtp' && !empty($mybb->settings['smtp_user']) && filter_var($mybb->settings['smtp_user'], FILTER_VALIDATE_EMAIL) !== false)
 		{
 			echo '
 			<input type="radio" name="usepresetemail" value="smtp"'.$checked['smtp'].' />Use SMTP username: '.htmlspecialchars_uni($mybb->settings['smtp_user']).'<br />';
 		}
-
+		
 		echo '
 			<input type="radio" name="usepresetemail" value="custom"'.$checked['custom'].' />Use custom
 		</td>
@@ -141,7 +141,7 @@ function upgrade50_verify_email()
 <script type="text/javascript">
 $("#userpresetemail_row input").change(function()
 {
-	if (this.checked && this.value == "custom")
+	if(this.checked && this.value == "custom")
 	{
 		$("#custom_adminemail").show();
 		$("#userpresetemail_row").removeClass("last");
@@ -159,7 +159,7 @@ $("#userpresetemail_row input").change(function()
 	}
 	else
 	{
-		echo "<p>Admin email verified success...</p>";
+		echo "<p>Admin email verified success...</p>";		
 		$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
 		$output->print_footer("50_done");
 	}
@@ -168,17 +168,17 @@ $("#userpresetemail_row input").change(function()
 function upgrade50_submit_email()
 {
 	global $output, $db, $mybb, $cache, $errors, $checked;
-
-	if (empty($mybb->input['usepresetemail']) || !in_array($mybb->input['usepresetemail'], array('current_user', 'smtp', 'custom')))
+	
+	if(empty($mybb->input['usepresetemail']) || !in_array($mybb->input['usepresetemail'], array('current_user', 'smtp', 'custom')))
  	{
 		$errors[] = "Please select an option for the admin email.";
 	}
-
-	if ($mybb->input['usepresetemail'] == 'smtp' && !($mybb->settings['mail_handler'] == 'smtp' && !empty($mybb->settings['smtp_user'])))
+	
+	if($mybb->input['usepresetemail'] == 'smtp' && !($mybb->settings['mail_handler'] == 'smtp' && !empty($mybb->settings['smtp_user'])))
 	{
 		$errors[] = "Please select a different option. SMTP user setting is not configured.";
 	}
-
+	
 	switch ($mybb->input['usepresetemail'])
 	{
 		case 'current_user':
@@ -191,17 +191,17 @@ function upgrade50_submit_email()
 			$email = $mybb->input['adminemail'];
 			break;
 	}
-
+	
 	$checked = array(
 		$mybb->input['usepresetemail'] => ' checked="checked"'
 	);
-
-	if (empty($errors) && filter_var($email, FILTER_VALIDATE_EMAIL) === FALSE)
+	
+	if(empty($errors) && filter_var($email, FILTER_VALIDATE_EMAIL) === false)
 	{
 		$errors[] = "The email address given was invalid. Please enter a valid email address.";
 	}
-
-	if (!empty($errors))
+	
+	if(!empty($errors))
 	{
 		upgrade50_verify_email();
 		return;

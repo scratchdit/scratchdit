@@ -1,12 +1,11 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
- * $Id$
  */
 
 // Disallow direct access to this file for security reasons
@@ -39,17 +38,17 @@ if($mybb->input['action'] == "add")
 		{
 			$new_spider = array(
 				"name" => $db->escape_string($mybb->input['name']),
-				"theme" => intval($mybb->input['theme']),
+				"theme" => $mybb->get_input('theme', MyBB::INPUT_INT),
 				"language" => $db->escape_string($mybb->input['language']),
-				"usergroup" => intval($mybb->input['usergroup']),
+				"usergroup" => $mybb->get_input('usergroup', MyBB::INPUT_INT),
 				"useragent" => $db->escape_string($mybb->input['useragent']),
 				"lastvisit" => 0
 			);
 			$sid = $db->insert_query("spiders", $new_spider);
 
-			$cache->update_spiders();
-
 			$plugins->run_hooks("admin_config_spiders_add_commit");
+
+			$cache->update_spiders();
 
 			// Log admin action
 			log_admin_action($sid, $mybb->input['name']);
@@ -82,21 +81,23 @@ if($mybb->input['action'] == "add")
 	}
 
 	$form_container = new FormContainer($lang->add_new_bot);
-	$form_container->output_row($lang->name." <em>*</em>", $lang->name_desc, $form->generate_text_box('name', $mybb->input['name'], array('id' => 'name')), 'name');
-	$form_container->output_row($lang->user_agent." <em>*</em>", $lang->user_agent_desc, $form->generate_text_box('useragent', $mybb->input['useragent'], array('id' => 'useragent')), 'useragent');
+	$form_container->output_row($lang->name." <em>*</em>", $lang->name_desc, $form->generate_text_box('name', $mybb->get_input('name'), array('id' => 'name')), 'name');
+	$form_container->output_row($lang->user_agent." <em>*</em>", $lang->user_agent_desc, $form->generate_text_box('useragent', $mybb->get_input('useragent'), array('id' => 'useragent')), 'useragent');
 
 	$languages = array('' => $lang->use_board_default);
 	$languages = array_merge($languages, $lang->get_languages());
-	$form_container->output_row($lang->language_str, $lang->language_desc, $form->generate_select_box("language", $languages, $mybb->input['language'], array("id" => "language")), 'language');
+	$form_container->output_row($lang->language_str, $lang->language_desc, $form->generate_select_box("language", $languages, $mybb->get_input('language'), array("id" => "language")), 'language');
 
-	$form_container->output_row($lang->theme, $lang->theme_desc, build_theme_select("theme", $mybb->input['theme'], 0, "", TRUE));
+	$form_container->output_row($lang->theme, $lang->theme_desc, build_theme_select("theme", $mybb->get_input('theme'), 0, "", true, false, true));
 
 	$query = $db->simple_select("usergroups", "*", "", array("order_by" => "title", "order_dir" => "asc"));
+
+	$usergroups = array();
 	while($usergroup = $db->fetch_array($query))
 	{
 		$usergroups[$usergroup['gid']] = $usergroup['title'];
 	}
-	if(!$mybb->input['usergroup'])
+	if(!$mybb->get_input('usergroup'))
 	{
 		$mybb->input['usergroup'] = 1;
 	}
@@ -113,9 +114,7 @@ if($mybb->input['action'] == "add")
 
 if($mybb->input['action'] == "delete")
 {
-	$plugins->run_hooks("admin_config_spiders_delete");
-
-	$query = $db->simple_select("spiders", "*", "sid='".intval($mybb->input['sid'])."'");
+	$query = $db->simple_select("spiders", "*", "sid='".$mybb->get_input('sid', MyBB::INPUT_INT)."'");
 	$spider = $db->fetch_array($query);
 
 	// Does the spider not exist?
@@ -126,19 +125,21 @@ if($mybb->input['action'] == "delete")
 	}
 
 	// User clicked no
-	if($mybb->input['no'])
+	if($mybb->get_input('no'))
 	{
 		admin_redirect("index.php?module=config-spiders");
 	}
+
+	$plugins->run_hooks("admin_config_spiders_delete");
 
 	if($mybb->request_method == "post")
 	{
 		// Delete the spider
 		$db->delete_query("spiders", "sid='{$spider['sid']}'");
 
-		$cache->update_spiders();
-
 		$plugins->run_hooks("admin_config_spiders_delete_commit");
+
+		$cache->update_spiders();
 
 		// Log admin action
 		log_admin_action($spider['sid'], $spider['name']);
@@ -154,9 +155,7 @@ if($mybb->input['action'] == "delete")
 
 if($mybb->input['action'] == "edit")
 {
-	$plugins->run_hooks("admin_config_spiders_edit");
-
-	$query = $db->simple_select("spiders", "*", "sid='".intval($mybb->input['sid'])."'");
+	$query = $db->simple_select("spiders", "*", "sid='".$mybb->get_input('sid', MyBB::INPUT_INT)."'");
 	$spider = $db->fetch_array($query);
 
 	// Does the spider not exist?
@@ -165,6 +164,8 @@ if($mybb->input['action'] == "edit")
 		flash_message($lang->error_invalid_bot, 'error');
 		admin_redirect("index.php?module=config-spiders");
 	}
+
+	$plugins->run_hooks("admin_config_spiders_edit");
 
 	if($mybb->request_method == "post")
 	{
@@ -182,16 +183,17 @@ if($mybb->input['action'] == "edit")
 		{
 			$updated_spider = array(
 				"name" => $db->escape_string($mybb->input['name']),
-				"theme" => intval($mybb->input['theme']),
+				"theme" => $mybb->get_input('theme', MyBB::INPUT_INT),
 				"language" => $db->escape_string($mybb->input['language']),
-				"usergroup" => intval($mybb->input['usergroup']),
+				"usergroup" => $mybb->get_input('usergroup', MyBB::INPUT_INT),
 				"useragent" => $db->escape_string($mybb->input['useragent'])
 			);
+
+			$plugins->run_hooks("admin_config_spiders_edit_commit");
+
 			$db->update_query("spiders", $updated_spider, "sid='{$spider['sid']}'");
 
 			$cache->update_spiders();
-
-			$plugins->run_hooks("admin_config_spiders_edit_commit");
 
 			// Log admin action
 			log_admin_action($spider['sid'], $mybb->input['name']);
@@ -232,7 +234,7 @@ if($mybb->input['action'] == "edit")
 	$languages = array_merge($languages, $lang->get_languages());
 	$form_container->output_row($lang->language_str, $lang->language_desc, $form->generate_select_box("language", $languages, $spider_data['language'], array("id" => "language")), 'language');
 
-	$form_container->output_row($lang->theme, $lang->theme_desc, build_theme_select("theme", $spider_data['theme'], 0, "", TRUE));
+	$form_container->output_row($lang->theme, $lang->theme_desc, build_theme_select("theme", $spider_data['theme'], 0, "", true, false, true));
 
 	$query = $db->simple_select("usergroups", "*", "", array("order_by" => "title", "order_dir" => "asc"));
 	while($usergroup = $db->fetch_array($query))
@@ -279,15 +281,14 @@ if(!$mybb->input['action'])
 	$query = $db->simple_select("spiders", "*", "", array("order_by" => "lastvisit", "order_dir" => "desc"));
 	while($spider = $db->fetch_array($query))
 	{
+		$lastvisit = $lang->never;
 		$spider['name'] = htmlspecialchars_uni($spider['name']);
+
 		if($spider['lastvisit'])
 		{
-			$lastvisit = my_date($mybb->settings['dateformat'], $spider['lastvisit']).", ".my_date($mybb->settings['timeformat'], $spider['lastvisit']);
+			$lastvisit = my_date('relative', $spider['lastvisit']);
 		}
-		else
-		{
-			$lastvisit = $lang->never;
-		}
+
 		$table->construct_cell("<a href=\"index.php?module=config-spiders&amp;action=edit&amp;sid={$spider['sid']}\"><strong>{$spider['name']}</strong></a>");
 		$table->construct_cell($lastvisit, array("class" => "align_center", "width" => 200));
 		$table->construct_cell("<a href=\"index.php?module=config-spiders&amp;action=edit&amp;sid={$spider['sid']}\">{$lang->edit}</a>", array("class" => "align_center", "width" => 75));
@@ -302,7 +303,5 @@ if(!$mybb->input['action'])
 	}
 
 	$table->output($lang->spiders_bots);
-
 	$page->output_footer();
 }
-?>

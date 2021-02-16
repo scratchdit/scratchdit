@@ -5,191 +5,227 @@ var UserCP = {
 
 	openBuddySelect: function(field)
 	{
-		if (!$(field))
+		if(!$("#"+field).length)
 		{
-			return FALSE;
+			return false;
 		}
-		this.buddy_field = field;
-		if ($('buddyselect_container'))
+		this.buddy_field = '#'+field;
+		if($("#buddyselect_container").length)
 		{
 			UserCP.buddySelectLoaded();
-			return FALSE;
+			return false;
 		}
-		if (use_xmlhttprequest == 1)
+		if(use_xmlhttprequest == 1)
 		{
-			this.spinner = new ActivityIndicator("body", {image: "images/spinner_big.gif"});
-			new Ajax.Request('xmlhttp.php?action=get_buddyselect', {method: 'get', onComplete: function(request) { UserCP.buddySelectLoaded(request); }});
+			$.ajax(
+			{
+				url: 'xmlhttp.php?action=get_buddyselect',
+				async: true,
+	            complete: function (request)
+	            {
+	                UserCP.buddySelectLoaded(request);
+	            }
+			});
 		}
 	},
 
 	buddySelectLoaded: function(request)
 	{
+		var buddyselect_container = $("#buddyselect_container");
 		// Using new copy
-		if (request)
+		if(request)
 		{
-			if (request.responseText.match(/<error>(.*)<\/error>/))
-			{
-				message = request.responseText.match(/<error>(.*)<\/error>/);
-				if (!message[1])
+			try {
+				var json = JSON.parse(request.responseText);
+				if(json.hasOwnProperty("errors"))
 				{
-					message[1] = "An unknown error occurred.";
+					$.each(json.errors, function(i, message)
+					{
+					  $.jGrowl(lang.buddylist_error + message, {theme:'jgrowl_error'});
+					});
+					return false;
 				}
-				if (this.spinner)
+			} catch (e) {
+				if(request.responseText)
 				{
-					this.spinner.destroy();
-					this.spinner = '';
+					if(buddyselect_container.length)
+					{
+						buddyselect_container.remove();
+					}
+					var container = $("<div />");
+					container.attr("id", "buddyselect_container");
+					container.hide();
+					container.html(request.responseText);
+					$("body").append(container);
 				}
-				alert('There was an error fetching the posts.\n\n'+message[1]);
-				return FALSE;
-			}
-			else if (request.responseText)
-			{
-				if ($('buddyselect_container'))
-				{
-					Element.remove('buddyselect_container');
-				}
-				var container = document.createElement('DIV');
-				container.id = "buddyselect_container";
-				container.style.display = 'none';
-				container.innerHTML = request.responseText;
-				document.body.appendChild(container);
 			}
 		}
 		else
 		{
-			Element.hide('buddyselect_container');
-			var checkboxes = $('buddyselect_container').getElementsByTagName("input");
-			$A(checkboxes).each(function(item) {
-				item.checked = FALSE;
+			buddyselect_container.hide();
+			$("#buddyselect_container input:checked").each(function()
+			{
+				$(this).attr("checked", false);
 			});
-			$('buddyselect_buddies').innerHTML = '';
-			container = $('buddyselect_container');
+			$("#buddyselect_buddies").html("");
+			container = buddyselect_container;
 		}
 
 		// Clone off screen
-		var clone = container.cloneNode(TRUE);
-		document.body.appendChild(clone);
-		clone.style.width = '300px';
-		clone.style.top = "-10000px";
-		clone.style.display = "block";
-		offsetHeight = clone.offsetHeight;
-		offsetWidth = clone.offsetWidth;
-		Element.remove(clone);
+		var clone = container.clone(true);
+		$("body").append(clone);
+		clone.css("width", "300px")
+			 .css("top", "-10000px")
+		     .css("display", "block")
+		     .remove();
 
 		// Center it on the page
-		arrayPageSize = DomLib.getPageSize();
-		arrayPageScroll = DomLib.getPageScroll();
-		var top = arrayPageScroll[1] + ((arrayPageSize[3] - 35 - offsetHeight) / 2);
-		var left = ((arrayPageSize[0] - 20 - offsetWidth) / 2);
-		$('buddyselect_container').style.top = top+"px";
-		$('buddyselect_container').style.left = left+"px";
-		$('buddyselect_container').style.position = "absolute";
-		$('buddyselect_container').style.display = "block";
-		$('buddyselect_container').style.zIndex = '1000';
-		$('buddyselect_container').style.textAlign = 'left';
-		if (this.spinner)
-		{
-			this.spinner.destroy();
-			this.spinner = '';
-		}
+		$("#buddyselect_container").css("top", "50%")
+		                           .css("left", "50%")
+		                           .css("position", "fixed")
+		                           .css("display", "block")
+		                           .css("z-index", "1000")
+		                           .css("text-align", "left")
+                                   .css("margin-left", -$("#buddyselect_container").outerWidth() / 2 + 'px')
+                                   .css("margin-top", -$("#buddyselect_container").outerHeight() / 2 + 'px');
 	},
 
 	selectBuddy: function(uid, username)
 	{
-		var checkbox = $('checkbox_'+uid);
+		var checkbox = $("#checkbox_"+uid);
+		var buddyselect_buddies_uid = $("#buddyselect_buddies_"+uid);
+		var buddyselect_buddies = $("#buddyselect_buddies");
 		// Buddy already in list - remove
-		if ($('buddyselect_buddies_'+uid))
+		if(buddyselect_buddies_uid.length)
 		{
-			Element.remove('buddyselect_buddies_'+uid);
-			var buddies = $('buddyselect_buddies').innerHTML.stripTags();
-			if (buddies.charAt(0) == ",")
+			buddyselect_buddies_uid.remove();
+			var buddies = buddyselect_buddies.text();
+			if(buddies.charAt(0) == ",")
 			{
-				first_buddy = $('buddyselect_buddies').childNodes[0];
+				first_buddy = buddyselect_buddies.children()[0];
 				first_buddy.innerHTML = first_buddy.innerHTML.substr(1, first_buddy.innerHTML.length);
 			}
 		}
 		// Add buddy to list
 		else
 		{
-			var buddies = $('buddyselect_buddies').innerHTML.stripTags();
-			if (buddies != "")
+			var buddies = buddyselect_buddies.text();
+			if(buddies != "")
 			{
 				username = ", "+username;
 			}
-			var buddy = document.createElement('span');
-			buddy.id = "buddyselect_buddies_"+uid;
-			buddy.innerHTML = username;
-			$('buddyselect_buddies').appendChild(buddy);
+			var buddy = $("<span />");
+			buddy.attr("id", "buddyselect_buddies_"+uid)
+			     .html(username);
+			buddyselect_buddies.append(buddy);
 		}
 	},
 
 	closeBuddySelect: function(canceled)
 	{
-		if (canceled != TRUE)
+		if(canceled != true)
 		{
-			var buddies = $('buddyselect_buddies').innerHTML.stripTags();
-			existing_buddies = $(this.buddy_field).value;
-			if (existing_buddies != "")
+			var buddies = $("#buddyselect_buddies").text();
+			existing_buddies = $(this.buddy_field).select2("data");
+			if(existing_buddies.length)
 			{
-				existing_buddies = existing_buddies.replace(/^\s+|\s+$/g, "");
-				existing_buddies = existing_buddies.replace(/,\s?/g, ",");
+				// We already have stuff in our text box we must merge it with the new array we're going to create from the selected buddies
+				// We don't need to care about having dupes because Select2 treats items by ID and we two items have the same ID, there are no dupes because only one exists
+				// ^At least according to my tests :D (Pirata Nervo - so blame me for that if something goes wrong)
+				var newbuddies = [];
 				exp_buddies = buddies.split(",");
-				exp_buddies.each(function(buddy, i)
+				$.each(exp_buddies, function(index, buddy)
 				{
 					buddy = buddy.replace(/^\s+|\s+$/g, "");
-					if ((","+existing_buddies+",").toLowerCase().indexOf(","+buddy.toLowerCase()+",") == -1)
-					{
-						if (existing_buddies)
-						{
-							existing_buddies += ",";
-						}
-						existing_buddies += buddy;
-					}
+					
+					var newbuddy = { id: buddy, text: buddy };
+					newbuddies.push(newbuddy);
 				});
-				$(this.buddy_field).value = existing_buddies.replace(/,\s?/g, ", ");
+				
+				// Merge both
+				var newarray = $.merge(existing_buddies, newbuddies);
+				
+				// Update data
+				$(this.buddy_field).select2("data", newarray);
+				
 			}
 			else
 			{
-				$(this.buddy_field).value = buddies;
+				var newbuddies = [];
+				exp_buddies = buddies.split(",");
+				$.each(exp_buddies, function(index, value ){
+					var newbuddy = { id: value.replace(/,\s?/g, ", "), text: value.replace(/,\s?/g, ", ") };
+					newbuddies.push(newbuddy);
+				});
+				$(this.buddy_field).select2("data", newbuddies);
 			}
-			$(this.buddy_field).focus();
+			$(this.buddy_field).select2("focus");
 		}
-		$('buddyselect_container').hide();
+		$("#buddyselect_container").hide();
 	},
 
 	addBuddy: function(type)
 	{
-		if (!$(type+'_add_username').value)
+		var type_submit = $("#"+type+"_submit");
+		var type_add_username = $("#"+type+"_add_username");
+
+		if(type_add_username.val().length == 0)
 		{
-			return FALSE;
+			return false;
 		}
-		if (use_xmlhttprequest != 1)
+		if(use_xmlhttprequest != 1)
 		{
-			return TRUE;
+			return true;
 		}
 
-		var old_value = $(type+'_submit').value;
+		var old_value = type_submit.val();
 
-		if (type == "ignored")
+		type_add_username.attr("disabled", true);
+		type_submit.attr("disabled", true);
+
+		if(type == "ignored")
 		{
-			$(type+'_submit').value = lang.adding_ignored;
-			var list = 'ignore';
+			type_submit.attr("value", lang.adding_ignored);
+			var list = "ignore";
 		}
 		else
 		{
-			$(type+'_submit').value = lang.adding_buddy;
-			var list = 'buddy';
+			type_submit.attr("value", lang.adding_buddy);
+			var list = "buddy";
 		}
 
-		new Ajax.Updater(list+'_list', 'usercp.php?action=do_editlists&my_post_key='+my_post_key+'&manage='+type, {method: 'post', postBody: 'ajax=1&add_username='+encodeURIComponent($(type+'_add_username').value), evalScripts: TRUE, onComplete: function() { $(type+'_submit').value = old_value; $(type+'_submit').disabled = FALSE; $(type+'_add_username').disabled = FALSE; $(type+'_add_username').value = ''; $(type+'_add_username').focus(); }});
-		$(type+'_add_username').disabled = TRUE;
-		$(type+'_submit').disabled = TRUE;
-		return FALSE;
+		$.ajax(
+		{
+			type: 'post',
+			url: 'usercp.php?action=do_editlists&my_post_key='+my_post_key+'&manage='+type,
+			data: { ajax: 1, add_username: type_add_username.val() },
+			async: true,
+	        complete: function (request)
+	        {
+				if(request.responseText.indexOf("buddy_count") >= 0 || request.responseText.indexOf("ignored_count") >= 0)
+				{
+					 $("#"+list+"_list").html(request.responseText);
+				}
+				else
+				{
+					$("#sentrequests").html(request.responseText);
+				}
+				
+		        type_submit.prop("disabled", false);
+		        type_add_username.prop("disabled", false);
+		        type_submit.attr("value", old_value);
+		        type_add_username.val("");
+		        type_add_username.trigger('focus');
+				type_add_username.select2('data', null);
+	        }
+		});
+
+		return false;
 	},
 
 	removeBuddy: function(type, uid)
 	{
-		if (type == "ignored")
+		if(type == "ignored")
 		{
 			var message = lang.remove_ignored;
 		}
@@ -198,15 +234,25 @@ var UserCP = {
 			var message = lang.remove_buddy;
 		}
 
-		if (confirm(message))
-		{
-			if (use_xmlhttprequest != 1)
-			{
-				return TRUE;
+		MyBB.prompt(message, {
+			buttons:[
+					{title: yes_confirm, value: true},
+					{title: no_confirm, value: false}
+			],
+			submit: function(e,v,m,f){
+				if(v == true)
+				{
+					$.ajax(
+					{
+						type: 'post',
+						url: 'usercp.php?action=do_editlists&my_post_key='+my_post_key+'&manage='+type+'&delete='+uid,
+						data: { ajax: 1 },
+						async: true
+					});
+				}
 			}
-			new Ajax.Request('usercp.php?action=do_editlists&my_post_key='+my_post_key+'&manage='+type+'&delete='+uid, {method: 'post', postBody: 'ajax=1'});
-		}
+		});
 
-		return FALSE;
+		return false;
 	}
 };

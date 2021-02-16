@@ -3,8 +3,8 @@
  * MyBB 1.8
  * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * Website: //www.mybb.com
- * License: //www.mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
  */
 
@@ -24,10 +24,10 @@ class apcCacheHandler implements CacheHandlerInterface
 	{
 		global $mybb;
 
-		if (!function_exists("apc_fetch"))
+		if(!function_exists("apc_fetch"))
 		{
 			// Check if our DB engine is loaded
-			if (!extension_loaded("apc"))
+			if(!extension_loaded("apc"))
 			{
 				// Throw our super awesome cache loading error
 				$mybb->trigger_generic_error("apc_load_error");
@@ -39,31 +39,31 @@ class apcCacheHandler implements CacheHandlerInterface
 	/**
 	 * Connect and initialize this handler.
 	 *
-	 * @return boolean TRUE if successful, FALSE on failure
+	 * @return boolean True if successful, false on failure
 	 */
 	function connect()
 	{
 		// Set a unique identifier for all queries in case other forums on this server also use this cache handler
 		$this->unique_id = md5(MYBB_ROOT);
 
-		return TRUE;
+		return true;
 	}
 
 	/**
 	 * Connect and initialize this handler.
 	 *
 	 * @param string $name
-	 * @return boolean TRUE if successful, FALSE on failure
+	 * @return boolean True if successful, false on failure
 	 */
 	function fetch($name)
 	{
-		if (apc_exists($this->unique_id."_".$name))
+		if(apc_exists($this->unique_id."_".$name))
 		{
 			$data = apc_fetch($this->unique_id."_".$name);
 			return unserialize($data);
 		}
 
-		return FALSE;
+		return false;
 	}
 
 	/**
@@ -71,7 +71,7 @@ class apcCacheHandler implements CacheHandlerInterface
 	 *
 	 * @param string $name The name of the cache
 	 * @param mixed $contents The data to write to the cache item
-	 * @return boolean TRUE on success, FALSE on failure
+	 * @return boolean True on success, false on failure
 	 */
 	function put($name, $contents)
 	{
@@ -83,7 +83,7 @@ class apcCacheHandler implements CacheHandlerInterface
 	 * Delete a cache
 	 *
 	 * @param string $name The name of the cache
-	 * @return boolean TRUE on success, FALSE on failure
+	 * @return boolean True on success, false on failure
 	 */
 	function delete($name)
 	{
@@ -97,7 +97,7 @@ class apcCacheHandler implements CacheHandlerInterface
 	 */
 	function disconnect()
 	{
-		return TRUE;
+		return true;
 	}
 
 	/**

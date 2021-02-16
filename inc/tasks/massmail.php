@@ -1,16 +1,15 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
- * $Id$
  */
 
 // Disallow direct access to this file for security reasons
-if (!defined("IN_MYBB"))
+if(!defined("IN_MYBB"))
 {
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
@@ -20,24 +19,33 @@ require_once MYBB_ROOT."inc/datahandlers/pm.php";
 
 function task_massmail($task)
 {
-	global $db, $mybb, $lang;
+	global $db, $mybb, $lang, $plugins;
 
 	$query = $db->simple_select("massemails", "*", "senddate <= '".TIME_NOW."' AND status IN (1,2)");
 	while($mass_email = $db->fetch_array($query))
 	{
-		if ($mass_email['status'] == 1)
+		if(is_object($plugins))
 		{
-			$db->update_query("massemails", array('status' => 2), "mid='{$mass_email['mid']}'", 1);
+			$args = array(
+				'task' => &$task,
+				'mass_email' => &$mass_email
+			);
+			$plugins->run_hooks('task_massmail', $args);
+		}
+
+		if($mass_email['status'] == 1)
+		{
+			$db->update_query("massemails", array('status' => 2), "mid='{$mass_email['mid']}'");
 		}
 
 		$sentcount = 0;
 
-		if (!$mass_email['perpage'])
+		if(!$mass_email['perpage'])
 		{
 			$mass_email['perpage'] = 50;
 		}
 
-		if (strpos($mass_email['htmlmessage'], '<br />') === FALSE && strpos($mass_email['htmlmessage'], '<br>') === FALSE)
+		if(strpos($mass_email['htmlmessage'], '<br />') === false && strpos($mass_email['htmlmessage'], '<br>') === false)
 		{
 			$mass_email['htmlmessage'] = nl2br($mass_email['htmlmessage']);
 		}
@@ -46,7 +54,7 @@ function task_massmail($task)
 		$mass_email['orig_htmlmessage'] = $mass_email['htmlmessage'];
 
 		// Need to perform the search to fetch the number of users we're emailing
-		$member_query = build_mass_mail_query(unserialize($mass_email['conditions']));
+		$member_query = build_mass_mail_query(my_unserialize($mass_email['conditions']));
 
 		$count_query = $db->simple_select("users u", "COUNT(uid) AS num", $member_query);
 		$mass_email['totalcount'] = $db->fetch_field($count_query, "num");
@@ -73,10 +81,10 @@ function task_massmail($task)
 			}
 
 			// Private Message
-			if ($mass_email['type'] == 1)
+			if($mass_email['type'] == 1)
 			{
 				$pm_handler = new PMDataHandler();
-				$pm_handler->admin_override = TRUE;
+				$pm_handler->admin_override = true;
 
 				$pm = array(
 					"subject" => $mass_email['subject'],
@@ -87,7 +95,7 @@ function task_massmail($task)
 
 				$pm['to'] = explode(",", $user['username']);
 				$pm_handler->set_data($pm);
-				if (!$pm_handler->validate_pm())
+				if(!$pm_handler->validate_pm())
 				{
 					$friendly_errors = implode('\n', $pm_handler->get_friendly_errors());
 					add_task_log($task, $lang->sprintf($lang->task_massmail_ran_errors, htmlspecialchars_uni($user['username']), $friendly_errors));
@@ -117,7 +125,7 @@ function task_massmail($task)
 						$format = "text";
 						$text_message = "";
 				}
-				my_mail($user['email'], $mass_email['subject'], $mass_email['message'], "", "", "", FALSE, $format, $text_message);
+				my_mail($user['email'], $mass_email['subject'], $mass_email['message'], "", "", "", false, $format, $text_message);
 			}
 			++$sentcount;
 
@@ -130,14 +138,13 @@ function task_massmail($task)
 		$update_array['sentcount'] = $mass_email['sentcount'] + $sentcount;
 		$update_array['totalcount'] = $mass_email['totalcount'];
 
-		if ($update_array['sentcount'] >= $mass_email['totalcount'])
+		if($update_array['sentcount'] >= $mass_email['totalcount'])
 		{
 			$update_array['status'] = 3;
 		}
 
-		$db->update_query("massemails", $update_array, "mid='{$mass_email['mid']}'", 1);
+		$db->update_query("massemails", $update_array, "mid='{$mass_email['mid']}'");
 	}
 
 	add_task_log($task, $lang->task_massmail_ran);
 }
-?>

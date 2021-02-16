@@ -2,7 +2,7 @@
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
 // Disallow direct access to this file for security reasons
-if (!defined("IN_MYBB"))
+if(!defined("IN_MYBB"))
 {
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
@@ -58,8 +58,8 @@ if (!defined("IN_MYBB"))
  * @author      Brett Stimmerman <brettstimmerman[at]gmail[dot]com>
  * @copyright   2005 Michal Migurski
  * @version     CVS: $Id: JSON.php,v 1.31 2006/06/28 05:54:17 migurski Exp $
- * @license     //www.opensource.org/licenses/bsd-license.php
- * @link        //pear.php.net/pepr/pepr-proposal-show.php?id=198
+ * @license     http://www.opensource.org/licenses/bsd-license.php
+ * @link        http://pear.php.net/pepr/pepr-proposal-show.php?id=198
  */
 
 /**
@@ -155,27 +155,27 @@ class Services_JSON
     function utf162utf8($utf16)
     {
         // oh please oh please oh please oh please oh please
-        if (function_exists('mb_convert_encoding')) {
+        if(function_exists('mb_convert_encoding')) {
             return mb_convert_encoding($utf16, 'UTF-8', 'UTF-16');
         }
 
         $bytes = (ord($utf16[0]) << 8) | ord($utf16[1]);
 
-        switch(TRUE) {
+        switch(true) {
             case ((0x7F & $bytes) == $bytes):
                 // this case should never be reached, because we are in ASCII range
-                // see: //www.cl.cam.ac.uk/~mgk25/unicode.html#utf-8
+                // see: http://www.cl.cam.ac.uk/~mgk25/unicode.html#utf-8
                 return chr(0x7F & $bytes);
 
             case (0x07FF & $bytes) == $bytes:
                 // return a 2-byte UTF-8 character
-                // see: //www.cl.cam.ac.uk/~mgk25/unicode.html#utf-8
+                // see: http://www.cl.cam.ac.uk/~mgk25/unicode.html#utf-8
                 return chr(0xC0 | (($bytes >> 6) & 0x1F))
                      . chr(0x80 | ($bytes & 0x3F));
 
             case (0xFFFF & $bytes) == $bytes:
                 // return a 3-byte UTF-8 character
-                // see: //www.cl.cam.ac.uk/~mgk25/unicode.html#utf-8
+                // see: http://www.cl.cam.ac.uk/~mgk25/unicode.html#utf-8
                 return chr(0xE0 | (($bytes >> 12) & 0x0F))
                      . chr(0x80 | (($bytes >> 6) & 0x3F))
                      . chr(0x80 | ($bytes & 0x3F));
@@ -199,26 +199,26 @@ class Services_JSON
     function utf82utf16($utf8)
     {
         // oh please oh please oh please oh please oh please
-        if (function_exists('mb_convert_encoding')) {
+        if(function_exists('mb_convert_encoding')) {
             return mb_convert_encoding($utf8, 'UTF-16', 'UTF-8');
         }
 
         switch(strlen($utf8)) {
             case 1:
                 // this case should never be reached, because we are in ASCII range
-                // see: //www.cl.cam.ac.uk/~mgk25/unicode.html#utf-8
+                // see: http://www.cl.cam.ac.uk/~mgk25/unicode.html#utf-8
                 return $utf8;
 
             case 2:
                 // return a UTF-16 character from a 2-byte UTF-8 char
-                // see: //www.cl.cam.ac.uk/~mgk25/unicode.html#utf-8
+                // see: http://www.cl.cam.ac.uk/~mgk25/unicode.html#utf-8
                 return chr(0x07 & (ord($utf8[0]) >> 2))
                      . chr((0xC0 & (ord($utf8[0]) << 6))
                          | (0x3F & ord($utf8[1])));
 
             case 3:
                 // return a UTF-16 character from a 3-byte UTF-8 char
-                // see: //www.cl.cam.ac.uk/~mgk25/unicode.html#utf-8
+                // see: http://www.cl.cam.ac.uk/~mgk25/unicode.html#utf-8
                 return chr((0xF0 & (ord($utf8[0]) << 4))
                          | (0x0F & (ord($utf8[1]) >> 2)))
                      . chr((0xC0 & (ord($utf8[1]) << 6))
@@ -244,10 +244,10 @@ class Services_JSON
     {
         switch (gettype($var)) {
             case 'boolean':
-                return $var ? 'TRUE' : 'FALSE';
+                return $var ? 'true' : 'false';
 
             case 'NULL':
-                return 'NULL';
+                return 'null';
 
             case 'integer':
                 return (int) $var;
@@ -269,7 +269,7 @@ class Services_JSON
 
                     $ord_var_c = ord($var[$c]);
 
-                    switch (TRUE) {
+                    switch (true) {
                         case $ord_var_c == 0x08:
                             $ascii .= '\b';
                             break;
@@ -300,7 +300,7 @@ class Services_JSON
 
                         case (($ord_var_c & 0xE0) == 0xC0):
                             // characters U-00000080 - U-000007FF, mask 110XXXXX
-                            // see //www.cl.cam.ac.uk/~mgk25/unicode.html#utf-8
+                            // see http://www.cl.cam.ac.uk/~mgk25/unicode.html#utf-8
                             $char = pack('C*', $ord_var_c, ord($var[$c + 1]));
                             $c += 1;
                             $utf16 = $this->utf82utf16($char);
@@ -309,7 +309,7 @@ class Services_JSON
 
                         case (($ord_var_c & 0xF0) == 0xE0):
                             // characters U-00000800 - U-0000FFFF, mask 1110XXXX
-                            // see //www.cl.cam.ac.uk/~mgk25/unicode.html#utf-8
+                            // see http://www.cl.cam.ac.uk/~mgk25/unicode.html#utf-8
                             $char = pack('C*', $ord_var_c,
                                          ord($var[$c + 1]),
                                          ord($var[$c + 2]));
@@ -320,7 +320,7 @@ class Services_JSON
 
                         case (($ord_var_c & 0xF8) == 0xF0):
                             // characters U-00010000 - U-001FFFFF, mask 11110XXX
-                            // see //www.cl.cam.ac.uk/~mgk25/unicode.html#utf-8
+                            // see http://www.cl.cam.ac.uk/~mgk25/unicode.html#utf-8
                             $char = pack('C*', $ord_var_c,
                                          ord($var[$c + 1]),
                                          ord($var[$c + 2]),
@@ -332,7 +332,7 @@ class Services_JSON
 
                         case (($ord_var_c & 0xFC) == 0xF8):
                             // characters U-00200000 - U-03FFFFFF, mask 111110XX
-                            // see //www.cl.cam.ac.uk/~mgk25/unicode.html#utf-8
+                            // see http://www.cl.cam.ac.uk/~mgk25/unicode.html#utf-8
                             $char = pack('C*', $ord_var_c,
                                          ord($var[$c + 1]),
                                          ord($var[$c + 2]),
@@ -345,7 +345,7 @@ class Services_JSON
 
                         case (($ord_var_c & 0xFE) == 0xFC):
                             // characters U-04000000 - U-7FFFFFFF, mask 1111110X
-                            // see //www.cl.cam.ac.uk/~mgk25/unicode.html#utf-8
+                            // see http://www.cl.cam.ac.uk/~mgk25/unicode.html#utf-8
                             $char = pack('C*', $ord_var_c,
                                          ord($var[$c + 1]),
                                          ord($var[$c + 2]),
@@ -387,7 +387,7 @@ class Services_JSON
                                             array_values($var));
 
                     foreach($properties as $property) {
-                        if (Services_JSON::isError($property)) {
+                        if(Services_JSON::isError($property)) {
                             return $property;
                         }
                     }
@@ -399,7 +399,7 @@ class Services_JSON
                 $elements = array_map(array($this, 'encode'), $var);
 
                 foreach($elements as $element) {
-                    if (Services_JSON::isError($element)) {
+                    if(Services_JSON::isError($element)) {
                         return $element;
                     }
                 }
@@ -414,7 +414,7 @@ class Services_JSON
                                         array_values($vars));
 
                 foreach($properties as $property) {
-                    if (Services_JSON::isError($property)) {
+                    if(Services_JSON::isError($property)) {
                         return $property;
                     }
                 }
@@ -423,7 +423,7 @@ class Services_JSON
 
             default:
                 return ($this->use & SERVICES_JSON_SUPPRESS_ERRORS)
-                    ? 'NULL'
+                    ? 'null'
                     : new Services_JSON_Error(gettype($var)." can not be encoded as JSON string");
         }
     }
@@ -441,7 +441,7 @@ class Services_JSON
     {
         $encoded_value = $this->encode($value);
 
-        if (Services_JSON::isError($encoded_value)) {
+        if(Services_JSON::isError($encoded_value)) {
             return $encoded_value;
         }
 
@@ -492,14 +492,14 @@ class Services_JSON
         $str = $this->reduce_string($str);
 
         switch (strtolower($str)) {
-            case 'TRUE':
-                return TRUE;
+            case 'true':
+                return true;
 
-            case 'FALSE':
-                return FALSE;
+            case 'false':
+                return false;
 
-            case 'NULL':
-                return NULL;
+            case 'null':
+                return null;
 
             default:
                 $m = array();
@@ -528,7 +528,7 @@ class Services_JSON
                         $substr_chrs_c_2 = substr($chrs, $c, 2);
                         $ord_chrs_c = ord($chrs[$c]);
 
-                        switch (TRUE) {
+                        switch (true) {
                             case $substr_chrs_c_2 == '\b':
                                 $utf8 .= chr(0x08);
                                 ++$c;
@@ -574,35 +574,35 @@ class Services_JSON
 
                             case ($ord_chrs_c & 0xE0) == 0xC0:
                                 // characters U-00000080 - U-000007FF, mask 110XXXXX
-                                //see //www.cl.cam.ac.uk/~mgk25/unicode.html#utf-8
+                                //see http://www.cl.cam.ac.uk/~mgk25/unicode.html#utf-8
                                 $utf8 .= substr($chrs, $c, 2);
                                 ++$c;
                                 break;
 
                             case ($ord_chrs_c & 0xF0) == 0xE0:
                                 // characters U-00000800 - U-0000FFFF, mask 1110XXXX
-                                // see //www.cl.cam.ac.uk/~mgk25/unicode.html#utf-8
+                                // see http://www.cl.cam.ac.uk/~mgk25/unicode.html#utf-8
                                 $utf8 .= substr($chrs, $c, 3);
                                 $c += 2;
                                 break;
 
                             case ($ord_chrs_c & 0xF8) == 0xF0:
                                 // characters U-00010000 - U-001FFFFF, mask 11110XXX
-                                // see //www.cl.cam.ac.uk/~mgk25/unicode.html#utf-8
+                                // see http://www.cl.cam.ac.uk/~mgk25/unicode.html#utf-8
                                 $utf8 .= substr($chrs, $c, 4);
                                 $c += 3;
                                 break;
 
                             case ($ord_chrs_c & 0xFC) == 0xF8:
                                 // characters U-00200000 - U-03FFFFFF, mask 111110XX
-                                // see //www.cl.cam.ac.uk/~mgk25/unicode.html#utf-8
+                                // see http://www.cl.cam.ac.uk/~mgk25/unicode.html#utf-8
                                 $utf8 .= substr($chrs, $c, 5);
                                 $c += 4;
                                 break;
 
                             case ($ord_chrs_c & 0xFE) == 0xFC:
                                 // characters U-04000000 - U-7FFFFFFF, mask 1111110X
-                                // see //www.cl.cam.ac.uk/~mgk25/unicode.html#utf-8
+                                // see http://www.cl.cam.ac.uk/~mgk25/unicode.html#utf-8
                                 $utf8 .= substr($chrs, $c, 6);
                                 $c += 5;
                                 break;
@@ -631,7 +631,7 @@ class Services_JSON
 
                     array_push($stk, array('what'  => SERVICES_JSON_SLICE,
                                            'where' => 0,
-                                           'delim' => FALSE));
+                                           'delim' => false));
 
                     $chrs = substr($str, 1, -1);
                     $chrs = $this->reduce_string($chrs);
@@ -659,7 +659,7 @@ class Services_JSON
                             // found a comma that is not inside a string, array, etc.,
                             // OR we've reached the end of the character list
                             $slice = substr($chrs, $top['where'], ($c - $top['where']));
-                            array_push($stk, array('what' => SERVICES_JSON_SLICE, 'where' => ($c + 1), 'delim' => FALSE));
+                            array_push($stk, array('what' => SERVICES_JSON_SLICE, 'where' => ($c + 1), 'delim' => false));
                             //print("Found split at {$c}: ".substr($chrs, $top['where'], (1 + $c - $top['where']))."\n");
 
                             if (reset($stk) == SERVICES_JSON_IN_ARR) {
@@ -714,7 +714,7 @@ class Services_JSON
                         } elseif (($chrs[$c] == '[') &&
                                  in_array($top['what'], array(SERVICES_JSON_SLICE, SERVICES_JSON_IN_ARR, SERVICES_JSON_IN_OBJ))) {
                             // found a left-bracket, and we are in an array, object, or slice
-                            array_push($stk, array('what' => SERVICES_JSON_IN_ARR, 'where' => $c, 'delim' => FALSE));
+                            array_push($stk, array('what' => SERVICES_JSON_IN_ARR, 'where' => $c, 'delim' => false));
                             //print("Found start of array at {$c}\n");
 
                         } elseif (($chrs[$c] == ']') && ($top['what'] == SERVICES_JSON_IN_ARR)) {
@@ -725,7 +725,7 @@ class Services_JSON
                         } elseif (($chrs[$c] == '{') &&
                                  in_array($top['what'], array(SERVICES_JSON_SLICE, SERVICES_JSON_IN_ARR, SERVICES_JSON_IN_OBJ))) {
                             // found a left-brace, and we are in an array, object, or slice
-                            array_push($stk, array('what' => SERVICES_JSON_IN_OBJ, 'where' => $c, 'delim' => FALSE));
+                            array_push($stk, array('what' => SERVICES_JSON_IN_OBJ, 'where' => $c, 'delim' => false));
                             //print("Found start of object at {$c}\n");
 
                         } elseif (($chrs[$c] == '}') && ($top['what'] == SERVICES_JSON_IN_OBJ)) {
@@ -736,7 +736,7 @@ class Services_JSON
                         } elseif (($substr_chrs_c_2 == '/*') &&
                                  in_array($top['what'], array(SERVICES_JSON_SLICE, SERVICES_JSON_IN_ARR, SERVICES_JSON_IN_OBJ))) {
                             // found a comment start, and we are in an array, object, or slice
-                            array_push($stk, array('what' => SERVICES_JSON_IN_CMT, 'where' => $c, 'delim' => FALSE));
+                            array_push($stk, array('what' => SERVICES_JSON_IN_CMT, 'where' => $c, 'delim' => false));
                             $c++;
                             //print("Found start of comment at {$c}\n");
 
@@ -769,16 +769,16 @@ class Services_JSON
     /**
      * @todo Ultimately, this should just call PEAR::isError()
      */
-    function isError($data, $code = NULL)
+    function isError($data, $code = null)
     {
         if (class_exists('pear')) {
             return PEAR::isError($data, $code);
         } elseif (is_object($data) && (get_class($data) == 'services_json_error' ||
                                  is_subclass_of($data, 'services_json_error'))) {
-            return TRUE;
+            return true;
         }
 
-        return FALSE;
+        return false;
     }
 }
 
@@ -786,8 +786,8 @@ if (class_exists('PEAR_Error')) {
 
     class Services_JSON_Error extends PEAR_Error
     {
-        function Services_JSON_Error($message = 'unknown error', $code = NULL,
-                                     $mode = NULL, $options = NULL, $userinfo = NULL)
+        function Services_JSON_Error($message = 'unknown error', $code = null,
+                                     $mode = null, $options = null, $userinfo = null)
         {
             parent::PEAR_Error($message, $code, $mode, $options, $userinfo);
         }
@@ -800,8 +800,8 @@ if (class_exists('PEAR_Error')) {
      */
     class Services_JSON_Error
     {
-        function Services_JSON_Error($message = 'unknown error', $code = NULL,
-                                     $mode = NULL, $options = NULL, $userinfo = NULL)
+        function Services_JSON_Error($message = 'unknown error', $code = null,
+                                     $mode = null, $options = null, $userinfo = null)
         {
 
         }
@@ -809,7 +809,7 @@ if (class_exists('PEAR_Error')) {
 
 }
 
-if (!function_exists('json_encode'))
+if(!function_exists('json_encode'))
 {
 	function json_encode($var)
 	{
@@ -818,7 +818,7 @@ if (!function_exists('json_encode'))
 	}
 }
 
-if (!function_exists('json_decode'))
+if(!function_exists('json_decode'))
 {
 	function json_decode($var)
 	{

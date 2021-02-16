@@ -1,9 +1,8 @@
 <?php
 /**
- * MyBB 1.6 English Language Pack
- * Copyright 2010 MyBB Group, All Rights Reserved
- * 
- * $Id$
+ * MyBB 1.8 English Language Pack
+ * Copyright 2014 MyBB Group, All Rights Reserved
+ *
  */
 
 // Tabs
@@ -48,4 +47,3 @@ $l['mark_as_deleted'] = "Mark all for deletion";
 $l['mark_as_approved'] = "Mark all as approved";
 $l['perform_action'] = "Perform Actions";
 
-?>

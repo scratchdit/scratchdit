@@ -1,12 +1,11 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
- * $Id$
  */
 
 /**
@@ -34,6 +33,13 @@ class MailHandler
 	 * @var string
 	 */
 	public $from;
+
+	/**
+	 * Full from string including name in format "name" <email>
+	 *
+	 * @var string
+	 */
+	public $from_named;
 
 	/**
 	 * Who the email should return to.
@@ -81,30 +87,65 @@ class MailHandler
 	/**
 	 * The currently used delimiter new lines.
 	 *
-	 * @var string.
+	 * @var string
 	 */
 	public $delimiter = "\r\n";
 
 	/**
 	 * How it should parse the email (HTML or plain text?)
 	 *
-	 * @var array
+	 * @var string
 	 */
 	public $parse_format = 'text';
+
+	/**
+	 * The last received response from the SMTP server.
+	 *
+	 * @var string
+	 */
+	public $data = '';
+
+	/**
+	 * The last received response code from the SMTP server.
+	 *
+	 * @var string
+	 */
+	public $code = 0;
+
+	/**
+	 * Selects between AdminEmail and ReturnEmail, dependant on if ReturnEmail is filled.
+	 * 
+	 * @return string
+	 */
+	function get_from_email()
+	{
+		global $mybb;
+		
+		if(trim($mybb->settings['returnemail']))
+		{
+			$email = $mybb->settings['returnemail'];
+		}
+		else
+		{
+			$email = $mybb->settings['adminemail'];
+		}
+		
+		return $email;
+	}
 
 	/**
 	 * Builds the whole mail.
 	 * To be used by the different email classes later.
 	 *
-	 * @param string to email.
-	 * @param string subject of email.
-	 * @param string message of email.
-	 * @param string from email.
-	 * @param string charset of email.
-	 * @param string headers of email.
-	 * @param string format of the email (HTML, plain text, or both?).
-	 * @param string plain text version of the email.
-	 * @param string the return email address.
+	 * @param string $to to email.
+	 * @param string $subject subject of email.
+	 * @param string $message message of email.
+	 * @param string $from from email.
+	 * @param string $charset charset of email.
+	 * @param string $headers headers of email.
+	 * @param string $format format of the email (HTML, plain text, or both?).
+	 * @param string $message_text plain text version of the email.
+	 * @param string $return_email the return email address.
 	 */
 	function build_message($to, $subject, $message, $from="", $charset="", $headers="", $format="text", $message_text="", $return_email="")
 	{
@@ -112,47 +153,32 @@ class MailHandler
 
 		$this->message = '';
 		$this->headers = $headers;
-
-		if ($from)
+		
+		if($from)
 		{
 			$this->from = $from;
+			$this->from_named = $this->from;
 		}
 		else
 		{
-			$this->from = "";
-
-			if ($mybb->settings['mail_handler'] == 'smtp')
-			{
-				$this->from = $mybb->settings['adminemail'];
-			}
-			else
-			{
-				$this->from = '"'.$this->utf8_encode($mybb->settings['bbname']).'"';
-				$this->from .= " <{$mybb->settings['adminemail']}>";
-			}
+			$this->from = $this->get_from_email();
+			$this->from_named = '"'.$this->utf8_encode($mybb->settings['bbname']).'"';
+			$this->from_named .= " <".$this->from.">";
 		}
 
-		if ($return_email)
+		if($return_email)
 		{
 			$this->return_email = $return_email;
 		}
 		else
 		{
-			$this->return_email = "";
-			if ($mybb->settings['returnemail'])
-			{
-				$this->return_email = $mybb->settings['returnemail'];
-			}
-			else
-			{
-				$this->return_email = $mybb->settings['adminemail'];
-			}
+			$this->return_email = $this->get_from_email();
 		}
 
 		$this->set_to($to);
 		$this->set_subject($subject);
 
-		if ($charset)
+		if($charset)
 		{
 			$this->set_charset($charset);
 		}
@@ -165,13 +191,13 @@ class MailHandler
 	/**
 	 * Sets the charset.
 	 *
-	 * @param string charset
+	 * @param string $charset charset
 	 */
 	function set_charset($charset)
 	{
 		global $lang;
 
-		if (empty($charset))
+		if(empty($charset))
 		{
 			$this->charset = $lang->settings['charset'];
 		}
@@ -184,18 +210,19 @@ class MailHandler
 	/**
 	 * Sets and formats the email message.
 	 *
-	 * @param string message
+	 * @param string $message message
+	 * @param string $message_text
 	 */
 	function set_message($message, $message_text="")
 	{
 		$message = $this->cleanup_crlf($message);
 
-		if ($message_text)
+		if($message_text)
 		{
 			$message_text = $this->cleanup_crlf($message_text);
 		}
 
-		if ($this->parse_format == "html" || $this->parse_format == "both")
+		if($this->parse_format == "html" || $this->parse_format == "both")
 		{
 			$this->set_html_headers($message, $message_text);
 		}
@@ -209,7 +236,7 @@ class MailHandler
 	/**
 	 * Sets and formats the email subject.
 	 *
-	 * @param string subject
+	 * @param string $subject
 	 */
 	function set_subject($subject)
 	{
@@ -220,7 +247,7 @@ class MailHandler
 	/**
 	 * Sets and formats the recipient address.
 	 *
-	 * @param string to
+	 * @param string $to
 	 */
 	function set_to($to)
 	{
@@ -240,16 +267,17 @@ class MailHandler
 	/**
 	 * Sets the alternative headers, text/html and text/plain.
 	 *
-	 * @param string message
+	 * @param string $message
+	 * @param string $message_text
 	 */
 	function set_html_headers($message, $message_text="")
 	{
-		if (!$message_text && $this->parse_format == 'both')
+		if(!$message_text && $this->parse_format == 'both')
 		{
 			$message_text = strip_tags($message);
 		}
 
-		if ($this->parse_format == 'both')
+		if($this->parse_format == 'both')
 		{
 			$mime_boundary = "=_NextPart".md5(TIME_NOW);
 
@@ -282,20 +310,22 @@ class MailHandler
 	 */
 	function set_common_headers()
 	{
-		// Build mail headers
-		$this->headers .= "From: {$this->from}{$this->delimiter}";
+		global $mybb;
 
-		if ($this->return_email)
+		// Build mail headers
+		$this->headers .= "From: {$this->from_named}{$this->delimiter}";
+
+		if($this->return_email)
 		{
 			$this->headers .= "Return-Path: {$this->return_email}{$this->delimiter}";
 			$this->headers .= "Reply-To: {$this->return_email}{$this->delimiter}";
 		}
 
-		if (isset($_SERVER['SERVER_NAME']))
+		if(isset($_SERVER['SERVER_NAME']))
 		{
 			$http_host = $_SERVER['SERVER_NAME'];
 		}
-		else if (isset($_SERVER['HTTP_HOST']))
+		else if(isset($_SERVER['HTTP_HOST']))
 		{
 			$http_host = $_SERVER['HTTP_HOST'];
 		}
@@ -304,15 +334,14 @@ class MailHandler
 			$http_host = "unknown.local";
 		}
 
-		$msg_id = md5(uniqid(TIME_NOW)) . "@" . $http_host;
+		$msg_id = md5(uniqid(TIME_NOW, true)) . "@" . $http_host;
 
-		if ($mybb->settings['mail_message_id'])
+		if($mybb->settings['mail_message_id'])
 		{
 			$this->headers .= "Message-ID: <{$msg_id}>{$this->delimiter}";
 		}
 		$this->headers .= "Content-Transfer-Encoding: 8bit{$this->delimiter}";
 		$this->headers .= "X-Priority: 3{$this->delimiter}";
-		$this->headers .= "X-MSMail-Priority: Normal{$this->delimiter}";
 		$this->headers .= "X-Mailer: MyBB{$this->delimiter}";
 		$this->headers .= "MIME-Version: 1.0{$this->delimiter}";
 	}
@@ -320,8 +349,7 @@ class MailHandler
 	/**
 	 * Log a fatal error message to the database.
 	 *
-	 * @param string The error message
-	 * @param string Any additional information
+	 * @param string $error The error message
 	 */
 	function fatal_error($error)
 	{
@@ -335,7 +363,7 @@ class MailHandler
 			"dateline" => TIME_NOW,
 			"error" => $db->escape_string($error),
 			"smtperror" => $db->escape_string($this->data),
-			"smtpcode" => intval($this->code)
+			"smtpcode" => (int)$this->code
 		);
 		$db->insert_query("mailerrors", $mail_error);
 
@@ -345,7 +373,7 @@ class MailHandler
 	/**
 	 * Rids pesky characters from subjects, recipients, from addresses etc (prevents mail injection too)
 	 *
-	 * @param string The string being checked
+	 * @param string $string The string being checked
 	 * @return string The cleaned string
 	 */
 	function cleanup($string)
@@ -359,7 +387,7 @@ class MailHandler
 	 * Converts message text to suit the correct delimiter
 	 * See dev.mybb.com/issues/1735 (Jorge Oliveira)
 	 *
-	 * @param string The text being converted
+	 * @param string $text The text being converted
 	 * @return string The converted string
 	 */
 	function cleanup_crlf($text)
@@ -376,12 +404,12 @@ class MailHandler
 	 * and recipients in email messages going out so that they show up correctly
 	 * in email clients.
 	 *
-	 * @param string The string to be encoded.
+	 * @param string $string The string to be encoded.
 	 * @return string The encoded string.
 	 */
 	function utf8_encode($string)
 	{
-		if (strtolower($this->charset) == 'utf-8' && preg_match('/[^\x20-\x7E]/', $string))
+		if(strtolower($this->charset) == 'utf-8' && preg_match('/[^\x20-\x7E]/', $string))
 		{
 			$chunk_size = 47; // Derived from floor((75 - strlen("=?UTF-8?B??=")) * 0.75);
 			$len = strlen($string);
@@ -408,4 +436,3 @@ class MailHandler
 		return $string;
 	}
 }
-?>

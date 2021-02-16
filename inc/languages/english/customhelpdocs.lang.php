@@ -1,9 +1,8 @@
 <?php
 /**
- * MyBB 1.6 English Language Pack
- * Copyright 2010 MyBB Group, All Rights Reserved
- * 
- * $Id$
+ * MyBB 1.8 English Language Pack
+ * Copyright 2014 MyBB Group, All Rights Reserved
+ *
  */
 
 /*
@@ -14,4 +13,3 @@
  * $l['d{hid}_desc'] = "Document description";
  * $l['d{hid}_document'] = "Document text";
  */
-?>

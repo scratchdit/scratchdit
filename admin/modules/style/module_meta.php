@@ -1,12 +1,11 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
- * $Id$
  */
 
 // Disallow direct access to this file for security reasons
@@ -15,6 +14,9 @@ if(!defined("IN_MYBB"))
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
 
+/**
+ * @return bool true
+ */
 function style_meta()
 {
 	global $page, $lang, $plugins;
@@ -26,12 +28,17 @@ function style_meta()
 	$sub_menu = $plugins->run_hooks("admin_style_menu", $sub_menu);
 
 	$page->add_menu_item($lang->templates_and_style, "style", "index.php?module=style", 40, $sub_menu);
-	return TRUE;
+	return true;
 }
 
+/**
+ * @param string $action
+ *
+ * @return string
+ */
 function style_action_handler($action)
 {
-	global $page, $lang, $plugins;
+	global $page, $plugins;
 
 	$page->active_module = "style";
 
@@ -54,6 +61,9 @@ function style_action_handler($action)
 	}
 }
 
+/**
+ * @return array
+ */
 function style_admin_permissions()
 {
 	global $lang, $plugins;
@@ -67,4 +77,3 @@ function style_admin_permissions()
 
 	return array("name" => $lang->templates_and_style, "permissions" => $admin_permissions, "disporder" => 40);
 }
-?>

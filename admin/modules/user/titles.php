@@ -1,23 +1,22 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
- * $Id$
  */
 
 // Disallow direct access to this file for security reasons
-if (!defined("IN_MYBB"))
+if(!defined("IN_MYBB"))
 {
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
 
 $page->add_breadcrumb_item($lang->user_titles, "index.php?module=user-titles");
 
-if ($mybb->input['action'] == "add" || !$mybb->input['action'])
+if($mybb->input['action'] == "add" || !$mybb->input['action'])
 {
 	$sub_tabs['manage_titles'] = array(
 		'title' => $lang->user_titles,
@@ -33,36 +32,42 @@ if ($mybb->input['action'] == "add" || !$mybb->input['action'])
 
 $plugins->run_hooks("admin_user_titles_begin");
 
-if ($mybb->input['action'] == "add")
+if($mybb->input['action'] == "add")
 {
 	$plugins->run_hooks("admin_user_titles_add");
 
-	if ($mybb->request_method == "post")
+	if($mybb->request_method == "post")
 	{
-		if (!trim($mybb->input['title']))
+		if(!trim($mybb->input['title']))
 		{
 			$errors[] = $lang->error_missing_title;
 		}
 
-		if (!isset($mybb->input['posts']))
+		if(!isset($mybb->input['posts']))
 		{
 			$errors[] = $lang->error_missing_posts;
 		}
 
-		if (!$errors)
+		$query = $db->simple_select("usertitles", "utid", "posts= '".$mybb->get_input('posts', MyBB::INPUT_INT)."'");
+		if($db->num_rows($query))
+		{
+			$errors[] = $lang->error_cannot_have_same_posts;
+		}
+
+		if(!$errors)
 		{
 			$new_title = array(
 				"title" => $db->escape_string($mybb->input['title']),
-				"posts" => intval($mybb->input['posts']),
-				"stars" => intval($mybb->input['stars']),
+				"posts" => $mybb->get_input('posts', MyBB::INPUT_INT),
+				"stars" => $mybb->get_input('stars', MyBB::INPUT_INT),
 				"starimage" => $db->escape_string($mybb->input['starimage'])
 			);
 
 			$utid = $db->insert_query("usertitles", $new_title);
 
-			$cache->update_usertitles();
-
 			$plugins->run_hooks("admin_user_titles_add_commit");
+
+			$cache->update_usertitles();
 
 			// Log admin action
 			log_admin_action($utid, $mybb->input['title'], $mybb->input['posts']);
@@ -73,9 +78,10 @@ if ($mybb->input['action'] == "add")
 	}
 	else
 	{
-		$mybb->input = array(
-			'stars' => '1',
-			'starimage' => '{theme}/star.gif',
+		$mybb->input = array_merge($mybb->input, array(
+				'stars' => '1',
+				'starimage' => '{theme}/star.png',
+			)
 		);
 	}
 
@@ -86,16 +92,16 @@ if ($mybb->input['action'] == "add")
 	$form = new Form("index.php?module=user-titles&amp;action=add", "post");
 
 
-	if ($errors)
+	if($errors)
 	{
 		$page->output_inline_error($errors);
 	}
 
 	$form_container = new FormContainer($lang->add_new_user_title);
-	$form_container->output_row($lang->title_to_assign."<em>*</em>", $lang->title_to_assign_desc, $form->generate_text_box('title', $mybb->input['title'], array('id' => 'title')), 'title');
-	$form_container->output_row($lang->minimum_posts, $lang->minimum_posts_desc, $form->generate_text_box('posts', $mybb->input['posts'], array('id' => 'posts')), 'posts');
-	$form_container->output_row($lang->number_of_stars, $lang->number_of_stars_desc, $form->generate_text_box('stars', $mybb->input['stars'], array('id' => 'stars')), 'stars');
-	$form_container->output_row($lang->star_image, $lang->star_image_desc, $form->generate_text_box('starimage', $mybb->input['starimage'], array('id' => 'starimage')), 'starimage');
+	$form_container->output_row($lang->title_to_assign."<em>*</em>", $lang->title_to_assign_desc, $form->generate_text_box('title', $mybb->get_input('title'), array('id' => 'title')), 'title');
+	$form_container->output_row($lang->minimum_posts, $lang->minimum_posts_desc, $form->generate_numeric_field('posts', $mybb->get_input('posts'), array('id' => 'posts', 'min' => 0)), 'posts');
+	$form_container->output_row($lang->number_of_stars, $lang->number_of_stars_desc, $form->generate_numeric_field('stars', $mybb->get_input('stars'), array('id' => 'stars', 'min' => 0)), 'stars');
+	$form_container->output_row($lang->star_image, $lang->star_image_desc, $form->generate_text_box('starimage', $mybb->get_input('starimage'), array('id' => 'starimage')), 'starimage');
 	$form_container->end();
 
 	$buttons[] = $form->generate_submit_button($lang->save_user_title);
@@ -106,45 +112,51 @@ if ($mybb->input['action'] == "add")
 	$page->output_footer();
 }
 
-if ($mybb->input['action'] == "edit")
+if($mybb->input['action'] == "edit")
 {
-	$plugins->run_hooks("admin_user_titles_edit");
-
-	$query = $db->simple_select("usertitles", "*", "utid='".intval($mybb->input['utid'])."'");
+	$query = $db->simple_select("usertitles", "*", "utid='".$mybb->get_input('utid', MyBB::INPUT_INT)."'");
 	$usertitle = $db->fetch_array($query);
 
-	if (!$usertitle['utid'])
+	if(!$usertitle['utid'])
 	{
 		flash_message($lang->error_invalid_user_title, 'error');
 		admin_redirect("index.php?module=user-titles");
 	}
 
-	if ($mybb->request_method == "post")
+	$plugins->run_hooks("admin_user_titles_edit");
+
+	if($mybb->request_method == "post")
 	{
-		if (!trim($mybb->input['title']))
+		if(!trim($mybb->input['title']))
 		{
 			$errors[] = $lang->error_missing_title;
 		}
 
-		if (!isset($mybb->input['posts']))
+		if(!isset($mybb->input['posts']))
 		{
 			$errors[] = $lang->error_missing_posts;
 		}
 
-		if (!$errors)
+		$query = $db->simple_select("usertitles", "utid", "posts= '".$mybb->get_input('posts', MyBB::INPUT_INT)."' AND utid!= '".$mybb->get_input('utid', MyBB::INPUT_INT)."'");
+		if($db->num_rows($query))
+		{
+			$errors[] = $lang->error_cannot_have_same_posts;
+		}
+
+		if(!$errors)
 		{
 			$updated_title = array(
 				"title" => $db->escape_string($mybb->input['title']),
-				"posts" => intval($mybb->input['posts']),
-				"stars" => intval($mybb->input['stars']),
+				"posts" => $mybb->get_input('posts', MyBB::INPUT_INT),
+				"stars" => $mybb->get_input('stars', MyBB::INPUT_INT),
 				"starimage" => $db->escape_string($mybb->input['starimage'])
 			);
+
+			$plugins->run_hooks("admin_user_titles_edit_commit");
 
 			$db->update_query("usertitles", $updated_title, "utid='{$usertitle['utid']}'");
 
 			$cache->update_usertitles();
-
-			$plugins->run_hooks("admin_user_titles_edit_commit");
 
 			// Log admin action
 			log_admin_action($usertitle['utid'], $mybb->input['title'], $mybb->input['posts']);
@@ -159,7 +171,7 @@ if ($mybb->input['action'] == "edit")
 
 	$sub_tabs['edit_title'] = array(
 		'title' => $lang->edit_user_title,
-		'link' => "index.php?module=user-titles&amp;action=edit&amp;uid=".$mybb->input['uid'],
+		'link' => "index.php?module=user-titles&amp;action=edit&amp;utid=".$usertitle['utid'],
 		'description' => $lang->edit_user_title_desc
 	);
 
@@ -167,19 +179,19 @@ if ($mybb->input['action'] == "edit")
 	$form = new Form("index.php?module=user-titles&amp;action=edit&amp;utid={$usertitle['utid']}", "post");
 
 
-	if ($errors)
+	if($errors)
 	{
 		$page->output_inline_error($errors);
 	}
 	else
 	{
-		$mybb->input = $usertitle;
+		$mybb->input = array_merge($mybb->input, $usertitle);
 	}
 
 	$form_container = new FormContainer($lang->edit_user_title);
 	$form_container->output_row($lang->title_to_assign."<em>*</em>", $lang->title_to_assign_desc, $form->generate_text_box('title', $mybb->input['title'], array('id' => 'title')), 'title');
-	$form_container->output_row($lang->minimum_posts, $lang->minimum_posts_desc, $form->generate_text_box('posts', $mybb->input['posts'], array('id' => 'posts')), 'posts');
-	$form_container->output_row($lang->number_of_stars, $lang->number_of_stars_desc, $form->generate_text_box('stars', $mybb->input['stars'], array('id' => 'stars')), 'stars');
+	$form_container->output_row($lang->minimum_posts, $lang->minimum_posts_desc, $form->generate_numeric_field('posts', $mybb->input['posts'], array('id' => 'posts', 'min' => 0)), 'posts');
+	$form_container->output_row($lang->number_of_stars, $lang->number_of_stars_desc, $form->generate_numeric_field('stars', $mybb->input['stars'], array('id' => 'stars', 'min' => 0)), 'stars');
 	$form_container->output_row($lang->star_image, $lang->star_image_desc, $form->generate_text_box('starimage', $mybb->input['starimage'], array('id' => 'starimage')), 'starimage');
 	$form_container->end();
 
@@ -192,30 +204,32 @@ if ($mybb->input['action'] == "edit")
 
 }
 
-if ($mybb->input['action'] == "delete")
+if($mybb->input['action'] == "delete")
 {
-	$plugins->run_hooks("admin_user_titles_delete");
-
-	$query = $db->simple_select("usertitles", "*", "utid='".intval($mybb->input['utid'])."'");
+	$query = $db->simple_select("usertitles", "*", "utid='".$mybb->get_input('utid', MyBB::INPUT_INT)."'");
 	$usertitle = $db->fetch_array($query);
 
-	if (!$usertitle['utid'])
+	if(!$usertitle['utid'])
 	{
 		flash_message($lang->error_invalid_user_title, 'error');
 		admin_redirect("index.php?module=user-titles");
 	}
 
 	// User clicked no
-	if ($mybb->input['no'])
+	if($mybb->get_input('no'))
 	{
 		admin_redirect("index.php?module=user-titles");
 	}
 
-	if ($mybb->request_method == "post")
+	$plugins->run_hooks("admin_user_titles_delete");
+
+	if($mybb->request_method == "post")
 	{
 		$db->delete_query("usertitles", "utid='{$usertitle['utid']}'");
 
 		$plugins->run_hooks("admin_user_titles_delete_commit");
+
+		$cache->update_usertitles();
 
 		// Log admin action
 		log_admin_action($usertitle['utid'], $usertitle['title'], $usertitle['posts']);
@@ -229,7 +243,7 @@ if ($mybb->input['action'] == "delete")
 	}
 }
 
-if (!$mybb->input['action'])
+if(!$mybb->input['action'])
 {
 	$plugins->run_hooks("admin_user_titles_start");
 
@@ -253,15 +267,13 @@ if (!$mybb->input['action'])
 		$table->construct_row();
 	}
 
-	if ($table->num_rows() == 0)
+	if($table->num_rows() == 0)
 	{
 		$table->construct_cell($lang->no_user_titles, array('colspan' => 4));
 		$table->construct_row();
-		$no_results = TRUE;
 	}
 
 	$table->output($lang->manage_user_titles);
 
 	$page->output_footer();
 }
-?>

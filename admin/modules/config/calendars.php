@@ -1,12 +1,11 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
- * $Id$
  */
 
 // Disallow direct access to this file for security reasons
@@ -27,6 +26,7 @@ if($mybb->input['action'] == "add" || $mybb->input['action'] == "permissions" ||
 	$sub_tabs['add_calendar'] = array(
 		'title' => $lang->add_calendar,
 		'link' => "index.php?module=config-calendars&amp;action=add",
+		'description' => $lang->add_calendar_desc
 	);
 }
 
@@ -54,19 +54,23 @@ if($mybb->input['action'] == "add")
 		{
 			$calendar = array(
 				"name" => $db->escape_string($mybb->input['name']),
-				"disporder" => intval($mybb->input['disporder']),
-				"startofweek" => intval($mybb->input['startofweek']),
-				"eventlimit" => intval($mybb->input['eventlimit']),
-				"showbirthdays" => intval($mybb->input['showbirthdays']),
-				"moderation" => intval($mybb->input['moderation']),
-				"allowhtml" => $db->escape_string($mybb->input['allowhtml']),
-				"allowmycode" => $db->escape_string($mybb->input['allowmycode']),
-				"allowimgcode" => $db->escape_string($mybb->input['allowimgcode']),
-				"allowvideocode" => $db->escape_string($mybb->input['allowvideocode']),
-				"allowsmilies" => $db->escape_string($mybb->input['allowsmilies'])
+				"disporder" => $mybb->get_input('disporder', MyBB::INPUT_INT),
+				"startofweek" => $mybb->get_input('startofweek', MyBB::INPUT_INT),
+				"eventlimit" => $mybb->get_input('eventlimit', MyBB::INPUT_INT),
+				"showbirthdays" => $mybb->get_input('showbirthdays', MyBB::INPUT_INT),
+				"moderation" => $mybb->get_input('moderation', MyBB::INPUT_INT),
+				"allowhtml" => $mybb->get_input('allowhtml', MyBB::INPUT_INT),
+				"allowmycode" => $mybb->get_input('allowmycode', MyBB::INPUT_INT),
+				"allowimgcode" => $mybb->get_input('allowimgcode', MyBB::INPUT_INT),
+				"allowvideocode" => $mybb->get_input('allowvideocode', MyBB::INPUT_INT),
+				"allowsmilies" => $mybb->get_input('allowsmilies', MyBB::INPUT_INT)
 			);
 
+			$plugins->run_hooks("admin_config_calendars_add_commit_start");
+
 			$cid = $db->insert_query("calendars", $calendar);
+
+			$plugins->run_hooks("admin_config_calendars_add_commit_end");
 
 			// Log admin action
 			log_admin_action($cid, $mybb->input['name']);
@@ -77,26 +81,20 @@ if($mybb->input['action'] == "add")
 	}
 	else
 	{
-		$mybb->input = array(
-			"allowhtml" => 0,
-			"eventlimit" => 4,
-			"disporder" => 1,
-			"moderation" => 0
+		$mybb->input = array_merge($mybb->input, array(
+				"allowhtml" => 0,
+				"eventlimit" => 4,
+				"disporder" => 1,
+				"moderation" => 0
+			)
 		);
 	}
 
 	$page->add_breadcrumb_item($lang->add_calendar);
 	$page->output_header($lang->calendars." - ".$lang->add_calendar);
 
-	$sub_tabs['add_calendar'] = array(
-		'title' => $lang->add_calendar,
-		'link' => "index.php?module=config-calendars&amp;action=add",
-		'description' => $lang->add_calendar_desc
-	);
-
 	$page->output_nav_tabs($sub_tabs, 'add_calendar');
 	$form = new Form("index.php?module=config-calendars&amp;action=add", "post");
-
 
 	if($errors)
 	{
@@ -104,18 +102,18 @@ if($mybb->input['action'] == "add")
 	}
 
 	$form_container = new FormContainer($lang->add_calendar);
-	$form_container->output_row($lang->name." <em>*</em>", "", $form->generate_text_box('name', $mybb->input['name'], array('id' => 'name')), 'name');
-	$form_container->output_row($lang->display_order, $lang->display_order_desc, $form->generate_text_box('disporder', $mybb->input['disporder'], array('id' => 'disporder')), 'disporder');
+	$form_container->output_row($lang->name." <em>*</em>", "", $form->generate_text_box('name', $mybb->get_input('name'), array('id' => 'name')), 'name');
+	$form_container->output_row($lang->display_order, $lang->display_order_desc, $form->generate_numeric_field('disporder', $mybb->get_input('disporder'), array('id' => 'disporder', 'min' => 0)), 'disporder');
 	$select_list = array($lang->sunday, $lang->monday, $lang->tuesday, $lang->wednesday, $lang->thursday, $lang->friday, $lang->saturday);
-	$form_container->output_row($lang->week_start, $lang->week_start_desc, $form->generate_select_box('startofweek', $select_list, $mybb->input['startofweek'], array('id' => 'startofweek')), 'startofweek');
-	$form_container->output_row($lang->event_limit, $lang->event_limit_desc, $form->generate_text_box('eventlimit', $mybb->input['eventlimit'], array('id' => 'eventlimit')), 'eventlimit');
-	$form_container->output_row($lang->show_birthdays, $lang->show_birthdays_desc, $form->generate_yes_no_radio('showbirthdays', $mybb->input['showbirthdays'], TRUE));
-	$form_container->output_row($lang->moderate_events, $lang->moderate_events_desc, $form->generate_yes_no_radio('moderation', $mybb->input['moderation'], TRUE));
-	$form_container->output_row($lang->allow_html, "", $form->generate_yes_no_radio('allowhtml', $mybb->input['allowhtml']));
-	$form_container->output_row($lang->allow_mycode, "", $form->generate_yes_no_radio('allowmycode', $mybb->input['allowmycode']));
-	$form_container->output_row($lang->allow_img, "", $form->generate_yes_no_radio('allowimgcode', $mybb->input['allowimgcode']));
-	$form_container->output_row($lang->allow_video, "", $form->generate_yes_no_radio('allowvideocode', $mybb->input['allowvideocode']));
-	$form_container->output_row($lang->allow_smilies, "", $form->generate_yes_no_radio('allowsmilies', $mybb->input['allowsmilies']));
+	$form_container->output_row($lang->week_start, $lang->week_start_desc, $form->generate_select_box('startofweek', $select_list, $mybb->get_input('startofweek'), array('id' => 'startofweek')), 'startofweek');
+	$form_container->output_row($lang->event_limit, $lang->event_limit_desc, $form->generate_numeric_field('eventlimit', $mybb->get_input('eventlimit'), array('id' => 'eventlimit', 'min' => 0)), 'eventlimit');
+	$form_container->output_row($lang->show_birthdays, $lang->show_birthdays_desc, $form->generate_yes_no_radio('showbirthdays', $mybb->get_input('showbirthdays'), true));
+	$form_container->output_row($lang->moderate_events, $lang->moderate_events_desc, $form->generate_yes_no_radio('moderation', $mybb->get_input('moderation'), true));
+	$form_container->output_row($lang->allow_html, "", $form->generate_yes_no_radio('allowhtml', $mybb->get_input('allowhtml')));
+	$form_container->output_row($lang->allow_mycode, "", $form->generate_yes_no_radio('allowmycode', $mybb->get_input('allowmycode')));
+	$form_container->output_row($lang->allow_img, "", $form->generate_yes_no_radio('allowimgcode', $mybb->get_input('allowimgcode')));
+	$form_container->output_row($lang->allow_video, "", $form->generate_yes_no_radio('allowvideocode', $mybb->get_input('allowvideocode')));
+	$form_container->output_row($lang->allow_smilies, "", $form->generate_yes_no_radio('allowsmilies', $mybb->get_input('allowsmilies')));
 	$form_container->end();
 
 	$buttons[] = $form->generate_submit_button($lang->save_calendar);
@@ -128,9 +126,9 @@ if($mybb->input['action'] == "add")
 
 if($mybb->input['action'] == "permissions")
 {
-	$plugins->run_hooks("admin_config_calendars_permissions");
+	$usergroups = array();
 
-	$query = $db->simple_select("calendars", "*", "cid='".intval($mybb->input['cid'])."'");
+	$query = $db->simple_select("calendars", "*", "cid='".$mybb->get_input('cid', MyBB::INPUT_INT)."'");
 	$calendar = $db->fetch_array($query);
 
 	// Does the calendar not exist?
@@ -140,11 +138,15 @@ if($mybb->input['action'] == "permissions")
 		admin_redirect("index.php?module=config-calendars");
 	}
 
-	$query = $db->simple_select("usergroups", "*", "", array("order_dir" => "name"));
+	$plugins->run_hooks("admin_config_calendars_permissions");
+
+	$query = $db->simple_select("usergroups", "*", "", array("order" => "name"));
 	while($usergroup = $db->fetch_array($query))
 	{
 		$usergroups[$usergroup['gid']] = $usergroup;
 	}
+
+	$existing_permissions = array();
 
 	$query = $db->simple_select("calendarpermissions", "*", "cid='{$calendar['cid']}'");
 	while($existing = $db->fetch_array($query))
@@ -156,14 +158,22 @@ if($mybb->input['action'] == "permissions")
 	{
 		foreach(array_keys($usergroups) as $group_id)
 		{
-			$permissions = $mybb->input['permissions'][$group_id];
-			$db->delete_query("calendarpermissions", "cid='{$calendar['cid']}' AND gid='".intval($group_id)."'");
+			if(isset($mybb->input['permissions'][$group_id]))
+			{
+				$permissions = $mybb->input['permissions'][$group_id];
+			}
+			else
+			{
+				$permissions = array();
+			}
 
-			if(!$mybb->input['default_permissions'][$group_id])
+			$db->delete_query("calendarpermissions", "cid='{$calendar['cid']}' AND gid='".(int)$group_id."'");
+
+			if(empty($mybb->input['default_permissions'][$group_id]))
 			{
 				foreach(array('canviewcalendar','canaddevents','canbypasseventmod','canmoderateevents') as $calendar_permission)
 				{
-					if($permissions[$calendar_permission] == 1)
+					if(!empty($permissions[$calendar_permission]))
 					{
 						$permissions_array[$calendar_permission] = 1;
 					}
@@ -172,7 +182,7 @@ if($mybb->input['action'] == "permissions")
 						$permissions_array[$calendar_permission] = 0;
 					}
 				}
-				$permissions_array['gid'] = intval($group_id);
+				$permissions_array['gid'] = (int)$group_id;
 				$permissions_array['cid'] = $calendar['cid'];
 				$db->insert_query("calendarpermissions", $permissions_array);
 			}
@@ -205,31 +215,31 @@ if($mybb->input['action'] == "permissions")
 
 	foreach($usergroups as $usergroup)
 	{
-		if($existing_permissions[$usergroup['gid']])
+		if(!empty($existing_permissions[$usergroup['gid']]))
 		{
 			$perms = $existing_permissions[$usergroup['gid']];
-			$default_checked = FALSE;
+			$default_checked = false;
 		}
 		else
 		{
 			$perms = $usergroup;
-			$default_checked = TRUE;
+			$default_checked = true;
 		}
 		$perm_check = $all_check = "";
-		$all_checked = TRUE;
+		$all_checked = true;
 		foreach(array('canviewcalendar','canaddevents','canbypasseventmod','canmoderateevents') as $calendar_permission)
 		{
 			if($usergroup[$calendar_permission] == 1)
 			{
-				$value = "TRUE";
+				$value = "this.checked";
 			}
 			else
 			{
-				$value = "FALSE";
+				$value = "false";
 			}
 			if($perms[$calendar_permission] != 1)
 			{
-				$all_checked = FALSE;
+				$all_checked = false;
 			}
 			if($perms[$calendar_permission] == 1)
 			{
@@ -239,11 +249,11 @@ if($mybb->input['action'] == "permissions")
 			{
 				$perms_checked[$calendar_permission] = 0;
 			}
-			$all_check .= "\$('permissions_{$usergroup['gid']}_{$calendar_permission}').checked = \$('permissions_{$usergroup['gid']}_all').checked;\n";
-			$perm_check .= "\$('permissions_{$usergroup['gid']}_{$calendar_permission}').checked = $value;\n";
+			$all_check .= "\$('#permissions_{$usergroup['gid']}_{$calendar_permission}').prop('checked', this.checked);\n";
+			$perm_check .= "\$('#permissions_{$usergroup['gid']}_{$calendar_permission}').prop('checked', $value);\n";
 		}
-		$default_click = "if(this.checked == TRUE) { $perm_check }";
-		$reset_default = "\$('default_permissions_{$usergroup['gid']}').checked = FALSE; if(this.checked == FALSE) { \$('permissions_{$usergroup['gid']}_all').checked = FALSE; }\n";
+		$default_click = "if(\$(this).is(':checked')) { $perm_check }";
+		$reset_default = "if(!\$(this).is(':checked')) { \$('#permissions_{$usergroup['gid']}_all').prop('checked', false); }\n";
 		$usergroup['title'] = htmlspecialchars_uni($usergroup['title']);
 		$table->construct_cell("<strong>{$usergroup['title']}</strong><br /><small style=\"vertical-align: middle;\">".$form->generate_check_box("default_permissions[{$usergroup['gid']}];", 1, "", array("id" => "default_permissions_{$usergroup['gid']}", "checked" => $default_checked, "onclick" => $default_click))." <label for=\"default_permissions_{$usergroup['gid']}\">{$lang->permissions_use_group_default}</label></small>");
 		$table->construct_cell($form->generate_check_box("permissions[{$usergroup['gid']}][canviewcalendar]", 1, "", array("id" => "permissions_{$usergroup['gid']}_canviewcalendar", "checked" => $perms_checked['canviewcalendar'], "onclick" => $reset_default)), array('class' => 'align_center'));
@@ -255,11 +265,8 @@ if($mybb->input['action'] == "permissions")
 	}
 	$table->output("{$lang->calendar_permissions_for} {$calendar['name']}");
 
-	if(!$no_results)
-	{
-		$buttons[] = $form->generate_submit_button($lang->save_permissions);
-		$form->output_submit_wrapper($buttons);
-	}
+	$buttons[] = $form->generate_submit_button($lang->save_permissions);
+	$form->output_submit_wrapper($buttons);
 
 	$form->end();
 
@@ -269,9 +276,7 @@ if($mybb->input['action'] == "permissions")
 
 if($mybb->input['action'] == "edit")
 {
-	$plugins->run_hooks("admin_config_calendars_edit");
-
-	$query = $db->simple_select("calendars", "*", "cid='".intval($mybb->input['cid'])."'");
+	$query = $db->simple_select("calendars", "*", "cid='".$mybb->get_input('cid', MyBB::INPUT_INT)."'");
 	$calendar = $db->fetch_array($query);
 
 	// Does the calendar not exist?
@@ -280,6 +285,8 @@ if($mybb->input['action'] == "edit")
 		flash_message($lang->error_invalid_calendar, 'error');
 		admin_redirect("index.php?module=config-calendars");
 	}
+
+	$plugins->run_hooks("admin_config_calendars_edit");
 
 	if($mybb->request_method == "post")
 	{
@@ -295,23 +302,23 @@ if($mybb->input['action'] == "edit")
 
 		if(!$errors)
 		{
-			$calendar = array(
+			$updated_calendar = array(
 				"name" => $db->escape_string($mybb->input['name']),
-				"disporder" => intval($mybb->input['disporder']),
-				"startofweek" => intval($mybb->input['startofweek']),
-				"eventlimit" => intval($mybb->input['eventlimit']),
-				"showbirthdays" => intval($mybb->input['showbirthdays']),
-				"moderation" => intval($mybb->input['moderation']),
-				"allowhtml" => $db->escape_string($mybb->input['allowhtml']),
-				"allowmycode" => $db->escape_string($mybb->input['allowmycode']),
-				"allowimgcode" => $db->escape_string($mybb->input['allowimgcode']),
-				"allowvideocode" => $db->escape_string($mybb->input['allowvideocode']),
-				"allowsmilies" => $db->escape_string($mybb->input['allowsmilies'])
+				"disporder" => $mybb->get_input('disporder', MyBB::INPUT_INT),
+				"startofweek" => $mybb->get_input('startofweek', MyBB::INPUT_INT),
+				"eventlimit" => $mybb->get_input('eventlimit', MyBB::INPUT_INT),
+				"showbirthdays" => $mybb->get_input('showbirthdays', MyBB::INPUT_INT),
+				"moderation" => $mybb->get_input('moderation', MyBB::INPUT_INT),
+				"allowhtml" => $mybb->get_input('allowhtml', MyBB::INPUT_INT),
+				"allowmycode" => $mybb->get_input('allowmycode', MyBB::INPUT_INT),
+				"allowimgcode" => $mybb->get_input('allowimgcode', MyBB::INPUT_INT),
+				"allowvideocode" => $mybb->get_input('allowvideocode', MyBB::INPUT_INT),
+				"allowsmilies" => $mybb->get_input('allowsmilies', MyBB::INPUT_INT)
 			);
 
-			$db->update_query("calendars", $calendar, "cid = '".intval($mybb->input['cid'])."'");
-
 			$plugins->run_hooks("admin_config_calendars_edit_commit");
+
+			$db->update_query("calendars", $updated_calendar, "cid='{$calendar['cid']}'");
 
 			// Log admin action
 			log_admin_action($calendar['cid'], $mybb->input['name']);
@@ -346,12 +353,12 @@ if($mybb->input['action'] == "edit")
 
 	$form_container = new FormContainer($lang->edit_calendar);
 	$form_container->output_row($lang->name." <em>*</em>", "", $form->generate_text_box('name', $mybb->input['name'], array('id' => 'name')), 'name');
-	$form_container->output_row($lang->display_order." <em>*</em>", $lang->display_order_desc, $form->generate_text_box('disporder', $mybb->input['disporder'], array('id' => 'disporder')), 'disporder');
+	$form_container->output_row($lang->display_order." <em>*</em>", $lang->display_order_desc, $form->generate_numeric_field('disporder', $mybb->input['disporder'], array('id' => 'disporder', 'min' => 0)), 'disporder');
 	$select_list = array($lang->sunday, $lang->monday, $lang->tuesday, $lang->wednesday, $lang->thursday, $lang->friday, $lang->saturday);
 	$form_container->output_row($lang->week_start, $lang->week_start_desc, $form->generate_select_box('startofweek', $select_list, $mybb->input['startofweek'], array('id' => 'startofweek')), 'startofweek');
-	$form_container->output_row($lang->event_limit, $lang->event_limit_desc, $form->generate_text_box('eventlimit', $mybb->input['eventlimit'], array('id' => 'eventlimit')), 'eventlimit');
-	$form_container->output_row($lang->show_birthdays, $lang->show_birthdays_desc, $form->generate_yes_no_radio('showbirthdays', $mybb->input['showbirthdays'], TRUE));
-	$form_container->output_row($lang->moderate_events, $lang->moderate_events_desc, $form->generate_yes_no_radio('moderation', $mybb->input['moderation'], TRUE));
+	$form_container->output_row($lang->event_limit, $lang->event_limit_desc, $form->generate_numeric_field('eventlimit', $mybb->input['eventlimit'], array('id' => 'eventlimit', 'min' => 0)), 'eventlimit');
+	$form_container->output_row($lang->show_birthdays, $lang->show_birthdays_desc, $form->generate_yes_no_radio('showbirthdays', $mybb->input['showbirthdays'], true));
+	$form_container->output_row($lang->moderate_events, $lang->moderate_events_desc, $form->generate_yes_no_radio('moderation', $mybb->input['moderation'], true));
 	$form_container->output_row($lang->allow_html, "", $form->generate_yes_no_radio('allowhtml', $mybb->input['allowhtml']));
 	$form_container->output_row($lang->allow_mycode, "", $form->generate_yes_no_radio('allowmycode', $mybb->input['allowmycode']));
 	$form_container->output_row($lang->allow_img, "", $form->generate_yes_no_radio('allowimgcode', $mybb->input['allowimgcode']));
@@ -369,9 +376,7 @@ if($mybb->input['action'] == "edit")
 
 if($mybb->input['action'] == "delete")
 {
-	$plugins->run_hooks("admin_config_calendars_delete");
-
-	$query = $db->simple_select("calendars", "*", "cid='".intval($mybb->input['cid'])."'");
+	$query = $db->simple_select("calendars", "*", "cid='".$mybb->get_input('cid', MyBB::INPUT_INT)."'");
 	$calendar = $db->fetch_array($query);
 
 	// Does the calendar not exist?
@@ -381,8 +386,10 @@ if($mybb->input['action'] == "delete")
 		admin_redirect("index.php?module=config-calendars");
 	}
 
+	$plugins->run_hooks("admin_config_calendars_delete");
+
 	// User clicked no
-	if($mybb->input['no'])
+	if($mybb->get_input('no'))
 	{
 		admin_redirect("index.php?module=config-calendars");
 	}
@@ -410,19 +417,19 @@ if($mybb->input['action'] == "delete")
 
 if($mybb->input['action'] == "update_order" && $mybb->request_method == "post")
 {
-	$plugins->run_hooks("admin_config_calendars_update_order");
-
 	if(!is_array($mybb->input['disporder']))
 	{
 		admin_redirect("index.php?module=config-calendars");
 	}
 
+	$plugins->run_hooks("admin_config_calendars_update_order");
+
 	foreach($mybb->input['disporder'] as $cid => $order)
 	{
 		$update_query = array(
-			"disporder" => intval($order)
+			"disporder" => (int)$order
 		);
-		$db->update_query("calendars", $update_query, "cid='".intval($cid)."'");
+		$db->update_query("calendars", $update_query, "cid='".(int)$cid."'");
 	}
 
 	$plugins->run_hooks("admin_config_calendars_update_order_commit");
@@ -451,18 +458,19 @@ if(!$mybb->input['action'])
 	{
 		$calendar['name'] = htmlspecialchars_uni($calendar['name']);
 		$table->construct_cell("<a href=\"index.php?module=config-calendars&amp;action=edit&amp;cid={$calendar['cid']}\"><strong>{$calendar['name']}</strong></a>");
-		$table->construct_cell($form->generate_text_box("disporder[{$calendar['cid']}]", $calendar['disporder'], array('id' => 'disporder', 'style' => 'width: 80%', 'class' => 'align_center')));
+		$table->construct_cell($form->generate_numeric_field("disporder[{$calendar['cid']}]", $calendar['disporder'], array('id' => 'disporder', 'style' => 'width: 80%', 'class' => 'align_center', 'min' => 0)));
 		$table->construct_cell("<a href=\"index.php?module=config-calendars&amp;action=edit&amp;cid={$calendar['cid']}\">{$lang->edit}</a>", array("width" => 100, "class" => "align_center"));
 		$table->construct_cell("<a href=\"index.php?module=config-calendars&amp;action=permissions&amp;cid={$calendar['cid']}\">{$lang->permissions}</a>", array("width" => 100, "class" => "align_center"));
 		$table->construct_cell("<a href=\"index.php?module=config-calendars&amp;action=delete&amp;cid={$calendar['cid']}&amp;my_post_key={$mybb->post_code}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_calendar_deletion}')\">{$lang->delete}</a>", array("width" => 100, "class" => "align_center"));
 		$table->construct_row();
 	}
 
-	if($table->num_rows()  == 0)
+	$no_results = false;
+	if($table->num_rows() == 0)
 	{
 		$table->construct_cell($lang->no_calendars, array('colspan' => 5));
 		$table->construct_row();
-		$no_results = TRUE;
+		$no_results = true;
 	}
 
 	$table->output($lang->manage_calendars);
@@ -477,5 +485,3 @@ if(!$mybb->input['action'])
 
 	$page->output_footer();
 }
-
-?>
