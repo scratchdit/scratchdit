@@ -453,9 +453,12 @@ class MyBB
 	 */
 	public function get_asset_url($path = '', $use_cdn = TRUE)
 	{
-		echo "<!-- ONE: get_asset_url($path, $use_cdn) -->";
+		echo "
+		<!-- ONE: get_asset_url($path, $use_cdn) -->
+		";
 		$path = ltrim((string)$path, '/');
-		echo "<!-- TWO: $path -->";
+		echo "<!-- TWO: $path -->
+		";
 		if (substr($path, 0, 4) != 'http') {
 			if (substr($path, 0, 2) == './') {
 				$path = substr($path, 2);
@@ -464,22 +467,27 @@ class MyBB
 
 			if ($use_cdn && $this->settings['usecdn'] && !empty($this->settings['cdnurl'])) {
 				$base_path = rtrim($this->settings['cdnurl'], '/');
-				"<!-- FOUR: $path -->";
+				echo "<!-- FOUR: $base_path -->
+				";
 			} else {
 				$base_path = rtrim($this->settings['bburl'], '/');
-				"<!-- FIVE: $path -->";
+				echo "<!-- FIVE: $base_path -->
+				";
 			}
 
 			$url = $base_path;
-			echo "<!-- SIX: $path -->";
+			echo "<!-- SIX: $path -->
+			";
 
 			if (!empty($path)) {
 				$url = $base_path . '/' . $path;
-				echo "<!-- SEVEN: $url -->";
+				echo "<!-- SEVEN: $url -->
+				";
 			}
 		} else {
 			$url = $path;
-			echo "<!-- EIGHT: $url -->";
+			echo "<!-- EIGHT: $url -->
+			";
 		}
 
 		return $url;
