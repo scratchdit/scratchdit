@@ -137,7 +137,7 @@ Thursday, October 4, 1582 (Julian) was followed immediately by Friday, October 1
 }
 
 /**
- Checks for leap year, returns true if it is. No 2-digit year check. Also
+ Checks for leap year, returns TRUE if it is. No 2-digit year check. Also
  handles julian calendar correctly.
 */
 function _adodb_is_leap_year($year)
@@ -145,17 +145,17 @@ function _adodb_is_leap_year($year)
 	if ($year % 4 != 0) return false;
 
 	if ($year % 400 == 0) {
-		return true;
+		return TRUE;
 	// if gregorian calendar (>1582), century not-divisible by 400 is not leap
 	} else if ($year > 1582 && $year % 100 == 0 ) {
 		return false;
 	}
 
-	return true;
+	return TRUE;
 }
 
 /**
- checks for leap year, returns true if it is. Has 2-digit year check
+ checks for leap year, returns TRUE if it is. Has 2-digit year check
 */
 function adodb_is_leap_year($year)
 {
@@ -251,7 +251,7 @@ $_month_table_leaf = array("",31,29,31,30,31,30,31,31,30,31,30,31);
 
 /**
 	Low-level function that returns the getdate() array. We have a special
-	$fast flag, which if set to true, will return fewer array values,
+	$fast flag, which if set to TRUE, will return fewer array values,
 	and is much faster as it does not calculate dow, etc.
 */
 function _adodb_getdate($origd=false,$fast=false,$is_gmt=false)
@@ -461,7 +461,7 @@ function adodb_tz_offset($gmt,$isphp5)
 
 function adodb_gmdate($fmt,$d=false)
 {
-	return adodb_date($fmt,$d,true);
+	return adodb_date($fmt,$d,TRUE);
 }
 
 // accepts unix timestamp and iso date format in $d
@@ -500,7 +500,7 @@ global $ADODB_DATETIME_CLASS;
 	}
 	$_day_power = 86400;
 
-	$arr = _adodb_getdate($d,true,$is_gmt);
+	$arr = _adodb_getdate($d,TRUE,$is_gmt);
 
 	if (!isset($daylight)) $daylight = function_exists('adodb_daylight_sv');
 	if ($daylight) adodb_daylight_sv($arr, $is_gmt);
@@ -644,7 +644,7 @@ global $ADODB_DATETIME_CLASS;
 */
 function adodb_gmmktime($hr,$min,$sec,$mon=false,$day=false,$year=false,$is_dst=false)
 {
-	return adodb_mktime($hr,$min,$sec,$mon,$day,$year,$is_dst,true);
+	return adodb_mktime($hr,$min,$sec,$mon,$day,$year,$is_dst,TRUE);
 }
 
 /**
@@ -718,7 +718,7 @@ function adodb_mktime($hr,$min,$sec,$mon=false,$day=false,$year=false,$is_dst=fa
 	} else if ($year >= 1970) {
 		for ($a = 1970 ; $a <= $year; $a++) {
 			$leaf = _adodb_is_leap_year($a);
-			if ($leaf == true) {
+			if ($leaf == TRUE) {
 				$loop_table = $_month_table_leaf;
 				$_add_date = 366;
 			} else {
@@ -739,7 +739,7 @@ function adodb_mktime($hr,$min,$sec,$mon=false,$day=false,$year=false,$is_dst=fa
 	} else {
 		for ($a = 1969 ; $a >= $year; $a--) {
 			$leaf = _adodb_is_leap_year($a);
-			if ($leaf == true) {
+			if ($leaf == TRUE) {
 				$loop_table = $_month_table_leaf;
 				$_add_date = 366;
 			} else {
@@ -767,7 +767,7 @@ function adodb_mktime($hr,$min,$sec,$mon=false,$day=false,$year=false,$is_dst=fa
 
 function adodb_gmstrftime($fmt, $ts=false)
 {
-	return adodb_strftime($fmt,$ts,true);
+	return adodb_strftime($fmt,$ts,TRUE);
 }
 
 // hack - convert to adodb_date
@@ -809,7 +809,7 @@ global $ADODB_DATE_LOCALE;
 				$fmtdate .= '%';
 				$inpct = false;
 			} else
-				$inpct = true;
+				$inpct = TRUE;
 		} else if ($inpct) {
 
 			$inpct = false;
@@ -827,7 +827,7 @@ global $ADODB_DATE_LOCALE;
 			case 'E':
 			case 'O':
 				/* ignore format modifiers */
-				$inpct = true;
+				$inpct = TRUE;
 				break;
 
 			case 'a': $fmtdate .= 'D'; break;
@@ -844,7 +844,7 @@ global $ADODB_DATE_LOCALE;
 			case 'G': $fmtdate .= '\G?'; break; //?
 			case 'H': $fmtdate .= 'H'; break;
 			case 'I': $fmtdate .= 'h'; break;
-			case 'j': $fmtdate .= '?z'; $parsej = true; break; // wrong as j=1-based, z=0-basd
+			case 'j': $fmtdate .= '?z'; $parsej = TRUE; break; // wrong as j=1-based, z=0-basd
 			case 'm': $fmtdate .= 'm'; break;
 			case 'M': $fmtdate .= 'i'; break;
 			case 'n': $fmtdate .= "\n"; break;
@@ -854,12 +854,12 @@ global $ADODB_DATE_LOCALE;
 			case 'S': $fmtdate .= 's'; break;
 			case 't': $fmtdate .= "\t"; break;
 			case 'T': $fmtdate .= 'H:i:s'; break;
-			case 'u': $fmtdate .= '?u'; $parseu = true; break; // wrong strftime=1-based, date=0-based
-			case 'U': $fmtdate .= '?U'; $parseU = true; break;// wrong strftime=1-based, date=0-based
+			case 'u': $fmtdate .= '?u'; $parseu = TRUE; break; // wrong strftime=1-based, date=0-based
+			case 'U': $fmtdate .= '?U'; $parseU = TRUE; break;// wrong strftime=1-based, date=0-based
 			case 'x': $fmtdate .= $ADODB_DATE_LOCALE[0]; break;
 			case 'X': $fmtdate .= $ADODB_DATE_LOCALE[1]; break;
-			case 'w': $fmtdate .= '?w'; $parseu = true; break; // wrong strftime=1-based, date=0-based
-			case 'W': $fmtdate .= '?W'; $parseU = true; break;// wrong strftime=1-based, date=0-based
+			case 'w': $fmtdate .= '?w'; $parseu = TRUE; break; // wrong strftime=1-based, date=0-based
+			case 'W': $fmtdate .= '?W'; $parseU = TRUE; break;// wrong strftime=1-based, date=0-based
 			case 'y': $fmtdate .= 'y'; break;
 			case 'Y': $fmtdate .= 'Y'; break;
 			case 'Z': $fmtdate .= 'T'; break;

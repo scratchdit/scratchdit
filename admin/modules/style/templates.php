@@ -310,12 +310,12 @@ if($mybb->input['action'] == "add_template")
 	{
 		echo '<script type="text/javascript">
 			var editor = CodeMirror.fromTextArea(document.getElementById("template"), {
-				lineNumbers: true,
-				lineWrapping: true,
-				foldGutter: true,
+				lineNumbers: TRUE,
+				lineWrapping: TRUE,
+				foldGutter: TRUE,
 				gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
 				viewportMargin: Infinity,
-				indentWithTabs: true,
+				indentWithTabs: TRUE,
 				indentUnit: 4,
 				mode: "text/html",
 				theme: "mybb"
@@ -745,12 +745,12 @@ if($mybb->input['action'] == "edit_template")
 	{
 		echo '<script type="text/javascript">
 			var editor = CodeMirror.fromTextArea(document.getElementById("template"), {
-				lineNumbers: true,
-				lineWrapping: true,
-				foldGutter: true,
+				lineNumbers: TRUE,
+				lineWrapping: TRUE,
+				foldGutter: TRUE,
 				gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
 				viewportMargin: Infinity,
-				indentWithTabs: true,
+				indentWithTabs: TRUE,
 				indentUnit: 4,
 				mode: "text/html",
 				theme: "mybb"
@@ -1095,11 +1095,11 @@ if($mybb->input['action'] == "search_replace")
 					{
 						if(!$template['customtid'])
 						{
-							$template['original'] = true;
+							$template['original'] = TRUE;
 						}
 						else
 						{
-							$template['modified'] = true;
+							$template['modified'] = TRUE;
 						}
 					}
 					else
@@ -1153,7 +1153,7 @@ if($mybb->input['action'] == "search_replace")
 							$popup->add_item($lang->full_edit, "index.php?module=style-templates&amp;action=edit_template&amp;title=".urlencode($template['title'])."&amp;sid={$sid}");
 						}
 
-						if(isset($template['modified']) && $template['modified'] == true)
+						if(isset($template['modified']) && $template['modified'] == TRUE)
 						{
 							if($sid > 0)
 							{
@@ -1260,24 +1260,24 @@ if($mybb->input['action'] == "search_replace")
 	{
 		echo '<script type="text/javascript">
 			var editor1 = CodeMirror.fromTextArea(document.getElementById("find"), {
-				lineNumbers: true,
-				lineWrapping: true,
-				foldGutter: true,
+				lineNumbers: TRUE,
+				lineWrapping: TRUE,
+				foldGutter: TRUE,
 				gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
 				viewportMargin: Infinity,
-				indentWithTabs: true,
+				indentWithTabs: TRUE,
 				indentUnit: 4,
 				mode: "text/html",
 				theme: "mybb"
 			});
 
 			var editor2 = CodeMirror.fromTextArea(document.getElementById("replace"), {
-				lineNumbers: true,
-				lineWrapping: true,
-				foldGutter: true,
+				lineNumbers: TRUE,
+				lineWrapping: TRUE,
+				foldGutter: TRUE,
 				gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
 				viewportMargin: Infinity,
-				indentWithTabs: true,
+				indentWithTabs: TRUE,
 				indentUnit: 4,
 				mode: "text/html",
 				theme: "mybb"
@@ -1812,7 +1812,7 @@ if(!empty($mybb->input['sid']) && !$mybb->input['action'])
 		}
 		else if(!in_array($template['gid'], $expand_array) && !isset($expand_array[-1]))
 		{
-			$template['original'] = true;
+			$template['original'] = TRUE;
 			$template['modified'] = false;
 			$template_groups[$group]['templates'][$template['title']] = $template;
 
@@ -1825,13 +1825,13 @@ if(!empty($mybb->input['sid']) && !$mybb->input['action'])
 			// Master template that hasn't been customised in the set we have expanded
 			if(!isset($template_groups[$group]['templates'][$template['title']]) || $template_groups[$group]['templates'][$template['title']]['template'] == $template['template'])
 			{
-				$template['original'] = true;
+				$template['original'] = TRUE;
 				$template_groups[$group]['templates'][$template['title']] = $template;
 			}
 			// Template has been modified in the set we have expanded (it doesn't match the master)
 			else if($template_groups[$group]['templates'][$template['title']]['template'] != $template['template'] && $template_groups[$group]['templates'][$template['title']]['sid'] != -2)
 			{
-				$template_groups[$group]['templates'][$template['title']]['modified'] = true;
+				$template_groups[$group]['templates'][$template['title']]['modified'] = TRUE;
 			}
 
 			// Save some memory!
@@ -1845,7 +1845,7 @@ if(!empty($mybb->input['sid']) && !$mybb->input['action'])
 		if(in_array($group['gid'], $expand_array))
 		{
 			$expand = $lang->collapse;
-			$expanded = true;
+			$expanded = TRUE;
 
 			$tmp_expand = $expand_array;
 			$unsetgid = array_search($group['gid'], $tmp_expand);
@@ -1880,7 +1880,7 @@ if(!empty($mybb->input['sid']) && !$mybb->input['action'])
 			$set_popup = "<div class=\"float_right\">{$popup->fetch()}</div>";
 		}
 
-		if($expanded == true)
+		if($expanded == TRUE)
 		{
 			// Show templates in this group
 			$table->construct_cell("{$set_popup}<strong><a href=\"index.php?module=style-templates&amp;sid={$sid}{$group['expand_str']}#group_{$group['gid']}\">{$group['title']}</a></strong>");
@@ -1899,7 +1899,7 @@ if(!empty($mybb->input['sid']) && !$mybb->input['action'])
 					$popup = new PopupMenu("template_{$template['tid']}", $lang->options);
 					$popup->add_item($lang->full_edit, "index.php?module=style-templates&amp;action=edit_template&amp;title=".urlencode($template['title'])."&amp;sid={$sid}{$expand_str}");
 
-					if(isset($template['modified']) && $template['modified'] == true)
+					if(isset($template['modified']) && $template['modified'] == TRUE)
 					{
 						if($sid > 0)
 						{

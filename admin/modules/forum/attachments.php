@@ -381,7 +381,7 @@ if($mybb->input['action'] == "orphans")
 				{
 					$filename = htmlspecialchars_uni($file);
 					$filesize = get_friendly_size(filesize($file_path));
-					$table->construct_cell($form->generate_check_box('orphaned_files[]', $file, '', array('checked' => true)));
+					$table->construct_cell($form->generate_check_box('orphaned_files[]', $file, '', array('checked' => TRUE)));
 					$table->construct_cell(get_attachment_icon(get_extension($attachment['filename'])), array('width' => 1));
 					$table->construct_cell("<span class=\"float_right\">{$filesize}</span>{$filename}");
 					$table->construct_cell($lang->reason_not_in_table, array('class' => 'align_center'));
@@ -410,7 +410,7 @@ if($mybb->input['action'] == "orphans")
 				{
 					$reason = $lang->reason_post_never_made;
 				}
-				$table->construct_cell($form->generate_check_box('orphaned_attachments[]', $attachment['aid'], '', array('checked' => true)));
+				$table->construct_cell($form->generate_check_box('orphaned_attachments[]', $attachment['aid'], '', array('checked' => TRUE)));
 				$table->construct_cell(get_attachment_icon(get_extension($attachment['filename'])), array('width' => 1));
 				$table->construct_cell("<span class=\"float_right\">".get_friendly_size($attachment['filesize'])."</span>{$attachment['filename']}", array('class' => $cell_class));
 				$table->construct_cell($reason, array('class' => 'align_center'));
@@ -857,7 +857,7 @@ if(!$mybb->input['action'])
 			");
 			while($attachment = $db->fetch_array($query))
 			{
-				build_attachment_row($attachment, $table, true);
+				build_attachment_row($attachment, $table, TRUE);
 			}
 
 			// Need to draw pagination for this result set
@@ -911,7 +911,7 @@ if(!$mybb->input['action'])
 	$form_container = new FormContainer($lang->find_where);
 	$form_container->output_row($lang->name_contains, $lang->name_contains_desc, $form->generate_text_box('filename', $mybb->get_input('filename'), array('id' => 'filename')), 'filename');
 	$form_container->output_row($lang->type_contains, "", $form->generate_text_box('mimetype', $mybb->get_input('mimetype'), array('id' => 'mimetype')), 'mimetype');
-	$form_container->output_row($lang->forum_is, "", $form->generate_forum_select('forum[]', $mybb->get_input('forum', MyBB::INPUT_INT), array('multiple' => true, 'size' => 5, 'id' => 'forum')), 'forum');
+	$form_container->output_row($lang->forum_is, "", $form->generate_forum_select('forum[]', $mybb->get_input('forum', MyBB::INPUT_INT), array('multiple' => TRUE, 'size' => 5, 'id' => 'forum')), 'forum');
 	$form_container->output_row($lang->username_is, "", $form->generate_text_box('username', htmlspecialchars_uni($mybb->get_input('username')), array('id' => 'username')), 'username');
 	$form_container->output_row($lang->poster_is, "", $form->generate_select_box('user_types', array('0' => $lang->poster_is_either, '1' => $lang->poster_is_user, '-1' => $lang->poster_is_guest), $mybb->get_input('user_types', MyBB::INPUT_INT), array('id' => 'guests')), 'user_types');
 
@@ -972,19 +972,19 @@ function build_attachment_row($attachment, &$table, $use_form=false)
 	{
 		$cell_class = "bad_attachment";
 		$title = $lang->error_not_found;
-		$checked = true;
+		$checked = TRUE;
 	}
 	elseif(!$attachment['pid'] && $attachment['dateuploaded'] < TIME_NOW-60*60*24 && $attachment['dateuploaded'] != 0)
 	{
 		$cell_class = "bad_attachment";
 		$title = $lang->error_not_attached;
-		$checked = true;
+		$checked = TRUE;
 	}
 	else if(!$attachment['tid'] && $attachment['pid'])
 	{
 		$cell_class = "bad_attachment";
 		$title = $lang->error_does_not_exist;
-		$checked = true;
+		$checked = TRUE;
 	}
 	else if($attachment['visible'] == 0)
 	{
@@ -1000,7 +1000,7 @@ function build_attachment_row($attachment, &$table, $use_form=false)
 		$cell_class = "align_center";
 	}
 
-	if($use_form == true && is_object($form))
+	if($use_form == TRUE && is_object($form))
 	{
 		$table->construct_cell($form->generate_check_box('aids[]', $attachment['aid'], '', array('checked' => $checked)));
 	}

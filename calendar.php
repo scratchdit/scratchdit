@@ -2071,7 +2071,7 @@ if($mybb->input['action'] == "weekview")
 	// Establish if we have a month ending in this week
 	if($week_from[1] != $week_to[1])
 	{
-		$different_months = true;
+		$different_months = TRUE;
 		$week_months = array(array($week_from[1], $week_from[2]), array($week_to[1], $week_to[2]));
 		$bday_months = array($week_from[1], $week_to[1]);
 	}

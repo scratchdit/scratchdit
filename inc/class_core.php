@@ -142,7 +142,7 @@ class MyBB {
 	 *
 	 * @var bool
 	 */
-	public $use_shutdown = true;
+	public $use_shutdown = TRUE;
 
 	/**
 	 * Debug mode?
@@ -157,18 +157,18 @@ class MyBB {
 	 * @var array
 	 */
 	public $binary_fields = array(
-		'adminlog' => array('ipaddress' => true),
-		'adminsessions' => array('ip' => true),
-		'maillogs' => array('ipaddress' => true),
-		'moderatorlog' => array('ipaddress' => true),
-		'pollvotes' => array('ipaddress' => true),
-		'posts' => array('ipaddress' => true),
-		'privatemessages' => array('ipaddress' => true),
-		'searchlog' => array('ipaddress' => true),
-		'sessions' => array('ip' => true),
-		'threadratings' => array('ipaddress' => true),
-		'users' => array('regip' => true, 'lastip' => true),
-		'spamlog' => array('ipaddress' => true),
+		'adminlog' => array('ipaddress' => TRUE),
+		'adminsessions' => array('ip' => TRUE),
+		'maillogs' => array('ipaddress' => TRUE),
+		'moderatorlog' => array('ipaddress' => TRUE),
+		'pollvotes' => array('ipaddress' => TRUE),
+		'posts' => array('ipaddress' => TRUE),
+		'privatemessages' => array('ipaddress' => TRUE),
+		'searchlog' => array('ipaddress' => TRUE),
+		'sessions' => array('ip' => TRUE),
+		'threadratings' => array('ipaddress' => TRUE),
+		'users' => array('regip' => TRUE, 'lastip' => TRUE),
+		'spamlog' => array('ipaddress' => TRUE),
 	);
 
 	/**
@@ -283,7 +283,7 @@ class MyBB {
 		$safe_mode_status = @ini_get("safe_mode");
 		if($safe_mode_status == 1 || strtolower($safe_mode_status) == 'on')
 		{
-			$this->safemode = true;
+			$this->safemode = TRUE;
 		}
 
 		// Are we running on a development server?
@@ -295,7 +295,7 @@ class MyBB {
 		// Are we running in debug mode?
 		if(isset($this->input['debug']) && $this->input['debug'] == 1)
 		{
-			$this->debug_mode = true;
+			$this->debug_mode = TRUE;
 		}
 
 		if(isset($this->input['action']) && $this->input['action'] == "mybb_logo")
@@ -490,7 +490,7 @@ class MyBB {
 	 *
 	 * @return string The complete URL to the asset.
 	 */
-	public function get_asset_url($path = '', $use_cdn = true)
+	public function get_asset_url($path = '', $use_cdn = TRUE)
 	{
 		$path = (string) $path;
 		$path = ltrim($path, '/');

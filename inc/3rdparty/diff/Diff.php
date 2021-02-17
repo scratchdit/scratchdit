@@ -153,7 +153,7 @@ class Horde_Text_Diff
                 return false;
             }
         }
-        return true;
+        return TRUE;
     }
 
     /**
@@ -252,6 +252,6 @@ class Horde_Text_Diff
             $prevtype = get_class($edit);
         }
 
-        return true;
+        return TRUE;
     }
 }

@@ -161,7 +161,7 @@ class DefaultTable
 	 */
 	function output($heading="", $border=1, $class="general", $return=false)
 	{
-		if($return == true)
+		if($return == TRUE)
 		{
 			return $this->construct_html($heading, $border, $class);
 		}

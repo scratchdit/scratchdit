@@ -60,7 +60,7 @@ $plugins->run_hooks("portal_start");
 
 $tunviewwhere = $unviewwhere = '';
 // get forums user cannot view
-$unviewable = get_unviewable_forums(true);
+$unviewable = get_unviewable_forums(TRUE);
 if($unviewable)
 {
 	$unviewwhere = " AND fid NOT IN ($unviewable)";
@@ -677,7 +677,7 @@ if(!empty($mybb->settings['portal_announcementsfid']))
 						$ext = get_extension($attachment['filename']);
 						if($ext == "jpeg" || $ext == "gif" || $ext == "bmp" || $ext == "png" || $ext == "jpg")
 						{
-							$isimage = true;
+							$isimage = TRUE;
 						}
 						else
 						{

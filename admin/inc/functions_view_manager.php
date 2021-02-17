@@ -164,7 +164,7 @@ function view_manager($base_url, $type, $fields, $sort_options=array(), $conditi
 
 		if($type == "user")
 		{
-			$form_container->output_row($lang->display_results_as, "", $form->generate_radio_button('view_type', 'table', $lang->table, array('checked' => ($mybb->get_input('view_type') != "card" ? true : false)))."<br />".$form->generate_radio_button('view_type', 'card', $lang->business_card, array('checked' => ($mybb->get_input('view_type') == "card" ? true : false))));
+			$form_container->output_row($lang->display_results_as, "", $form->generate_radio_button('view_type', 'table', $lang->table, array('checked' => ($mybb->get_input('view_type') != "card" ? TRUE : false)))."<br />".$form->generate_radio_button('view_type', 'card', $lang->business_card, array('checked' => ($mybb->get_input('view_type') == "card" ? TRUE : false))));
 		}
 
 		$form_container->end();
@@ -210,7 +210,7 @@ document.write('".str_replace("/", "\/", $field_select)."');
 			$field_options[$key] = $field['title'];
 		}
 
-		$field_select .= "<noscript>".$form->generate_select_box('fields[]', $field_options, $mybb->get_input('fields'), array('id' => 'fields', 'multiple' => true))."</noscript>\n";
+		$field_select .= "<noscript>".$form->generate_select_box('fields[]', $field_options, $mybb->get_input('fields'), array('id' => 'fields', 'multiple' => TRUE))."</noscript>\n";
 
 		$form_container = new FormContainer($lang->fields_to_show);
 		$form_container->output_row($lang->fields_to_show_desc, '', $field_select);
@@ -367,7 +367,7 @@ document.write('".str_replace("/", "\/", $field_select)."');
 
 		if($type == "user")
 		{
-			$form_container->output_row($lang->display_results_as, "", $form->generate_radio_button('view_type', 'table', $lang->table, array('checked' => ($mybb->input['view_type'] != "card" ? true : false)))."<br />".$form->generate_radio_button('view_type', 'card', $lang->business_card, array('checked' => ($mybb->input['view_type'] == "card" ? true : false))));
+			$form_container->output_row($lang->display_results_as, "", $form->generate_radio_button('view_type', 'table', $lang->table, array('checked' => ($mybb->input['view_type'] != "card" ? TRUE : false)))."<br />".$form->generate_radio_button('view_type', 'card', $lang->business_card, array('checked' => ($mybb->input['view_type'] == "card" ? TRUE : false))));
 		}
 
 		$form_container->end();
@@ -413,7 +413,7 @@ document.write('".str_replace("/", "\/", $field_select)."');
 			$field_options[$key] = $field['title'];
 		}
 
-		$field_select .= "<noscript>".$form->generate_select_box('fields[]', $field_options, $mybb->input['fields'], array('id' => 'fields', 'multiple' => true))."</noscript>\n";
+		$field_select .= "<noscript>".$form->generate_select_box('fields[]', $field_options, $mybb->input['fields'], array('id' => 'fields', 'multiple' => TRUE))."</noscript>\n";
 
 		$form_container = new FormContainer($lang->fields_to_show);
 		$form_container->output_row($lang->fields_to_show_desc, '', $field_select);
@@ -632,7 +632,7 @@ function set_default_view($type, $vid)
 	$default_views = my_serialize($default_views);
 	$updated_admin = array("defaultviews" => $db->escape_string($default_views));
 
-	if($create == true)
+	if($create == TRUE)
 	{
 		$updated_admin['uid'] = $mybb->user['uid'];
 		$updated_admin['notes'] = '';

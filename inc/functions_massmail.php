@@ -217,6 +217,6 @@ function make_pretty_links($message_html)
 		$replaced_link = $contents." ({$link}) ";
 
 		$message_html = substr_replace($message_html, $replaced_link, $start, ($end-$start));
-	} while(true);
+	} while(TRUE);
 	return $message_html;
 }

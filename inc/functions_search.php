@@ -54,7 +54,7 @@ function make_searchable_forums($pid=0, $selitem=0, $addselect=1, $depth='')
 						$optionselected = '';
 						$selecteddone = "0";
 					}
-					if(forum_password_validated($forum, true))
+					if(forum_password_validated($forum, TRUE))
 					{
 						eval("\$forumlistbits .= \"".$templates->get("search_forumlist_forum")."\";");
 					}
@@ -123,7 +123,7 @@ function get_unsearchable_forums($pid=0, $first=1)
 			}
 		}
 
-		if($perms['canview'] != 1 || $perms['cansearch'] != 1 || !forum_password_validated($forum, true) || $forum['active'] == 0)
+		if($perms['canview'] != 1 || $perms['cansearch'] != 1 || !forum_password_validated($forum, TRUE) || $forum['active'] == 0)
 		{
 			if($unsearchableforums)
 			{
@@ -262,7 +262,7 @@ function get_password_protected_forums($fids=array())
 	$pass_fids = array();
 	foreach($fids as $fid)
 	{
-		if(!forum_password_validated($forum_cache[$fid], true))
+		if(!forum_password_validated($forum_cache[$fid], TRUE))
 		{
 			$pass_fids[] = $fid;
 			$pass_fids = array_merge($pass_fids, get_child_list($fid));
@@ -634,20 +634,20 @@ function privatemessage_perform_search_mysql($search)
 				if($search['subject'] && $search['message'] && $subject_lookin == " AND (")
 				{
 					// We're looking for anything, check for a subject lookin
-					$error = true;
+					$error = TRUE;
 				}
 				elseif($search['subject'] && !$search['message'] && $subject_lookin == " AND (")
 				{
 					// Just in a subject?
-					$error = true;
+					$error = TRUE;
 				}
 				elseif(!$search['subject'] && $search['message'] && $message_lookin == " {$string} (")
 				{
 					// Just in a message?
-					$error = true;
+					$error = TRUE;
 				}
 
-				if($error == true)
+				if($error == TRUE)
 				{
 					// There are no search keywords to look for
 					$lang->error_minsearchlength = $lang->sprintf($lang->error_minsearchlength, $mybb->settings['minsearchword']);
@@ -947,20 +947,20 @@ function helpdocument_perform_search_mysql($search)
 				if($search['name'] && $search['document'] && $name_lookin == " AND (")
 				{
 					// We're looking for anything, check for a name lookin
-					$error = true;
+					$error = TRUE;
 				}
 				elseif($search['name'] && !$search['document'] && $name_lookin == " AND (")
 				{
 					// Just in a name?
-					$error = true;
+					$error = TRUE;
 				}
 				elseif(!$search['name'] && $search['document'] && $document_lookin == " {$string} (")
 				{
 					// Just in a document?
-					$error = true;
+					$error = TRUE;
 				}
 
-				if($error == true)
+				if($error == TRUE)
 				{
 					// There are no search keywords to look for
 					$lang->error_minsearchlength = $lang->sprintf($lang->error_minsearchlength, $mybb->settings['minsearchword']);
@@ -1496,7 +1496,7 @@ function perform_search_mysql_ft($search)
 					}
 					if(my_strlen($word) < $mybb->settings['minsearchword'])
 					{
-						$all_too_short = true;
+						$all_too_short = TRUE;
 					}
 					else
 					{
@@ -1510,7 +1510,7 @@ function perform_search_mysql_ft($search)
 				$phrase = str_replace(array("+", "-", "*"), '', $phrase);
 				if(my_strlen($phrase) < $mybb->settings['minsearchword'])
 				{
-					$all_too_short = true;
+					$all_too_short = TRUE;
 				}
 				else
 				{
@@ -1521,7 +1521,7 @@ function perform_search_mysql_ft($search)
 			$inquote = !$inquote;
 		}
 		// Show the minimum search term error only if all search terms are too short
-		if($all_too_short == true)
+		if($all_too_short == TRUE)
 		{
 			$lang->error_minsearchlength = $lang->sprintf($lang->error_minsearchlength, $mybb->settings['minsearchword']);
 			error($lang->error_minsearchlength);

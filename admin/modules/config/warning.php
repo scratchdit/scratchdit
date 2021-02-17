@@ -141,7 +141,7 @@ if($mybb->input['action'] == "add_level")
 
 		$('.'+id+'s_check').each(function(e, val)
 		{
-			if($(this).prop('checked') == true)
+			if($(this).prop('checked') == TRUE)
 			{
 				checked = $(this).val();
 			}
@@ -344,7 +344,7 @@ if($mybb->input['action'] == "edit_level")
 
 		$('.'+id+'s_check').each(function(e, val)
 		{
-			if($(this).prop('checked') == true)
+			if($(this).prop('checked') == TRUE)
 			{
 				checked = $(this).val();
 			}

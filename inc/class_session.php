@@ -115,9 +115,9 @@ class session
 		}
 
 		// As a token of our appreciation for getting this far (and they aren't a spider), give the user a cookie
-		if($this->sid && (!isset($mybb->cookies['sid']) || $mybb->cookies['sid'] != $this->sid) && $this->is_spider != true)
+		if($this->sid && (!isset($mybb->cookies['sid']) || $mybb->cookies['sid'] != $this->sid) && $this->is_spider != TRUE)
 		{
-			my_setcookie("sid", $this->sid, -1, true);
+			my_setcookie("sid", $this->sid, -1, TRUE);
 		}
 	}
 
@@ -331,7 +331,7 @@ class session
 				$this->create_session($mybb->user['uid']);
 			}
 		}
-		return true;
+		return TRUE;
 	}
 
 	/**
@@ -421,7 +421,7 @@ class session
 
 		// Set up some defaults
 		$time = TIME_NOW;
-		$this->is_spider = true;
+		$this->is_spider = TRUE;
 		if($spider['usergroup'])
 		{
 			$mybb->user['usergroup'] = $spider['usergroup'];
@@ -522,7 +522,7 @@ class session
 			$onlinedata['uid'] = $uid;
 		}
 		// Is a spider - delete all other spider references
-		else if($this->is_spider == true)
+		else if($this->is_spider == TRUE)
 		{
 			$db->delete_query("sessions", "sid='{$this->sid}'");
 		}
@@ -532,7 +532,7 @@ class session
 		}
 
 		// If the user is a search enginge spider, ...
-		if($this->is_spider == true)
+		if($this->is_spider == TRUE)
 		{
 			$onlinedata['sid'] = $this->sid;
 		}

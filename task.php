@@ -8,7 +8,7 @@
  *
  */
 
-ignore_user_abort(true);
+ignore_user_abort(TRUE);
 @set_time_limit(0);
 
 define("IN_MYBB", 1);
@@ -62,7 +62,7 @@ else
 	echo base64_decode("R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==");
 
 	// If the use shutdown functionality is turned off, run any shutdown related items now.
-	if($mybb->use_shutdown == true)
+	if($mybb->use_shutdown == TRUE)
 	{
 		add_shutdown("run_task");
 	}

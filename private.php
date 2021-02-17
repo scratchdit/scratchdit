@@ -184,7 +184,7 @@ if(($mybb->input['action'] == "do_search" || $mybb->input['action'] == "do_stuff
 		"folder" => $mybb->get_input('folder', MyBB::INPUT_ARRAY)
 	);
 
-	if($db->can_search == true)
+	if($db->can_search == TRUE)
 	{
 		require_once MYBB_ROOT."inc/functions_search.php";
 
@@ -194,7 +194,7 @@ if(($mybb->input['action'] == "do_search" || $mybb->input['action'] == "do_stuff
 	{
 		error($lang->error_no_search_support);
 	}
-	$sid = md5(uniqid(microtime(), true));
+	$sid = md5(uniqid(microtime(), TRUE));
 	$searcharray = array(
 		"sid" => $db->escape_string($sid),
 		"uid" => $mybb->user['uid'],
@@ -1164,7 +1164,7 @@ if($mybb->input['action'] == "read")
 	$replyall = false;
 	if(count($to_recipients) > 1)
 	{
-		$replyall = true;
+		$replyall = TRUE;
 	}
 
 	if(count($to_recipients) > 0)
@@ -1202,7 +1202,7 @@ if($mybb->input['action'] == "read")
 		$quoted_message = array(
 			'message' => htmlspecialchars_uni($parser->parse_badwords($pm['message'])),
 			'username' => $pm['username'],
-			'quote_is_pm' => true
+			'quote_is_pm' => TRUE
 		);
 		$quoted_message = parse_quoted_message($quoted_message);
 

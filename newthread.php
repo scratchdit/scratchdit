@@ -205,7 +205,7 @@ if($mybb->settings['enableattachments'] == 1 && $mybb->get_input('attachmentaid'
 	if($mybb->get_input('ajax', MyBB::INPUT_INT) == 1)
 	{
 		header("Content-type: application/json; charset={$lang->settings['charset']}");
-		echo json_encode(array("success" => true));
+		echo json_encode(array("success" => TRUE));
 		exit();
 	}
 }
@@ -397,7 +397,7 @@ if($mybb->input['action'] == "do_newthread" && $mybb->request_method == "post")
 		}
 		else
 		{
-			$hide_captcha = true;
+			$hide_captcha = TRUE;
 		}
 	}
 
@@ -448,7 +448,7 @@ if($mybb->input['action'] == "do_newthread" && $mybb->request_method == "post")
 			$url = get_forum_link($fid);
 
 			// User must see moderation notice, regardless of redirect settings
-			$force_redirect = true;
+			$force_redirect = TRUE;
 		}
 
 		// The thread is being made in a forum the user cannot see threads in, send them back to the forum.
@@ -458,7 +458,7 @@ if($mybb->input['action'] == "do_newthread" && $mybb->request_method == "post")
 			$url = get_forum_link($fid);
 
 			// User must see permission notice, regardless of redirect settings
-			$force_redirect = true;
+			$force_redirect = TRUE;
 		}
 
 		// This is just a normal thread - send them to it.
@@ -743,7 +743,7 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 		}
 		else
 		{
-			$valid_username = true;
+			$valid_username = TRUE;
 		}
 
 		$post_errors = array();
@@ -1013,13 +1013,13 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 		require_once MYBB_ROOT.'inc/class_captcha.php';
 		$post_captcha = new captcha(false, "post_captcha");
 
-		if((!empty($mybb->input['previewpost']) || $hide_captcha == true) && $post_captcha->type == 1)
+		if((!empty($mybb->input['previewpost']) || $hide_captcha == TRUE) && $post_captcha->type == 1)
 		{
 			// If previewing a post - check their current captcha input - if correct, hide the captcha input area
 			// ... but only if it's a default one, reCAPTCHA and Are You a Human must be filled in every time due to draconian limits
-			if($post_captcha->validate_captcha() == true)
+			if($post_captcha->validate_captcha() == TRUE)
 			{
-				$correct = true;
+				$correct = TRUE;
 
 				// Generate a hidden list of items for our captcha
 				$captcha = $post_captcha->build_hidden_captcha();

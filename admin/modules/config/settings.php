@@ -1001,15 +1001,15 @@ if($mybb->input['action'] == "change")
 
 			if(in_array($captchaimage, array(captcha::NOCAPTCHA_RECAPTCHA, captcha::RECAPTCHA_INVISIBLE)) && (!$recaptchaprivatekey || !$recaptchapublickey))
 			{
-				$set_captcha_image = true;
+				$set_captcha_image = TRUE;
 			}
 			else if(in_array($captchaimage, array(captcha::RECAPTCHA_V3)) && (!$recaptchaprivatekey || !$recaptchapublickey || !$recaptchascore))
 			{
-				$set_captcha_image = true;
+				$set_captcha_image = TRUE;
 			}
 			else if(in_array($captchaimage, array(captcha::HCAPTCHA, captcha::HCAPTCHA_INVISIBLE)) && (!$hcaptchaprivatekey || !$hcaptchapublickey))
 			{
-				$set_captcha_image = true;
+				$set_captcha_image = TRUE;
 			}
 		}
 
@@ -1023,15 +1023,15 @@ if($mybb->input['action'] == "change")
 
 		if(in_array($captchaimage, array(captcha::NOCAPTCHA_RECAPTCHA, captcha::RECAPTCHA_INVISIBLE)) && (!$recaptchaprivatekey || !$recaptchapublickey))
 		{
-			$set_captcha_image = true;
+			$set_captcha_image = TRUE;
 		}
 		else if(in_array($captchaimage, array(captcha::RECAPTCHA_V3)) && (!$recaptchaprivatekey || !$recaptchapublickey || !$recaptchascore))
 		{
-			$set_captcha_image = true;
+			$set_captcha_image = TRUE;
 		}
 		else if(in_array($captchaimage, array(captcha::HCAPTCHA, captcha::HCAPTCHA_INVISIBLE)) && (!$hcaptchaprivatekey || !$hcaptchapublickey))
 		{
-			$set_captcha_image = true;
+			$set_captcha_image = TRUE;
 		}
 		if($set_captcha_image){
 			$mybb->input['upsetting']['captchaimage'] = captcha::DEFAULT_CAPTCHA;
@@ -1263,7 +1263,7 @@ if($mybb->input['action'] == "change")
 		{
 			my_unsetcookie("adminsid");
 			$mybb->settings['cookieprefix'] = $mybb->input['upsetting']['cookieprefix'];
-			my_setcookie("adminsid", $admin_session['sid'], '', true, "lax");
+			my_setcookie("adminsid", $admin_session['sid'], '', TRUE, "lax");
 		}
 
 		if(isset($mybb->input['upsetting']['statstopreferrer']) && $mybb->input['upsetting']['statstopreferrer'] != $mybb->settings['statstopreferrer'])
@@ -1478,11 +1478,11 @@ if($mybb->input['action'] == "change")
 			}
 			else if($type[0] == "yesno")
 			{
-				$setting_code = $form->generate_yes_no_radio($element_name, $setting['value'], true, array('id' => $element_id.'_yes', 'class' => $element_id), array('id' => $element_id.'_no', 'class' => $element_id));
+				$setting_code = $form->generate_yes_no_radio($element_name, $setting['value'], TRUE, array('id' => $element_id.'_yes', 'class' => $element_id), array('id' => $element_id.'_no', 'class' => $element_id));
 			}
 			else if($type[0] == "onoff")
 			{
-				$setting_code = $form->generate_on_off_radio($element_name, $setting['value'], true, array('id' => $element_id.'_on', 'class' => $element_id), array('id' => $element_id.'_off', 'class' => $element_id));
+				$setting_code = $form->generate_on_off_radio($element_name, $setting['value'], TRUE, array('id' => $element_id.'_on', 'class' => $element_id), array('id' => $element_id.'_off', 'class' => $element_id));
 			}
 			else if($type[0] == "cpstyle")
 			{
@@ -1557,7 +1557,7 @@ if($mybb->input['action'] == "change")
 						<table cellpadding=\"4\">
 							<tr>
 								<td valign=\"top\"><small>{$lang->forums_colon}</small></td>
-								<td>".$form->generate_forum_select('select['.$setting['name'].'][]', $selected_values, array('id' => $element_id, 'multiple' => true, 'size' => 5))."</td>
+								<td>".$form->generate_forum_select('select['.$setting['name'].'][]', $selected_values, array('id' => $element_id, 'multiple' => TRUE, 'size' => 5))."</td>
 							</tr>
 						</table>
 					</dd>
@@ -1610,7 +1610,7 @@ if($mybb->input['action'] == "change")
 						<table cellpadding=\"4\">
 							<tr>
 								<td valign=\"top\"><small>{$lang->groups_colon}</small></td>
-								<td>".$form->generate_group_select('select['.$setting['name'].'][]', $selected_values, array('id' => $element_id, 'multiple' => true, 'size' => 5))."</td>
+								<td>".$form->generate_group_select('select['.$setting['name'].'][]', $selected_values, array('id' => $element_id, 'multiple' => TRUE, 'size' => 5))."</td>
 							</tr>
 						</table>
 					</dd>
@@ -1659,7 +1659,7 @@ if($mybb->input['action'] == "change")
 						<table cellpadding=\"4\">
 							<tr>
 								<td valign=\"top\"><small>{$lang->prefix_colon}</small></td>
-								<td>".$form->generate_prefix_select('select['.$setting['name'].'][]', $selected_values, array('id' => $element_id, 'multiple' => true, 'size' => 5))."</td>
+								<td>".$form->generate_prefix_select('select['.$setting['name'].'][]', $selected_values, array('id' => $element_id, 'multiple' => TRUE, 'size' => 5))."</td>
 							</tr>
 						</table>
 					</dd>
@@ -1952,21 +1952,21 @@ function print_setting_peekers()
 	global $plugins;
 
 	$peekers = array(
-		'new Peeker($(".setting_boardclosed"), $("#row_setting_boardclosed_reason"), 1, true)',
-		'new Peeker($(".setting_gzipoutput"), $("#row_setting_gziplevel"), 1, true)',
-		'new Peeker($(".setting_useerrorhandling"), $("#row_setting_errorlogmedium, #row_setting_errorloglocation"), 1, true)',
+		'new Peeker($(".setting_boardclosed"), $("#row_setting_boardclosed_reason"), 1, TRUE)',
+		'new Peeker($(".setting_gzipoutput"), $("#row_setting_gziplevel"), 1, TRUE)',
+		'new Peeker($(".setting_useerrorhandling"), $("#row_setting_errorlogmedium, #row_setting_errorloglocation"), 1, TRUE)',
 		'new Peeker($("#setting_subforumsindex"), $("#row_setting_subforumsstatusicons"), /[^0+|]/, false)',
-		'new Peeker($(".setting_showsimilarthreads"), $("#row_setting_similarityrating, #row_setting_similarlimit"), 1, true)',
-		'new Peeker($(".setting_disableregs"), $("#row_setting_regtype, #row_setting_securityquestion, #row_setting_regtime, #row_setting_allowmultipleemails, #row_setting_hiddencaptchaimage, #row_setting_betweenregstime"), 0, true)',
-		'new Peeker($(".setting_hiddencaptchaimage"), $("#row_setting_hiddencaptchaimagefield"), 1, true)',
+		'new Peeker($(".setting_showsimilarthreads"), $("#row_setting_similarityrating, #row_setting_similarlimit"), 1, TRUE)',
+		'new Peeker($(".setting_disableregs"), $("#row_setting_regtype, #row_setting_securityquestion, #row_setting_regtime, #row_setting_allowmultipleemails, #row_setting_hiddencaptchaimage, #row_setting_betweenregstime"), 0, TRUE)',
+		'new Peeker($(".setting_hiddencaptchaimage"), $("#row_setting_hiddencaptchaimagefield"), 1, TRUE)',
 		'new Peeker($("#setting_failedlogincount"), $("#row_setting_failedlogintime, #row_setting_failedlogintext"), /[^0+|]/, false)',
-		'new Peeker($(".setting_postfloodcheck"), $("#row_setting_postfloodsecs"), 1, true)',
+		'new Peeker($(".setting_postfloodcheck"), $("#row_setting_postfloodsecs"), 1, TRUE)',
 		'new Peeker($("#setting_postmergemins"), $("#row_setting_postmergefignore, #row_setting_postmergeuignore, #row_setting_postmergesep"), /[^0+|]/, false)',
-		'new Peeker($(".setting_enablememberlist"), $("#row_setting_membersperpage, #row_setting_default_memberlist_sortby, #row_setting_default_memberlist_order, #row_setting_memberlistmaxavatarsize"), 1, true)',
-		'new Peeker($(".setting_enablereputation"), $("#row_setting_repsperpage, #row_setting_posrep, #row_setting_neurep, #row_setting_negrep, #row_setting_postrep, #row_setting_multirep, #row_setting_maxreplength, #row_setting_minreplength"), 1, true)',
-		'new Peeker($(".setting_enablewarningsystem"), $("#row_setting_allowcustomwarnings, #row_setting_canviewownwarning, #row_setting_maxwarningpoints, #row_setting_allowanonwarningpms"), 1, true)',
-		'new Peeker($(".setting_enablepms"), $("#row_setting_pmsallowhtml, #row_setting_pmsallowmycode, #row_setting_pmsallowsmilies, #row_setting_pmsallowimgcode, #row_setting_pmsallowvideocode, #row_setting_pmquickreply, #row_setting_pmfloodsecs, #row_setting_showpmip, #row_setting_maxpmquotedepth"), 1, true)',
-		'new Peeker($(".setting_smilieinserter"), $("#row_setting_smilieinsertertot, #row_setting_smilieinsertercols"), 1, true)',
+		'new Peeker($(".setting_enablememberlist"), $("#row_setting_membersperpage, #row_setting_default_memberlist_sortby, #row_setting_default_memberlist_order, #row_setting_memberlistmaxavatarsize"), 1, TRUE)',
+		'new Peeker($(".setting_enablereputation"), $("#row_setting_repsperpage, #row_setting_posrep, #row_setting_neurep, #row_setting_negrep, #row_setting_postrep, #row_setting_multirep, #row_setting_maxreplength, #row_setting_minreplength"), 1, TRUE)',
+		'new Peeker($(".setting_enablewarningsystem"), $("#row_setting_allowcustomwarnings, #row_setting_canviewownwarning, #row_setting_maxwarningpoints, #row_setting_allowanonwarningpms"), 1, TRUE)',
+		'new Peeker($(".setting_enablepms"), $("#row_setting_pmsallowhtml, #row_setting_pmsallowmycode, #row_setting_pmsallowsmilies, #row_setting_pmsallowimgcode, #row_setting_pmsallowvideocode, #row_setting_pmquickreply, #row_setting_pmfloodsecs, #row_setting_showpmip, #row_setting_maxpmquotedepth"), 1, TRUE)',
+		'new Peeker($(".setting_smilieinserter"), $("#row_setting_smilieinsertertot, #row_setting_smilieinsertercols"), 1, TRUE)',
 		'new Peeker($("#setting_mail_handler"), $("#row_setting_smtp_host, #row_setting_smtp_port, #row_setting_smtp_user, #row_setting_smtp_pass, #row_setting_secure_smtp"), "smtp", false)',
 		'new Peeker($("#setting_mail_handler"), $("#row_setting_mail_parameters"), "mail", false)',
 		'new Peeker($("#setting_captchaimage"), $("#row_setting_recaptchapublickey, #row_setting_recaptchaprivatekey"), /(4|5|8)/, false)',
@@ -1975,28 +1975,28 @@ function print_setting_peekers()
 		'new Peeker($("#setting_captchaimage"), $("#row_setting_hcaptchaprivatekey, #row_setting_hcaptchaprivatekey"), /(6|7)/, false)',
 		'new Peeker($("#setting_captchaimage"), $("#row_setting_hcaptchatheme"), 6, false)',
 		'new Peeker($("#setting_captchaimage"), $("#row_setting_hcaptchasize"), 6, false)',
-		'new Peeker($(".setting_contact"), $("#row_setting_contact_guests, #row_setting_contact_badwords, #row_setting_contact_maxsubjectlength, #row_setting_contact_minmessagelength, #row_setting_contact_maxmessagelength"), 1, true)',
-		'new Peeker($(".setting_enablepruning"), $("#row_setting_enableprunebyposts, #row_setting_pruneunactived, #row_setting_prunethreads"), 1, true)',
-		'new Peeker($(".setting_enableprunebyposts"), $("#row_setting_prunepostcount, #row_setting_dayspruneregistered, #row_setting_prunepostcountall"), 1, true)',
-		'new Peeker($(".setting_pruneunactived"), $("#row_setting_dayspruneunactivated"), 1, true)',
-		'new Peeker($(".setting_statsenabled"), $("#row_setting_statscachetime, #row_setting_statslimit, #row_setting_statstopreferrer"), 1, true)',
-		'new Peeker($(".setting_purgespammergroups_forums_groups_check"), $("#row_setting_purgespammerpostlimit, #row_setting_purgespammerbandelete, #row_setting_purgespammerapikey"), /^(?!none)/, true)',
-		'new Peeker($(".setting_purgespammerbandelete"),$("#row_setting_purgespammerbangroup, #row_setting_purgespammerbanreason"), "ban", true)',
+		'new Peeker($(".setting_contact"), $("#row_setting_contact_guests, #row_setting_contact_badwords, #row_setting_contact_maxsubjectlength, #row_setting_contact_minmessagelength, #row_setting_contact_maxmessagelength"), 1, TRUE)',
+		'new Peeker($(".setting_enablepruning"), $("#row_setting_enableprunebyposts, #row_setting_pruneunactived, #row_setting_prunethreads"), 1, TRUE)',
+		'new Peeker($(".setting_enableprunebyposts"), $("#row_setting_prunepostcount, #row_setting_dayspruneregistered, #row_setting_prunepostcountall"), 1, TRUE)',
+		'new Peeker($(".setting_pruneunactived"), $("#row_setting_dayspruneunactivated"), 1, TRUE)',
+		'new Peeker($(".setting_statsenabled"), $("#row_setting_statscachetime, #row_setting_statslimit, #row_setting_statstopreferrer"), 1, TRUE)',
+		'new Peeker($(".setting_purgespammergroups_forums_groups_check"), $("#row_setting_purgespammerpostlimit, #row_setting_purgespammerbandelete, #row_setting_purgespammerapikey"), /^(?!none)/, TRUE)',
+		'new Peeker($(".setting_purgespammerbandelete"),$("#row_setting_purgespammerbangroup, #row_setting_purgespammerbanreason"), "ban", TRUE)',
 		'new Peeker($("#setting_maxloginattempts"), $("#row_setting_loginattemptstimeout"), /[^0+|]/, false)',
-		'new Peeker($(".setting_bbcodeinserter"), $("#row_setting_partialmode, #row_setting_smilieinserter"), 1, true)',
-		'new Peeker($(".setting_portal"), $("#row_setting_portal_announcementsfid, #row_setting_portal_showwelcome, #row_setting_portal_showpms, #row_setting_portal_showstats, #row_setting_portal_showwol, #row_setting_portal_showsearch, #row_setting_portal_showdiscussions"), 1, true)',
-		'new Peeker($(".setting_portal_announcementsfid_forums_groups_check"), $("#row_setting_portal_numannouncements"), /^(?!none)/, true)',
-		'new Peeker($(".setting_portal_showdiscussions"), $("#row_setting_portal_showdiscussionsnum, #row_setting_portal_excludediscussion"), 1, true)',
-		'new Peeker($(".setting_enableattachments"), $("#row_setting_maxattachments, #row_setting_attachthumbnails"), 1, true)',
-		'new Peeker($(".setting_attachthumbnails"), $("#row_setting_attachthumbh, #row_setting_attachthumbw"), "yes", true)',
-		'new Peeker($(".setting_showbirthdays"), $("#row_setting_showbirthdayspostlimit"), 1, true)',
+		'new Peeker($(".setting_bbcodeinserter"), $("#row_setting_partialmode, #row_setting_smilieinserter"), 1, TRUE)',
+		'new Peeker($(".setting_portal"), $("#row_setting_portal_announcementsfid, #row_setting_portal_showwelcome, #row_setting_portal_showpms, #row_setting_portal_showstats, #row_setting_portal_showwol, #row_setting_portal_showsearch, #row_setting_portal_showdiscussions"), 1, TRUE)',
+		'new Peeker($(".setting_portal_announcementsfid_forums_groups_check"), $("#row_setting_portal_numannouncements"), /^(?!none)/, TRUE)',
+		'new Peeker($(".setting_portal_showdiscussions"), $("#row_setting_portal_showdiscussionsnum, #row_setting_portal_excludediscussion"), 1, TRUE)',
+		'new Peeker($(".setting_enableattachments"), $("#row_setting_maxattachments, #row_setting_attachthumbnails"), 1, TRUE)',
+		'new Peeker($(".setting_attachthumbnails"), $("#row_setting_attachthumbh, #row_setting_attachthumbw"), "yes", TRUE)',
+		'new Peeker($(".setting_showbirthdays"), $("#row_setting_showbirthdayspostlimit"), 1, TRUE)',
 		'new Peeker($("#setting_betweenregstime"), $("#row_setting_maxregsbetweentime"), /[^0+|]/, false)',
-		'new Peeker($(".setting_usecdn"), $("#row_setting_cdnurl, #row_setting_cdnpath"), 1, true)',
+		'new Peeker($(".setting_usecdn"), $("#row_setting_cdnurl, #row_setting_cdnpath"), 1, TRUE)',
 		'new Peeker($("#setting_errorlogmedium"), $("#row_setting_errorloglocation"), /^(log|both)/, false)',
-		'new Peeker($(".setting_sigmycode"), $("#row_setting_sigcountmycode, #row_setting_sigimgcode"), 1, true)',
-		'new Peeker($(".setting_pmsallowmycode"), $("#row_setting_pmsallowimgcode, #row_setting_pmsallowvideocode"), 1, true)',
-		'new Peeker($(".setting_enableshowteam"), $("#row_setting_showaddlgroups, #row_setting_showgroupleaders"), 1, true)',
-		'new Peeker($(".setting_usereferrals"), $("#row_setting_referralsperpage"), 1, true)',
+		'new Peeker($(".setting_sigmycode"), $("#row_setting_sigcountmycode, #row_setting_sigimgcode"), 1, TRUE)',
+		'new Peeker($(".setting_pmsallowmycode"), $("#row_setting_pmsallowimgcode, #row_setting_pmsallowvideocode"), 1, TRUE)',
+		'new Peeker($(".setting_enableshowteam"), $("#row_setting_showaddlgroups, #row_setting_showgroupleaders"), 1, TRUE)',
+		'new Peeker($(".setting_usereferrals"), $("#row_setting_referralsperpage"), 1, TRUE)',
 	);
 
 	$peekers = $plugins->run_hooks("admin_settings_print_peekers", $peekers);

@@ -42,7 +42,7 @@
   }
 
   function parseOptions(opts) {
-    if (opts === true) opts = {};
+    if (opts === TRUE) opts = {};
     if (opts.gutter == null) opts.gutter = "CodeMirror-foldgutter";
     if (opts.indicatorOpen == null) opts.indicatorOpen = "CodeMirror-foldgutter-open";
     if (opts.indicatorFolded == null) opts.indicatorFolded = "CodeMirror-foldgutter-folded";
@@ -61,7 +61,7 @@
       elt.className = spec + " CodeMirror-guttermarker-subtle";
       return elt;
     } else {
-      return spec.cloneNode(true);
+      return spec.cloneNode(TRUE);
     }
   }
 

@@ -173,7 +173,7 @@ function remove_message_quotes(&$text, $rmdepth=null)
  * @return string the cleaned up message, wrapped in a quote tag
  */
 
-function parse_quoted_message(&$quoted_post, $remove_message_quotes=true)
+function parse_quoted_message(&$quoted_post, $remove_message_quotes=TRUE)
 {
 	global $parser, $lang, $plugins;
 	if(!isset($parser))

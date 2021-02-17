@@ -245,7 +245,7 @@ if($mybb->input['action'] == "add")
 			<table cellpadding=\"4\">
 				<tr>
 					<td valign=\"top\"><small>{$lang->groups_colon}</small></td>
-					<td>".$form->generate_group_select('select[viewableby][]', $selected_values, array('id' => 'viewableby', 'multiple' => true, 'size' => 5))."</td>
+					<td>".$form->generate_group_select('select[viewableby][]', $selected_values, array('id' => 'viewableby', 'multiple' => TRUE, 'size' => 5))."</td>
 				</tr>
 			</table>
 		</dd>
@@ -292,7 +292,7 @@ if($mybb->input['action'] == "add")
 			<table cellpadding=\"4\">
 				<tr>
 					<td valign=\"top\"><small>{$lang->groups_colon}</small></td>
-					<td>".$form->generate_group_select('select[editableby][]', $selected_values, array('id' => 'editableby', 'multiple' => true, 'size' => 5))."</td>
+					<td>".$form->generate_group_select('select[editableby][]', $selected_values, array('id' => 'editableby', 'multiple' => TRUE, 'size' => 5))."</td>
 				</tr>
 			</table>
 		</dd>
@@ -561,7 +561,7 @@ if($mybb->input['action'] == "edit")
 			<table cellpadding=\"4\">
 				<tr>
 					<td valign=\"top\"><small>{$lang->groups_colon}</small></td>
-					<td>".$form->generate_group_select('select[viewableby][]', $selected_values, array('id' => 'viewableby', 'multiple' => true, 'size' => 5))."</td>
+					<td>".$form->generate_group_select('select[viewableby][]', $selected_values, array('id' => 'viewableby', 'multiple' => TRUE, 'size' => 5))."</td>
 				</tr>
 			</table>
 		</dd>
@@ -608,7 +608,7 @@ if($mybb->input['action'] == "edit")
 			<table cellpadding=\"4\">
 				<tr>
 					<td valign=\"top\"><small>{$lang->groups_colon}</small></td>
-					<td>".$form->generate_group_select('select[editableby][]', $selected_values, array('id' => 'editableby', 'multiple' => true, 'size' => 5))."</td>
+					<td>".$form->generate_group_select('select[editableby][]', $selected_values, array('id' => 'editableby', 'multiple' => TRUE, 'size' => 5))."</td>
 				</tr>
 			</table>
 		</dd>

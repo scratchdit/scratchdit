@@ -51,7 +51,7 @@ if($mybb->input['action'] == "do_check_templates" && $mybb->request_method == "p
 	$t_cache = array();
 	while($template = $db->fetch_array($query))
 	{
-		if(check_template($template['template']) == true)
+		if(check_template($template['template']) == TRUE)
 		{
 			$t_cache[$template['sid']][] = $template;
 		}
@@ -407,14 +407,14 @@ if($mybb->input['action'] == "utf8_conversion")
 
 			foreach($mybb_tables as $key => $tablename)
 			{
-				if($is_next == true)
+				if($is_next == TRUE)
 				{
 					$nexttable = $tablename;
 					break;
 				}
 				else if($mybb->input['table'] == $tablename)
 				{
-					$is_next = true;
+					$is_next = TRUE;
 				}
 			}
 
@@ -624,11 +624,11 @@ if($mybb->input['action'] == "utf8_conversion")
 	{
 		if($encoding == 'utf-8')
 		{
-			$convert_utf8mb4 = true;
+			$convert_utf8mb4 = TRUE;
 		}
 		elseif($encoding != 'utf8mb4')
 		{
-			$convert_utf8 = true;
+			$convert_utf8 = TRUE;
 		}
 	}
 

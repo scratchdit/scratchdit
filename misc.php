@@ -53,7 +53,7 @@ if($mybb->input['action'] == "dstswitch" && $mybb->request_method == "post" && $
 }
 elseif($mybb->input['action'] == "markread")
 {
-	if($mybb->user['uid'] && verify_post_check($mybb->get_input('my_post_key'), true) !== true)
+	if($mybb->user['uid'] && verify_post_check($mybb->get_input('my_post_key'), TRUE) !== TRUE)
 	{
 		// Protect our user's unread forums from CSRF
 		error($lang->invalid_post_code);
@@ -214,7 +214,7 @@ elseif($mybb->input['action'] == "do_helpsearch" && $mybb->request_method == "po
 		"document" => $mybb->get_input('document', MyBB::INPUT_INT),
 	);
 
-	if($db->can_search == true)
+	if($db->can_search == TRUE)
 	{
 		require_once MYBB_ROOT."inc/functions_search.php";
 
@@ -224,7 +224,7 @@ elseif($mybb->input['action'] == "do_helpsearch" && $mybb->request_method == "po
 	{
 		error($lang->error_no_search_support);
 	}
-	$sid = md5(uniqid(microtime(), true));
+	$sid = md5(uniqid(microtime(), TRUE));
 	$searcharray = array(
 		"sid" => $db->escape_string($sid),
 		"uid" => $mybb->user['uid'],
@@ -872,7 +872,7 @@ elseif($mybb->input['action'] == "syndication")
 			if(ctype_digit($fid) && !in_array($fid, $unexp))
 			{
 				$syndicate[] = $fid;
-				$flist[$fid] = true;
+				$flist[$fid] = TRUE;
 			}
 		}
 
@@ -942,7 +942,7 @@ elseif($mybb->input['action'] == "clearcookies")
  * @param string $depth HTML for the depth of the forum.
  * @return string HTML of the list of forums for CSS.
  */
-function makesyndicateforums($pid=0, $selitem="", $addselect=true, $depth="")
+function makesyndicateforums($pid=0, $selitem="", $addselect=TRUE, $depth="")
 {
 	global $db, $forumcache, $permissioncache, $mybb, $forumlist, $forumlistbits, $flist, $lang, $unexp, $templates;
 

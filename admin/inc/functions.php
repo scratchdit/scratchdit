@@ -345,13 +345,13 @@ function save_quick_perms($fid)
  * @param bool $error
  * @return bool
  */
-function check_admin_permissions($action, $error = true)
+function check_admin_permissions($action, $error = TRUE)
 {
 	global $mybb, $page, $lang, $modules_dir;
 
 	if(is_super_admin($mybb->user['uid']))
 	{
-		return true;
+		return TRUE;
 	}
 
 	require_once $modules_dir."/".$action['module']."/module_meta.php";
@@ -376,7 +376,7 @@ function check_admin_permissions($action, $error = true)
 		}
 	}
 
-	return true;
+	return TRUE;
 }
 
 /**
@@ -597,7 +597,7 @@ function change_admin_permission($tab, $page="", $default=1)
  *
  * @param integer $uid The uid of the admin to check
  * @param boolean $return_num Return an array of the number of attempts and expiry time? (default false)
- * @return mixed Return an array if the second parameter is true, boolean otherwise.
+ * @return mixed Return an array if the second parameter is TRUE, boolean otherwise.
  */
 function login_attempt_check_acp($uid=0, $return_num=false)
 {
@@ -630,14 +630,14 @@ function login_attempt_check_acp($uid=0, $return_num=false)
 		}
 
 		// Are we returning the # of login attempts?
-		if($return_num == true)
+		if($return_num == TRUE)
 		{
 			return $attempts;
 		}
 		// Otherwise are we still locked out?
 		else if($attempts['loginlockoutexpiry'] > TIME_NOW)
 		{
-			return true;
+			return TRUE;
 		}
 	}
 
@@ -648,7 +648,7 @@ function login_attempt_check_acp($uid=0, $return_num=false)
  * Checks whether the administrator is on a mobile device
  *
  * @param string $useragent The useragent to be checked
- * @return boolean A true/false depending on if the administrator is on a mobile
+ * @return boolean A TRUE/false depending on if the administrator is on a mobile
  */
 function is_mobile($useragent)
 {
@@ -659,27 +659,27 @@ function is_mobile($useragent)
  * Checks whether there are any 'security' issues in templates via complex syntax
  *
  * @param string $template The template to be scanned
- * @return boolean A true/false depending on if an issue was detected
+ * @return boolean A TRUE/false depending on if an issue was detected
  */
 function check_template($template)
 {
 	// Check to see if our database password is in the template
 	if(preg_match('#\$config\[(([\'|"]database[\'|"])|([^\'"].*?))\]\[(([\'|"](database|hostname|password|table_prefix|username)[\'|"])|([^\'"].*?))\]#i', $template))
 	{
-		return true;
+		return TRUE;
 	}
 
 	// System calls via backtick
 	if(preg_match('#\$\s*\{#', $template))
 	{
-		return true;
+		return TRUE;
 	}
 
 	// Any other malicious acts?
 	// Courtesy of ZiNgA BuRgA
 	if(preg_match("~\\{\\$.+?\\}~s", preg_replace('~\\{\\$+[a-zA-Z_][a-zA-Z_0-9]*((?:-\\>|\\:\\:)\\$*[a-zA-Z_][a-zA-Z_0-9]*|\\[\s*\\$*([\'"]?)[a-zA-Z_ 0-9 ]+\\2\\]\s*)*\\}~', '', $template)))
 	{
-		return true;
+		return TRUE;
 	}
 
 	return false;
@@ -758,7 +758,7 @@ function delete_user_posts($uid, $date)
 				$db->delete_query("pollvotes", "pid = '".$post['pid']."'"); // Delete pollvotes attached to this post
 			}
 
-			$db->update_query("users", array("postnum" => "postnum-".$post_count.""), "uid='".$uid."'", 1, true);
+			$db->update_query("users", array("postnum" => "postnum-".$post_count.""), "uid='".$uid."'", 1, TRUE);
 
 			$to_return = array(
 				'to_delete' => $delete_thread_list,
@@ -783,7 +783,7 @@ function print_selection_javascript()
 		return;
 	}
 
-	$already_printed = true;
+	$already_printed = TRUE;
 
 	echo "<script type=\"text/javascript\">
 	function checkAction(id)
@@ -792,7 +792,7 @@ function print_selection_javascript()
 
 		$('.'+id+'_forums_groups_check').each(function(e, val)
 		{
-			if($(this).prop('checked') == true)
+			if($(this).prop('checked') == TRUE)
 			{
 				checked = $(this).val();
 			}
@@ -860,7 +860,7 @@ function output_auto_redirect($form, $prompt)
 				var textElement = $('<div/>').html('{$lang->automatically_redirecting}');
 
 				button.val(textElement.text());
-				button.attr("disabled", true);
+				button.attr("disabled", TRUE);
 				button.css("color", "#aaa");
 				button.css("borderColor", "#aaa");
 

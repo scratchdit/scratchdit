@@ -40,7 +40,7 @@ if(file_exists(MYBB_ROOT."/inc/config.php"))
 	require MYBB_ROOT."/inc/config.php";
 	if(isset($config) && is_array($config))
 	{
-		$installed = true;
+		$installed = TRUE;
 		if(isset($config['admindir']))
 		{
 			$admin_dir = $config['admindir'];
@@ -124,11 +124,11 @@ if(class_exists('PDO'))
 	}
 }
 
-if(file_exists('lock') && $mybb->dev_mode != true)
+if(file_exists('lock') && $mybb->dev_mode != TRUE)
 {
 	$output->print_error($lang->locked);
 }
-else if($installed == true && empty($mybb->input['action']))
+else if($installed == TRUE && empty($mybb->input['action']))
 {
 	$output->print_header($lang->already_installed, "errormsg", 0);
 	echo $lang->sprintf($lang->mybb_already_installed, $mybb->version);
@@ -193,7 +193,7 @@ function intro()
 	global $output, $mybb, $lang;
 
 	$output->print_header();
-	if(strpos(strtolower(get_current_location('', '', true)), '/upload/') !== false)
+	if(strpos(strtolower(get_current_location('', '', TRUE)), '/upload/') !== false)
 	{
 		echo $lang->sprintf($lang->mybb_incorrect_folder);
 	}
@@ -926,7 +926,7 @@ for and in connection with specific products or compilations that
 contain the covered work, unless you entered into that arrangement,
 or that patent license was granted, prior to 28 March 2007.
 
-  Nothing in this License shall be construed as excluding or limiting
+  Nothing in this License shall be consTRUEd as excluding or limiting
 any implied license or other defenses to infringement that may
 otherwise be available to you under applicable patent law.
 
@@ -1303,7 +1303,7 @@ function database_info()
 		if(empty($first) && !$mybb->get_input('dbengine'))
 		{
 			$mybb->input['dbengine'] = $dbfile;
-			$first = true;
+			$first = TRUE;
 		}
 		if($dbfile == $mybb->input['dbengine'])
 		{
@@ -1951,7 +1951,7 @@ EOF;
 			}
 		}
 
-		$currentlocation = get_current_location('', '', true);
+		$currentlocation = get_current_location('', '', TRUE);
 		$noinstall = substr($currentlocation, 0, strrpos($currentlocation, '/install/'));
 
 		$cookiepath = $noinstall.'/';
@@ -2386,7 +2386,7 @@ function install_done()
 	// Automatic Login
 	my_unsetcookie("sid");
 	my_unsetcookie("mybbuser");
-	my_setcookie('mybbuser', $uid.'_'.$loginkey, null, true, "lax");
+	my_setcookie('mybbuser', $uid.'_'.$loginkey, null, TRUE, "lax");
 	ob_end_flush();
 
 	// Make fulltext columns if supported
@@ -2428,7 +2428,7 @@ function install_done()
 	$cache->update("plugins", array());
 	$cache->update("internal_settings", array('encryption_key' => random_str(32)));
 	$cache->update_default_theme();
-	$cache->update_reportreasons(true);
+	$cache->update_reportreasons(TRUE);
 
 	$version_history = array();
 	$dh = opendir(INSTALL_ROOT."resources");

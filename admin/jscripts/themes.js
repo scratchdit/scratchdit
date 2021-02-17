@@ -42,9 +42,9 @@ var ThemeSelector = {
 		ThemeSelector.font_style = $("#css_bits\\[font_style\\]").val();
 		ThemeSelector.font_weight = $("#css_bits\\[font_weight\\]").val();
 
-		$("#save").on('click', function(event) { ThemeSelector.save(event, true); } );
+		$("#save").on('click', function(event) { ThemeSelector.save(event, TRUE); } );
 		$("#save_close").on('click', function(event) { ThemeSelector.saveClose(event); } );
-		
+
 
 		$(window).on('beforeunload', function(event){
 			if(ThemeSelector.isChanged())
@@ -53,8 +53,8 @@ var ThemeSelector = {
 			}
 		});
 
-		
-		
+
+
 		ThemeSelector.selector.on("change", ThemeSelector.updateSelector);
 		ThemeSelector.selectorForm.on("submit", ThemeSelector.updateSelector);
     },
@@ -65,7 +65,7 @@ var ThemeSelector = {
 	 * @return void
 	 */
 	saveClose: function(e) {
-		ThemeSelector.isClosing = true;
+		ThemeSelector.isClosing = TRUE;
 	},
 
 	/**
@@ -80,7 +80,7 @@ var ThemeSelector = {
 
 		e.preventDefault()
 
-		ThemeSelector.saveCheck(e, true);
+		ThemeSelector.saveCheck(e, TRUE);
 
 		postData = "file=" + encodeURIComponent(ThemeSelector.file) + "&tid=" + encodeURIComponent(ThemeSelector.tid) + "&selector=" + encodeURIComponent(ThemeSelector.selector.val()) + "&my_post_key=" + encodeURIComponent(my_post_key);
 
@@ -99,7 +99,7 @@ var ThemeSelector = {
 	 * handles the AJAX return data
 	 *
 	 * @param  object the request
-	 * @return true
+	 * @return TRUE
 	 */
 	onComplete: function(request) {
 		var message, saved;
@@ -138,7 +138,7 @@ var ThemeSelector = {
 		$("#mini_spinner").html(ThemeSelector.selectorGoText);
 		ThemeSelector.selectorGoText = '';
 
-		return true;
+		return TRUE;
 	},
 
 	isChanged: function()
@@ -158,38 +158,38 @@ var ThemeSelector = {
 	 * check if anything has changed
 	 *
 	 * @param  object the event
-	 * @param  bool true if AJAX, false if not
-	 * @return true
+	 * @param  bool TRUE if AJAX, false if not
+	 * @return TRUE
 	 */
 	saveCheck: function(e, isAjax) {
 
-	
-		if (ThemeSelector.isClosing == true) {
-			return true;
+
+		if (ThemeSelector.isClosing == TRUE) {
+			return TRUE;
 		}
 
-		if(e != null && isAjax == true)
+		if(e != null && isAjax == TRUE)
 			e.preventDefault();
 
 		if (ThemeSelector.isChanged()) {
-			
+
 			e.preventDefault();
-			
+
 			if(isAjax == false)
 				return save_changes_lang_string;
 			else
 			{
 				confirmReturn = confirm(save_changes_lang_string);
-				if (confirmReturn == true) {
+				if (confirmReturn == TRUE) {
 					ThemeSelector.save(false, isAjax);
 					$.jGrowl(lang.saved, {theme:'jgrowl_success'});
 				}
 			}
 		}
-		else if(isAjax == true)
+		else if(isAjax == TRUE)
 		{
 			ThemeSelector.selectorPrevOpt = ThemeSelector.selector.val();
-			return true;
+			return TRUE;
 		}
 	},
 
@@ -197,8 +197,8 @@ var ThemeSelector = {
 	 * saves the selector info
 	 *
 	 * @param  object the event
-	 * @param  bool true if AJAX, false if not
-	 * @return true
+	 * @param  bool TRUE if AJAX, false if not
+	 * @return TRUE
 	 */
 	save: function(e, isAjax) {
 		var cssBits, postData, completeMethod = 'onUnloadSaveComplete';
@@ -221,13 +221,13 @@ var ThemeSelector = {
 
 		postData = "css_bits=" + encodeURIComponent(jsArrayToPhpArray(cssBits)) + "&selector=" + encodeURIComponent(ThemeSelector.selectorPrevOpt) + "&file=" + encodeURIComponent(ThemeSelector.file) + "&tid=" + encodeURIComponent(ThemeSelector.tid) + "&my_post_key=" + encodeURIComponent(my_post_key) + "&serialized=1";
 
-		if (isAjax == true) {
+		if (isAjax == TRUE) {
 			postData += "&ajax=1";
 		}
 
 		ThemeSelector.isAjax = isAjax;
 
-		if (isAjax == true) {
+		if (isAjax == TRUE) {
 			completeMethod = 'onSaveComplete';
 			$.jGrowl(lang.saving, {theme:'jgrowl_process'});
 		}
@@ -245,7 +245,7 @@ var ThemeSelector = {
 	 * handle errors, reset values and clean up
 	 *
 	 * @param  object the request
-	 * @return true
+	 * @return TRUE
 	 */
 	onSaveComplete: function(request) {
 		var message;
@@ -275,14 +275,14 @@ var ThemeSelector = {
 		ThemeSelector.font_style = $("#css_bits\\[font_style\\]").val();
 		ThemeSelector.font_weight = $("#css_bits\\[font_weight\\]").val();
 
-		return true;
+		return TRUE;
 	},
 
 	/**
 	 * handle leaving page save
 	 *
 	 * @param  object the request
-	 * @return true
+	 * @return TRUE
 	 */
 	onUnloadSaveComplete: function(request) {
 		var message;
@@ -296,7 +296,7 @@ var ThemeSelector = {
 			$.jGrowl(lang.theme_info_save_error + '\n\n' + message[1], {theme:'jgrowl_error'});
 			return false;
 		}
-		return true;
+		return TRUE;
 	},
 
 	url: null,

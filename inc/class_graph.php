@@ -91,7 +91,7 @@ class Graph {
 		$gd_version = gd_version();
 		if($gd_version >= 2)
 		{
-			$this->im = imagecreatetruecolor($this->img_width, $this->img_height);
+			$this->im = imagecreateTRUEcolor($this->img_width, $this->img_height);
 		}
 		elseif (!empty($gd_version))
 		{
@@ -106,7 +106,7 @@ class Graph {
 
 		if(function_exists("imageantialias"))
 		{
-			imageantialias($this->im, true);
+			imageantialias($this->im, TRUE);
 		}
 
 		// Fill the background

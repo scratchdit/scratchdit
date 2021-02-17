@@ -1015,7 +1015,7 @@ ul.tabs li a.active {
 
 .quick_perm_fields .disabled {
 	float: right;
-	margin-left: 0px;
+	margin-left: 0;
 }
 
 .quick_perm_fields .fields_title {
@@ -1075,7 +1075,7 @@ input.image_button {
 input.search_button {
 	background: #fff url(images/icons/search.png) no-repeat;
 	background-position: 4px 7px;
-	border: 0px;
+	border: 0;
 	padding: 4px;
 	padding-left: 23px;
 	font-size: 14px;
@@ -1187,8 +1187,8 @@ input.search_button {
 .jGrowl .jGrowl-notification, .jGrowl .jGrowl-closer {
 	background-color: 		transparent;
 	opacity: 				.85;
-	-ms-filter: 			"progid:DXImageTransform.Microsoft.Alpha(Opacity=85)"; 
-	filter: 				progid:DXImageTransform.Microsoft.Alpha(Opacity=85); 
+	-ms-filter: 			"progid:DXImageTransform.Microsoft.Alpha(Opacity=85)";
+	filter: 				progid:DXImageTransform.Microsoft.Alpha(Opacity=85);
 	transform: 				scale(1);
 	width: 					235px;
 	padding: 				10px;

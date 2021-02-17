@@ -66,7 +66,7 @@
 			closeDuration:		'normal',
 			openDuration:		'normal',
 			easing:				'swing',
-			closer:				true,
+			closer:				TRUE,
 			closeTemplate:		'&times;',
 			closerTemplate:		'<div>[ close all ]</div>',
 			log:				function() {},
@@ -129,7 +129,7 @@
 
 			/** Notification Actions **/
 			$(notification).bind("mouseover.jGrowl", function() {
-				$('.jGrowl-notification', self.element).data("jGrowl.pause", true);
+				$('.jGrowl-notification', self.element).data("jGrowl.pause", TRUE);
 			}).bind("mouseout.jGrowl", function() {
 				$('.jGrowl-notification', self.element).data("jGrowl.pause", false);
 			}).bind('jGrowl.beforeOpen', function() {
@@ -164,7 +164,7 @@
 					$(this).trigger('jGrowl.close');
 			}).bind('jGrowl.close', function() {
 				// Pause the notification, lest during the course of animation another close event gets called.
-				$(this).data('jGrowl.pause', true);
+				$(this).data('jGrowl.pause', TRUE);
 				$(this).animate(o.animateClose, o.closeDuration, o.easing, function() {
 					if ( $.isFunction(o.close) ) {
 						if ( o.close.apply( notification , [notification,message,o,self.element] ) !== false )
@@ -198,8 +198,8 @@
 			$(this.element).find('.jGrowl-notification:parent').each( function() {
 				if ($(this).data("jGrowl") !== undefined && $(this).data("jGrowl").created !== undefined &&
 					($(this).data("jGrowl").created.getTime() + parseInt($(this).data("jGrowl").life, 10))  < (new Date()).getTime() &&
-					$(this).data("jGrowl").sticky !== true &&
-					($(this).data("jGrowl.pause") === undefined || $(this).data("jGrowl.pause") !== true) ) {
+					$(this).data("jGrowl").sticky !== TRUE &&
+					($(this).data("jGrowl.pause") === undefined || $(this).data("jGrowl.pause") !== TRUE) ) {
 
 					// Pause the notification, lest during the course of animation another close event gets called.
 					$(this).trigger('jGrowl.beforeClose');
@@ -277,7 +277,7 @@
         for (i=modals.length-1; i>=0; i--) {
           if (modals[i].$blocker) {
             modals[i].$blocker.toggleClass('current',!selected).toggleClass('behind',selected);
-            selected = true;
+            selected = TRUE;
           }
         }
       };
@@ -375,7 +375,7 @@
 
     unblock: function(now) {
       if (!now && this.options.doFade)
-        this.$blocker.fadeOut(this.options.fadeDuration, this.unblock.bind(this,true));
+        this.$blocker.fadeOut(this.options.fadeDuration, this.unblock.bind(this,TRUE));
       else {
         this.$blocker.children().appendTo(this.$body);
         this.$blocker.remove();
@@ -451,15 +451,15 @@
   $.modal.getCurrent = getCurrent;
 
   $.modal.defaults = {
-    closeExisting: true,
-    escapeClose: true,
-    clickClose: true,
+    closeExisting: TRUE,
+    escapeClose: TRUE,
+    clickClose: TRUE,
     closeText: 'Close',
     closeClass: '',
     modalClass: "modal",
     spinnerHtml: null,
-    showSpinner: true,
-    showClose: true,
+    showSpinner: TRUE,
+    showClose: TRUE,
     fadeDuration: null,   // Number of milliseconds the fade animation takes.
     fadeDelay: 1.0        // Point during the overlay's fade-in that the modal begins to fade in (.5 = 50%, 1.5 = 150%, etc.)
   };
@@ -504,7 +504,7 @@
 		var popup_menu = $("#" + el.attr('id') + "_popup");
 		if(typeof close_in_popupmenu == 'undefined')
 		{
-			var close_in_popupmenu = true;
+			var close_in_popupmenu = TRUE;
 		}
 		// Opening Popup
 		this.open = function(e)
@@ -578,11 +578,11 @@
 	var registeredInModuleLoader = false;
 	if (typeof define === 'function' && define.amd) {
 		define(factory);
-		registeredInModuleLoader = true;
+		registeredInModuleLoader = TRUE;
 	}
 	if (typeof exports === 'object') {
 		module.exports = factory();
-		registeredInModuleLoader = true;
+		registeredInModuleLoader = TRUE;
 	}
 	if (!registeredInModuleLoader) {
 		var OldCookies = window.Cookies;
@@ -653,7 +653,7 @@
 						continue;
 					}
 					stringifiedAttributes += '; ' + attributeName;
-					if (attributes[attributeName] === true) {
+					if (attributes[attributeName] === TRUE) {
 						continue;
 					}
 					stringifiedAttributes += '=' + attributes[attributeName];
@@ -714,7 +714,7 @@
 		};
 		api.getJSON = function () {
 			return api.apply({
-				json: true
+				json: TRUE
 			}, [].slice.call(arguments));
 		};
 		api.defaults = {};

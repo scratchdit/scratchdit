@@ -198,13 +198,13 @@ if(is_array($forum_stats))
 	if(!empty($forum_stats[-1]['modtools']) || !empty($forum_stats[$fid]['modtools']))
 	{
 		// Mod tools are specific to forums, not parents
-		$has_modtools = true;
+		$has_modtools = TRUE;
 	}
 
 	if(!empty($forum_stats[-1]['announcements']) || !empty($forum_stats[$fid]['announcements']))
 	{
 		// Global or forum-specific announcements
-		$has_announcements = true;
+		$has_announcements = TRUE;
 	}
 }
 
@@ -258,7 +258,7 @@ foreach($parentlistexploded as $mfid)
 
 	if(!empty($forum_stats[$mfid]['announcements']))
 	{
-		$has_announcements = true;
+		$has_announcements = TRUE;
 	}
 }
 $comma = '';
@@ -398,16 +398,16 @@ if($fpermissions['canviewdeletionnotice'] != 0)
 if(is_moderator($fid))
 {
 	eval("\$inlinemodcol = \"".$templates->get("forumdisplay_inlinemoderation_col")."\";");
-	$ismod = true;
+	$ismod = TRUE;
 	$inlinecount = "0";
 	$inlinemod = '';
 	$inlinecookie = "inlinemod_forum".$fid;
 
-	if(is_moderator($fid, "canviewdeleted") == true)
+	if(is_moderator($fid, "canviewdeleted") == TRUE)
 	{
 		$visible_states[] = "-1";
 	}
-	if(is_moderator($fid, "canviewunapprove") == true)
+	if(is_moderator($fid, "canviewunapprove") == TRUE)
 	{
 		$visible_states[] = "0";
 	}
@@ -576,7 +576,7 @@ $sortsel['rating'] = ''; // Needs to be initialized in order to speed-up things.
 $sortsel[$mybb->input['sortby']] = ' selected="selected"';
 
 // Pick the right string to join the sort URL
-if($mybb->seo_support == true)
+if($mybb->seo_support == TRUE)
 {
 	$string = "?";
 }
@@ -653,7 +653,7 @@ if($mybb->input['sortby'] || $mybb->input['order'] || $mybb->input['datecut'] ||
 {
 	$page_url = str_replace("{fid}", $fid, FORUM_URL_PAGED);
 
-	if($mybb->seo_support == true)
+	if($mybb->seo_support == TRUE)
 	{
 		$q = "?";
 		$and = '';
@@ -734,7 +734,7 @@ if($ismod)
 
 // Get Announcements
 $announcementlist = '';
-if($has_announcements == true)
+if($has_announcements == TRUE)
 {
 	$limit = '';
 	$announcements = '';
@@ -761,7 +761,7 @@ if($has_announcements == true)
 	}
 
 	$announcementlist = '';
-	$bgcolor = alt_trow(true); // Reset the trow colors
+	$bgcolor = alt_trow(TRUE); // Reset the trow colors
 	while($announcement = $db->fetch_array($query))
 	{
 		if($announcement['startdate'] > $mybb->user['lastvisit'] && !$cookie[$announcement['aid']])
@@ -818,7 +818,7 @@ if($has_announcements == true)
 	if($announcements)
 	{
 		eval("\$announcementlist = \"".$templates->get("forumdisplay_announcements")."\";");
-		$shownormalsep = true;
+		$shownormalsep = TRUE;
 	}
 
 	if(empty($cookie))
@@ -861,7 +861,7 @@ if($fpermissions['canviewthreads'] != 0)
 
 		if($thread['numratings'] > 0 && $ratings == false)
 		{
-			$ratings = true; // Looks for ratings in the forum
+			$ratings = TRUE; // Looks for ratings in the forum
 		}
 
 		// If this is a moved thread - set the tid for participation marking and thread read marking to that of the moved thread
@@ -892,7 +892,7 @@ if($fpermissions['canviewthreads'] != 0)
 
 	$plugins->run_hooks("forumdisplay_before_thread", $args);
 
-	if($mybb->settings['allowthreadratings'] != 0 && $foruminfo['allowtratings'] != 0 && $mybb->user['uid'] && !empty($threadcache) && $ratings == true)
+	if($mybb->settings['allowthreadratings'] != 0 && $foruminfo['allowtratings'] != 0 && $mybb->user['uid'] && !empty($threadcache) && $ratings == TRUE)
 	{
 		// Check if we've rated threads on this page
 		// Guests get the pleasure of not being ID'd, but will be checked when they try and rate
@@ -1079,8 +1079,8 @@ if(!empty($threadcache) && is_array($threadcache))
 		if($thread['sticky'] == "1" && !isset($donestickysep))
 		{
 			eval("\$threads .= \"".$templates->get("forumdisplay_sticky_sep")."\";");
-			$shownormalsep = true;
-			$donestickysep = true;
+			$shownormalsep = TRUE;
+			$donestickysep = TRUE;
 		}
 		else if($thread['sticky'] == 0 && !empty($shownormalsep))
 		{
@@ -1117,13 +1117,13 @@ if(!empty($threadcache) && is_array($threadcache))
 		$threadpages = '';
 		$morelink = '';
 		$thread['posts'] = $thread['replies'] + 1;
-		if(is_moderator($fid, "canviewdeleted") == true || is_moderator($fid, "canviewunapprove") == true)
+		if(is_moderator($fid, "canviewdeleted") == TRUE || is_moderator($fid, "canviewunapprove") == TRUE)
 		{
-			if(is_moderator($fid, "canviewdeleted") == true)
+			if(is_moderator($fid, "canviewdeleted") == TRUE)
 			{
 				$thread['posts'] += $thread['deletedposts'];
 			}
-			if(is_moderator($fid, "canviewunapprove") == true)
+			if(is_moderator($fid, "canviewunapprove") == TRUE)
 			{
 				$thread['posts'] += $thread['unapprovedposts'];
 			}
@@ -1269,7 +1269,7 @@ if(!empty($threadcache) && is_array($threadcache))
 
 		// If this user is the author of the thread and it is not closed or they are a moderator, they can edit
 		$inline_edit_class = '';
-		if(($thread['uid'] == $mybb->user['uid'] && $thread['closed'] != 1 && $mybb->user['uid'] != 0 && $can_edit_titles == 1) || $ismod == true)
+		if(($thread['uid'] == $mybb->user['uid'] && $thread['closed'] != 1 && $mybb->user['uid'] != 0 && $can_edit_titles == 1) || $ismod == TRUE)
 		{
 			$inline_edit_class = "subject_editable";
 		}
@@ -1354,7 +1354,7 @@ if(!empty($threadcache) && is_array($threadcache))
 	$customthreadtools = $standardthreadtools = '';
 	if($ismod)
 	{
-		if(is_moderator($fid, "canusecustomtools") && $has_modtools == true)
+		if(is_moderator($fid, "canusecustomtools") && $has_modtools == TRUE)
 		{
 			$gids = explode(',', $mybb->user['additionalgroups']);
 			$gids[] = $mybb->user['usergroup'];

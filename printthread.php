@@ -52,7 +52,7 @@ $tid = $thread['tid'];
 $ismod = is_moderator($fid);
 
 // Make sure we are looking at a real thread here.
-if(($thread['visible'] != 1 && $ismod == false) || ($thread['visible'] > 1 && $ismod == true))
+if(($thread['visible'] != 1 && $ismod == false) || ($thread['visible'] > 1 && $ismod == TRUE))
 {
 	error($lang->error_invalidthread);
 }

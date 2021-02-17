@@ -15,7 +15,7 @@ if(!defined("IN_MYBB"))
 }
 
 /**
- * @return bool true
+ * @return bool TRUE
  */
 function config_meta()
 {
@@ -45,7 +45,7 @@ function config_meta()
 
 	$page->add_menu_item($lang->configuration, "config", "index.php?module=config", 10, $sub_menu);
 
-	return true;
+	return TRUE;
 }
 
 /**

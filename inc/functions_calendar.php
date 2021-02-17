@@ -81,7 +81,7 @@ function build_mini_calendar($calendar, $month, $year, &$events_cache)
 	$weekday_headers = '';
 	foreach($weekdays as $weekday)
 	{
-		$weekday_name = fetch_weekday_name($weekday, true);
+		$weekday_name = fetch_weekday_name($weekday, TRUE);
 		eval("\$weekday_headers .= \"".$templates->get("calendar_mini_weekdayheader")."\";");
 	}
 
@@ -132,7 +132,7 @@ function build_mini_calendar($calendar, $month, $year, &$events_cache)
 			// Any events on this specific day?
 			if(!empty($events_cache["$day-$calendar_month-$calendar_year"]))
 			{
-				$link_to_day = true;
+				$link_to_day = TRUE;
 			}
 
 			// Is the current day
@@ -491,7 +491,7 @@ function get_events($calendar, $start, $end, $unapproved=0, $private=1)
 			}
 			else
 			{
-				$range_start = fetch_next_occurance($event, array("start" => $start, "end" => $end), $start_day, true);
+				$range_start = fetch_next_occurance($event, array("start" => $start, "end" => $end), $start_day, TRUE);
 			}
 			$first = "";
 			$event_date = explode("-", gmdate("j-n-Y", $range_start));
@@ -682,7 +682,7 @@ function fetch_weekday_name($weekday, $short=false)
 			break;
 	}
 
-	if($short == true)
+	if($short == TRUE)
 	{
 		return $short_weekday_name;
 	}
@@ -786,7 +786,7 @@ function fetch_next_occurance($event, $range, $last_occurance, $first=false)
 	{
 		$weekdays = fetch_weekday_structure($event['weekday_start']);
 		$last_dow = gmdate("w", $last_occurance);
-		if($first == true)
+		if($first == TRUE)
 		{
 			$last_dow = -1;
 			$start_day = gmdate('w', $last_occurance);
@@ -840,7 +840,7 @@ function fetch_next_occurance($event, $range, $last_occurance, $first=false)
 		// X of every Y months
 		if($repeats['day'])
 		{
-			if($first == true)
+			if($first == TRUE)
 			{
 				if($last_day <= $repeats['day'])
 				{
@@ -863,7 +863,7 @@ function fetch_next_occurance($event, $range, $last_occurance, $first=false)
 		// The 1st/etc (weekday) of every X months
 		else
 		{
-			if($first == true)
+			if($first == TRUE)
 			{
 				$new_time = fetch_weekday_monthly_repetition($repeats, $last_month, $last_year);
 				if($new_time < $last_occurance)
@@ -885,7 +885,7 @@ function fetch_next_occurance($event, $range, $last_occurance, $first=false)
 		// Repeats on (day) of (month) every (years)
 		if($repeats['day'])
 		{
-			if($first == true)
+			if($first == TRUE)
 			{
 				$new_time = gmmktime(0, 0, 0, $repeats['month'], $repeats['day'], $last_year);
 				if($new_time < $last_occurance)
@@ -901,7 +901,7 @@ function fetch_next_occurance($event, $range, $last_occurance, $first=false)
 		// The 1st/etc (weekday) of (month) every (years)
 		else
 		{
-			if($first == true)
+			if($first == TRUE)
 			{
 				$new_time = fetch_weekday_monthly_repetition($repeats, $repeats['month'], $last_year);
 				if($new_time < $last_occurance)

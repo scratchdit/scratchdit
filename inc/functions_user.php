@@ -21,7 +21,7 @@ function user_exists($uid)
 	$query = $db->simple_select("users", "COUNT(*) as user", "uid='".(int)$uid."'", array('limit' => 1));
 	if($db->fetch_field($query, 'user') == 1)
 	{
-		return true;
+		return TRUE;
 	}
 	else
 	{
@@ -351,7 +351,7 @@ function add_subscribed_thread($tid, $notification=1, $uid=0)
 		);
 		$db->update_query("threadsubscriptions", $update_array, "uid='{$uid}' AND tid='{$tid}'");
 	}
-	return true;
+	return TRUE;
 }
 
 /**
@@ -377,7 +377,7 @@ function remove_subscribed_thread($tid, $uid=0)
 	}
 	$db->delete_query("threadsubscriptions", "tid='".$tid."' AND uid='{$uid}'");
 
-	return true;
+	return TRUE;
 }
 
 /**
@@ -416,7 +416,7 @@ function add_subscribed_forum($fid, $uid=0)
 		$db->insert_query("forumsubscriptions", $insert_array);
 	}
 
-	return true;
+	return TRUE;
 }
 
 /**
@@ -442,7 +442,7 @@ function remove_subscribed_forum($fid, $uid=0)
 	}
 	$db->delete_query("forumsubscriptions", "fid='".$fid."' AND uid='{$uid}'");
 
-	return true;
+	return TRUE;
 }
 
 /**
@@ -693,7 +693,7 @@ function update_pm_count($uid=0, $count_to_update=7)
 	}
 
 	// Update number of unread messages.
-	if($count_to_update & 2 && $db->field_exists("unreadpms", "users") == true)
+	if($count_to_update & 2 && $db->field_exists("unreadpms", "users") == TRUE)
 	{
 		$query = $db->simple_select("privatemessages", "COUNT(pmid) AS pms_unread", "uid='".$uid."' AND status='0' AND folder='1'");
 		$unread = $db->fetch_array($query);

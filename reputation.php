@@ -174,7 +174,7 @@ if($mybb->input['action'] == "add" || $mybb->input['action'] == "do_add")
 		$query = $db->simple_select("reputation", "*", "adduid='".$mybb->user['uid']."' AND uid='{$uid}' AND pid = '".$mybb->get_input('pid', MyBB::INPUT_INT)."'");
 		$existing_reputation = $db->fetch_array($query);
 		$rid = $existing_reputation['rid'];
-		$was_post = true;
+		$was_post = TRUE;
 	}
 
 	if($rid == 0 && ($mybb->input['action'] != "do_add" || ($mybb->input['action'] == "do_add" && empty($mybb->input['delete']))))
@@ -885,7 +885,7 @@ if(!$mybb->input['action'])
 		$sql = array("p.pid IN ({$pids})");
 
 		// get forums user cannot view
-		$unviewable = get_unviewable_forums(true);
+		$unviewable = get_unviewable_forums(TRUE);
 		if($unviewable)
 		{
 			$sql[] = "p.fid NOT IN ({$unviewable})";

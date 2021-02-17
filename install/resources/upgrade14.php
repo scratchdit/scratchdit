@@ -51,18 +51,18 @@ function upgrade14_dbchanges()
 		$longregip_index = $db->index_exists("users", "longregip");
 		$longlastip_index = $db->index_exists("users", "longlastip");
 
-		if($longlastip_index == true)
+		if($longlastip_index == TRUE)
 		{
 			$db->write_query("ALTER TABLE ".TABLE_PREFIX."users DROP KEY longlastip");
 		}
 
-		if($longregip_index == true)
+		if($longregip_index == TRUE)
 		{
 			$db->write_query("ALTER TABLE ".TABLE_PREFIX."users DROP KEY longregip");
 		}
 
 		$longipaddress_index = $db->index_exists("posts", "longipaddress");
-		if($longipaddress_index == true)
+		if($longipaddress_index == TRUE)
 		{
 			$db->write_query("ALTER TABLE ".TABLE_PREFIX."posts DROP KEY longipaddress");
 		}

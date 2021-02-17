@@ -253,7 +253,7 @@ if($mybb->settings['enableattachments'] == 1 && $mybb->get_input('attachmentaid'
 	if($mybb->get_input('ajax', MyBB::INPUT_INT) == 1)
 	{
 		header("Content-type: application/json; charset={$lang->settings['charset']}");
-		echo json_encode(array("success" => true));
+		echo json_encode(array("success" => TRUE));
 		exit();
 	}
 }
@@ -448,7 +448,7 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 		}
 		else
 		{
-			$hide_captcha = true;
+			$hide_captcha = TRUE;
 		}
 
 		if($mybb->get_input('ajax', MyBB::INPUT_INT) && $post_captcha->type == 1)
@@ -521,7 +521,7 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 			$url = get_thread_link($tid);
 
 			// User must see moderation notice, regardless of redirect settings
-			$force_redirect = true;
+			$force_redirect = TRUE;
 		}
 
 		// Mark any quoted posts so they're no longer selected - attempts to maintain those which weren't selected
@@ -680,7 +680,7 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 			// Post is in the moderation queue
 			else
 			{
-				redirect(get_thread_link($tid, 0, "lastpost"), $lang->redirect_newreply_moderation, "", true);
+				redirect(get_thread_link($tid, 0, "lastpost"), $lang->redirect_newreply_moderation, "", TRUE);
 				exit;
 			}
 		}
@@ -976,7 +976,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		}
 		else
 		{
-			$valid_username = true;
+			$valid_username = TRUE;
 		}
 
 		$post_errors = array();
@@ -1160,13 +1160,13 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		require_once MYBB_ROOT.'inc/class_captcha.php';
 		$post_captcha = new captcha(false, "post_captcha");
 
-		if((!empty($mybb->input['previewpost']) || $hide_captcha == true) && $post_captcha->type == 1)
+		if((!empty($mybb->input['previewpost']) || $hide_captcha == TRUE) && $post_captcha->type == 1)
 		{
 			// If previewing a post - check their current captcha input - if correct, hide the captcha input area
 			// ... but only if it's a default one, reCAPTCHA and Are You a Human must be filled in every time due to draconian limits
-			if($post_captcha->validate_captcha() == true)
+			if($post_captcha->validate_captcha() == TRUE)
 			{
-				$correct = true;
+				$correct = TRUE;
 
 				// Generate a hidden list of items for our captcha
 				$captcha = $post_captcha->build_hidden_captcha();

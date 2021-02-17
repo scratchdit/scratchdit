@@ -162,7 +162,7 @@ class PostDataHandler extends DataHandler
 			}
 		}
 
-		return true;
+		return TRUE;
 	}
 
 	/**
@@ -230,8 +230,8 @@ class PostDataHandler extends DataHandler
 			return false;
 		}
 
-		// Subject is valid - return true.
-		return true;
+		// Subject is valid - return TRUE.
+		return TRUE;
 	}
 
 	/**
@@ -322,7 +322,7 @@ class PostDataHandler extends DataHandler
 				return false;
 			}
 		}
-		return true;
+		return TRUE;
 	}
 
 	/**
@@ -338,7 +338,7 @@ class PostDataHandler extends DataHandler
 		$this->verify_yesno_option($options, 'signature', 0);
 		$this->verify_yesno_option($options, 'disablesmilies', 0);
 
-		return true;
+		return TRUE;
 	}
 
 	/**
@@ -355,9 +355,9 @@ class PostDataHandler extends DataHandler
 		// Check if post flooding is enabled within MyBB or if the admin override option is specified.
 		if($mybb->settings['postfloodcheck'] == 1 && $post['uid'] != 0 && $this->admin_override == false)
 		{
-			if($this->verify_post_merge(true) !== true)
+			if($this->verify_post_merge(TRUE) !== TRUE)
 			{
-				return true;
+				return TRUE;
 			}
 
 			// Fetch the user information for this post - used to check their last post date.
@@ -379,8 +379,8 @@ class PostDataHandler extends DataHandler
 				return false;
 			}
 		}
-		// All is well that ends well - return true.
-		return true;
+		// All is well that ends well - return TRUE.
+		return TRUE;
 	}
 
 	/**
@@ -397,13 +397,13 @@ class PostDataHandler extends DataHandler
 		// Are we starting a new thread?
 		if(empty($post['tid']))
 		{
-			return true;
+			return TRUE;
 		}
 
 		// Are we even turned on?
 		if(empty($mybb->settings['postmergemins']))
 		{
-			return true;
+			return TRUE;
 		}
 
 		// Assign a default separator if none is specified
@@ -415,7 +415,7 @@ class PostDataHandler extends DataHandler
 		// Check to see if this person is in a usergroup that is excluded
 		if(is_member($mybb->settings['postmergeuignore'], $post['uid']))
 		{
-			return true;
+			return TRUE;
 		}
 
 		// Select the lastpost and fid information for this thread
@@ -425,12 +425,12 @@ class PostDataHandler extends DataHandler
 		// Check to see if the same author has posted within the merge post time limit
 		if(((int)$mybb->settings['postmergemins'] != 0 && trim($mybb->settings['postmergemins']) != "") && (TIME_NOW-$thread['lastpost']) > ((int)$mybb->settings['postmergemins']*60))
 		{
-			return true;
+			return TRUE;
 		}
 
 		if($mybb->settings['postmergefignore'] == -1)
 		{
-			return true;
+			return TRUE;
 		}
 		elseif($mybb->settings['postmergefignore'] != '')
 		{
@@ -446,12 +446,12 @@ class PostDataHandler extends DataHandler
 
 				if(in_array($thread['fid'], $fids))
 				{
-					return true;
+					return TRUE;
 				}
 			}
 		}
 
-		if($simple_mode == true)
+		if($simple_mode == TRUE)
 		{
 			return false;
 		}
@@ -527,7 +527,7 @@ class PostDataHandler extends DataHandler
 			}
 		}
 
-		return true;
+		return TRUE;
 	}
 
 	/**
@@ -557,7 +557,7 @@ class PostDataHandler extends DataHandler
 			}
 		}
 
-		return true;
+		return TRUE;
 	}
 
 	/**
@@ -581,7 +581,7 @@ class PostDataHandler extends DataHandler
 			}
 			else
 			{
-				return true;
+				return TRUE;
 			}
 		}
 
@@ -598,7 +598,7 @@ class PostDataHandler extends DataHandler
 			$post['replyto'] = $reply_to['pid'];
 		}
 
-		return true;
+		return TRUE;
 	}
 
 	/**
@@ -619,7 +619,7 @@ class PostDataHandler extends DataHandler
 		{
 			$post['icon'] = 0;
 		}
-		return true;
+		return TRUE;
 	}
 
 	/**
@@ -735,7 +735,7 @@ class PostDataHandler extends DataHandler
 
 					if(is_member($required['groups'], array('usergroup' => $user['usergroup'], 'additionalgroups' => $user['additionalgroups'])))
 					{
-						$num_prefixes = true;
+						$num_prefixes = TRUE;
 					}
 				}
 			}
@@ -747,7 +747,7 @@ class PostDataHandler extends DataHandler
 			}
 		}
 
-		return true;
+		return TRUE;
 	}
 
 	/**
@@ -787,7 +787,7 @@ class PostDataHandler extends DataHandler
 			$first_check = $db->fetch_array($query);
 			if($first_check['pid'] == $post['pid'])
 			{
-				$this->first_post = true;
+				$this->first_post = TRUE;
 			}
 		}
 
@@ -838,14 +838,14 @@ class PostDataHandler extends DataHandler
 		$plugins->run_hooks("datahandler_post_validate_post", $this);
 
 		// We are done validating, return.
-		$this->set_validated(true);
+		$this->set_validated(TRUE);
 		if(count($this->get_errors()) > 0)
 		{
 			return false;
 		}
 		else
 		{
-			return true;
+			return TRUE;
 		}
 	}
 
@@ -913,7 +913,7 @@ class PostDataHandler extends DataHandler
 			$ismod = is_moderator($post['fid'], "", $post['uid']);
 			if($ismod && isset($post['modoptions']))
 			{
-				$lang->load($this->language_file, true);
+				$lang->load($this->language_file, TRUE);
 
 				$modoptions = $post['modoptions'];
 				$modlogdata['fid'] = $thread['fid'];
@@ -1000,7 +1000,7 @@ class PostDataHandler extends DataHandler
 			$double_post = $this->verify_post_merge();
 
 			// Only combine if they are both invisible (mod queue'd forum) or both visible
-			if($double_post !== true && $double_post['visible'] == $visible)
+			if($double_post !== TRUE && $double_post['visible'] == $visible)
 			{
 				$_message = $post['message'];
 
@@ -1047,7 +1047,7 @@ class PostDataHandler extends DataHandler
 					$this->return_values = array(
 						"pid" => $double_post['pid'],
 						"visible" => $visible,
-						"merge" => true
+						"merge" => TRUE
 					);
 
 					$plugins->run_hooks("datahandler_post_insert_merge", $this);
@@ -1074,7 +1074,7 @@ class PostDataHandler extends DataHandler
 				$update_array['postnum'] = 'postnum+1';
 			}
 
-			$db->update_query("users", $update_array, "uid='{$post['uid']}'", 1, true);
+			$db->update_query("users", $update_array, "uid='{$post['uid']}'", 1, TRUE);
 		}
 
 		// Are we updating a post which is already a draft? Perhaps changing it into a visible post?
@@ -1275,7 +1275,7 @@ class PostDataHandler extends DataHandler
 						'language' => $subscribedmember['language'],
 						'language_file' => 'messages'
 					);
-					send_pm($pm, -1, true);
+					send_pm($pm, -1, TRUE);
 				}
 			}
 
@@ -1399,14 +1399,14 @@ class PostDataHandler extends DataHandler
 		$plugins->run_hooks("datahandler_post_validate_thread", $this);
 
 		// We are done validating, return.
-		$this->set_validated(true);
+		$this->set_validated(TRUE);
 		if(count($this->get_errors()) > 0)
 		{
 			return false;
 		}
 		else
 		{
-			return true;
+			return TRUE;
 		}
 	}
 
@@ -1585,7 +1585,7 @@ class PostDataHandler extends DataHandler
 			// Perform any selected moderation tools.
 			if(is_moderator($thread['fid'], "", $thread['uid']) && isset($thread['modoptions']))
 			{
-				$lang->load($this->language_file, true);
+				$lang->load($this->language_file, TRUE);
 
 				$modoptions = $thread['modoptions'];
 				$modlogdata['fid'] = $thread['fid'];
@@ -1642,7 +1642,7 @@ class PostDataHandler extends DataHandler
 					// Only update the table if we need to.
 					if(!empty($update_query))
 					{
-						$db->update_query("users", $update_query, "uid='{$thread['uid']}'", 1, true);
+						$db->update_query("users", $update_query, "uid='{$thread['uid']}'", 1, TRUE);
 					}
 				}
 
@@ -1811,7 +1811,7 @@ class PostDataHandler extends DataHandler
 		global $db, $mybb, $plugins;
 
 		// Yes, validating is required.
-		if($this->get_validated() != true)
+		if($this->get_validated() != TRUE)
 		{
 			die("The post needs to be validated before inserting it into the DB.");
 		}

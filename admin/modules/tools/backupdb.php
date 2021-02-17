@@ -333,7 +333,7 @@ if($mybb->input['action'] == "backup")
 		{
 			if(action == 'select')
 			{
-				select_box[i].selected = true;
+				select_box[i].selected = TRUE;
 			}
 			else if(action == 'deselect')
 			{
@@ -346,7 +346,7 @@ if($mybb->input['action'] == "backup")
 				var subString = row.substring(prefix.length, 0);
 				if(subString == prefix)
 				{
-					select_box[i].selected = true;
+					select_box[i].selected = TRUE;
 				}
 			}
 		}
@@ -374,7 +374,7 @@ if($mybb->input['action'] == "backup")
 	{
 		$lang->update_button = '';
 		$page->output_alert($lang->alert_not_writable);
-		$cannot_write = true;
+		$cannot_write = TRUE;
 	}
 
 	$table = new Table;
@@ -390,7 +390,7 @@ if($mybb->input['action'] == "backup")
 
 	$form = new Form("index.php?module=tools-backupdb&amp;action=backup", "post", "table_selection", 0, "table_selection");
 
-	$table->construct_cell("{$lang->table_select_desc}\n<br /><br />\n<a href=\"javascript:changeSelection('select', 0);\">{$lang->select_all}</a><br />\n<a href=\"javascript:changeSelection('deselect', 0);\">{$lang->deselect_all}</a><br />\n<a href=\"javascript:changeSelection('forum', '".TABLE_PREFIX."');\">{$lang->select_forum_tables}</a>\n<br /><br />\n<div class=\"form_row\">".$form->generate_select_box("tables[]", $table_selects, false, array('multiple' => true, 'id' => 'table_select', 'size' => 20))."</div>", array('rowspan' => 5, 'width' => '50%', 'style' => 'border-bottom: 0px'));
+	$table->construct_cell("{$lang->table_select_desc}\n<br /><br />\n<a href=\"javascript:changeSelection('select', 0);\">{$lang->select_all}</a><br />\n<a href=\"javascript:changeSelection('deselect', 0);\">{$lang->deselect_all}</a><br />\n<a href=\"javascript:changeSelection('forum', '".TABLE_PREFIX."');\">{$lang->select_forum_tables}</a>\n<br /><br />\n<div class=\"form_row\">".$form->generate_select_box("tables[]", $table_selects, false, array('multiple' => TRUE, 'id' => 'table_select', 'size' => 20))."</div>", array('rowspan' => 5, 'width' => '50%', 'style' => 'border-bottom: 0'));
 	$table->construct_row();
 
 	$table->construct_cell("<strong>{$lang->file_type}</strong><br />\n{$lang->file_type_desc}<br />\n<div class=\"form_row\">".$form->generate_radio_button("filetype", "gzip", $lang->gzip_compressed, array('checked' => 1))."<br />\n".$form->generate_radio_button("filetype", "plain", $lang->plain_text)."</div>", array('width' => '50%'));

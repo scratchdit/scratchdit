@@ -44,7 +44,7 @@ class LoginDataHandler extends DataHandler
 	/**
 	 * @var bool
 	 */
-	public $captcha_verified = true;
+	public $captcha_verified = TRUE;
 
 	/**
 	 * @var bool|captcha
@@ -105,8 +105,8 @@ class LoginDataHandler extends DataHandler
 			}
 			else
 			{
-				$this->captcha_verified = true;
-				return true;
+				$this->captcha_verified = TRUE;
+				return TRUE;
 			}
 		}
 		else if($mybb->input['quick_login'] == 1 && $mybb->input['quick_password'] && $mybb->input['quick_username'])
@@ -134,7 +134,7 @@ class LoginDataHandler extends DataHandler
 			return false;
 		}
 
-		return true;
+		return TRUE;
 	}
 
 	/**
@@ -142,7 +142,7 @@ class LoginDataHandler extends DataHandler
 	 *
 	 * @return bool
 	 */
-	function verify_password($strict = true)
+	function verify_password($strict = TRUE)
 	{
 		global $db, $mybb, $plugins;
 
@@ -169,7 +169,7 @@ class LoginDataHandler extends DataHandler
 			$this->invalid_combination();
 		}
 
-		if($strict == true)
+		if($strict == TRUE)
 		{
 			if(!$this->login_data['salt'])
 			{
@@ -195,11 +195,11 @@ class LoginDataHandler extends DataHandler
 
 		if(!verify_user_password($this->login_data, $user['password']))
 		{
-			$this->invalid_combination(true);
+			$this->invalid_combination(TRUE);
 			return false;
 		}
 
-		return true;
+		return TRUE;
 	}
 
 	/**
@@ -286,17 +286,17 @@ class LoginDataHandler extends DataHandler
 
 		$plugins->run_hooks('datahandler_login_validate_end', $this);
 
-		$this->set_validated(true);
+		$this->set_validated(TRUE);
 		if(count($this->get_errors()) > 0)
 		{
 			return false;
 		}
 
-		return true;
+		return TRUE;
 	}
 
 	/**
-	 * @return bool true
+	 * @return bool TRUE
 	 */
 	function complete_login()
 	{
@@ -308,7 +308,7 @@ class LoginDataHandler extends DataHandler
 
 		// Login to MyBB
 		my_setcookie('loginattempts', 1);
-		my_setcookie("sid", $session->sid, -1, true);
+		my_setcookie("sid", $session->sid, -1, TRUE);
 
 		$newsession = array(
 			"uid" => $user['uid'],
@@ -323,7 +323,7 @@ class LoginDataHandler extends DataHandler
 			$remember = -1;
 		}
 
-		my_setcookie("mybbuser", $user['uid']."_".$user['loginkey'], $remember, true, "lax");
+		my_setcookie("mybbuser", $user['uid']."_".$user['loginkey'], $remember, TRUE, "lax");
 
 		if($this->captcha !== false)
 		{
@@ -332,6 +332,6 @@ class LoginDataHandler extends DataHandler
 
 		$plugins->run_hooks('datahandler_login_complete_end', $this);
 
-		return true;
+		return TRUE;
 	}
 }

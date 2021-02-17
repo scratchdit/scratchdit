@@ -19,7 +19,7 @@ class DefaultForm
 	private $_return = false;
 
 	/**
-	 * @var string Contents of the form if $_return is true from __construct
+	 * @var string Contents of the form if $_return is TRUE from __construct
 	 */
 	public $construct_return = "";
 
@@ -65,7 +65,7 @@ class DefaultForm
 		}
 		else
 		{
-			$this->_return = true;
+			$this->_return = TRUE;
 			$this->construct_return = $form;
 		}
 	}
@@ -366,7 +366,7 @@ class DefaultForm
 		{
 			$input .= " id=\"".$options['id']."\"";
 		}
-		if(isset($options['checked']) && ($options['checked'] === true || $options['checked'] == 1))
+		if(isset($options['checked']) && ($options['checked'] === TRUE || $options['checked'] == 1))
 		{
 			$input .= " checked=\"checked\"";
 		}
@@ -388,7 +388,7 @@ class DefaultForm
 	 *
 	 * @param string $name The name of the select box.
 	 * @param array $option_list Array of options in key => val format.
-	 * @param string|array $selected Either a string containing the selected item or an array containing multiple selected items (options['multiple'] must be true)
+	 * @param string|array $selected Either a string containing the selected item or an array containing multiple selected items (options['multiple'] must be TRUE)
 	 * @param array $options Array of options for the select box (multiple, class, id, size)
 	 * @return string The select box.
 	 */
@@ -749,7 +749,7 @@ class DefaultForm
 	 * @param array $no_options Array of options for the no checkbox (@see generate_radio_button)
 	 * @return string The generated yes/no radio button.
 	 */
-	function generate_yes_no_radio($name, $value="1", $int=true, $yes_options=array(), $no_options = array())
+	function generate_yes_no_radio($name, $value="1", $int=TRUE, $yes_options=array(), $no_options = array())
 	{
 		global $lang;
 
@@ -765,7 +765,7 @@ class DefaultForm
 			$no_checked = 0;
 		}
 		// Element value
-		if($int == true)
+		if($int == TRUE)
 		{
 			$yes_value = 1;
 			$no_value = 0;
@@ -807,7 +807,7 @@ class DefaultForm
 	 * @param array $off_options Array of options for the off checkbox (@see generate_radio_button)
 	 * @return string The generated on/off radio button.
 	 */
-	function generate_on_off_radio($name, $value=1, $int=true, $on_options=array(), $off_options = array())
+	function generate_on_off_radio($name, $value=1, $int=TRUE, $on_options=array(), $off_options = array())
 	{
 		global $lang;
 
@@ -823,7 +823,7 @@ class DefaultForm
 			$off_checked = 0;
 		}
 		// Element value
-		if($int == true)
+		if($int == TRUE)
 		{
 			$on_value = 1;
 			$off_value = 0;
@@ -1107,9 +1107,9 @@ class DefaultFormContainer
 		);
 
 		$plugins->run_hooks("admin_formcontainer_end", $hook);
-		if($return == true)
+		if($return == TRUE)
 		{
-			return $this->_container->output($this->_title, 1, "general form_container {$this->extra_class}", true);
+			return $this->_container->output($this->_title, 1, "general form_container {$this->extra_class}", TRUE);
 		}
 		else
 		{

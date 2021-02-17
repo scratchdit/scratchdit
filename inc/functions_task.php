@@ -99,7 +99,7 @@ function run_task($tid=0)
 
 	$cache->update_tasks();
 
-	return true;
+	return TRUE;
 }
 
 /**
@@ -375,11 +375,11 @@ function fetch_first_run_time($data)
  */
 function run_time_exists($data, $bit)
 {
-	if($data == "*") return true;
+	if($data == "*") return TRUE;
 	$data = explode(",", $data);
 	if(in_array($bit, $data))
 	{
-		return true;
+		return TRUE;
 	}
 	return false;
 }

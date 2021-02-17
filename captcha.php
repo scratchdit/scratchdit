@@ -45,7 +45,7 @@ else
 
 $ttf_fonts = array();
 
-// We have support for true-type fonts (FreeType 2)
+// We have support for TRUE-type fonts (FreeType 2)
 if(function_exists("imagefttext"))
 {
 	// Get a list of the files in the 'catpcha_fonts' directory
@@ -77,7 +77,7 @@ else
 // Check for GD >= 2, create base image
 if(gd_version() >= 2)
 {
-	$im = imagecreatetruecolor($img_width, $img_height);
+	$im = imagecreateTRUEcolor($img_width, $img_height);
 }
 else
 {
@@ -211,7 +211,7 @@ function draw_squares(&$im)
  * @param resource $im The image.
  * @param string $string The string to be written
  *
- * @return bool False if string is empty, true otherwise
+ * @return bool False if string is empty, TRUE otherwise
  */
 function draw_string(&$im, $string)
 {
@@ -277,7 +277,7 @@ function draw_string(&$im, $string)
 			// Create a temporary image for this character
 			if(gd_version() >= 2)
 			{
-				$temp_im = imagecreatetruecolor(15, 20);
+				$temp_im = imagecreateTRUEcolor(15, 20);
 			}
 			else
 			{
@@ -306,6 +306,6 @@ function draw_string(&$im, $string)
 			imagedestroy($temp_im);
 		}
 	}
-	return true;
+	return TRUE;
 }
 

@@ -14,7 +14,7 @@ class Moderation
 	 * Close one or more threads
 	 *
 	 * @param array|int $tids Thread ID(s)
-	 * @return boolean true
+	 * @return boolean TRUE
 	 */
 	function close_threads($tids)
 	{
@@ -37,7 +37,7 @@ class Moderation
 		);
 		$db->update_query("threads", $openthread, "tid IN ($tid_list) AND closed NOT LIKE 'moved|%'");
 
-		return true;
+		return TRUE;
 	}
 
 	/**
@@ -73,7 +73,7 @@ class Moderation
 		);
 		$db->update_query("threads", $closethread, "tid IN ($tid_list)");
 
-		return true;
+		return TRUE;
 	}
 
 	/**
@@ -108,7 +108,7 @@ class Moderation
 		);
 		$db->update_query("threads", $stickthread, "tid IN ($tid_list)");
 
-		return true;
+		return TRUE;
 	}
 
 	/**
@@ -143,7 +143,7 @@ class Moderation
 		);
 		$db->update_query("threads", $unstickthread, "tid IN ($tid_list)");
 
-		return true;
+		return TRUE;
 	}
 
 	/**
@@ -171,7 +171,7 @@ class Moderation
 			$this->delete_thread($redirect_tid);
 		}
 
-		return true;
+		return TRUE;
 	}
 
 	/**
@@ -327,7 +327,7 @@ class Moderation
 
 		$plugins->run_hooks("class_moderation_delete_thread", $tid);
 
-		return true;
+		return TRUE;
 	}
 
 	/**
@@ -356,7 +356,7 @@ class Moderation
 		);
 		$db->update_query("threads", $pollarray, "poll='$pid'");
 
-		return true;
+		return TRUE;
 	}
 
 	/**
@@ -499,7 +499,7 @@ class Moderation
 				}
 			}
 		}
-		return true;
+		return TRUE;
 	}
 
 	/**
@@ -652,7 +652,7 @@ class Moderation
 			}
 		}
 
-		return true;
+		return TRUE;
 	}
 
 	/**
@@ -749,7 +749,7 @@ class Moderation
 		update_forum_counters($post['fid'], $update_array);
 		update_forum_lastpost($post['fid']);
 
-		return true;
+		return TRUE;
 	}
 
 	/**
@@ -1017,7 +1017,7 @@ class Moderation
 		$new_fid = (int)$new_fid;
 		$redirect_expire = (int)$redirect_expire;
 
-		$thread = get_thread($tid, true);
+		$thread = get_thread($tid, TRUE);
 
 		$newforum = get_forum($new_fid);
 		if(!$thread || !$newforum)
@@ -1760,7 +1760,7 @@ class Moderation
 
 		// Forum last post has to be updated after thread
 		update_forum_lastpost($thread['fid']);
-		return true;
+		return TRUE;
 	}
 
 	/**
@@ -2417,7 +2417,7 @@ class Moderation
 		// Remove thread subscriptions for the users who no longer have permission to view the thread
 		$this->remove_thread_subscriptions($tid_list, false, $moveto);
 
-		return true;
+		return TRUE;
 	}
 
 	/**
@@ -2565,7 +2565,7 @@ class Moderation
 			}
 		}
 
-		return true;
+		return TRUE;
 	}
 
 	/**
@@ -2736,7 +2736,7 @@ class Moderation
 			}
 		}
 
-		return true;
+		return TRUE;
 	}
 
 	/**
@@ -2783,7 +2783,7 @@ class Moderation
 		$arguments = array("tids" => $tids, "format" => $format);
 		$plugins->run_hooks("class_moderation_change_thread_subject", $arguments);
 
-		return true;
+		return TRUE;
 	}
 
 	/**
@@ -2812,14 +2812,14 @@ class Moderation
 		$arguments = array("tid" => $tid, "deletetime" => $deletetime);
 		$plugins->run_hooks("class_moderation_expire_thread", $arguments);
 
-		return true;
+		return TRUE;
 	}
 
 	/**
 	 * Toggle post visibility (approved/unapproved)
 	 *
 	 * @param array $pids Post IDs
-	 * @return boolean true
+	 * @return boolean TRUE
 	 */
 	function toggle_post_visibility($pids)
 	{
@@ -2849,14 +2849,14 @@ class Moderation
 		{
 			$this->approve_posts($approve);
 		}
-		return true;
+		return TRUE;
 	}
 
 	/**
 	 * Toggle post visibility (deleted/restored)
 	 *
 	 * @param array $pids Post IDs
-	 * @return boolean true
+	 * @return boolean TRUE
 	 */
 	function toggle_post_softdelete($pids)
 	{
@@ -2886,7 +2886,7 @@ class Moderation
 		{
 			$this->restore_posts($restore);
 		}
-		return true;
+		return TRUE;
 	}
 
 	/**
@@ -2894,7 +2894,7 @@ class Moderation
 	 *
 	 * @param array $tids Thread IDs
 	 * @param int $fid Forum ID
-	 * @return boolean true
+	 * @return boolean TRUE
 	 */
 	function toggle_thread_visibility($tids, $fid)
 	{
@@ -2925,14 +2925,14 @@ class Moderation
 		{
 			$this->approve_threads($approve, $fid);
 		}
-		return true;
+		return TRUE;
 	}
 
 	/**
 	 * Toggle thread visibility (deleted/restored)
 	 *
 	 * @param array $tids Thread IDs
-	 * @return boolean true
+	 * @return boolean TRUE
 	 */
 	function toggle_thread_softdelete($tids)
 	{
@@ -2962,14 +2962,14 @@ class Moderation
 		{
 			$this->restore_threads($restore);
 		}
-		return true;
+		return TRUE;
 	}
 
 	/**
 	 * Toggle threads open/closed
 	 *
 	 * @param array $tids Thread IDs
-	 * @return boolean true
+	 * @return boolean TRUE
 	 */
 	function toggle_thread_status($tids)
 	{
@@ -2999,14 +2999,14 @@ class Moderation
 		{
 			$this->close_threads($close);
 		}
-		return true;
+		return TRUE;
 	}
 
 	/**
 	 * Toggle threads stick/unstick
 	 *
 	 * @param array $tids Thread IDs
-	 * @return boolean true
+	 * @return boolean TRUE
 	 */
 	function toggle_thread_importance($tids)
 	{
@@ -3039,7 +3039,7 @@ class Moderation
 		{
 			$this->unstick_threads($unstick);
 		}
-		return true;
+		return TRUE;
 	}
 
 	/**
@@ -3050,7 +3050,7 @@ class Moderation
 	 * @param int $fid (Only applies if $all is false) The forum ID of the thread
 	 * @return boolean
 	 */
-	function remove_thread_subscriptions($tids, $all = true, $fid = 0)
+	function remove_thread_subscriptions($tids, $all = TRUE, $fid = 0)
 	{
 		global $db, $plugins;
 
@@ -3118,7 +3118,7 @@ class Moderation
 		$arguments = array("tids" => $tids, "all" => $all, "fid" => $fid);
 		$plugins->run_hooks("class_moderation_remove_thread_subscriptions", $arguments);
 
-		return true;
+		return TRUE;
 	}
 
 	/**
@@ -3154,7 +3154,7 @@ class Moderation
 
 		$plugins->run_hooks('class_moderation_apply_thread_prefix', $arguments);
 
-		return true;
+		return TRUE;
 	}
 
 	/**
@@ -3325,7 +3325,7 @@ class Moderation
 			}
 		}
 
-		return true;
+		return TRUE;
 	}
 
 	/**
@@ -3473,14 +3473,14 @@ class Moderation
 			}
 		}
 
-		return true;
+		return TRUE;
 	}
 
 	/**
 	 * Restore one or more threads
 	 *
 	 * @param array|int $tids Thread ID(s)
-	 * @return boolean true
+	 * @return boolean TRUE
 	 */
 	function restore_threads($tids)
 	{
@@ -3620,7 +3620,7 @@ class Moderation
 				}
 			}
 		}
-		return true;
+		return TRUE;
 	}
 
 	/**
@@ -3779,6 +3779,6 @@ class Moderation
 			}
 		}
 
-		return true;
+		return TRUE;
 	}
 }

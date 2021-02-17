@@ -246,7 +246,7 @@ if(empty($mybb->input['type']) || $mybb->input['type'] == "threads")
 			$table->construct_row();
 
 			$controls = "<div class=\"modqueue_controls\">\n";
-			$controls .= $form->generate_radio_button("threads[{$thread['tid']}]", "ignore", $lang->ignore, array('class' => 'radio_ignore', 'checked' => true))." ";
+			$controls .= $form->generate_radio_button("threads[{$thread['tid']}]", "ignore", $lang->ignore, array('class' => 'radio_ignore', 'checked' => TRUE))." ";
 			$controls .= $form->generate_radio_button("threads[{$thread['tid']}]", "delete", $lang->delete, array('class' => 'radio_delete', 'checked' => false))." ";
 			$controls .= $form->generate_radio_button("threads[{$thread['tid']}]", "approve", $lang->approve, array('class' => 'radio_approve', 'checked' => false));
 			$controls .= "</div>";
@@ -268,19 +268,19 @@ if(empty($mybb->input['type']) || $mybb->input['type'] == "threads")
 		echo '<script type="text/javascript">
 			$(".mass_ignore").on("click", function () {
 				$("input.radio_ignore").each(function(e) {
-					$(this).prop("checked", true);
+					$(this).prop("checked", TRUE);
 				});
 				return false;
 			});
 			$(".mass_delete").on("click", function () {
 				$("input.radio_delete").each(function(e) {
-					$(this).prop("checked", true);
+					$(this).prop("checked", TRUE);
 				});
 				return false;
 			});
 			$(".mass_approve").on("click", function () {
 				$("input.radio_approve").each(function(e) {
-					$(this).prop("checked", true);
+					$(this).prop("checked", TRUE);
 				});
 				return false;
 			});
@@ -391,7 +391,7 @@ if($mybb->get_input('type') == "posts" || $mybb->get_input('type') == "")
 			$table->construct_row();
 
 			$controls = "<div class=\"modqueue_controls\">\n";
-			$controls .= $form->generate_radio_button("posts[{$post['pid']}]", "ignore", $lang->ignore, array('class' => 'radio_ignore', 'checked' => true))." ";
+			$controls .= $form->generate_radio_button("posts[{$post['pid']}]", "ignore", $lang->ignore, array('class' => 'radio_ignore', 'checked' => TRUE))." ";
 			$controls .= $form->generate_radio_button("posts[{$post['pid']}]", "delete",$lang->delete, array('class' => 'radio_delete', 'checked' => false))." ";
 			$controls .= $form->generate_radio_button("posts[{$post['pid']}]", "approve", $lang->approve, array('class' => 'radio_approve', 'checked' => false));
 			$controls .= "</div>";
@@ -414,19 +414,19 @@ if($mybb->get_input('type') == "posts" || $mybb->get_input('type') == "")
 		echo '<script type="text/javascript">
 			$(".mass_ignore").on("click", function () {
 				$("input.radio_ignore").each(function(e) {
-					$(this).prop("checked", true);
+					$(this).prop("checked", TRUE);
 				});
 				return false;
 			});
 			$(".mass_delete").on("click", function () {
 				$("input.radio_delete").each(function(e) {
-					$(this).prop("checked", true);
+					$(this).prop("checked", TRUE);
 				});
 				return false;
 			});
 			$(".mass_approve").on("click", function () {
 				$("input.radio_approve").each(function(e) {
-					$(this).prop("checked", true);
+					$(this).prop("checked", TRUE);
 				});
 				return false;
 			});
@@ -537,7 +537,7 @@ if($mybb->get_input('type') == "attachments" || $mybb->get_input('type') == "")
 			$table->construct_cell($profile_link, array("class" => "align_center"));
 			$table->construct_cell($attachdate, array("class" => "align_center"));
 
-			$table->construct_cell($form->generate_radio_button("attachments[{$attachment['aid']}]", "ignore", $lang->ignore, array('class' => 'radio_ignore', 'checked' => true)), array("class" => "align_center"));
+			$table->construct_cell($form->generate_radio_button("attachments[{$attachment['aid']}]", "ignore", $lang->ignore, array('class' => 'radio_ignore', 'checked' => TRUE)), array("class" => "align_center"));
 			$table->construct_cell($form->generate_radio_button("attachments[{$attachment['aid']}]", "delete", $lang->delete, array('class' => 'radio_delete', 'checked' => false)), array("class" => "align_center"));
 			$table->construct_cell($form->generate_radio_button("attachments[{$attachment['aid']}]", "approve", $lang->approve, array('class' => 'radio_approve', 'checked' => false)), array("class" => "align_center"));
 			$table->construct_row();
@@ -553,19 +553,19 @@ if($mybb->get_input('type') == "attachments" || $mybb->get_input('type') == "")
 		echo '<script type="text/javascript">
 			$(".mass_ignore").on("click", function () {
 				$("input.radio_ignore").each(function(e) {
-					$(this).prop("checked", true);
+					$(this).prop("checked", TRUE);
 				});
 				return false;
 			});
 			$(".mass_delete").on("click", function () {
 				$("input.radio_delete").each(function(e) {
-					$(this).prop("checked", true);
+					$(this).prop("checked", TRUE);
 				});
 				return false;
 			});
 			$(".mass_approve").on("click", function () {
 				$("input.radio_approve").each(function(e) {
-					$(this).prop("checked", true);
+					$(this).prop("checked", TRUE);
 				});
 				return false;
 			});

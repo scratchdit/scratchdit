@@ -88,14 +88,14 @@ class FeedParser
 			return false;
 		}
 
-		return true;
+		return TRUE;
 	}
 
 	/**
 	 * Parses an XML structure in the format of an RSS feed
 	 *
 	 * @param array $feed_contents PHP XML parser structure
-	 * @return boolean true
+	 * @return boolean TRUE
 	 */
 	function parse_rss($feed_contents)
 	{
@@ -189,7 +189,7 @@ class FeedParser
 			// Assign the item to our list of items
 			$this->items[] = $item;
 		}
-		return true;
+		return TRUE;
 	}
 
 	/**

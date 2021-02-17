@@ -558,7 +558,7 @@ function build_postbit($post, $post_type=0)
 		eval("\$post['button_forward_pm'] = \"".$templates->get("postbit_forward_pm")."\";");
 		eval("\$post['button_delete_pm'] = \"".$templates->get("postbit_delete_pm")."\";");
 
-		if($replyall == true)
+		if($replyall == TRUE)
 		{
 			eval("\$post['button_replyall_pm'] = \"".$templates->get("postbit_replyall_pm")."\";");
 		}
@@ -966,7 +966,7 @@ function get_post_attachments($id, &$post)
 				$ext = get_extension($attachment['filename']);
 				if($ext == "jpeg" || $ext == "gif" || $ext == "bmp" || $ext == "png" || $ext == "jpg")
 				{
-					$isimage = true;
+					$isimage = TRUE;
 				}
 				else
 				{

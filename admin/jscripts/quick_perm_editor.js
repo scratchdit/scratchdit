@@ -10,18 +10,18 @@ var QuickPermEditor = {
 		{
 			return;
 		}
-		
+
 		$("#fields_enabled_"+id).sortable({
 			connectWith: "#fields_disabled_"+id,
-			dropOnEmpty: true,
+			dropOnEmpty: TRUE,
 			update: function(event, ui) {
 				QuickPermEditor.buildFieldsList(id);
 			}
 		}).disableSelection();
-		
+
 		$("#fields_disabled_"+id).sortable({
 			connectWith: "#fields_enabled_"+id,
-			dropOnEmpty: true,
+			dropOnEmpty: TRUE,
 			update: function(event, ui) {
 				QuickPermEditor.buildFieldsList(id);
 			}
@@ -34,7 +34,7 @@ var QuickPermEditor = {
 
 		$('#fields_enabled_'+id).children().each(function() {
 			var textid = $(this).attr('id').split("-");
-		
+
 			if(textid[1])
 			{
 				if(new_input)
@@ -44,7 +44,7 @@ var QuickPermEditor = {
 				new_input += textid[1];
 			}
 		});
-		
+
 		if($('#fields_'+id).val() != new_input)
 		{
 			if($('#default_permissions_'+id))
@@ -52,7 +52,7 @@ var QuickPermEditor = {
 				$('#default_permissions_'+id).attr('checked', false);
 			}
 		}
-		
+
 		$('#fields_'+id).val(new_input);
 
 		if($('#fields_inherit_'+id))

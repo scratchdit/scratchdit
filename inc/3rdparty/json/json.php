@@ -161,7 +161,7 @@ class Services_JSON
 
         $bytes = (ord($utf16[0]) << 8) | ord($utf16[1]);
 
-        switch(true) {
+        switch(TRUE) {
             case ((0x7F & $bytes) == $bytes):
                 // this case should never be reached, because we are in ASCII range
                 // see: //www.cl.cam.ac.uk/~mgk25/unicode.html#utf-8
@@ -244,7 +244,7 @@ class Services_JSON
     {
         switch (gettype($var)) {
             case 'boolean':
-                return $var ? 'true' : 'false';
+                return $var ? 'TRUE' : 'false';
 
             case 'NULL':
                 return 'null';
@@ -269,7 +269,7 @@ class Services_JSON
 
                     $ord_var_c = ord($var[$c]);
 
-                    switch (true) {
+                    switch (TRUE) {
                         case $ord_var_c == 0x08:
                             $ascii .= '\b';
                             break;
@@ -492,8 +492,8 @@ class Services_JSON
         $str = $this->reduce_string($str);
 
         switch (strtolower($str)) {
-            case 'true':
-                return true;
+            case 'TRUE':
+                return TRUE;
 
             case 'false':
                 return false;
@@ -528,7 +528,7 @@ class Services_JSON
                         $substr_chrs_c_2 = substr($chrs, $c, 2);
                         $ord_chrs_c = ord($chrs[$c]);
 
-                        switch (true) {
+                        switch (TRUE) {
                             case $substr_chrs_c_2 == '\b':
                                 $utf8 .= chr(0x08);
                                 ++$c;
@@ -775,7 +775,7 @@ class Services_JSON
             return PEAR::isError($data, $code);
         } elseif (is_object($data) && (get_class($data) == 'services_json_error' ||
                                  is_subclass_of($data, 'services_json_error'))) {
-            return true;
+            return TRUE;
         }
 
         return false;

@@ -342,7 +342,7 @@ if($mybb->input['action'] == "edit")
 		"timeonline" => $lang->time_online
 	);
 
-	$form_container->output_row($lang->promo_requirements." <em>*</em>", $lang->promo_requirements_desc, $form->generate_select_box('requirements[]', $options, $mybb->input['requirements'], array('id' => 'requirements', 'multiple' => true, 'size' => 5)), 'requirements');
+	$form_container->output_row($lang->promo_requirements." <em>*</em>", $lang->promo_requirements_desc, $form->generate_select_box('requirements[]', $options, $mybb->input['requirements'], array('id' => 'requirements', 'multiple' => TRUE, 'size' => 5)), 'requirements');
 
 	$options_type = array(
 		">" => $lang->greater_than,
@@ -382,7 +382,7 @@ if($mybb->input['action'] == "edit")
 		$options[(int)$usergroup['gid']] = htmlspecialchars_uni($usergroup['title']);
 	}
 
-	$form_container->output_row($lang->orig_user_group." <em>*</em>", $lang->orig_user_group_desc, $form->generate_select_box('originalusergroup[]', $options, $mybb->input['originalusergroup'], array('id' => 'originalusergroup', 'multiple' => true, 'size' => 5)), 'originalusergroup');
+	$form_container->output_row($lang->orig_user_group." <em>*</em>", $lang->orig_user_group_desc, $form->generate_select_box('originalusergroup[]', $options, $mybb->input['originalusergroup'], array('id' => 'originalusergroup', 'multiple' => TRUE, 'size' => 5)), 'originalusergroup');
 
 	unset($options['*']); // Remove the all usergroups option
 	$form_container->output_row($lang->new_user_group." <em>*</em>", $lang->new_user_group_desc, $form->generate_select_box('newusergroup', $options, $mybb->input['newusergroup'], array('id' => 'newusergroup')), 'newusergroup');
@@ -394,9 +394,9 @@ if($mybb->input['action'] == "edit")
 
 	$form_container->output_row($lang->user_group_change_type." <em>*</em>", $lang->user_group_change_type_desc, $form->generate_select_box('usergroupchangetype', $options, $mybb->input['usergroupchangetype'], array('id' => 'usergroupchangetype')), 'usergroupchangetype');
 
-	$form_container->output_row($lang->enabled." <em>*</em>", "", $form->generate_yes_no_radio("enabled", $mybb->input['enabled'], true));
+	$form_container->output_row($lang->enabled." <em>*</em>", "", $form->generate_yes_no_radio("enabled", $mybb->input['enabled'], TRUE));
 
-	$form_container->output_row($lang->enable_logging." <em>*</em>", "", $form->generate_yes_no_radio("logging", $mybb->input['logging'], true));
+	$form_container->output_row($lang->enable_logging." <em>*</em>", "", $form->generate_yes_no_radio("logging", $mybb->input['logging'], TRUE));
 	$form_container->end();
 
 	$buttons[] = $form->generate_submit_button($lang->update_promotion);
@@ -567,7 +567,7 @@ if($mybb->input['action'] == "add")
 		"timeonline" => $lang->time_online
 	);
 
-	$form_container->output_row($lang->promo_requirements." <em>*</em>", $lang->promo_requirements_desc, $form->generate_select_box('requirements[]', $options, $mybb->get_input('requirements', MyBB::INPUT_ARRAY), array('id' => 'requirements', 'multiple' => true, 'size' => 5)), 'requirements');
+	$form_container->output_row($lang->promo_requirements." <em>*</em>", $lang->promo_requirements_desc, $form->generate_select_box('requirements[]', $options, $mybb->get_input('requirements', MyBB::INPUT_ARRAY), array('id' => 'requirements', 'multiple' => TRUE, 'size' => 5)), 'requirements');
 
 	$options_type = array(
 		">" => $lang->greater_than,
@@ -606,7 +606,7 @@ if($mybb->input['action'] == "add")
 		$options[(int)$usergroup['gid']] = htmlspecialchars_uni($usergroup['title']);
 	}
 
-	$form_container->output_row($lang->orig_user_group." <em>*</em>", $lang->orig_user_group_desc, $form->generate_select_box('originalusergroup[]', $options, $mybb->get_input('originalusergroup', MyBB::INPUT_ARRAY), array('id' => 'originalusergroup', 'multiple' => true, 'size' => 5)), 'originalusergroup');
+	$form_container->output_row($lang->orig_user_group." <em>*</em>", $lang->orig_user_group_desc, $form->generate_select_box('originalusergroup[]', $options, $mybb->get_input('originalusergroup', MyBB::INPUT_ARRAY), array('id' => 'originalusergroup', 'multiple' => TRUE, 'size' => 5)), 'originalusergroup');
 
 	unset($options['*']);
 	$form_container->output_row($lang->new_user_group." <em>*</em>", $lang->new_user_group_desc, $form->generate_select_box('newusergroup', $options, $mybb->get_input('newusergroup'), array('id' => 'newusergroup')), 'newusergroup');
@@ -618,9 +618,9 @@ if($mybb->input['action'] == "add")
 
 	$form_container->output_row($lang->user_group_change_type." <em>*</em>", $lang->user_group_change_type_desc, $form->generate_select_box('usergroupchangetype', $options, $mybb->get_input('usergroupchangetype'), array('id' => 'usergroupchangetype')), 'usergroupchangetype');
 
-	$form_container->output_row($lang->enabled." <em>*</em>", "", $form->generate_yes_no_radio("enabled", $mybb->get_input('enabled'), true));
+	$form_container->output_row($lang->enabled." <em>*</em>", "", $form->generate_yes_no_radio("enabled", $mybb->get_input('enabled'), TRUE));
 
-	$form_container->output_row($lang->enable_logging." <em>*</em>", "", $form->generate_yes_no_radio("logging", $mybb->get_input('logging'), true));
+	$form_container->output_row($lang->enable_logging." <em>*</em>", "", $form->generate_yes_no_radio("logging", $mybb->get_input('logging'), TRUE));
 	$form_container->end();
 
 	$buttons[] = $form->generate_submit_button($lang->update_promotion);

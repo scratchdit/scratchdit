@@ -216,7 +216,7 @@ if($mybb->input['action'] == "add")
 		"5" => $lang->friday,
 		"6" => $lang->saturday
 	);
-	$form_container->output_row($lang->time_weekdays, $lang->time_weekdays_desc, $form->generate_select_box('weekday[]', $options, $mybb->input['weekday'], array('id' => 'weekday', 'multiple' => true, 'size' => 8)), 'weekday');
+	$form_container->output_row($lang->time_weekdays, $lang->time_weekdays_desc, $form->generate_select_box('weekday[]', $options, $mybb->input['weekday'], array('id' => 'weekday', 'multiple' => TRUE, 'size' => 8)), 'weekday');
 
 	$options = array(
 		"*" => $lang->every_month,
@@ -233,11 +233,11 @@ if($mybb->input['action'] == "add")
 		"11" => $lang->november,
 		"12" => $lang->december
 	);
-	$form_container->output_row($lang->time_months, $lang->time_months_desc, $form->generate_select_box('month[]', $options, $mybb->get_input('month', MyBB::INPUT_ARRAY), array('id' => 'month', 'multiple' => true, 'size' => 13)), 'month');
+	$form_container->output_row($lang->time_months, $lang->time_months_desc, $form->generate_select_box('month[]', $options, $mybb->get_input('month', MyBB::INPUT_ARRAY), array('id' => 'month', 'multiple' => TRUE, 'size' => 13)), 'month');
 
-	$form_container->output_row($lang->enable_logging." <em>*</em>", "", $form->generate_yes_no_radio("logging", $mybb->get_input('logging'), true));
+	$form_container->output_row($lang->enable_logging." <em>*</em>", "", $form->generate_yes_no_radio("logging", $mybb->get_input('logging'), TRUE));
 
-	$form_container->output_row($lang->enabled." <em>*</em>", "", $form->generate_yes_no_radio("enabled", $mybb->get_input('enabled'), true));
+	$form_container->output_row($lang->enabled." <em>*</em>", "", $form->generate_yes_no_radio("enabled", $mybb->get_input('enabled'), TRUE));
 	$form_container->end();
 
 	$buttons[] = $form->generate_submit_button($lang->save_task);
@@ -326,7 +326,7 @@ if($mybb->input['action'] == "edit")
 			if(($task['file'] == "backupdb" || $task['file'] == "checktables") && $task['enabled'] == 0 && $mybb->input['enabled'] == 1)
 			{
 				$mybb->input['enabled'] = 0;
-				$enable_confirmation = true;
+				$enable_confirmation = TRUE;
 			}
 
 			$updated_task = array(
@@ -355,7 +355,7 @@ if($mybb->input['action'] == "edit")
 
 			flash_message($lang->success_task_updated, 'success');
 
-			if($enable_confirmation == true)
+			if($enable_confirmation == TRUE)
 			{
 				admin_redirect("index.php?module=tools-tasks&amp;action=enable&amp;tid={$task['tid']}&amp;my_post_key={$mybb->post_code}");
 			}
@@ -421,7 +421,7 @@ if($mybb->input['action'] == "edit")
 		"5" => $lang->friday,
 		"6" => $lang->saturday
 	);
-	$form_container->output_row($lang->time_weekdays, $lang->time_weekdays_desc, $form->generate_select_box('weekday[]', $options, $task_data['weekday'], array('id' => 'weekday', 'multiple' => true)), 'weekday');
+	$form_container->output_row($lang->time_weekdays, $lang->time_weekdays_desc, $form->generate_select_box('weekday[]', $options, $task_data['weekday'], array('id' => 'weekday', 'multiple' => TRUE)), 'weekday');
 
 	$options = array(
 		"*" => $lang->every_month,
@@ -438,11 +438,11 @@ if($mybb->input['action'] == "edit")
 		"11" => $lang->november,
 		"12" => $lang->december
 	);
-	$form_container->output_row($lang->time_months, $lang->time_months_desc, $form->generate_select_box('month[]', $options, $task_data['month'], array('id' => 'month', 'multiple' => true)), 'month');
+	$form_container->output_row($lang->time_months, $lang->time_months_desc, $form->generate_select_box('month[]', $options, $task_data['month'], array('id' => 'month', 'multiple' => TRUE)), 'month');
 
-	$form_container->output_row($lang->enable_logging." <em>*</em>", "", $form->generate_yes_no_radio("logging", $task_data['logging'], true));
+	$form_container->output_row($lang->enable_logging." <em>*</em>", "", $form->generate_yes_no_radio("logging", $task_data['logging'], TRUE));
 
-	$form_container->output_row($lang->enabled." <em>*</em>", "", $form->generate_yes_no_radio("enabled", $task_data['enabled'], true));
+	$form_container->output_row($lang->enabled." <em>*</em>", "", $form->generate_yes_no_radio("enabled", $task_data['enabled'], TRUE));
 	$form_container->end();
 
 	$buttons[] = $form->generate_submit_button($lang->save_task);
@@ -594,7 +594,7 @@ if($mybb->input['action'] == "run")
 		admin_redirect("index.php?module=tools-tasks");
 	}
 
-	ignore_user_abort(true);
+	ignore_user_abort(TRUE);
 	@set_time_limit(0);
 
 	$plugins->run_hooks("admin_tools_tasks_run");

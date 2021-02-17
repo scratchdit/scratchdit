@@ -241,7 +241,7 @@ function build_server_stats($is_install=1, $prev_version='', $current_version=''
 	$return['info_sent_success'] = false;
 	if(fetch_remote_file($server_stats_url) !== false)
 	{
-		$return['info_sent_success'] = true;
+		$return['info_sent_success'] = TRUE;
 	}
 	$return['info_image'] = "<img src='".$server_stats_url."&amp;img=1' />";
 	$return['info_get_string'] = $string;

@@ -63,7 +63,7 @@ if(!$mybb->input['action'])
 		{
 			if(action == 'select')
 			{
-				select_box[i].selected = true;
+				select_box[i].selected = TRUE;
 			}
 			else if(action == 'deselect')
 			{
@@ -76,7 +76,7 @@ if(!$mybb->input['action'])
 				var subString = row.substring(prefix.length, 0);
 				if(subString == prefix)
 				{
-					select_box[i].selected = true;
+					select_box[i].selected = TRUE;
 				}
 			}
 		}
@@ -97,7 +97,7 @@ if(!$mybb->input['action'])
 
 	$form = new Form("index.php?module=tools-optimizedb", "post", "table_selection", 0, "table_selection");
 
-	$table->construct_cell("{$lang->tables_select_desc}\n<br /><br />\n<a href=\"javascript:changeSelection('select', 0);\">{$lang->select_all}</a><br />\n<a href=\"javascript:changeSelection('deselect', 0);\">{$lang->deselect_all}</a><br />\n<a href=\"javascript:changeSelection('forum', '".TABLE_PREFIX."');\">{$lang->select_forum_tables}</a>\n<br /><br />\n<div class=\"form_row\">".$form->generate_select_box("tables[]", $table_selects, false, array('multiple' => true, 'id' => 'table_select', 'size' => 20))."</div>", array('rowspan' => 5, 'width' => '50%'));
+	$table->construct_cell("{$lang->tables_select_desc}\n<br /><br />\n<a href=\"javascript:changeSelection('select', 0);\">{$lang->select_all}</a><br />\n<a href=\"javascript:changeSelection('deselect', 0);\">{$lang->deselect_all}</a><br />\n<a href=\"javascript:changeSelection('forum', '".TABLE_PREFIX."');\">{$lang->select_forum_tables}</a>\n<br /><br />\n<div class=\"form_row\">".$form->generate_select_box("tables[]", $table_selects, false, array('multiple' => TRUE, 'id' => 'table_select', 'size' => 20))."</div>", array('rowspan' => 5, 'width' => '50%'));
 	$table->construct_row();
 
 	$table->output($lang->optimize_database);

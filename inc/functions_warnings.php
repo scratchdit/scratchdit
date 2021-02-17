@@ -37,7 +37,7 @@ function find_warnlevels_to_check($query, &$max_expiration_times, &$check_levels
 			continue;
 		}
 
-		$check_levels[$action['type']] = true;
+		$check_levels[$action['type']] = TRUE;
 
 		$max_exp_time = &$max_expiration_times[$action['type']];
 		if($action['length'] && $max_exp_time != 0)

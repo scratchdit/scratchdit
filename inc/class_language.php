@@ -71,7 +71,7 @@ class MyLanguage
 		$language = preg_replace("#[^a-z0-9\-_]#i", "", $language);
 		if(file_exists($this->path."/".$language.".php"))
 		{
-			return true;
+			return TRUE;
 		}
 		else
 		{
@@ -145,7 +145,7 @@ class MyLanguage
 		$language = $this->language;
 		$fallback = $this->fallback;
 
-		if($forceuserarea === true)
+		if($forceuserarea === TRUE)
 		{
 			$language = str_replace('/admin', '', $language);
 			$fallback = str_replace('/admin', '', $fallback);
@@ -164,7 +164,7 @@ class MyLanguage
 		}
 		else
 		{
-			if($supress_error != true)
+			if($supress_error != TRUE)
 			{
 				die("$lfile does not exist");
 			}
@@ -206,7 +206,7 @@ class MyLanguage
 	/**
 	 * Get the language variables for a section.
 	 *
-	 * @param boolean $admin Admin variables when true, user when false.
+	 * @param boolean $admin Admin variables when TRUE, user when false.
 	 * @return array The language variables.
 	 */
 	function get_languages($admin=false)

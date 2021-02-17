@@ -12,7 +12,7 @@ var Post = {
 		if(use_xmlhttprequest == 1)
 		{
 			tid = document.input.tid.value;
-			
+
 			$.ajax(
 			{
 				url: 'xmlhttp.php?action=get_multiquoted&tid='+tid,
@@ -22,12 +22,12 @@ var Post = {
 					Post.multiQuotedLoaded(request, status);
 				}
 			});
-			
+
 			return false;
 		}
 		else
 		{
-			return true;
+			return TRUE;
 		}
 	},
 
@@ -44,12 +44,12 @@ var Post = {
 					Post.multiQuotedLoaded(request, status);
 				}
 			});
-			
+
 			return false;
 		}
 		else
 		{
-			return true;
+			return TRUE;
 		}
 	},
 
@@ -81,30 +81,30 @@ var Post = {
 			}
 			$('#' + id).val($('#' + id).val() + json.message);
 		}
-		
+
 		$('#multiquote_unloaded').hide();
 		document.input.quoted_ids.value = 'all';
 	},
-	
+
 	clearMultiQuoted: function()
 	{
 		$('#multiquote_unloaded').hide();
 		Cookie.unset('multiquote');
 	},
-	
+
 	removeAttachment: function(aid)
 	{
 		MyBB.prompt(removeattach_confirm, {
 			buttons:[
-					{title: yes_confirm, value: true},
+					{title: yes_confirm, value: TRUE},
 					{title: no_confirm, value: false}
 			],
 			submit: function(e,v,m,f){
-				if(v == true)
+				if(v == TRUE)
 				{
 					document.input.attachmentaid.value = aid;
 					document.input.attachmentact.value = "remove";
-					
+
 					var form = $('input[name^=\'rem\']').parents('form');
 
 					if(use_xmlhttprequest != 1)
@@ -129,8 +129,8 @@ var Post = {
 							}
 							else if (data.success)
 							{
-								if($('[id^=attachment_]').length == 1){ 
-									$('input[name="updateattachment"]').hide(); 
+								if($('[id^=attachment_]').length == 1){
+									$('input[name="updateattachment"]').hide();
 								}
 
 								$('#attachment_'+aid).hide(500, function()
@@ -157,7 +157,7 @@ var Post = {
 				}
 			}
 		});
-		
+
 		return false;
 	},
 
@@ -178,7 +178,7 @@ var Post = {
 		var file = files.get(0);
 		if (!file)
 		{
-			return true;
+			return TRUE;
 		}
 
 		if (file.files.length > php_max_file_uploads && php_max_file_uploads != 0)
@@ -205,7 +205,7 @@ var Post = {
 			return false;
 		}
 
-		return true;
+		return TRUE;
 	}
 };
 

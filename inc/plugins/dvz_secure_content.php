@@ -417,14 +417,14 @@ class dvz_sc
     {
         global $mybb, $lang;
 
-        self::$showPluginTools = true;
+        self::$showPluginTools = TRUE;
 
         $lang->load('dvz_secure_content');
 
         $tasks = [
             'embed_templates' => [
                 'controller' => function () {
-                    self::replace_embed_templates(true);
+                    self::replace_embed_templates(TRUE);
                 },
             ],
             'embed_templates_revert' => [
@@ -477,7 +477,7 @@ class dvz_sc
         ];
 
         return array_merge($peekers, [
-            'new Peeker($(".setting_dvz_sc_proxy"), $("#row_setting_' . implode($peekerSettings, ', #row_setting_') . '"), 1, true);',
+            'new Peeker($(".setting_dvz_sc_proxy"), $("#row_setting_' . implode($peekerSettings, ', #row_setting_') . '"), 1, TRUE);',
         ]);
     }
 
@@ -496,7 +496,7 @@ class dvz_sc
                         '<iframe src="http://www.metacafe.com/embed/{$id}/" width="440" height="248" allowFullScreen frameborder=0></iframe>',
                         '<a href="http://www.metacafe.com/fplayer/{$id}/{$title}.swf">[metacafe.com/...]</a>',
                     ];
-                    $skipMatching = true;
+                    $skipMatching = TRUE;
                     break;
 
                 // set embeds protocol-relative
@@ -688,7 +688,7 @@ class dvz_sc
             }
 
             if ($templatesFound == count(self::$videoEmbedServices) * $numTemplatesetsInUse) {
-                return true;
+                return TRUE;
             }
         }
 
@@ -708,17 +708,17 @@ class dvz_sc
             (
                 (
                     $type === self::RESOURCE_AVATAR &&
-                    self::settings('block_insecure_avatars') == true
+                    self::settings('block_insecure_avatars') == TRUE
                 ) ||
                 (
                     $type === self::RESOURCE_MYCODE_IMAGE &&
-                    self::settings('filter_insecure_images') == true
+                    self::settings('filter_insecure_images') == TRUE
                 )
             )
         ) {
             return self::POLICY_BLOCK;
         } elseif (
-            self::settings('proxy') == true &&
+            self::settings('proxy') == TRUE &&
             (
                 (
                     $type == self::RESOURCE_AVATAR &&
@@ -768,7 +768,7 @@ class dvz_sc
         } else {
             foreach ($exceptions as $exceptionHost) {
                 if ($urlHost === $exceptionHost) {
-                    return true;
+                    return TRUE;
                 }
             }
 

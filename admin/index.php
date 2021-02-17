@@ -40,7 +40,7 @@ require_once MYBB_ADMIN_DIR."inc/functions.php";
 require_once MYBB_ROOT."inc/functions_user.php";
 
 // Set cookie path to our admin dir temporarily, i.e. so that it affects the ACP only
-$loc = get_current_location('', '', true);
+$loc = get_current_location('', '', TRUE);
 $mybb->settings['cookiepath'] = substr($loc, 0, strrpos($loc, "/{$config['admin_dir']}/"))."/{$config['admin_dir']}/";
 
 if(!isset($cp_language))
@@ -50,7 +50,7 @@ if(!isset($cp_language))
 
 // Load global language phrases
 $lang->load("global");
-$lang->load("messages", true);
+$lang->load("messages", TRUE);
 
 if(function_exists('mb_internal_encoding') && !empty($lang->settings['charset']))
 {
@@ -87,7 +87,7 @@ $default_page = new DefaultPage;
 
 $logged_out = false;
 $fail_check = 0;
-$post_verify = true;
+$post_verify = TRUE;
 
 foreach(array('action', 'do', 'module') as $input)
 {
@@ -191,10 +191,10 @@ elseif($mybb->input['do'] == "login")
 
 		if($login_user['uid'] > 0)
 		{
-			$db->update_query("adminoptions", array("loginattempts" => "loginattempts+1"), "uid='".(int)$login_user['uid']."'", '', true);
+			$db->update_query("adminoptions", array("loginattempts" => "loginattempts+1"), "uid='".(int)$login_user['uid']."'", '', TRUE);
 		}
 
-		$loginattempts = login_attempt_check_acp($login_user['uid'], true);
+		$loginattempts = login_attempt_check_acp($login_user['uid'], TRUE);
 
 		// Have we attempted too many times?
 		if($loginattempts !== false && $loginattempts['loginattempts'] > 0)
@@ -242,14 +242,14 @@ elseif($mybb->input['do'] == "login")
 		'password' => $mybb->input['password']
 	));
 
-	if($loginhandler->validate_login() == true)
+	if($loginhandler->validate_login() == TRUE)
 	{
 		$mybb->user = get_user($loginhandler->login_data['uid']);
 	}
 
 	if(!empty($mybb->user['uid']))
 	{
-		if(login_attempt_check_acp($mybb->user['uid']) == true)
+		if(login_attempt_check_acp($mybb->user['uid']) == TRUE)
 		{
 			log_admin_action(array(
 					'type' => 'admin_locked_out',
@@ -296,7 +296,7 @@ elseif($mybb->input['do'] == "login")
 			$db->update_query("adminoptions", array("loginattempts" => 0, "loginlockoutexpiry" => 0), "uid='{$mybb->user['uid']}'");
 		}
 
-		my_setcookie("adminsid", $sid, '', true, "lax");
+		my_setcookie("adminsid", $sid, '', TRUE, "lax");
 		my_setcookie('acploginattempts', 0);
 		$post_verify = false;
 
@@ -345,8 +345,8 @@ elseif($mybb->input['do'] == "login")
 		$loginattempts = false;
 		if(!empty($login_user['uid']) && $login_user['uid'] > 0)
 		{
-			$db->update_query("adminoptions", array("loginattempts" => "loginattempts+1"), "uid='".(int)$login_user['uid']."'", '', true);
-			$loginattempts = login_attempt_check_acp($login_user['uid'], true);
+			$db->update_query("adminoptions", array("loginattempts" => "loginattempts+1"), "uid='".(int)$login_user['uid']."'", '', TRUE);
+			$loginattempts = login_attempt_check_acp($login_user['uid'], TRUE);
 		}
 
 		// Have we attempted too many times?
@@ -444,7 +444,7 @@ else
 						}
 						if($matches == ADMIN_IP_SEGMENTS)
 						{
-							$valid_ip = true;
+							$valid_ip = TRUE;
 							break;
 						}
 					}
@@ -476,7 +476,7 @@ else
 						}
 						if($matches == ADMIN_IPV6_SEGMENTS)
 						{
-							$valid_ip = true;
+							$valid_ip = TRUE;
 							break;
 						}
 					}
@@ -501,7 +501,7 @@ if($mybb->input['action'] == "logout" && $mybb->user)
 	{
 		$db->delete_query("adminsessions", "sid='".$db->escape_string($mybb->cookies['adminsid'])."'");
 		my_unsetcookie('adminsid');
-		$logged_out = true;
+		$logged_out = TRUE;
 	}
 }
 
@@ -546,7 +546,7 @@ if(!empty($mybb->user['uid']))
 			$cp_language = $admin_options['cplanguage'];
 			$lang->set_language($cp_language, "admin");
 			$lang->load("global"); // Reload global language vars
-			$lang->load("messages", true);
+			$lang->load("messages", TRUE);
 		}
 
 		if(!empty($admin_options['cpstyle']) && file_exists(MYBB_ADMIN_DIR."/styles/{$admin_options['cpstyle']}/main.css"))
@@ -593,9 +593,9 @@ $page = new Page;
 $page->style = $cp_style;
 
 // Do not have a valid Admin user, throw back to login page.
-if(!isset($mybb->user['uid']) || $logged_out == true)
+if(!isset($mybb->user['uid']) || $logged_out == TRUE)
 {
-	if($logged_out == true)
+	if($logged_out == TRUE)
 	{
 		$page->show_login($lang->success_logged_out);
 	}
@@ -624,7 +624,7 @@ if($mybb->input['do'] == "do_2fa" && $mybb->request_method == "post")
 	$codes = my_unserialize($admin_options['recovery_codes']);
 	if(!empty($codes) && in_array($mybb->get_input('code'), $codes))
 	{
-		$recovery = true;
+		$recovery = TRUE;
 		$ncodes = array_diff($codes, array($mybb->input['code'])); // Removes our current code from the codes array
 		$db->update_query("adminoptions", array("recovery_codes" => $db->escape_string(my_serialize($ncodes))), "uid='{$mybb->user['uid']}'");
 
@@ -641,7 +641,7 @@ if($mybb->input['do'] == "do_2fa" && $mybb->request_method == "post")
 	$test = $auth->verifyCode($admin_options['authsecret'], $mybb->get_input('code'));
 
 	// Either the code was okay or it was a recovery code
-	if($test === true || $recovery === true)
+	if($test === TRUE || $recovery === TRUE)
 	{
 		// Correct code -> session authenticated
 		$db->update_query("adminsessions", array("authenticated" => 1), "sid='".$db->escape_string($mybb->cookies['adminsid'])."'");
@@ -657,9 +657,9 @@ if($mybb->input['do'] == "do_2fa" && $mybb->request_method == "post")
 		my_unsetcookie('adminsid');
 
 		// Now test whether we need to lock this guy completly
-		$db->update_query("adminoptions", array("loginattempts" => "loginattempts+1"), "uid='{$mybb->user['uid']}'", '', true);
+		$db->update_query("adminoptions", array("loginattempts" => "loginattempts+1"), "uid='{$mybb->user['uid']}'", '', TRUE);
 
-		$loginattempts = login_attempt_check_acp($mybb->user['uid'], true);
+		$loginattempts = login_attempt_check_acp($mybb->user['uid'], TRUE);
 
 		// Have we attempted too many times?
 		if($loginattempts !== false && $loginattempts['loginattempts'] > 0)
@@ -720,28 +720,28 @@ while(($module = readdir($dir)) !== false)
 		require_once $modules_dir."/".$module."/module_meta.php";
 
 		// Need to always load it for admin permissions / quick access
-		$lang->load($module."_module_meta", false, true);
+		$lang->load($module."_module_meta", false, TRUE);
 
 		$has_permission = false;
 		if(function_exists($module."_admin_permissions"))
 		{
-			if(isset($mybb->admin['permissions'][$module]) || $is_super_admin == true)
+			if(isset($mybb->admin['permissions'][$module]) || $is_super_admin == TRUE)
 			{
-				$has_permission = true;
+				$has_permission = TRUE;
 			}
 		}
 		// This module doesn't support permissions
 		else
 		{
-			$has_permission = true;
+			$has_permission = TRUE;
 		}
 
 		// Do we have permissions to run this module (Note: home is accessible by all)
-		if($module == "home" || $has_permission == true)
+		if($module == "home" || $has_permission == TRUE)
 		{
 			$meta_function = $module."_meta";
 			$initialized = $meta_function();
-			if($initialized == true)
+			if($initialized == TRUE)
 			{
 				$modules[$module] = 1;
 			}
@@ -807,18 +807,18 @@ if($mybb->request_method == "post")
 		}
 	}
 
-	if($post_verify == true)
+	if($post_verify == TRUE)
 	{
 		// If the post key does not match we switch the action to GET and set a message to show the user
-		if(!verify_post_check($mybb->input['my_post_key'], true))
+		if(!verify_post_check($mybb->input['my_post_key'], TRUE))
 		{
 			$mybb->request_method = "get";
-			$page->show_post_verify_error = true;
+			$page->show_post_verify_error = TRUE;
 		}
 	}
 }
 
-$lang->load("{$run_module}_{$page->active_action}", false, true);
+$lang->load("{$run_module}_{$page->active_action}", false, TRUE);
 
 $plugins->run_hooks("admin_load");
 

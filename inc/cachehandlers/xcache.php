@@ -46,7 +46,7 @@ class xcacheCacheHandler implements CacheHandlerInterface
 		// Set a unique identifier for all queries in case other forums on this server also use this cache handler
 		$this->unique_id = md5(MYBB_ROOT);
 
-		return true;
+		return TRUE;
 	}
 
 	/**
@@ -94,7 +94,7 @@ class xcacheCacheHandler implements CacheHandlerInterface
 	 */
 	function disconnect()
 	{
-		return true;
+		return TRUE;
 	}
 
 	/**

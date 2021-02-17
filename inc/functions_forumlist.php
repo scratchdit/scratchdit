@@ -70,12 +70,12 @@ function build_forumbits($pid=0, $depth=1)
 			// Hide post info if user cannot view forum or cannot view threads
 			if($permissions['canview'] != 1 || (isset($permissions['canviewthreads']) && $permissions['canviewthreads'] != 1))
 			{
-				$hideinfo = true;
+				$hideinfo = TRUE;
 			}
 
 			if(isset($permissions['canonlyviewownthreads']) && $permissions['canonlyviewownthreads'] == 1)
 			{
-				$hidecounters = true;
+				$hidecounters = TRUE;
 
 				// If we only see our own threads, find out if there's a new post in one of them so the lightbulb shows
 				if(!is_array($private_forums))
@@ -145,9 +145,9 @@ function build_forumbits($pid=0, $depth=1)
 			}
 
 			// This forum has a password, and the user isn't authenticated with it - hide post information
-			if(!forum_password_validated($forum, true))
+			if(!forum_password_validated($forum, TRUE))
 			{
-				$hideinfo = true;
+				$hideinfo = TRUE;
 				$showlockicon = 1;
 			}
 
@@ -189,7 +189,7 @@ function build_forumbits($pid=0, $depth=1)
 			}
 
 			// If we are hiding information (lastpost) because we aren't authenticated against the password for this forum, remove them
-			if($hideinfo == true || $hidelastpostinfo == true)
+			if($hideinfo == TRUE || $hidelastpostinfo == TRUE)
 			{
 				// Used later for get_forum_lightbulb function call - Setting to 0 prevents the bulb from being lit up
 				// If hiding info or hiding lastpost info no "unread" posts indication should be shown to the user.
@@ -200,7 +200,7 @@ function build_forumbits($pid=0, $depth=1)
 			}
 
 			// If the current forums lastpost is greater than other child forums of the current parent and forum info isn't hidden, overwrite it
-			if((!isset($parent_lastpost) || $lastpost_data['lastpost'] > $parent_lastpost['lastpost']) && $hideinfo != true)
+			if((!isset($parent_lastpost) || $lastpost_data['lastpost'] > $parent_lastpost['lastpost']) && $hideinfo != TRUE)
 			{
 				$parent_lastpost = $lastpost_data;
 			}
@@ -211,7 +211,7 @@ function build_forumbits($pid=0, $depth=1)
 			}
 
 			// Increment the counters for the parent forum (returned later)
-			if($hideinfo != true && $hidecounters != true)
+			if($hideinfo != TRUE && $hidecounters != TRUE)
 			{
 				$parent_counters['threads'] += $forum['threads'];
 				$parent_counters['posts'] += $forum['posts'];
@@ -236,7 +236,7 @@ function build_forumbits($pid=0, $depth=1)
 			// Fetch the number of unapproved threads and posts for this forum
 			$unapproved = get_forum_unapproved($forum);
 
-			if($hideinfo == true)
+			if($hideinfo == TRUE)
 			{
 				unset($unapproved);
 			}
@@ -297,11 +297,11 @@ function build_forumbits($pid=0, $depth=1)
 			if($forum['linkto'] == '')
 			{
 				// No posts have been made in this forum - show never text
-				if($lastpost_data['lastpost'] == 0 && $hideinfo != true)
+				if($lastpost_data['lastpost'] == 0 && $hideinfo != TRUE)
 				{
 					eval("\$lastpost = \"".$templates->get("forumbit_depth2_forum_lastpost_never")."\";");
 				}
-				elseif($hideinfo != true)
+				elseif($hideinfo != TRUE)
 				{
 					// Format lastpost date and time
 					$lastpost_date = my_date('relative', $lastpost_data['lastpost']);
@@ -340,7 +340,7 @@ function build_forumbits($pid=0, $depth=1)
 				}
 			}
 			// If this forum is a link or is password protected and the user isn't authenticated, set counters to "-"
-			if($forum['linkto'] != '' || $hideinfo == true || $hidecounters == true)
+			if($forum['linkto'] != '' || $hideinfo == TRUE || $hidecounters == TRUE)
 			{
 				$posts = "-";
 				$threads = "-";
@@ -353,7 +353,7 @@ function build_forumbits($pid=0, $depth=1)
 			}
 
 			// If this forum is a link or is password protected and the user isn't authenticated, set lastpost to "-"
-			if($forum['linkto'] != '' || $hideinfo == true || $hidelastpostinfo == true)
+			if($forum['linkto'] != '' || $hideinfo == TRUE || $hidelastpostinfo == TRUE)
 			{
 				eval("\$lastpost = \"".$templates->get("forumbit_depth2_forum_lastpost_hidden")."\";");
 			}

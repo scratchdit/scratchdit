@@ -170,7 +170,7 @@ function import_theme_xml($xml, $options=array())
 		{
 			if(check_template($template['value']))
 			{
-				$security_check = true;
+				$security_check = TRUE;
 				break;
 			}
 
@@ -183,7 +183,7 @@ function import_theme_xml($xml, $options=array())
 			);
 		}
 
-		if($security_check == true)
+		if($security_check == TRUE)
 		{
 			return -4;
 		}
@@ -492,7 +492,7 @@ function resync_stylesheet($stylesheet)
 			}
 		}
 
-		return true;
+		return TRUE;
 	}
 
 	return false;
@@ -587,7 +587,7 @@ function build_new_theme($name, $properties=null, $parent=1)
 						$properties['inherited'][$property] = $parent;
 					}
 				}
-				$inherited_properties = true;
+				$inherited_properties = TRUE;
 			}
 		}
 
@@ -734,7 +734,7 @@ function get_selectors_as_options($css, $selected_item=null)
 			if($selected_item == $id || (!$selected_item && !$selected))
 			{
 				$select .= "<option value=\"{$id}\" selected=\"selected\">{$css_array['name']}</option>\n";
-				$selected = true;
+				$selected = TRUE;
 			}
 			else
 			{
@@ -951,7 +951,7 @@ function copy_stylesheet_to_theme($stylesheet, $tid)
  *
  * @return bool
  */
-function update_theme_stylesheet_list($tid, $theme = false, $update_disporders = true)
+function update_theme_stylesheet_list($tid, $theme = false, $update_disporders = TRUE)
 {
 	global $mybb, $db, $cache, $plugins;
 
@@ -1124,7 +1124,7 @@ function update_theme_stylesheet_list($tid, $theme = false, $update_disporders =
 
 	$cache->update_default_theme();
 
-	return true;
+	return TRUE;
 }
 
 /**

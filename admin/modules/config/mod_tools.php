@@ -485,7 +485,7 @@ if($mybb->input['action'] == "edit_thread_tool")
 
 		$('.'+id+'s_check').each(function(e, val)
 		{
-			if($(this).prop('checked') == true)
+			if($(this).prop('checked') == TRUE)
 			{
 				checked = $(this).val();
 			}
@@ -507,7 +507,7 @@ if($mybb->input['action'] == "edit_thread_tool")
 			<table cellpadding=\"4\">
 				<tr>
 					<td valign=\"top\"><small>{$lang->forums_colon}</small></td>
-					<td>".$form->generate_forum_select('forum_1_forums[]', $mybb->input['forum_1_forums'], array('multiple' => true, 'size' => 5))."</td>
+					<td>".$form->generate_forum_select('forum_1_forums[]', $mybb->input['forum_1_forums'], array('multiple' => TRUE, 'size' => 5))."</td>
 				</tr>
 			</table>
 		</dd>
@@ -524,7 +524,7 @@ if($mybb->input['action'] == "edit_thread_tool")
 			<table cellpadding=\"4\">
 				<tr>
 					<td valign=\"top\"><small>{$lang->groups_colon}</small></td>
-					<td>".$form->generate_group_select('group_1_groups[]', $mybb->input['group_1_groups'], array('multiple' => true, 'size' => 5))."</td>
+					<td>".$form->generate_group_select('group_1_groups[]', $mybb->input['group_1_groups'], array('multiple' => TRUE, 'size' => 5))."</td>
 				</tr>
 			</table>
 		</dd>
@@ -958,7 +958,7 @@ if($mybb->input['action'] == "add_thread_tool")
 
 		$('.'+id+'s_check').each(function(e, val)
 		{
-			if($(this).prop('checked') == true)
+			if($(this).prop('checked') == TRUE)
 			{
 				checked = $(this).val();
 			}
@@ -980,7 +980,7 @@ if($mybb->input['action'] == "add_thread_tool")
 			<table cellpadding=\"4\">
 				<tr>
 					<td valign=\"top\"><small>{$lang->forums_colon}</small></td>
-					<td>".$form->generate_forum_select('forum_1_forums[]', $mybb->input['forum_1_forums'], array('multiple' => true, 'size' => 5))."</td>
+					<td>".$form->generate_forum_select('forum_1_forums[]', $mybb->input['forum_1_forums'], array('multiple' => TRUE, 'size' => 5))."</td>
 				</tr>
 			</table>
 		</dd>
@@ -997,7 +997,7 @@ if($mybb->input['action'] == "add_thread_tool")
 			<table cellpadding=\"4\">
 				<tr>
 					<td valign=\"top\"><small>{$lang->groups_colon}</small></td>
-					<td>".$form->generate_group_select('group_1_groups[]', $mybb->input['group_1_groups'], array('multiple' => true, 'size' => 5))."</td>
+					<td>".$form->generate_group_select('group_1_groups[]', $mybb->input['group_1_groups'], array('multiple' => TRUE, 'size' => 5))."</td>
 				</tr>
 			</table>
 		</dd>
@@ -1537,7 +1537,7 @@ if($mybb->input['action'] == "edit_post_tool")
 
 		$('.'+id+'s_check').each(function(e, val)
 		{
-			if($(this).prop('checked') == true)
+			if($(this).prop('checked') == TRUE)
 			{
 				checked = $(this).val();
 			}
@@ -1559,7 +1559,7 @@ if($mybb->input['action'] == "edit_post_tool")
 			<table cellpadding=\"4\">
 				<tr>
 					<td valign=\"top\"><small>{$lang->forums_colon}</small></td>
-					<td>".$form->generate_forum_select('forum_1_forums[]', $mybb->input['forum_1_forums'], array('multiple' => true, 'size' => 5))."</td>
+					<td>".$form->generate_forum_select('forum_1_forums[]', $mybb->input['forum_1_forums'], array('multiple' => TRUE, 'size' => 5))."</td>
 				</tr>
 			</table>
 		</dd>
@@ -1576,7 +1576,7 @@ if($mybb->input['action'] == "edit_post_tool")
 			<table cellpadding=\"4\">
 				<tr>
 					<td valign=\"top\"><small>{$lang->groups_colon}</small></td>
-					<td>".$form->generate_group_select('group_1_groups[]', $mybb->input['group_1_groups'], array('multiple' => true, 'size' => 5))."</td>
+					<td>".$form->generate_group_select('group_1_groups[]', $mybb->input['group_1_groups'], array('multiple' => TRUE, 'size' => 5))."</td>
 				</tr>
 			</table>
 		</dd>
@@ -2105,7 +2105,7 @@ if($mybb->input['action'] == "add_post_tool")
 
 		$('.'+id+'s_check').each(function(e, val)
 		{
-			if($(this).prop('checked') == true)
+			if($(this).prop('checked') == TRUE)
 			{
 				checked = $(this).val();
 			}
@@ -2127,7 +2127,7 @@ if($mybb->input['action'] == "add_post_tool")
 			<table cellpadding=\"4\">
 				<tr>
 					<td valign=\"top\"><small>{$lang->forums_colon}</small></td>
-					<td>".$form->generate_forum_select('forum_1_forums[]', $mybb->input['forum_1_forums'], array('multiple' => true, 'size' => 5))."</td>
+					<td>".$form->generate_forum_select('forum_1_forums[]', $mybb->input['forum_1_forums'], array('multiple' => TRUE, 'size' => 5))."</td>
 				</tr>
 			</table>
 		</dd>
@@ -2144,7 +2144,7 @@ if($mybb->input['action'] == "add_post_tool")
 			<table cellpadding=\"4\">
 				<tr>
 					<td valign=\"top\"><small>{$lang->groups_colon}</small></td>
-					<td>".$form->generate_group_select('group_1_groups[]', $mybb->input['group_1_groups'], array('multiple' => true, 'size' => 5))."</td>
+					<td>".$form->generate_group_select('group_1_groups[]', $mybb->input['group_1_groups'], array('multiple' => TRUE, 'size' => 5))."</td>
 				</tr>
 			</table>
 		</dd>

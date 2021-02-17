@@ -102,7 +102,7 @@ class CustomModeration extends Moderation
 	 * @param array $post_options Moderation information
 	 * @param array $pids Post IDs
 	 *
-	 * @return boolean true
+	 * @return boolean TRUE
 	 */
 	function execute_post_moderation($tid, $post_options=array(), $pids=array())
 	{
@@ -139,8 +139,8 @@ class CustomModeration extends Moderation
 				{
 					$this->delete_thread($delete_tid);
 				}
-				// return true here so the code in execute() above knows to redirect to the forum
-				return true;
+				// return TRUE here so the code in execute() above knows to redirect to the forum
+				return TRUE;
 			}
 		}
 		else
@@ -259,7 +259,7 @@ class CustomModeration extends Moderation
 				}
 			}
 		}
-		return true;
+		return TRUE;
 	}
 
 	/**
@@ -267,7 +267,7 @@ class CustomModeration extends Moderation
 	 *
 	 * @param array $thread_options Moderation information
 	 * @param array Thread IDs. Only the first one will be used, but it needs to be an array
-	 * @return boolean true
+	 * @return boolean TRUE
 	 */
 	function execute_thread_moderation($thread_options=array(), $tids=array())
 	{
@@ -319,7 +319,7 @@ class CustomModeration extends Moderation
 
 			if($thread_options['removesubscriptions'] == 1) // Remove thread subscriptions
 			{
-				$this->remove_thread_subscriptions($tids, true);
+				$this->remove_thread_subscriptions($tids, TRUE);
 			}
 
 			if($thread_options['approvethread'] == 'approve') // Approve thread
@@ -492,6 +492,6 @@ class CustomModeration extends Moderation
 			}
 		}
 
-		return true;
+		return TRUE;
 	}
 }

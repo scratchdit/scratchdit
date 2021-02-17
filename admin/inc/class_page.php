@@ -185,7 +185,7 @@ lang.saved = \"{$lang->saved}\";
 			}
 		}
 
-		if($this->show_post_verify_error == true)
+		if($this->show_post_verify_error == TRUE)
 		{
 			$this->output_error($lang->invalid_post_verify_key);
 		}
@@ -196,7 +196,7 @@ lang.saved = \"{$lang->saved}\";
 	 *
 	 * @param bool $quit
 	 */
-	function output_footer($quit=true)
+	function output_footer($quit=TRUE)
 	{
 		global $mybb, $maintimer, $db, $lang, $plugins;
 
@@ -787,7 +787,7 @@ EOF;
 	 * @param boolean $observe_onload Whether or not to run the event onload or instantly
 	 * @param string $id The ID to use for the tabs for if you run multiple instances of the tabbing control in one html page
 	 */
-	function output_tab_control($tabs=array(), $observe_onload=true, $id="tabs")
+	function output_tab_control($tabs=array(), $observe_onload=TRUE, $id="tabs")
 	{
 		global $plugins;
 		$tabs = $plugins->run_hooks("admin_page_output_tab_control_start", $tabs);
@@ -923,7 +923,7 @@ EOF;
 			{
 				$emoticon = ",emoticon";
 			}
-			$emoticons_enabled = "true";
+			$emoticons_enabled = "TRUE";
 
 			if(!$smiliecount)
 			{
@@ -1048,7 +1048,7 @@ EOF;
 
 		if($mybb->user['sourceeditor'] == 1)
 		{
-			$sourcemode = "MyBBEditor.sourceMode(true);";
+			$sourcemode = "MyBBEditor.sourceMode(TRUE);";
 		}
 
 		return <<<EOF
@@ -1058,12 +1058,12 @@ var partialmode = {$mybb->settings['partialmode']},
 opt_editor = {
 	plugins: "undo",
 	format: "bbcode",
-	bbcodeTrim: true,
+	bbcodeTrim: TRUE,
 	style: "../jscripts/sceditor/styles/jquery.sceditor.mybb.css",
 	rtl: {$lang->settings['rtl']},
 	locale: "mybblang",
-	enablePasteFiltering: true,
-	autoUpdate: true,
+	enablePasteFiltering: TRUE,
+	autoUpdate: TRUE,
 	emoticonsEnabled: {$emoticons_enabled},
 	emoticons: {
 		// Emoticons to be included in the dropdown
@@ -1079,7 +1079,7 @@ opt_editor = {
 			{$hiddensmilies}
 		}
 	},
-	emoticonsCompat: true,
+	emoticonsCompat: TRUE,
 	toolbar: "{$basic1}{$align}{$font}{$size}{$color}{$removeformat}{$basic2}image,{$email}{$link}|video{$emoticon}|{$list}{$code}quote|maximize,source",
 };
 {$editor_language}

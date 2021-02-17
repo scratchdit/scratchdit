@@ -156,17 +156,17 @@ class errorHandler {
 		// Error reporting turned off (either globally or by @ before erroring statement)
 		if(error_reporting() == 0)
 		{
-			return true;
+			return TRUE;
 		}
 
 		if(in_array($type, $this->ignore_types))
 		{
-			return true;
+			return TRUE;
 		}
 
 		$file = str_replace(MYBB_ROOT, "", $file);
 
-		$this->has_errors = true;
+		$this->has_errors = TRUE;
 
 		// For some reason in the installer this setting is set to "<"
 		$accepted_error_types = array('both', 'error', 'warning', 'none');
@@ -187,7 +187,7 @@ class errorHandler {
 				$filestr = " - Line: $line - File: $file";
 			}
 
-			add_task_log($task, "{$this->error_types[$type]} - [$type] ".var_export($message, true)."{$filestr}");
+			add_task_log($task, "{$this->error_types[$type]} - [$type] ".var_export($message, TRUE)."{$filestr}");
 		}
 
 		// Saving error to log file.
@@ -239,7 +239,7 @@ class errorHandler {
 			}
 		}
 
-		return true;
+		return TRUE;
 	}
 
 	/**
@@ -275,16 +275,16 @@ class errorHandler {
 			{
 				@require_once MYBB_ROOT."inc/class_templates.php";
 				$templates = new templates;
-				$template_exists = true;
+				$template_exists = TRUE;
 			}
 		}
 		else
 		{
-			$template_exists = true;
+			$template_exists = TRUE;
 		}
 
 		$warning = '';
-		if($template_exists == true)
+		if($template_exists == TRUE)
 		{
 			eval("\$warning = \"".$templates->get("php_warnings")."\";");
 		}
@@ -406,7 +406,7 @@ class errorHandler {
 
 		@my_mail($mybb->settings['adminemail'], "MyBB error on {$mybb->settings['bbname']}", $message, $mybb->settings['adminemail']);
 
-		return true;
+		return TRUE;
 	}
 
 	/**
@@ -501,17 +501,17 @@ class errorHandler {
 							{
 								@require_once MYBB_ROOT."inc/class_parser.php";
 								$parser = new postParser;
-								$parser_exists = true;
+								$parser_exists = TRUE;
 							}
 						}
 						else
 						{
-							$parser_exists = true;
+							$parser_exists = TRUE;
 						}
 
 						if($parser_exists)
 						{
-							$code = $parser->mycode_parse_php($code, true);
+							$code = $parser->mycode_parse_php($code, TRUE);
 						}
 						else
 						{
@@ -543,7 +543,7 @@ class errorHandler {
 		$is_in_contact = defined('THIS_SCRIPT') && THIS_SCRIPT === 'contact.php';
 		if(!$is_in_contact && ($mybb->settings['contactlink'] == "contact.php" && $mybb->settings['contact'] == 1 && ($mybb->settings['contact_guests'] != 1 && $mybb->user['uid'] == 0 || $mybb->user['uid'] > 0)) || $mybb->settings['contactlink'] != "contact.php")
 		{
-			if(!my_validate_url($mybb->settings['contactlink'], true, true) && my_substr($mybb->settings['contactlink'], 0, 7) != 'mailto:')
+			if(!my_validate_url($mybb->settings['contactlink'], TRUE, TRUE) && my_substr($mybb->settings['contactlink'], 0, 7) != 'mailto:')
 			{
 				$mybb->settings['contactlink'] = $mybb->settings['bburl'].'/'.$mybb->settings['contactlink'];
 			}
@@ -668,7 +668,7 @@ EOF;
 	 *
 	 * @return string The generated backtrace
 	 */
-	function generate_backtrace($html=true, $strip=1)
+	function generate_backtrace($html=TRUE, $strip=1)
 	{
 		$backtrace = '';
 		if(function_exists("debug_backtrace"))

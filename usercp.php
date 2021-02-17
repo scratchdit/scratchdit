@@ -404,7 +404,7 @@ if($mybb->input['action'] == "profile")
 			continue;
 		}
 
-		$cfieldsshow = true;
+		$cfieldsshow = TRUE;
 
 		$lang_string = 'contact_field_'.$cfield;
 		$lang_string = $lang->{$lang_string};
@@ -1097,7 +1097,7 @@ if($mybb->input['action'] == "options")
 		eval("\$time_format_options .= \"".$templates->get("usercp_options_time_format")."\";");
 	}
 
-	$tzselect = build_timezone_select("timezoneoffset", $mybb->user['timezone'], true);
+	$tzselect = build_timezone_select("timezoneoffset", $mybb->user['timezone'], TRUE);
 
 	$pms_from_buddys = '';
 	if($mybb->settings['allowbuddyonly'] == 1)
@@ -1364,7 +1364,7 @@ if($mybb->input['action'] == "do_password" && $mybb->request_method == "post")
 		else
 		{
 			$userhandler->update_user();
-			my_setcookie("mybbuser", $mybb->user['uid']."_".$userhandler->data['loginkey'], null, true, "lax");
+			my_setcookie("mybbuser", $mybb->user['uid']."_".$userhandler->data['loginkey'], null, TRUE, "lax");
 
 			// Notify the user by email that their password has been changed
 			$mail_message = $lang->sprintf($lang->email_changepassword, $mybb->user['username'], $mybb->user['email'], $mybb->settings['bbname'], $mybb->settings['bburl']);
@@ -1517,7 +1517,7 @@ if($mybb->input['action'] == "subscriptions")
 
 	// Thread visiblity
 	$visible = "AND t.visible != 0";
-	if(is_moderator() == true)
+	if(is_moderator() == TRUE)
 	{
 		$visible = '';
 	}
@@ -1966,7 +1966,7 @@ if($mybb->input['action'] == "do_addsubscription" && $mybb->get_input('type') !=
 	$ismod = is_moderator($thread['fid']);
 
 	// Make sure we are looking at a real thread here.
-	if(($thread['visible'] != 1 && $ismod == false) || ($thread['visible'] > 1 && $ismod == true))
+	if(($thread['visible'] != 1 && $ismod == false) || ($thread['visible'] > 1 && $ismod == TRUE))
 	{
 		error($lang->error_invalidthread);
 	}
@@ -2055,7 +2055,7 @@ if($mybb->input['action'] == "addsubscription")
 		$ismod = is_moderator($thread['fid']);
 
 		// Make sure we are looking at a real thread here.
-		if(($thread['visible'] != 1 && $ismod == false) || ($thread['visible'] > 1 && $ismod == true))
+		if(($thread['visible'] != 1 && $ismod == false) || ($thread['visible'] > 1 && $ismod == TRUE))
 		{
 			error($lang->error_invalidthread);
 		}
@@ -2107,7 +2107,7 @@ if($mybb->input['action'] == "addsubscription")
 	}
 }
 
-if($mybb->input['action'] == "removesubscription" && ($mybb->request_method == "post" || verify_post_check($mybb->get_input('my_post_key'), true)))
+if($mybb->input['action'] == "removesubscription" && ($mybb->request_method == "post" || verify_post_check($mybb->get_input('my_post_key'), TRUE)))
 {
 	// Verify incoming POST request
 	verify_post_check($mybb->get_input('my_post_key'));
@@ -2149,7 +2149,7 @@ if($mybb->input['action'] == "removesubscription" && ($mybb->request_method == "
 		$ismod = is_moderator($thread['fid']);
 
 		// Make sure we are looking at a real thread here.
-		if(($thread['visible'] != 1 && $ismod == false) || ($thread['visible'] > 1 && $ismod == true))
+		if(($thread['visible'] != 1 && $ismod == false) || ($thread['visible'] > 1 && $ismod == TRUE))
 		{
 			error($lang->error_invalidthread);
 		}
@@ -2218,7 +2218,7 @@ if($mybb->input['action'] == "removesubscription")
 		$ismod = is_moderator($thread['fid']);
 
 		// Make sure we are looking at a real thread here.
-		if(($thread['visible'] != 1 && $ismod == false) || ($thread['visible'] > 1 && $ismod == true))
+		if(($thread['visible'] != 1 && $ismod == false) || ($thread['visible'] > 1 && $ismod == TRUE))
 		{
 			error($lang->error_invalidthread);
 		}
@@ -2783,7 +2783,7 @@ if($mybb->input['action'] == "acceptrequest")
 			'language_file' => 'usercp'
 		);
 
-		send_pm($pm, $mybb->user['uid'], true);
+		send_pm($pm, $mybb->user['uid'], TRUE);
 
 		$db->delete_query('buddyrequests', 'id='.(int)$request['id']);
 	}
@@ -2907,7 +2907,7 @@ if($mybb->input['action'] == "do_editlists")
 
 			if(my_strtoupper($mybb->user['username']) == my_strtoupper($username))
 			{
-				$adding_self = true;
+				$adding_self = TRUE;
 				unset($users[$key]);
 				continue;
 			}
@@ -2919,7 +2919,7 @@ if($mybb->input['action'] == "do_editlists")
 		$requests = array();
 		while($req = $db->fetch_array($query))
 		{
-			$requests[$req['touid']] = true;
+			$requests[$req['touid']] = TRUE;
 		}
 
 		// Get the requests we have received that are still pending
@@ -2927,7 +2927,7 @@ if($mybb->input['action'] == "do_editlists")
 		$requests_rec = array();
 		while($req = $db->fetch_array($query))
 		{
-			$requests_rec[$req['uid']] = true;
+			$requests_rec[$req['uid']] = TRUE;
 		}
 
 		$sent = false;
@@ -3036,7 +3036,7 @@ if($mybb->input['action'] == "do_editlists")
 
 					send_pm($pm);
 
-					$sent = true;
+					$sent = TRUE;
 				}
 				elseif($mybb->get_input('manage') == "ignored")
 				{
@@ -3055,7 +3055,7 @@ if($mybb->input['action'] == "do_editlists")
 			$error_message .= $lang->invalid_user_selected;
 		}
 
-		if(($adding_self != true || ($adding_self == true && count($users) > 0)) && ($error_message == "" || count($users) > 1))
+		if(($adding_self != TRUE || ($adding_self == TRUE && count($users) > 0)) && ($error_message == "" || count($users) > 1))
 		{
 			if($mybb->get_input('manage') == "ignored")
 			{
@@ -3067,7 +3067,7 @@ if($mybb->input['action'] == "do_editlists")
 			}
 		}
 
-		if($adding_self == true)
+		if($adding_self == TRUE)
 		{
 			if($mybb->get_input('manage') == "ignored")
 			{
@@ -3083,7 +3083,7 @@ if($mybb->input['action'] == "do_editlists")
 		{
 			$message = "";
 
-			if($sent === true)
+			if($sent === TRUE)
 			{
 				$message = $lang->buddyrequests_sent_success;
 			}
@@ -3317,7 +3317,7 @@ if($mybb->input['action'] == "editlists")
 		}
 		else
 		{
-			if(isset($sent) && $sent === true)
+			if(isset($sent) && $sent === TRUE)
 			{
 				$sent_rows = '';
 				$query = $db->query("
@@ -3787,7 +3787,7 @@ if($mybb->input['action'] == "usergroups")
 		$query = $db->simple_select("usergroups", "*", "gid IN (".$mybb->user['additionalgroups'].") AND gid !='".$mybb->user['usergroup']."'", array('order_by' => 'title'));
 		while($usergroup = $db->fetch_array($query))
 		{
-			$showmemberof = true;
+			$showmemberof = TRUE;
 
 			if(isset($groupleader[$usergroup['gid']]))
 			{
@@ -3932,7 +3932,7 @@ if($mybb->input['action'] == "attachments")
 
 	// Get unviewable forums
 	$f_perm_sql = '';
-	$unviewable_forums = get_unviewable_forums(true);
+	$unviewable_forums = get_unviewable_forums(TRUE);
 	$inactiveforums = get_inactive_forums();
 	if($unviewable_forums)
 	{
@@ -4073,7 +4073,7 @@ if($mybb->input['action'] == "do_attachments" && $mybb->request_method == "post"
 
 	// Get unviewable forums
 	$f_perm_sql = '';
-	$unviewable_forums = get_unviewable_forums(true);
+	$unviewable_forums = get_unviewable_forums(TRUE);
 	$inactiveforums = get_inactive_forums();
 	if($unviewable_forums)
 	{
@@ -4297,7 +4297,7 @@ if(!$mybb->input['action'])
 	if($db->num_rows($query))
 	{
 		$visible = "AND t.visible != 0";
-		if(is_moderator() == true)
+		if(is_moderator() == TRUE)
 		{
 			$visible = '';
 		}
@@ -4473,7 +4473,7 @@ if(!$mybb->input['action'])
 	}
 
 	$visible = " AND t.visible != 0";
-	if(is_moderator() == true)
+	if(is_moderator() == TRUE)
 	{
 		$visible = '';
 	}

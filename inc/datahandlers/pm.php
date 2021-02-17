@@ -83,7 +83,7 @@ class PMDataHandler extends DataHandler
 			$this->set_error("missing_subject");
 			return false;
 		}
-		return true;
+		return TRUE;
 	}
 
 	/**
@@ -109,7 +109,7 @@ class PMDataHandler extends DataHandler
 			return false;
 		}
 
-		return true;
+		return TRUE;
 	}
 
 	/**
@@ -126,7 +126,7 @@ class PMDataHandler extends DataHandler
 		// Return if we've already validated
 		if(!empty($pm['sender']))
 		{
-			return true;
+			return TRUE;
 		}
 
 		// Fetch the senders profile data.
@@ -138,7 +138,7 @@ class PMDataHandler extends DataHandler
 		// Check if the sender is over their quota or not - if they are, disable draft sending
 		if(isset($pm['options']['savecopy']) && $pm['options']['savecopy'] != 0 && empty($pm['saveasdraft']))
 		{
-			if($sender_permissions['pmquota'] != 0 && $sender['totalpms'] >= $sender_permissions['pmquota'] && $this->admin_override != true)
+			if($sender_permissions['pmquota'] != 0 && $sender['totalpms'] >= $sender_permissions['pmquota'] && $this->admin_override != TRUE)
 			{
 				$pm['options']['savecopy'] = 0;
 			}
@@ -150,7 +150,7 @@ class PMDataHandler extends DataHandler
 			"username" => $sender['username']
 		);
 
-		return true;
+		return TRUE;
 	}
 
 	/**
@@ -287,7 +287,7 @@ class PMDataHandler extends DataHandler
 		$sender_permissions = user_permissions($pm['fromid']);
 
 		// Are we trying to send this message to more users than the permissions allow?
-		if($sender_permissions['maxpmrecipients'] > 0 && count($recipients) > $sender_permissions['maxpmrecipients'] && $this->admin_override != true)
+		if($sender_permissions['maxpmrecipients'] > 0 && count($recipients) > $sender_permissions['maxpmrecipients'] && $this->admin_override != TRUE)
 		{
 			$this->set_error("too_many_recipients", array($sender_permissions['maxpmrecipients']));
 		}
@@ -301,7 +301,7 @@ class PMDataHandler extends DataHandler
 			// See if the sender is on the recipients ignore list and that either
 			// - admin_override is set or
 			// - sender is an administrator
-			if($this->admin_override != true && $sender_permissions['canoverridepm'] != 1)
+			if($this->admin_override != TRUE && $sender_permissions['canoverridepm'] != 1)
 			{
 				if(!empty($user['ignorelist']) && strpos(','.$user['ignorelist'].',', ','.$pm['fromid'].',') !== false)
 				{
@@ -365,7 +365,7 @@ class PMDataHandler extends DataHandler
 				$db->insert_query("mailqueue", $new_email);
 				$cache->update_mailqueue();
 
-				if($this->admin_override != true)
+				if($this->admin_override != TRUE)
 				{
 					$this->set_error("recipient_reached_quota", array(htmlspecialchars_uni($user['username'])));
 				}
@@ -388,7 +388,7 @@ class PMDataHandler extends DataHandler
 				$pm['recipients'][$user['uid']]['bcc'] = 1;
 			}
 		}
-		return true;
+		return TRUE;
 	}
 
 	/**
@@ -428,8 +428,8 @@ class PMDataHandler extends DataHandler
 				return false;
 			}
 		}
-		// All is well that ends well - return true.
-		return true;
+		// All is well that ends well - return TRUE.
+		return TRUE;
 	}
 
 	/**
@@ -454,7 +454,7 @@ class PMDataHandler extends DataHandler
 		{
 			$options['readreceipt'] = 0;
 		}
-		return true;
+		return TRUE;
 	}
 
 	/**
@@ -497,14 +497,14 @@ class PMDataHandler extends DataHandler
 		}
 
 		// We are done validating, return.
-		$this->set_validated(true);
+		$this->set_validated(TRUE);
 		if(count($this->get_errors()) > 0)
 		{
 			return false;
 		}
 		else
 		{
-			return true;
+			return TRUE;
 		}
 	}
 

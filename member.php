@@ -177,7 +177,7 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 		"coppa_user" => $coppauser,
 		"regcheck1" => $mybb->get_input('regcheck1'),
 		"regcheck2" => $mybb->get_input('regcheck2'),
-		"registration" => true
+		"registration" => TRUE
 	);
 
 	// Do we have a saved COPPA DOB?
@@ -394,7 +394,7 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 		if($mybb->settings['regtype'] != "randompass" && !isset($mybb->cookies['coppauser']))
 		{
 			// Log them in
-			my_setcookie("mybbuser", $user_info['uid']."_".$user_info['loginkey'], null, true, "lax");
+			my_setcookie("mybbuser", $user_info['uid']."_".$user_info['loginkey'], null, TRUE, "lax");
 		}
 
 		if(isset($mybb->cookies['coppauser']))
@@ -528,7 +528,7 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 					// Load language
 					if($recipient['language'] != $lang->language && $lang->language_exists($recipient['language']))
 					{
-						$reset_lang = true;
+						$reset_lang = TRUE;
 						$lang->set_language($recipient['language']);
 						$lang->load("member");
 					}
@@ -611,7 +611,7 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 					// Load language
 					if($recipient['language'] != $lang->language && $lang->language_exists($recipient['language']))
 					{
-						$reset_lang = true;
+						$reset_lang = TRUE;
 						$lang->set_language($recipient['language']);
 						$lang->load("member");
 					}
@@ -741,7 +741,7 @@ if($mybb->input['action'] == "register")
 			if($bdaytime >= mktime(0, 0, 0, my_date('n'), my_date('d'), my_date('Y')-13))
 			{
 				my_setcookie("coppauser", 1, -0);
-				$under_thirteen = true;
+				$under_thirteen = TRUE;
 			}
 			$mybb->request_method = "";
 		}
@@ -796,7 +796,7 @@ if($mybb->input['action'] == "register")
 		{
 			$timezoneoffset = $mybb->settings['timezoneoffset'];
 		}
-		$tzselect = build_timezone_select("timezoneoffset", $timezoneoffset, true);
+		$tzselect = build_timezone_select("timezoneoffset", $timezoneoffset, TRUE);
 
 		$stylelist = build_theme_select("style");
 
@@ -1101,7 +1101,7 @@ if($mybb->input['action'] == "register")
 		if($mybb->settings['captchaimage'])
 		{
 			require_once MYBB_ROOT.'inc/class_captcha.php';
-			$captcha = new captcha(true, "member_register_regimage");
+			$captcha = new captcha(TRUE, "member_register_regimage");
 
 			if($captcha->html)
 			{
@@ -1317,7 +1317,7 @@ if($mybb->input['action'] == "activate")
 			$db->update_query("awaitingactivation", $update, "uid='".$user['uid']."' AND type='b'");
 			$plugins->run_hooks("member_activate_emailactivated");
 
-			redirect("index.php", $lang->redirect_accountactivated_admin, "", true);
+			redirect("index.php", $lang->redirect_accountactivated_admin, "", TRUE);
 		}
 		else
 		{
@@ -1466,7 +1466,7 @@ if($mybb->input['action'] == "resendactivation")
 	if($mybb->settings['captchaimage'])
 	{
 		require_once MYBB_ROOT.'inc/class_captcha.php';
-		$post_captcha = new captcha(true, "post_captcha");
+		$post_captcha = new captcha(TRUE, "post_captcha");
 
 		if($post_captcha->html)
 		{
@@ -1560,7 +1560,7 @@ if($mybb->input['action'] == "do_lostpw" && $mybb->request_method == "post")
 
 			$plugins->run_hooks("member_do_lostpw_end");
 
-			redirect("index.php", $lang->redirect_lostpwsent, "", true);
+			redirect("index.php", $lang->redirect_lostpwsent, "", TRUE);
 		}
 		else
 		{
@@ -1578,7 +1578,7 @@ if($mybb->input['action'] == "lostpw")
 	if($mybb->settings['captchaimage'])
 	{
 		require_once MYBB_ROOT.'inc/class_captcha.php';
-		$post_captcha = new captcha(true, "post_captcha");
+		$post_captcha = new captcha(TRUE, "post_captcha");
 
 		if($post_captcha->html)
 		{
@@ -1672,7 +1672,7 @@ if($mybb->input['action'] == "resetpassword")
 				'password'	=> $password
 			));
 
-			$userhandler->set_validated(true);
+			$userhandler->set_validated(TRUE);
 			$userhandler->errors = array();
 		}
 
@@ -1785,18 +1785,18 @@ if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 		// Is a fatal call if user has had too many tries
 		$logins = login_attempt_check($login_user_uid);
 
-		$db->update_query("users", array('loginattempts' => 'loginattempts+1'), "uid='".$login_user_uid."'", 1, true);
+		$db->update_query("users", array('loginattempts' => 'loginattempts+1'), "uid='".$login_user_uid."'", 1, TRUE);
 
 		$errors = $loginhandler->get_friendly_errors();
 
 		// If we need a captcha set it here
 		if($mybb->settings['failedcaptchalogincount'] > 0 && ($user['loginattempts'] > $mybb->settings['failedcaptchalogincount'] || (int)$mybb->cookies['loginattempts'] > $mybb->settings['failedcaptchalogincount']))
 		{
-			$do_captcha = true;
+			$do_captcha = TRUE;
 			$correct = $loginhandler->captcha_verified;
 		}
 	}
-	else if($validated && $loginhandler->captcha_verified == true)
+	else if($validated && $loginhandler->captcha_verified == TRUE)
 	{
 		// Successful login
 		if($loginhandler->login_data['coppauser'])
@@ -1871,7 +1871,7 @@ if($mybb->input['action'] == "login")
 
 	$captcha = '';
 	// Show captcha image for guests if enabled and only if we have to do
-	if($mybb->settings['captchaimage'] && $do_captcha == true)
+	if($mybb->settings['captchaimage'] && $do_captcha == TRUE)
 	{
 		require_once MYBB_ROOT.'inc/class_captcha.php';
 		$login_captcha = new captcha(false, "post_captcha");
@@ -2099,7 +2099,7 @@ if($mybb->input['action'] == "profile")
 
 		if(!empty($memprofile[$field]) && is_member($mybb->settings[$settingkey], array('usergroup' => $memprofile['usergroup'], 'additionalgroups' => $memprofile['additionalgroups'])))
 		{
-			$any_contact_field = true;
+			$any_contact_field = TRUE;
 
 			if($field == 'icq')
 			{
@@ -2245,7 +2245,7 @@ if($mybb->input['action'] == "profile")
 			{
 				require_once MYBB_ROOT."inc/functions_time.php";
 				$returnmkdate = adodb_mktime(0, 0, 0, $returnhome[1], $returnhome[0], $returnhome[2]);
-				$returndate = my_date($mybb->settings['dateformat'], $returnmkdate, "", 1, true);
+				$returndate = my_date($mybb->settings['dateformat'], $returnmkdate, "", 1, TRUE);
 			}
 			else
 			{
@@ -2803,7 +2803,7 @@ if($mybb->input['action'] == "profile")
 
 		if(isset($memperms['canbereported']) && $memperms['canbereported'] == 1)
 		{
-			$reportable = true;
+			$reportable = TRUE;
 			$query = $db->simple_select("reportedcontent", "reporters", "reportstatus != '1' AND id = '{$memprofile['uid']}' AND type = 'profile'");
 			if($db->num_rows($query))
 			{
@@ -3121,7 +3121,7 @@ if($mybb->input['action'] == "emailuser")
 	if($mybb->settings['captchaimage'] && $mybb->user['uid'] == 0)
 	{
 		require_once MYBB_ROOT.'inc/class_captcha.php';
-		$post_captcha = new captcha(true, "post_captcha");
+		$post_captcha = new captcha(TRUE, "post_captcha");
 
 		if($post_captcha->html)
 		{

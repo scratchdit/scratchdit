@@ -16,7 +16,7 @@ var inlineModeration = {
 
 		var inlineIds = inlineModeration.getCookie(inlineModeration.cookieName);
 		var removedIds = inlineModeration.getCookie(inlineModeration.cookieName+'_removed');
-		var allChecked = true;
+		var allChecked = TRUE;
 
 		$(inputs).each(function() {
 			var element = $(this);
@@ -34,7 +34,7 @@ var inlineModeration = {
 				{
 					if(inlineIds.indexOf(id) != -1 || (inlineIds.indexOf('ALL') != -1 && removedIds.indexOf(id) == -1))
 					{
-						element.prop('checked', true);
+						element.prop('checked', TRUE);
 						var post = element.parents('.post');
 						var thread = element.parents('.inline_row');
 						var fieldset = element.parents('fieldset');
@@ -46,7 +46,7 @@ var inlineModeration = {
 						{
 							thread.addClass('trow_selected');
 						}
-						
+
 						if(fieldset.length)
 						{
 							fieldset.addClass('inline_selected');
@@ -82,7 +82,7 @@ var inlineModeration = {
 				allSelectedRow.show();
 			}
 		}
-		else if(inlineIds.indexOf('ALL') == -1 && allChecked == true)
+		else if(inlineIds.indexOf('ALL') == -1 && allChecked == TRUE)
 		{
 			var selectRow = $('#selectAllrow');
 			if(selectRow)
@@ -90,7 +90,7 @@ var inlineModeration = {
 				selectRow.show();
 			}
 		}
-		return true;
+		return TRUE;
 	},
 
 	checkItem: function()
@@ -113,7 +113,7 @@ var inlineModeration = {
 		var inlineIds = inlineModeration.getCookie(inlineModeration.cookieName);
 		var removedIds = inlineModeration.getCookie(inlineModeration.cookieName+'_removed');
 
-		if(element.prop('checked') == true)
+		if(element.prop('checked') == TRUE)
 		{
 			if(inlineIds.indexOf('ALL') == -1)
 			{
@@ -176,7 +176,7 @@ var inlineModeration = {
 
 		inlineModeration.updateCookies(inlineIds, removedIds);
 
-		return true;
+		return TRUE;
 	},
 
 	clearChecked: function()
@@ -212,7 +212,7 @@ var inlineModeration = {
 		Cookie.unset(inlineModeration.cookieName);
 		Cookie.unset(inlineModeration.cookieName + '_removed');
 
-		return true;
+		return TRUE;
 	},
 
 	checkAll: function(master)
@@ -243,7 +243,7 @@ var inlineModeration = {
 				var thread = element.parents('.inline_row');
 				if(post.length)
 				{
-					if(master.prop('checked') == true)
+					if(master.prop('checked') == TRUE)
 					{
 						post.addClass('trow_selected');
 					}
@@ -254,7 +254,7 @@ var inlineModeration = {
 				}
 				else if(thread.length)
 				{
-					if(master.prop('checked') == true)
+					if(master.prop('checked') == TRUE)
 					{
 						thread.addClass('trow_selected');
 					}
@@ -263,10 +263,10 @@ var inlineModeration = {
 						thread.removeClass('trow_selected');
 					}
 				}
-				
+
 				if(fieldset.length)
 				{
-					if(master.prop('checked') == true)
+					if(master.prop('checked') == TRUE)
 					{
 						fieldset.addClass('inline_selected');
 					}
@@ -279,8 +279,8 @@ var inlineModeration = {
 				if(changed)
 				{
 					element.trigger('click');
-					
-					if(master.prop('checked') == true)
+
+					if(master.prop('checked') == TRUE)
 					{
 						if(inlineIds.indexOf('ALL') == -1)
 						{
@@ -313,7 +313,7 @@ var inlineModeration = {
 			var selectRow = $('#selectAllrow');
 			if(selectRow.length)
 			{
-				if(master.prop('checked') == true)
+				if(master.prop('checked') == TRUE)
 				{
 					selectRow.show();
 				}

@@ -21,7 +21,7 @@ function rebuild_stats()
 	$query = $db->simple_select("users", "COUNT(uid) AS users");
 	$stats['numusers'] = $db->fetch_field($query, 'users');
 
-	update_stats($stats, true);
+	update_stats($stats, TRUE);
 }
 
 /**

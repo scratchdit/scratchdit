@@ -148,7 +148,7 @@ class captcha
 			$this->server = "//www.google.com/recaptcha/api.js";
 			$this->verify_server = "//www.google.com/recaptcha/api/siteverify";
 
-			if($build == true)
+			if($build == TRUE)
 			{
 				$this->build_recaptcha();
 			}
@@ -159,7 +159,7 @@ class captcha
 			$this->server = "//www.hcaptcha.com/1/api.js";
 			$this->verify_server = "//hcaptcha.com/siteverify";
 
-			if($build == true)
+			if($build == TRUE)
 			{
 				$this->build_hcaptcha();
 			}
@@ -171,7 +171,7 @@ class captcha
 				// We want to use the default CAPTCHA, but it's not installed
 				return;
 			}
-			elseif($build == true)
+			elseif($build == TRUE)
 			{
 				$this->build_captcha();
 			}
@@ -314,9 +314,9 @@ class captcha
 				}
 				else
 				{
-					$answer = json_decode($response, true);
+					$answer = json_decode($response, TRUE);
 
-					if($answer['success'] != 'true')
+					if($answer['success'] != 'TRUE')
 					{
 						// We got it wrong! Oh no...
 						$this->set_error($lang->invalid_nocaptcha);
@@ -348,9 +348,9 @@ class captcha
 				}
 				else
 				{
-					$answer = json_decode($response, true);
+					$answer = json_decode($response, TRUE);
 
-					if($answer['success'] != 'true' || $answer['score'] < $mybb->settings['recaptchascore'])
+					if($answer['success'] != 'TRUE' || $answer['score'] < $mybb->settings['recaptchascore'])
 					{
 						// We got it wrong! Oh no...
 						$this->set_error($lang->invalid_nocaptcha);
@@ -381,8 +381,8 @@ class captcha
 				}
 				else
 				{
-					$answer = json_decode($response, true);
-					if($answer['success'] != 'true')
+					$answer = json_decode($response, TRUE);
+					if($answer['success'] != 'TRUE')
 					{
 						// We got it wrong! Oh no...
 						$this->set_error($lang->invalid_hcaptcha);
@@ -398,7 +398,7 @@ class captcha
 		}
 		else
 		{
-			return true;
+			return TRUE;
 		}
 	}
 

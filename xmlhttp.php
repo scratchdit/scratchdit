@@ -290,7 +290,7 @@ if($mybb->input['action'] == "get_users")
 else if($mybb->input['action'] == "edit_subject" && $mybb->request_method == "post")
 {
 	// Verify POST request
-	if(!verify_post_check($mybb->get_input('my_post_key'), true))
+	if(!verify_post_check($mybb->get_input('my_post_key'), TRUE))
 	{
 		xmlhttp_error($lang->invalid_post_code);
 	}
@@ -354,7 +354,7 @@ else if($mybb->input['action'] == "edit_subject" && $mybb->request_method == "po
 	}
 	else
 	{
-		$ismod = true;
+		$ismod = TRUE;
 	}
 	$subject = $mybb->get_input('value');
 	if(my_strtolower($charset) != "utf-8")
@@ -401,7 +401,7 @@ else if($mybb->input['action'] == "edit_subject" && $mybb->request_method == "po
 		else
 		{
 			$posthandler->update_post();
-			if($ismod == true)
+			if($ismod == TRUE)
 			{
 				$modlogdata = array(
 					"tid" => $thread['tid'],
@@ -453,7 +453,7 @@ else if($mybb->input['action'] == "edit_post")
 	}
 
 	// Check if this forum is password protected and we have a valid password
-	if(check_forum_password($forum['fid'], 0, true))
+	if(check_forum_password($forum['fid'], 0, TRUE))
 	{
 		xmlhttp_error($lang->wrong_forum_password);
 	}
@@ -503,7 +503,7 @@ else if($mybb->input['action'] == "edit_post")
 	else if($mybb->get_input('do') == "update_post")
 	{
 		// Verify POST request
-		if(!verify_post_check($mybb->get_input('my_post_key'), true))
+		if(!verify_post_check($mybb->get_input('my_post_key'), TRUE))
 		{
 			xmlhttp_error($lang->invalid_post_code);
 		}
@@ -807,7 +807,7 @@ else if($mybb->input['action'] == "validate_captcha")
 	if(my_strtolower($imagestring) == my_strtolower($mybb->get_input('imagestring')))
 	{
 		//echo json_encode(array("success" => $lang->captcha_matches));
-		echo json_encode("true");
+		echo json_encode("TRUE");
 		exit;
 	}
 	else
@@ -918,7 +918,7 @@ elseif($mybb->input['action'] == "validate_question" && $mybb->settings['securit
 		}
 		else
 		{
-			echo json_encode("true");
+			echo json_encode("TRUE");
 			exit;
 		}
 	}
@@ -941,14 +941,14 @@ else if($mybb->input['action'] == "complex_password")
 	else
 	{
 		// Return nothing but an OK password if passes regex
-		echo json_encode("true");
+		echo json_encode("TRUE");
 	}
 
 	exit;
 }
 else if($mybb->input['action'] == "username_availability")
 {
-	if(!verify_post_check($mybb->get_input('my_post_key'), true))
+	if(!verify_post_check($mybb->get_input('my_post_key'), TRUE))
 	{
 		xmlhttp_error($lang->invalid_post_code);
 	}
@@ -972,7 +972,7 @@ else if($mybb->input['action'] == "username_availability")
 	}
 
 	// Check if the username belongs to the list of banned usernames.
-	$banned_username = is_banned_username($username, true);
+	$banned_username = is_banned_username($username, TRUE);
 	if($banned_username)
 	{
 		echo json_encode($lang->banned_username);
@@ -1000,13 +1000,13 @@ else if($mybb->input['action'] == "username_availability")
 	else
 	{
 		//$lang->username_available = $lang->sprintf($lang->username_available, htmlspecialchars_uni($username));
-		echo json_encode("true");
+		echo json_encode("TRUE");
 		exit;
 	}
 }
 else if($mybb->input['action'] == "email_availability")
 {
-	if(!verify_post_check($mybb->get_input('my_post_key'), true))
+	if(!verify_post_check($mybb->get_input('my_post_key'), TRUE))
 	{
 		xmlhttp_error($lang->invalid_post_code);
 	}
@@ -1040,7 +1040,7 @@ else if($mybb->input['action'] == "email_availability")
 	}
 	else
 	{
-		echo json_encode("true");
+		echo json_encode("TRUE");
 		exit;
 	}
 }

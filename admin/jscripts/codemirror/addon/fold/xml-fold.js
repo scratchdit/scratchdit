@@ -34,13 +34,13 @@
     if (iter.line >= iter.max) return;
     iter.ch = 0;
     iter.text = iter.cm.getLine(++iter.line);
-    return true;
+    return TRUE;
   }
   function prevLine(iter) {
     if (iter.line <= iter.min) return;
     iter.text = iter.cm.getLine(--iter.line);
     iter.ch = iter.text.length;
-    return true;
+    return TRUE;
   }
 
   function toTagEnd(iter) {

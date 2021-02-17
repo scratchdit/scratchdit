@@ -17,7 +17,7 @@
  */
 function archive_header($title="", $fulltitle="", $fullurl="")
 {
-	global $mybb, $lang, $db, $nav, $archiveurl, $sent_header;
+	global $mybb, $lang, $nav, $archiveurl, $sent_header;
 
 	// Build the archive navigation.
 	$nav = archive_navigation();
@@ -58,20 +58,21 @@ function archive_header($title="", $fulltitle="", $fullurl="")
 	}
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "//www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="//www.w3.org/1999/xhtml"<?php echo $dir; echo $htmllang; ?>>
+<html xmlns="//www.w3.org/1999/xhtml"<?= $dir; echo $htmllang ?>>
 <head>
-<title><?php echo $title; ?></title>
-<meta http-equiv="content-type" content="text/html; charset=<?php echo $charset; ?>" />
+<title><?= $title ?></title>
+<meta http-equiv="content-type" content="text/html; charset=<?= $charset ?>" />
 <meta name="robots" content="index,follow" />
-<link type="text/css" rel="stylesheet" rev="stylesheet" href="<?php echo $archiveurl; ?>/screen.css" media="screen" />
-<link type="text/css" rel="stylesheet" rev="stylesheet" href="<?php echo $archiveurl; ?>/print.css" media="print" />
+<!--<?= $archiveurl ?>-->
+<link type="text/css" rel="stylesheet" rev="stylesheet" href="<?= $archiveurl ?>/screen.css" media="screen" />
+<link type="text/css" rel="stylesheet" rev="stylesheet" href="<?= $archiveurl ?>/print.css" media="print" />
 </head>
 <body>
 <div id="container">
-<h1><a href="<?php echo $mybb->settings['bburl']; ?>/index.php"><?php echo $mybb->settings['bbname_orig']; ?></a></h1>
-<div class="navigation"><?php echo $nav; ?></div>
-<div id="fullversion"><strong><?php echo $lang->archive_fullversion; ?></strong> <a href="<?php echo $fullurl; ?>"><?php echo $fulltitle; ?></a></div>
-<div id="infobox"><?php echo $lang->sprintf($lang->archive_note, $fullurl); ?></div>
+<h1><a href="<?= $mybb->settings['bburl'] ?>/index.php"><?= $mybb->settings['bbname_orig'] ?></a></h1>
+<div class="navigation"><?= $nav ?></div>
+<div id="fullversion"><strong><?= $lang->archive_fullversion ?></strong> <a href="<?= $fullurl ?>"><?= $fulltitle ?></a></div>
+<div id="infobox"><?= $lang->sprintf($lang->archive_note, $fullurl) ?></div>
 <div id="content">
 <?php
 	$sent_header = 1;
@@ -84,7 +85,7 @@ function archive_header($title="", $fulltitle="", $fullurl="")
  */
 function archive_navigation()
 {
-	global $navbits, $mybb, $lang;
+	global $navbits;
 
 	$navsep = " &gt; ";
 	$nav = $activesep = '';
@@ -169,10 +170,10 @@ function archive_footer()
 	}
 ?>
 </div>
-<div class="navigation"><?php echo $nav; ?></div>
+<div class="navigation"><?= $nav ?></div>
 </div>
 <div id="footer">
-<?php echo $lang->powered_by; ?> <a href="//mybb.com">MyBB</a><?php echo $mybbversion; ?>, &copy; 2002-<?php echo date("Y"); ?> <a href="//mybb.com">MyBB Group</a>
+<?= $lang->powered_by ?> <a href="//mybb.com">MyBB</a><?= $mybbversion ?>, &copy; 2002-<?= date("Y") ?> <a href="//mybb.com">MyBB Group</a>
 </div>
 </body>
 </html>
@@ -193,8 +194,8 @@ function archive_error($error)
 	}
 ?>
 <div class="error">
-<div class="header"><?php echo $lang->error; ?></div>
-<div class="message"><?php echo $error; ?></div>
+<div class="header"><?= $lang->error ?></div>
+<div class="message"><?= $error ?></div>
 </div>
 <?php
 	archive_footer();
@@ -239,7 +240,7 @@ function check_forum_password_archive($fid, $pid=0)
 		}
 	}
 
-	if(!forum_password_validated($forum_cache[$fid], true, true))
+	if(!forum_password_validated($forum_cache[$fid], TRUE, TRUE))
 	{
 		archive_error_no_permission();
 	}

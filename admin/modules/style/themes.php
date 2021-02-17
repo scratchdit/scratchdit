@@ -74,13 +74,13 @@ if($mybb->input['action'] == "xmlhttp_stylesheet" && $mybb->request_method == "p
 		}
 	}
 
-	$form = new Form("index.php?module=style-themes&amp;action=stylesheet_properties", "post", "selector_form", 0, "", true);
+	$form = new Form("index.php?module=style-themes&amp;action=stylesheet_properties", "post", "selector_form", 0, "", TRUE);
 	echo $form->generate_hidden_field("tid", $mybb->input['tid'], array('id' => "tid"))."\n";
 	echo $form->generate_hidden_field("file", htmlspecialchars_uni($mybb->input['file']), array('id' => "file"))."\n";
 	echo $form->generate_hidden_field("selector", htmlspecialchars_uni($mybb->input['selector']), array('id' => 'hidden_selector'))."\n";
 
 	$table = new Table;
-	if($lang->settings['rtl'] === true)
+	if($lang->settings['rtl'] === TRUE)
 	{
 		$div_align = "left";
 	}
@@ -386,7 +386,7 @@ if($mybb->input['action'] == "import")
 					'no_templates' => ($mybb->input['import_templates'] ? 0 : 1),
 					'version_compat' => $mybb->get_input('version_compat', MyBB::INPUT_INT),
 					'parent' => $mybb->get_input('tid', MyBB::INPUT_INT),
-					'force_name_check' => true,
+					'force_name_check' => TRUE,
 				);
 				$theme_id = import_theme_xml($contents, $options);
 
@@ -453,8 +453,8 @@ if($mybb->input['action'] == "import")
 		$import_checked[1] = "checked=\"checked\"";
 		$import_checked[2] = "";
 
-		$mybb->input['import_stylesheets'] = true;
-		$mybb->input['import_templates'] = true;
+		$mybb->input['import_stylesheets'] = TRUE;
+		$mybb->input['import_templates'] = TRUE;
 	}
 
 	$form = new Form("index.php?module=style-themes&amp;action=import", "post", "", 1);
@@ -466,7 +466,7 @@ if($mybb->input['action'] == "import")
 
 		$(\'.\'+id+\'s_check\').each(function(e, val)
 		{
-			if($(this).prop(\'checked\') == true)
+			if($(this).prop(\'checked\') == TRUE)
 			{
 				checked = $(this).val();
 			}
@@ -884,7 +884,7 @@ if($mybb->input['action'] == "duplicate")
 	}
 	else
 	{
-		$mybb->input['duplicate_templates'] = true;
+		$mybb->input['duplicate_templates'] = TRUE;
 	}
 
 	$form = new Form("index.php?module=style-themes&amp;action=duplicate&amp;tid={$theme['tid']}", "post");
@@ -1015,13 +1015,13 @@ if($mybb->input['action'] == "delete")
 				{
 					if(strpos($filepath, "cache/themes/theme{$theme['tid']}") !== false)
 					{
-						$inherited_stylesheets = true;
+						$inherited_stylesheets = TRUE;
 					}
 				}
 			}
 		}
 
-		if($inherited_stylesheets == true)
+		if($inherited_stylesheets == TRUE)
 		{
 			flash_message($lang->error_inheriting_stylesheets, 'error');
 			admin_redirect("index.php?module=style-themes");
@@ -1045,7 +1045,7 @@ if($mybb->input['action'] == "delete")
 		$db->delete_query("themestylesheets", "tid='{$theme['tid']}'");
 
 		// Update the CSS file list for this theme
-		update_theme_stylesheet_list($theme['tid'], $theme, true);
+		update_theme_stylesheet_list($theme['tid'], $theme, TRUE);
 
 		$db->update_query("users", array('style' => 0), "style='{$theme['tid']}'");
 
@@ -1335,7 +1335,7 @@ if($mybb->input['action'] == "edit")
 		}
 
 		// normalize for consistency
-		update_theme_stylesheet_list($theme['tid'], false, true);
+		update_theme_stylesheet_list($theme['tid'], false, TRUE);
 
 		flash_message($lang->success_stylesheet_order_updated, 'success');
 		admin_redirect("index.php?module=style-themes&action=edit&tid={$theme['tid']}");
@@ -1593,7 +1593,7 @@ if($mybb->input['action'] == "edit")
 	{
 		$options[(int)$usergroup['gid']] = $usergroup['title'];
 	}
-	$form_container->output_row($lang->allowed_user_groups, $lang->allowed_user_groups_desc, $form->generate_select_box('allowedgroups[]', $options, explode(",", $theme['allowedgroups']), array('id' => 'allowedgroups', 'multiple' => true, 'size' => 5)), 'allowedgroups');
+	$form_container->output_row($lang->allowed_user_groups, $lang->allowed_user_groups_desc, $form->generate_select_box('allowedgroups[]', $options, explode(",", $theme['allowedgroups']), array('id' => 'allowedgroups', 'multiple' => TRUE, 'size' => 5)), 'allowedgroups');
 
 	$options = array();
 	$query = $db->simple_select("templatesets", "*", "", array('order_by' => 'title'));
@@ -1797,7 +1797,7 @@ if($mybb->input['action'] == "stylesheet_properties")
 			{
 				// Update the theme stylesheet list if the name is changed
 				$theme_c = $theme;
-				$update_d = true;
+				$update_d = TRUE;
 
 				$db->update_query("themestylesheets", array('lastmodified' => TIME_NOW), "sid='{$stylesheet['sid']}'", 1);
 				if(!cache_stylesheet($theme['tid'], str_replace('/', '', $mybb->input['name']), $stylesheet['stylesheet']))
@@ -1942,7 +1942,7 @@ if($mybb->input['action'] == "stylesheet_properties")
 
 			$form_container->output_row("", "", $specific_file);
 
-			$specific_files .= "<div id=\"attached_form_{$count}\">".$form_container->end(true)."</div><div id=\"attach_box_".($count+1)."\"></div>";
+			$specific_files .= "<div id=\"attached_form_{$count}\">".$form_container->end(TRUE)."</div><div id=\"attach_box_".($count+1)."\"></div>";
 
 			$check_actions .= "\n\tcheckAction('action_{$count}');";
 
@@ -1977,12 +1977,12 @@ if($mybb->input['action'] == "stylesheet_properties")
 		$specific_color = "
 			<small>{$lang->colors_add_edit_desc}</small>
 			<br /><br />
-			".$form->generate_select_box('color[]', $properties['colors'], $stylesheet['colors'], array('multiple' => true, 'size' => "5\" style=\"width: 200px;"))."
+			".$form->generate_select_box('color[]', $properties['colors'], $stylesheet['colors'], array('multiple' => TRUE, 'size' => "5\" style=\"width: 200px;"))."
 		";
 
 		$form_container = new FormContainer();
 		$form_container->output_row("", "", $specific_color);
-		$specific_colors .= $form_container->end(true)."</div>";
+		$specific_colors .= $form_container->end(TRUE)."</div>";
 	}
 
 	$actions = '<script type="text/javascript">
@@ -1992,7 +1992,7 @@ if($mybb->input['action'] == "stylesheet_properties")
 
 		$(\'.\'+id+\'s_check\').each(function(e, val)
 		{
-			if($(this).prop(\'checked\') == true)
+			if($(this).prop(\'checked\') == TRUE)
 			{
 				checked = $(this).val();
 			}
@@ -2469,10 +2469,10 @@ if($mybb->input['action'] == "edit_stylesheet" && $mybb->input['mode'] == "advan
 	{
 		echo '<script type="text/javascript">
 			var editor = CodeMirror.fromTextArea(document.getElementById("stylesheet"), {
-				lineNumbers: true,
-				lineWrapping: true,
+				lineNumbers: TRUE,
+				lineWrapping: TRUE,
 				viewportMargin: Infinity,
-				indentWithTabs: true,
+				indentWithTabs: TRUE,
 				indentUnit: 4,
 				mode: "text/css",
 				theme: "mybb"
@@ -2528,7 +2528,7 @@ if($mybb->input['action'] == "delete_stylesheet")
 		@unlink(MYBB_ROOT."cache/themes/theme{$theme['tid']}/{$filename_min}");
 
 		// Update the CSS file list for this theme
-		update_theme_stylesheet_list($theme['tid'], $theme, true);
+		update_theme_stylesheet_list($theme['tid'], $theme, TRUE);
 
 		$plugins->run_hooks("admin_style_themes_delete_stylesheet_commit");
 
@@ -2656,7 +2656,7 @@ if($mybb->input['action'] == "add_stylesheet")
 			}
 
 			// Update the CSS file list for this theme
-			update_theme_stylesheet_list($theme['tid'], $theme, true);
+			update_theme_stylesheet_list($theme['tid'], $theme, TRUE);
 
 			$plugins->run_hooks("admin_style_themes_add_stylesheet_commit");
 
@@ -2815,7 +2815,7 @@ if($mybb->input['action'] == "add_stylesheet")
 
 			$form_container->output_row("", "", $specific_file);
 
-			$specific_files .= "<div id=\"attached_form_{$count}\">".$form_container->end(true)."</div><div id=\"attach_box_{$count}\"></div>";
+			$specific_files .= "<div id=\"attached_form_{$count}\">".$form_container->end(TRUE)."</div><div id=\"attach_box_{$count}\"></div>";
 
 			$check_actions .= "\n\tcheckAction('action_{$count}');";
 
@@ -2866,12 +2866,12 @@ if($mybb->input['action'] == "add_stylesheet")
 		$specific_color = "
 			<small>{$lang->colors_add_edit_desc}</small>
 			<br /><br />
-			".$form->generate_select_box('color[]', $properties['colors'], $stylesheet['colors'], array('multiple' => true, 'size' => "5\" style=\"width: 200px;"))."
+			".$form->generate_select_box('color[]', $properties['colors'], $stylesheet['colors'], array('multiple' => TRUE, 'size' => "5\" style=\"width: 200px;"))."
 		";
 
 		$form_container = new FormContainer();
 		$form_container->output_row("", "", $specific_color);
-		$specific_colors .= $form_container->end(true)."</div>";
+		$specific_colors .= $form_container->end(TRUE)."</div>";
 	}
 
 	$actions = '<script type="text/javascript">
@@ -2881,7 +2881,7 @@ if($mybb->input['action'] == "add_stylesheet")
 
 		$(\'.\'+id+\'s_check\').each(function(e, val)
 		{
-			if($(this).prop(\'checked\') == true)
+			if($(this).prop(\'checked\') == TRUE)
 			{
 				checked = $(this).val();
 			}
@@ -2945,10 +2945,10 @@ if($mybb->input['action'] == "add_stylesheet")
 	{
 		echo '<script type="text/javascript">
 			var editor = CodeMirror.fromTextArea(document.getElementById("stylesheet"), {
-				lineNumbers: true,
-				lineWrapping: true,
+				lineNumbers: TRUE,
+				lineWrapping: TRUE,
 				viewportMargin: Infinity,
-				indentWithTabs: true,
+				indentWithTabs: TRUE,
 				indentUnit: 4,
 				mode: "text/css",
 				theme: "mybb"

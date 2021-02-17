@@ -30,7 +30,7 @@ function modcp_can_manage_user($uid)
 	{
 		return false;
 	}
-	return true;
+	return TRUE;
 }
 
 /**
@@ -257,14 +257,14 @@ function send_report($report, $report_type='post')
 			"ipaddress" => $mybb->session->packedip
 		);
 
-		$pmhandler->admin_override = true;
+		$pmhandler->admin_override = TRUE;
 		$pmhandler->set_data($pm);
 
 		// Now let the pm handler do all the hard work.
 		if(!$pmhandler->validate_pm())
 		{
 			// Force it to valid to just get it out of here
-			$pmhandler->is_validated = true;
+			$pmhandler->is_validated = TRUE;
 			$pmhandler->errors = array();
 		}
 
@@ -316,7 +316,7 @@ function add_report($report, $type = 'post')
  * Update an existing report
  *
  * @param array $report Array of reported content
- * @return bool true
+ * @return bool TRUE
  */
 function update_report($report)
 {
@@ -329,5 +329,5 @@ function update_report($report)
 	);
 
 	$db->update_query("reportedcontent", $update_array, "rid = '{$report['rid']}'");
-	return true;
+	return TRUE;
 }

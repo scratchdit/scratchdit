@@ -122,12 +122,12 @@ if($forumpermissions['canviewdeletionnotice'] != 0)
 // Is the currently logged in user a moderator of this forum?
 if(is_moderator($fid))
 {
-	$ismod = true;
-	if(is_moderator($fid, "canviewdeleted") == true)
+	$ismod = TRUE;
+	if(is_moderator($fid, "canviewdeleted") == TRUE)
 	{
 		$visible_states[] = "-1";
 	}
-	if(is_moderator($fid, "canviewunapprove") == true)
+	if(is_moderator($fid, "canviewunapprove") == TRUE)
 	{
 		$visible_states[] = "0";
 	}
@@ -275,7 +275,7 @@ if($mybb->input['action'] == "newpost")
 		if($mybb->get_input('highlight'))
 		{
 			$string = "&";
-			if($mybb->seo_support == true)
+			if($mybb->seo_support == TRUE)
 			{
 				$string = "?";
 			}
@@ -399,13 +399,13 @@ if($mybb->settings['showforumpagesbreadcrumb'])
 	$threadcount = $forum_threads['threads'];
 
 
-	if(is_moderator($fid, "canviewdeleted") == true || is_moderator($fid, "canviewunapprove") == true)
+	if(is_moderator($fid, "canviewdeleted") == TRUE || is_moderator($fid, "canviewunapprove") == TRUE)
 	{
-		if(is_moderator($fid, "canviewdeleted") == true)
+		if(is_moderator($fid, "canviewdeleted") == TRUE)
 		{
 			$threadcount += $forum_threads['deletedthreads'];
 		}
-		if(is_moderator($fid, "canviewunapprove") == true)
+		if(is_moderator($fid, "canviewunapprove") == TRUE)
 		{
 			$threadcount += $forum_threads['unapprovedthreads'];
 		}
@@ -698,7 +698,7 @@ if($mybb->input['action'] == "thread")
 	}
 
 	// Create the admin tools dropdown box.
-	if($ismod == true)
+	if($ismod == TRUE)
 	{
 		$closeoption = $closelinkch = $stickch = '';
 
@@ -997,7 +997,7 @@ if($mybb->input['action'] == "thread")
 		// Work out if we have terms to highlight
 		$highlight = "";
 		$threadmode = "";
-		if($mybb->seo_support == true)
+		if($mybb->seo_support == TRUE)
 		{
 			if($mybb->get_input('highlight'))
 			{
@@ -1215,7 +1215,7 @@ if($mybb->input['action'] == "thread")
 		if($mybb->settings['captchaimage'] && !$mybb->user['uid'])
 		{
 			require_once MYBB_ROOT.'inc/class_captcha.php';
-			$post_captcha = new captcha(true, "post_captcha");
+			$post_captcha = new captcha(TRUE, "post_captcha");
 
 			if($post_captcha->html)
 			{
@@ -1454,7 +1454,7 @@ if($mybb->input['action'] == "thread")
 	// Display 'add poll' link to thread creator (or mods) if thread doesn't have a poll already
 	$addpoll = '';
 	$time = TIME_NOW;
-	if(!$thread['poll'] && ($thread['uid'] == $mybb->user['uid'] || $ismod == true) && $forumpermissions['canpostpolls'] == 1 && $forum['open'] != 0 && $thread['closed'] != 1 && ($ismod == true || $thread['dateline'] > ($time-($mybb->settings['polltimelimit']*60*60)) || $mybb->settings['polltimelimit'] == 0))
+	if(!$thread['poll'] && ($thread['uid'] == $mybb->user['uid'] || $ismod == TRUE) && $forumpermissions['canpostpolls'] == 1 && $forum['open'] != 0 && $thread['closed'] != 1 && ($ismod == TRUE || $thread['dateline'] > ($time-($mybb->settings['polltimelimit']*60*60)) || $mybb->settings['polltimelimit'] == 0))
 	{
 		eval("\$addpoll = \"".$templates->get("showthread_add_poll")."\";");
 	}

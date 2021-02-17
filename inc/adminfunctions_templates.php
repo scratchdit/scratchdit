@@ -17,7 +17,7 @@
  * @param int $autocreate Set to 1 to automatically create templates which do not exist for sets with SID > 0 (based off master) - defaults to 1
  * @param mixed $sid Template SID to modify, false for every SID > 0 and SID = -1
  * @param int $limit The maximum possible replacements for the regular expression
- * @return boolean true if updated one or more templates, false if not.
+ * @return boolean TRUE if updated one or more templates, false if not.
  */
 
 function find_replace_templatesets($title, $find, $replace, $autocreate=1, $sid=false, $limit=-1)
@@ -58,7 +58,7 @@ function find_replace_templatesets($title, $find, $replace, $autocreate=1, $sid=
 		);
 		$db->update_query("templates", $updated_template, "tid='{$template['tid']}'");
 
-		$return = true;
+		$return = TRUE;
 	}
 
 	// Add any new templates if we need to and are allowed to
@@ -85,7 +85,7 @@ function find_replace_templatesets($title, $find, $replace, $autocreate=1, $sid=
 				);
 				$db->insert_query("templates", $insert_template);
 
-				$return = true;
+				$return = TRUE;
 			}
 		}
 	}

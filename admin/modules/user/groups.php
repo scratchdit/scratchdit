@@ -1309,7 +1309,7 @@ if($mybb->input['action'] == "delete")
 		$updated_users = array("displaygroup" => "usergroup");
 		$plugins->run_hooks("admin_user_groups_delete_commit");
 
-		$db->update_query("users", $updated_users, "displaygroup='{$usergroup['gid']}'", "", true); // No quotes = displaygroup=usergroup
+		$db->update_query("users", $updated_users, "displaygroup='{$usergroup['gid']}'", "", TRUE); // No quotes = displaygroup=usergroup
 
 		switch($db->type)
 		{
@@ -1327,7 +1327,7 @@ if($mybb->input['action'] == "delete")
 
 		$db->update_query("banned", array("gid" => 7), "gid='{$usergroup['gid']}'");
 		$db->update_query("banned", array("oldgroup" => 2), "oldgroup='{$usergroup['gid']}'");
-		$db->update_query("banned", array("olddisplaygroup" => "oldgroup"), "olddisplaygroup='{$usergroup['gid']}'", "", true); // No quotes = displaygroup=usergroup
+		$db->update_query("banned", array("olddisplaygroup" => "oldgroup"), "olddisplaygroup='{$usergroup['gid']}'", "", TRUE); // No quotes = displaygroup=usergroup
 
 		$db->delete_query("forumpermissions", "gid='{$usergroup['gid']}'");
 		$db->delete_query("calendarpermissions", "gid='{$usergroup['gid']}'");

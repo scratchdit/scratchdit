@@ -248,11 +248,11 @@ if($mybb->request_method == "post")
 		$mybb->input['from'] = $mybb->get_input('from');
 		if(!empty($mybb->input['from']))
 		{
-			redirect($mybb->input['from'], $lang->contact_success_message, '', true);
+			redirect($mybb->input['from'], $lang->contact_success_message, '', TRUE);
 		}
 		else
 		{
-			redirect('index.php', $lang->contact_success_message, '', true);
+			redirect('index.php', $lang->contact_success_message, '', TRUE);
 		}
 	}
 	else
@@ -271,7 +271,7 @@ $captcha = '';
 
 if($mybb->settings['captchaimage'] && !$mybb->user['uid'])
 {
-	$post_captcha = new captcha(true, "post_captcha");
+	$post_captcha = new captcha(TRUE, "post_captcha");
 
 	if($post_captcha->html)
 	{

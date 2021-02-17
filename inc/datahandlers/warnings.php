@@ -86,7 +86,7 @@ class WarningsHandler extends DataHandler
 			return false;
 		}
 
-		return true;
+		return TRUE;
 	}
 
 	/**
@@ -106,7 +106,7 @@ class WarningsHandler extends DataHandler
 			return false;
 		}
 
-		return true;
+		return TRUE;
 	}
 
 	/**
@@ -124,7 +124,7 @@ class WarningsHandler extends DataHandler
 			return false;
 		}
 
-		return true;
+		return TRUE;
 	}
 
 	/**
@@ -148,7 +148,7 @@ class WarningsHandler extends DataHandler
 			}
 		}
 
-		return true;
+		return TRUE;
 	}
 
 	/**
@@ -237,7 +237,7 @@ class WarningsHandler extends DataHandler
 			}
 		}
 
-		return true;
+		return TRUE;
 	}
 
 	/**
@@ -268,14 +268,14 @@ class WarningsHandler extends DataHandler
 		$plugins->run_hooks("datahandler_warnings_validate_warning", $this);
 
 		// We are done validating, return.
-		$this->set_validated(true);
+		$this->set_validated(TRUE);
 
 		if(count($this->get_errors()) > 0)
 		{
 			return false;
 		}
 
-		return true;
+		return TRUE;
 	}
 
 	/**
@@ -352,7 +352,7 @@ class WarningsHandler extends DataHandler
 			$db->update_query("users", $updated_user, "uid='".(int)$uid."'");
 		}
 
-		return true;
+		return TRUE;
 	}
 
 	/**

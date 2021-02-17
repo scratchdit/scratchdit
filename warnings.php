@@ -119,7 +119,7 @@ if($mybb->input['action'] == "do_warn" && $mybb->request_method == "post")
 			}
 
 			// Some kind of friendly error notification
-			if(!send_pm($pm, $sender_uid, true))
+			if(!send_pm($pm, $sender_uid, TRUE))
 			{
 				$warningshandler->friendly_action .= $lang->redirect_warned_pmerror;
 			}
@@ -231,7 +231,7 @@ if($mybb->input['action'] == "warn")
 			WHERE w.pid='".$mybb->get_input('pid', MyBB::INPUT_INT)."'
 			ORDER BY w.expired ASC, w.dateline DESC
 		");
-		$first = true;
+		$first = TRUE;
 		$warnings = '';
 		while($warning = $db->fetch_array($query))
 		{

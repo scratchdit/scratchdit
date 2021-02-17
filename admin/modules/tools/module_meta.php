@@ -15,7 +15,7 @@ if(!defined("IN_MYBB"))
 }
 
 /**
- * @return bool true
+ * @return bool TRUE
  */
 function tools_meta()
 {
@@ -35,7 +35,7 @@ function tools_meta()
 
 	$page->add_menu_item($lang->tools_and_maintenance, "tools", "index.php?module=tools", 50, $sub_menu);
 
-	return true;
+	return TRUE;
 }
 
 /**

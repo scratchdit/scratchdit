@@ -226,7 +226,7 @@ if($mybb->input['action'] == "add")
 			<table cellpadding=\"4\">
 				<tr>
 					<td valign=\"top\"><small>{$lang->groups_colon}</small></td>
-					<td>".$form->generate_group_select('select[groups][]', $selected_values, array('id' => 'groups', 'multiple' => true, 'size' => 5))."</td>
+					<td>".$form->generate_group_select('select[groups][]', $selected_values, array('id' => 'groups', 'multiple' => TRUE, 'size' => 5))."</td>
 				</tr>
 			</table>
 		</dd>
@@ -270,7 +270,7 @@ if($mybb->input['action'] == "add")
 			<table cellpadding=\"4\">
 				<tr>
 					<td valign=\"top\"><small>{$lang->forums_colon}</small></td>
-					<td>".$form->generate_forum_select('select[forums][]', $selected_values, array('id' => 'forums', 'multiple' => true, 'size' => 5))."</td>
+					<td>".$form->generate_forum_select('select[forums][]', $selected_values, array('id' => 'forums', 'multiple' => TRUE, 'size' => 5))."</td>
 				</tr>
 			</table>
 		</dd>
@@ -508,7 +508,7 @@ if($mybb->input['action'] == "edit")
 			<table cellpadding=\"4\">
 				<tr>
 					<td valign=\"top\"><small>{$lang->groups_colon}</small></td>
-					<td>".$form->generate_group_select('select[groups][]', $selected_values, array('id' => 'groups', 'multiple' => true, 'size' => 5))."</td>
+					<td>".$form->generate_group_select('select[groups][]', $selected_values, array('id' => 'groups', 'multiple' => TRUE, 'size' => 5))."</td>
 				</tr>
 			</table>
 		</dd>
@@ -552,7 +552,7 @@ if($mybb->input['action'] == "edit")
 			<table cellpadding=\"4\">
 				<tr>
 					<td valign=\"top\"><small>{$lang->forums_colon}</small></td>
-					<td>".$form->generate_forum_select('select[forums][]', $selected_values, array('id' => 'forums', 'multiple' => true, 'size' => 5))."</td>
+					<td>".$form->generate_forum_select('select[forums][]', $selected_values, array('id' => 'forums', 'multiple' => TRUE, 'size' => 5))."</td>
 				</tr>
 			</table>
 		</dd>
@@ -696,7 +696,7 @@ if(!$mybb->input['action'])
 	{
 		// Just show default icons in ACP
 		$attachment_type['icon'] = htmlspecialchars_uni(str_replace("{theme}", "images", $attachment_type['icon']));
-		if(my_validate_url($attachment_type['icon'], true))
+		if(my_validate_url($attachment_type['icon'], TRUE))
 		{
 			$image = $attachment_type['icon'];
 		}

@@ -254,7 +254,7 @@ if($mybb->settings['enableattachments'] == 1 && $mybb->get_input('attachmentaid'
 	if($mybb->get_input('ajax', MyBB::INPUT_INT) == 1)
 	{
 		header("Content-type: application/json; charset={$lang->settings['charset']}");
-		echo json_encode(array("success" => true));
+		echo json_encode(array("success" => TRUE));
 		exit();
 	}
 

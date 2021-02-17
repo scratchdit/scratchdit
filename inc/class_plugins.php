@@ -78,7 +78,7 @@ class pluginSystem
 			// Check to see if we already have this hook running at this priority
 			if(!empty($this->hooks[$hook][$priority][$method_representation]) && is_array($this->hooks[$hook][$priority][$method_representation]))
 			{
-				return true;
+				return TRUE;
 			}
 
 			// Add the hook
@@ -92,7 +92,7 @@ class pluginSystem
 			// Check to see if we already have this hook running at this priority
 			if(!empty($this->hooks[$hook][$priority][$function]) && is_array($this->hooks[$hook][$priority][$function]))
 			{
-				return true;
+				return TRUE;
 			}
 
 			// Add the hook
@@ -102,7 +102,7 @@ class pluginSystem
 			);
 		}
 
-		return true;
+		return TRUE;
 	}
 
 	/**
@@ -182,7 +182,7 @@ class pluginSystem
 
 			if(!isset($this->hooks[$hook][$priority][$method_representation]))
 			{
-				return true;
+				return TRUE;
 			}
 			unset($this->hooks[$hook][$priority][$method_representation]);
 		}
@@ -191,12 +191,12 @@ class pluginSystem
 			// Check to see if we don't already have this hook running at this priority
 			if(!isset($this->hooks[$hook][$priority][$function]))
 			{
-				return true;
+				return TRUE;
 			}
 			unset($this->hooks[$hook][$priority][$function]);
 		}
 
-		return true;
+		return TRUE;
 	}
 
 	/**
@@ -212,7 +212,7 @@ class pluginSystem
 		// Ignore potentially missing plugins.
 		if(!file_exists(MYBB_ROOT."inc/plugins/".$plugin.".php"))
 		{
-			return true;
+			return TRUE;
 		}
 
 		require_once MYBB_ROOT."inc/plugins/".$plugin.".php";
@@ -227,7 +227,7 @@ class pluginSystem
 		// No compatibility set or compatibility = * - assume compatible
 		if(!$plugin_info['compatibility'] || $plugin_info['compatibility'] == "*")
 		{
-			return true;
+			return TRUE;
 		}
 		$compatibility = explode(",", $plugin_info['compatibility']);
 		foreach($compatibility as $version)
@@ -237,7 +237,7 @@ class pluginSystem
 			$version = str_replace("\.+", ".+", $version);
 			if(preg_match("#{$version}#i", $mybb->version_code))
 			{
-				return true;
+				return TRUE;
 			}
 		}
 

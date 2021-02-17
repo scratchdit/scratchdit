@@ -206,7 +206,7 @@ else
 			}
 		}
 
-		my_setcookie("mybbuser", $user['uid']."_".$user['loginkey'], null, true, "lax");
+		my_setcookie("mybbuser", $user['uid']."_".$user['loginkey'], null, TRUE, "lax");
 
 		header("Location: ./upgrade.php");
 	}
@@ -323,13 +323,13 @@ else
 	{
 		add_upgrade_store("allow_anonymous_info", $mybb->get_input('allow_anonymous_info', MyBB::INPUT_INT));
 		require_once INSTALL_ROOT."resources/upgrade".$mybb->get_input('from', MyBB::INPUT_INT).".php";
-		if($db->table_exists("datacache") && $upgrade_detail['requires_deactivated_plugins'] == 1 && $mybb->get_input('donewarning') != "true")
+		if($db->table_exists("datacache") && $upgrade_detail['requires_deactivated_plugins'] == 1 && $mybb->get_input('donewarning') != "TRUE")
 		{
-			$plugins = $cache->read('plugins', true);
+			$plugins = $cache->read('plugins', TRUE);
 			if(!empty($plugins['active']))
 			{
 				$output->print_header();
-				$lang->plugin_warning = "<input type=\"hidden\" name=\"from\" value=\"".$mybb->get_input('from', MyBB::INPUT_INT)."\" />\n<input type=\"hidden\" name=\"donewarning\" value=\"true\" />\n<div class=\"error\"><strong><span style=\"color: red\">Warning:</span></strong> <p>There are still ".count($plugins['active'])." plugin(s) active. Active plugins can sometimes cause problems during an upgrade procedure or may break your forum afterward. It is <strong>strongly</strong> reccommended that you deactivate your plugins before continuing.</p></div> <br />";
+				$lang->plugin_warning = "<input type=\"hidden\" name=\"from\" value=\"".$mybb->get_input('from', MyBB::INPUT_INT)."\" />\n<input type=\"hidden\" name=\"donewarning\" value=\"TRUE\" />\n<div class=\"error\"><strong><span style=\"color: red\">Warning:</span></strong> <p>There are still ".count($plugins['active'])." plugin(s) active. Active plugins can sometimes cause problems during an upgrade procedure or may break your forum afterward. It is <strong>strongly</strong> reccommended that you deactivate your plugins before continuing.</p></div> <br />";
 				$output->print_contents($lang->sprintf($lang->plugin_warning, $mybb->version));
 				$output->print_footer("doupgrade");
 			}
@@ -593,7 +593,7 @@ function buildcaches()
 	$cache->update_groupleaders();
 	$cache->update_threadprefixes();
 	$cache->update_forumsdisplay();
-	$cache->update_reportreasons(true);
+	$cache->update_reportreasons(TRUE);
 
 	$contents .= $lang->done."</p>";
 

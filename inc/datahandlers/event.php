@@ -76,7 +76,7 @@ class EventDataHandler extends DataHandler
 			$this->set_error("missing_name");
 			return false;
 		}
-		return true;
+		return TRUE;
 	}
 
 	/**
@@ -93,7 +93,7 @@ class EventDataHandler extends DataHandler
 			$this->set_error("missing_description");
 			return false;
 		}
-		return true;
+		return TRUE;
 	}
 
 	/**
@@ -242,7 +242,7 @@ class EventDataHandler extends DataHandler
 		$event['starttime'] = $start_timestamp;
 		$event['endtime'] = $end_timestamp;
 
-		return true;
+		return TRUE;
 	}
 
 	/**
@@ -291,7 +291,7 @@ class EventDataHandler extends DataHandler
 
 		if(!is_array($event['repeats']) || !$event['repeats']['repeats'])
 		{
-			return true;
+			return TRUE;
 		}
 
 		if(!$event['endtime'])
@@ -387,13 +387,13 @@ class EventDataHandler extends DataHandler
 		require_once MYBB_ROOT."inc/functions_calendar.php";
 		$event['starttime_user'] = $event['starttime'];
 		$event['endtime_user'] = $event['endtime'];
-		$next_occurance = fetch_next_occurance($event, array('start' => $event['starttime'], 'end' => $event['endtime']), $event['starttime'], true);
+		$next_occurance = fetch_next_occurance($event, array('start' => $event['starttime'], 'end' => $event['endtime']), $event['starttime'], TRUE);
 		if($next_occurance > $event['endtime'])
 		{
 			$this->set_error("event_wont_occur");
 			return false;
 		}
-		return true;
+		return TRUE;
 	}
 
 	/**
@@ -430,14 +430,14 @@ class EventDataHandler extends DataHandler
 		$plugins->run_hooks("datahandler_event_validate", $this);
 
 		// We are done validating, return.
-		$this->set_validated(true);
+		$this->set_validated(TRUE);
 		if(count($this->get_errors()) > 0)
 		{
 			return false;
 		}
 		else
 		{
-			return true;
+			return TRUE;
 		}
 	}
 

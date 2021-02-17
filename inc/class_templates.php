@@ -131,7 +131,7 @@ class templates
 	 * @param boolean $htmlcomments True to output HTML comments, false to not output.
 	 * @return string The eval()-ready PHP code for rendering the template
 	 */
-	function render($template, $eslashes=true, $htmlcomments=true)
+	function render($template, $eslashes=TRUE, $htmlcomments=TRUE)
 	{
 		return 'return "'.$this->get($template, $eslashes, $htmlcomments).'";';
 	}

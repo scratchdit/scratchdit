@@ -120,7 +120,7 @@ class DB_MySQL implements DB_Base
 	 *
 	 * @var boolean
 	 */
-	public $can_search = true;
+	public $can_search = TRUE;
 
 	/**
 	 * The database encoding currently in use (if supported)
@@ -274,7 +274,7 @@ class DB_MySQL implements DB_Base
 		{
 			$this->current_link = &$this->write_link;
 			$write_success = @mysql_select_db($database, $this->write_link) or $this->error("[WRITE] Unable to select database", $this->write_link);
-			$success = ($read_success && $write_success ? true : false);
+			$success = ($read_success && $write_success ? TRUE : false);
 		}
 		else
 		{
@@ -581,7 +581,7 @@ class DB_MySQL implements DB_Base
 	 * Output a database error.
 	 *
 	 * @param string $string The string to present as an error.
-	 * @return bool Returns false if error reporting is disabled, otherwise true
+	 * @return bool Returns false if error reporting is disabled, otherwise TRUE
 	 */
 	function error($string="")
 	{
@@ -609,7 +609,7 @@ class DB_MySQL implements DB_Base
 				trigger_error("<strong>[SQL] [".$this->error_number()."] ".$this->error_string()."</strong><br />{$string}", E_USER_ERROR);
 			}
 
-			return true;
+			return TRUE;
 		}
 		else
 		{
@@ -700,7 +700,7 @@ class DB_MySQL implements DB_Base
 		$exists = $this->num_rows($query);
 		if($exists > 0)
 		{
-			return true;
+			return TRUE;
 		}
 		else
 		{
@@ -725,7 +725,7 @@ class DB_MySQL implements DB_Base
 		$exists = $this->num_rows($query);
 		if($exists > 0)
 		{
-			return true;
+			return TRUE;
 		}
 		else
 		{
@@ -910,7 +910,7 @@ class DB_MySQL implements DB_Base
 		$query = "";
 		$quote = "'";
 
-		if($no_quote == true)
+		if($no_quote == TRUE)
 		{
 			$quote = "";
 		}
@@ -1031,7 +1031,7 @@ class DB_MySQL implements DB_Base
 	 * Frees the resources of a MySQLi query.
 	 *
 	 * @param resource $query The query to destroy.
-	 * @return boolean Returns true on success, false on faliure
+	 * @return boolean Returns TRUE on success, false on faliure
 	 */
 	function free_result($query)
 	{
@@ -1137,7 +1137,7 @@ class DB_MySQL implements DB_Base
 		{
 			if(preg_match("#FULLTEXT KEY (`?)$index(`?)#i", $structure))
 			{
-				return true;
+				return TRUE;
 			}
 			else
 			{
@@ -1146,7 +1146,7 @@ class DB_MySQL implements DB_Base
 		}
 		if(preg_match('#FULLTEXT KEY#i', $structure))
 		{
-			return true;
+			return TRUE;
 		}
 		return false;
 	}
@@ -1173,11 +1173,11 @@ class DB_MySQL implements DB_Base
 		}
 		if(version_compare($version, '3.23.23', '>=') && ($table_type == 'MYISAM' || $table_type == 'ARIA'))
 		{
-			return true;
+			return TRUE;
 		}
 		elseif(version_compare($version, '5.6', '>=') && $table_type == 'INNODB')
 		{
-			return true;
+			return TRUE;
 		}
 		return false;
 	}
@@ -1197,14 +1197,14 @@ class DB_MySQL implements DB_Base
 		{
 			if($ukey['Key_name'] == $index)
 			{
-				$index_exists = true;
+				$index_exists = TRUE;
 				break;
 			}
 		}
 
 		if($index_exists)
 		{
-			return true;
+			return TRUE;
 		}
 
 		return false;
@@ -1220,9 +1220,9 @@ class DB_MySQL implements DB_Base
 	{
 		$version = $this->get_version();
 		$supports_fulltext = $this->supports_fulltext($table);
-		if(version_compare($version, '4.0.1', '>=') && $supports_fulltext == true)
+		if(version_compare($version, '4.0.1', '>=') && $supports_fulltext == TRUE)
 		{
-			return true;
+			return TRUE;
 		}
 		return false;
 	}
@@ -1263,7 +1263,7 @@ class DB_MySQL implements DB_Base
 	 * @param boolean $hard hard drop - no checking
 	 * @param boolean $table_prefix use table prefix
 	 */
-	function drop_table($table, $hard=false, $table_prefix=true)
+	function drop_table($table, $hard=false, $table_prefix=TRUE)
 	{
 		if($table_prefix == false)
 		{
@@ -1292,7 +1292,7 @@ class DB_MySQL implements DB_Base
 	 * @param boolean $table_prefix use table prefix
 	 * @return resource
 	 */
-	function rename_table($old_table, $new_table, $table_prefix=true)
+	function rename_table($old_table, $new_table, $table_prefix=TRUE)
 	{
 		if($table_prefix == false)
 		{
@@ -1315,7 +1315,7 @@ class DB_MySQL implements DB_Base
 	 * @param boolean $insert_id Whether or not to return an insert id. True by default
 	 * @return resource|bool
 	 */
-	function replace_query($table, $replacements=array(), $default_field="", $insert_id=true)
+	function replace_query($table, $replacements=array(), $default_field="", $insert_id=TRUE)
 	{
 		global $mybb;
 
@@ -1385,7 +1385,7 @@ class DB_MySQL implements DB_Base
 	 * @param string $new_definition the new column definition
 	 * @param boolean|string $new_not_null Whether to "drop" or "set" the NOT NULL attribute (no change if false)
 	 * @param boolean|string $new_default_value The new default value, or false to drop the attribute
-	 * @return bool Returns true if all queries are executed successfully or false if one of them failed
+	 * @return bool Returns TRUE if all queries are executed successfully or false if one of them failed
 	 */
 	function modify_column($table, $column, $new_definition, $new_not_null=false, $new_default_value=false)
 	{
@@ -1428,7 +1428,7 @@ class DB_MySQL implements DB_Base
 	 * @param string $new_definition the new column definition
 	 * @param boolean|string $new_not_null Whether to "drop" or "set" the NOT NULL attribute (no change if false)
 	 * @param boolean|string $new_default_value The new default value, or false to drop the attribute
-	 * @return bool Returns true if all queries are executed successfully
+	 * @return bool Returns TRUE if all queries are executed successfully
 	 */
 	function rename_column($table, $old_column, $new_column, $new_definition, $new_not_null=false, $new_default_value=false)
 	{

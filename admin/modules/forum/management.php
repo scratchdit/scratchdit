@@ -239,11 +239,11 @@ if($mybb->input['action'] == "copy")
 
 	if($copy_data['type'] == "f")
 	{
-		$create_a_options_f['checked'] = true;
+		$create_a_options_f['checked'] = TRUE;
 	}
 	else
 	{
-		$create_a_options_c['checked'] = true;
+		$create_a_options_c['checked'] = TRUE;
 	}
 
 	$usergroups = array();
@@ -258,7 +258,7 @@ if($mybb->input['action'] == "copy")
 	$form_container->output_row($lang->source_forum." <em>*</em>", $lang->source_forum_desc, $form->generate_forum_select('from', $copy_data['from'], array('id' => 'from')), 'from');
 	$form_container->output_row($lang->destination_forum." <em>*</em>", $lang->destination_forum_desc, $form->generate_forum_select('to', $copy_data['to'], array('id' => 'to', 'main_option' => $lang->copy_to_new_forum)), 'to');
 	$form_container->output_row($lang->copy_settings_and_properties, $lang->copy_settings_and_properties_desc, $form->generate_yes_no_radio('copyforumsettings', $copy_data['copyforumsettings']));
-	$form_container->output_row($lang->copy_user_group_permissions, $lang->copy_user_group_permissions_desc, $form->generate_select_box('copygroups[]', $usergroups, $copy_data['copygroups'], array('id' => 'copygroups', 'multiple' => true, 'size' => 5)), 'copygroups');
+	$form_container->output_row($lang->copy_user_group_permissions, $lang->copy_user_group_permissions_desc, $form->generate_select_box('copygroups[]', $usergroups, $copy_data['copygroups'], array('id' => 'copygroups', 'multiple' => TRUE, 'size' => 5)), 'copygroups');
 
 	$form_container->end();
 
@@ -1015,11 +1015,11 @@ if($mybb->input['action'] == "add")
 
 	if($forum_data['type'] == "f")
 	{
-		$create_a_options_f['checked'] = true;
+		$create_a_options_f['checked'] = TRUE;
 	}
 	else
 	{
-		$create_a_options_c['checked'] = true;
+		$create_a_options_c['checked'] = TRUE;
 	}
 
 	$form_container = new FormContainer($lang->add_forum);
@@ -1192,19 +1192,19 @@ if($mybb->input['action'] == "add")
 			elseif(is_array($cached_forum_perms) && isset($forum_data['fid']) && !empty($cached_forum_perms[$forum_data['fid']][$usergroup['gid']]))
 			{
 				$perms = $cached_forum_perms[$forum_data['fid']][$usergroup['gid']];
-				$default_checked = true;
+				$default_checked = TRUE;
 			}
 			else if(is_array($cached_forum_perms) && isset($forum_data['fid']) && !empty($cached_forum_perms[$forum_data['pid']][$usergroup['gid']]))
 			{
 				$perms = $cached_forum_perms[$forum_data['pid']][$usergroup['gid']];
-				$default_checked = true;
+				$default_checked = TRUE;
 			}
 		}
 
 		if(!$perms)
 		{
 			$perms = $usergroup;
-			$default_checked = true;
+			$default_checked = TRUE;
 		}
 
 		foreach($field_list as $forum_permission => $forum_perm_title)
@@ -1213,7 +1213,7 @@ if($mybb->input['action'] == "add")
 			{
 				if($mybb->input['default_permissions'][$usergroup['gid']])
 				{
-					$default_checked = true;
+					$default_checked = TRUE;
 				}
 				else
 				{
@@ -1293,7 +1293,7 @@ document.write('".str_replace("/", "\/", $field_select)."');
 			}
 		}
 
-		$field_select .= "<noscript>".$form->generate_select_box('fields_'.$usergroup['gid'].'[]', $field_options, $field_selected, array('id' => 'fields_'.$usergroup['gid'].'[]', 'multiple' => true))."</noscript>\n";
+		$field_select .= "<noscript>".$form->generate_select_box('fields_'.$usergroup['gid'].'[]', $field_options, $field_selected, array('id' => 'fields_'.$usergroup['gid'].'[]', 'multiple' => TRUE))."</noscript>\n";
 		$form_container->output_cell($field_select, array('colspan' => 2));
 
 		$form_container->construct_row();
@@ -1571,11 +1571,11 @@ if($mybb->input['action'] == "edit")
 
 	if($forum_data['type'] == "f")
 	{
-		$create_a_options_f['checked'] = true;
+		$create_a_options_f['checked'] = TRUE;
 	}
 	else
 	{
-		$create_a_options_c['checked'] = true;
+		$create_a_options_c['checked'] = TRUE;
 	}
 
 	$form_container = new FormContainer($lang->edit_forum);
@@ -1742,19 +1742,19 @@ if($mybb->input['action'] == "edit")
 				elseif(is_array($cached_forum_perms) && $cached_forum_perms[$forum_data['fid']][$usergroup['gid']])
 				{
 					$perms = $cached_forum_perms[$forum_data['fid']][$usergroup['gid']];
-					$default_checked = true;
+					$default_checked = TRUE;
 				}
 				else if(is_array($cached_forum_perms) && $cached_forum_perms[$forum_data['pid']][$usergroup['gid']])
 				{
 					$perms = $cached_forum_perms[$forum_data['pid']][$usergroup['gid']];
-					$default_checked = true;
+					$default_checked = TRUE;
 				}
 			}
 
 			if(!$perms)
 			{
 				$perms = $usergroup;
-				$default_checked = true;
+				$default_checked = TRUE;
 			}
 		}
 		else
@@ -1767,18 +1767,18 @@ if($mybb->input['action'] == "edit")
 			elseif(is_array($cached_forum_perms) && !empty($cached_forum_perms[$forum_data['fid']][$usergroup['gid']]))
 			{
 				$perms = $cached_forum_perms[$forum_data['fid']][$usergroup['gid']];
-				$default_checked = true;
+				$default_checked = TRUE;
 			}
 			else if(is_array($cached_forum_perms) && !empty($cached_forum_perms[$forum_data['pid']][$usergroup['gid']]))
 			{
 				$perms = $cached_forum_perms[$forum_data['pid']][$usergroup['gid']];
-				$default_checked = true;
+				$default_checked = TRUE;
 			}
 
 			if(!$perms)
 			{
 				$perms = $usergroup;
-				$default_checked = true;
+				$default_checked = TRUE;
 			}
 		}
 
@@ -1861,17 +1861,17 @@ document.write('".str_replace("/", "\/", $field_select)."');
 			}
 		}
 
-		$field_select .= "<noscript>".$form->generate_select_box('fields_'.$usergroup['gid'].'[]', $field_options, $field_selected, array('id' => 'fields_'.$usergroup['gid'].'[]', 'multiple' => true))."</noscript>\n";
+		$field_select .= "<noscript>".$form->generate_select_box('fields_'.$usergroup['gid'].'[]', $field_options, $field_selected, array('id' => 'fields_'.$usergroup['gid'].'[]', 'multiple' => TRUE))."</noscript>\n";
 		$form_container->output_cell($field_select, array('colspan' => 2));
 
 		if(!$default_checked)
 		{
-			$form_container->output_cell("<a href=\"index.php?module=forum-management&amp;action=permissions&amp;pid={$perms['pid']}\" onclick=\"MyBB.popupWindow('index.php?module=forum-management&action=permissions&pid={$perms['pid']}&ajax=1', null, true); return false;\">{$lang->edit_permissions}</a>", array("class" => "align_center"));
+			$form_container->output_cell("<a href=\"index.php?module=forum-management&amp;action=permissions&amp;pid={$perms['pid']}\" onclick=\"MyBB.popupWindow('index.php?module=forum-management&action=permissions&pid={$perms['pid']}&ajax=1', null, TRUE); return false;\">{$lang->edit_permissions}</a>", array("class" => "align_center"));
 			$form_container->output_cell("<a href=\"index.php?module=forum-management&amp;action=clear_permission&amp;pid={$perms['pid']}&amp;my_post_key={$mybb->post_code}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_clear_custom_permission}')\">{$lang->clear_custom_perms}</a>", array("class" => "align_center"));
 		}
 		else
 		{
-			$form_container->output_cell("<a href=\"index.php?module=forum-management&amp;action=permissions&amp;gid={$usergroup['gid']}&amp;fid={$fid}\" onclick=\"MyBB.popupWindow('index.php?module=forum-management&action=permissions&gid={$usergroup['gid']}&fid={$fid}&ajax=1', null, true); return false;\">{$lang->set_custom_perms}</a>", array("class" => "align_center", "colspan" => 2));
+			$form_container->output_cell("<a href=\"index.php?module=forum-management&amp;action=permissions&amp;gid={$usergroup['gid']}&amp;fid={$fid}\" onclick=\"MyBB.popupWindow('index.php?module=forum-management&action=permissions&gid={$usergroup['gid']}&fid={$fid}&ajax=1', null, TRUE); return false;\">{$lang->set_custom_perms}</a>", array("class" => "align_center", "colspan" => 2));
 		}
 
 		$form_container->construct_row(array('id' => 'row_'.$usergroup['gid']));
@@ -2383,7 +2383,7 @@ if(!$mybb->input['action'])
 	{
 		$form_container->output_cell($lang->no_forums, array('colspan' => 3));
 		$form_container->construct_row();
-		$no_results = true;
+		$no_results = TRUE;
 	}
 
 	$form_container->end();
@@ -2460,19 +2460,19 @@ if(!$mybb->input['action'])
 					elseif(is_array($cached_forum_perms) && isset($cached_forum_perms[$forum['fid']]) && $cached_forum_perms[$forum['fid']][$usergroup['gid']])
 					{
 						$perms = $cached_forum_perms[$forum['fid']][$usergroup['gid']];
-						$default_checked = true;
+						$default_checked = TRUE;
 					}
 					else if(is_array($cached_forum_perms) && isset($cached_forum_perms[$forum['pid']]) && $cached_forum_perms[$forum['pid']][$usergroup['gid']])
 					{
 						$perms = $cached_forum_perms[$forum['pid']][$usergroup['gid']];
-						$default_checked = true;
+						$default_checked = TRUE;
 					}
 				}
 
 				if(!$perms)
 				{
 					$perms = $usergroup;
-					$default_checked = true;
+					$default_checked = TRUE;
 				}
 			}
 			else
@@ -2485,18 +2485,18 @@ if(!$mybb->input['action'])
 				elseif(is_array($cached_forum_perms) && isset($cached_forum_perms[$forum['fid']][$usergroup['gid']]) && $cached_forum_perms[$forum['fid']][$usergroup['gid']])
 				{
 					$perms = $cached_forum_perms[$forum['fid']][$usergroup['gid']];
-					$default_checked = true;
+					$default_checked = TRUE;
 				}
 				else if(is_array($cached_forum_perms) && isset($cached_forum_perms[$forum['pid']][$usergroup['gid']]) && $cached_forum_perms[$forum['pid']][$usergroup['gid']])
 				{
 					$perms = $cached_forum_perms[$forum['pid']][$usergroup['gid']];
-					$default_checked = true;
+					$default_checked = TRUE;
 				}
 
 				if(!$perms)
 				{
 					$perms = $usergroup;
-					$default_checked = true;
+					$default_checked = TRUE;
 				}
 			}
 			foreach($field_list as $forum_permission => $forum_perm_title)
@@ -2578,17 +2578,17 @@ document.write('".str_replace("/", "\/", $field_select)."');
 				}
 			}
 
-			$field_select .= "<noscript>".$form->generate_select_box('fields_'.$usergroup['gid'].'[]', $field_options, $field_selected, array('id' => 'fields_'.$usergroup['gid'].'[]', 'multiple' => true))."</noscript>\n";
+			$field_select .= "<noscript>".$form->generate_select_box('fields_'.$usergroup['gid'].'[]', $field_options, $field_selected, array('id' => 'fields_'.$usergroup['gid'].'[]', 'multiple' => TRUE))."</noscript>\n";
 			$form_container->output_cell($field_select, array('colspan' => 2));
 
 			if(!$default_checked)
 			{
-				$form_container->output_cell("<a href=\"index.php?module=forum-management&amp;action=permissions&amp;pid={$perms['pid']}\" onclick=\"MyBB.popupWindow('index.php?module=forum-management&action=permissions&pid={$perms['pid']}&ajax=1', null, true); return false;\">{$lang->edit_permissions}</a>", array("class" => "align_center"));
+				$form_container->output_cell("<a href=\"index.php?module=forum-management&amp;action=permissions&amp;pid={$perms['pid']}\" onclick=\"MyBB.popupWindow('index.php?module=forum-management&action=permissions&pid={$perms['pid']}&ajax=1', null, TRUE); return false;\">{$lang->edit_permissions}</a>", array("class" => "align_center"));
 				$form_container->output_cell("<a href=\"index.php?module=forum-management&amp;action=clear_permission&amp;pid={$perms['pid']}&amp;my_post_key={$mybb->post_code}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_clear_custom_permission}')\">{$lang->clear_custom_perms}</a>", array("class" => "align_center"));
 			}
 			else
 			{
-				$form_container->output_cell("<a href=\"index.php?module=forum-management&amp;action=permissions&amp;gid={$usergroup['gid']}&amp;fid={$fid}\"  onclick=\"MyBB.popupWindow('index.php?module=forum-management&action=permissions&gid={$usergroup['gid']}&fid={$fid}&ajax=1', null, true); return false;\">{$lang->set_custom_perms}</a>", array("class" => "align_center", "colspan" => 2));
+				$form_container->output_cell("<a href=\"index.php?module=forum-management&amp;action=permissions&amp;gid={$usergroup['gid']}&amp;fid={$fid}\"  onclick=\"MyBB.popupWindow('index.php?module=forum-management&action=permissions&gid={$usergroup['gid']}&fid={$fid}&ajax=1', null, TRUE); return false;\">{$lang->set_custom_perms}</a>", array("class" => "align_center", "colspan" => 2));
 			}
 			$form_container->construct_row(array('id' => 'row_'.$usergroup['gid']));
 
@@ -2923,7 +2923,7 @@ function retrieve_single_permissions_row($gid, $fid)
 		'canpostpolls' => $lang->perm_drag_canpostpolls,
 	);
 
-	$form = new Form('', '', "", 0, "", true);
+	$form = new Form('', '', "", 0, "", TRUE);
 	$form_container = new FormContainer();
 
 	$perms = array();
@@ -2936,18 +2936,18 @@ function retrieve_single_permissions_row($gid, $fid)
 	elseif(is_array($cached_forum_perms) && $cached_forum_perms[$forum_data['fid']][$usergroup['gid']])
 	{
 		$perms = $cached_forum_perms[$forum_data['fid']][$usergroup['gid']];
-		$default_checked = true;
+		$default_checked = TRUE;
 	}
 	else if(is_array($cached_forum_perms) && $cached_forum_perms[$forum_data['pid']][$usergroup['gid']])
 	{
 		$perms = $cached_forum_perms[$forum_data['pid']][$usergroup['gid']];
-		$default_checked = true;
+		$default_checked = TRUE;
 	}
 
 	if(!$perms)
 	{
 		$perms = $usergroup;
-		$default_checked = true;
+		$default_checked = TRUE;
 	}
 
 	foreach($field_list as $forum_permission => $forum_perm_title)
@@ -3005,14 +3005,14 @@ function retrieve_single_permissions_row($gid, $fid)
 
 	if(!$default_checked)
 	{
-		$form_container->output_cell("<a href=\"index.php?module=forum-management&amp;action=permissions&amp;pid={$perms['pid']}\" onclick=\"MyBB.popupWindow('index.php?module=forum-management&action=permissions&pid={$perms['pid']}&ajax=1', null, true); return false;\">{$lang->edit_permissions}</a>", array("class" => "align_center"));
+		$form_container->output_cell("<a href=\"index.php?module=forum-management&amp;action=permissions&amp;pid={$perms['pid']}\" onclick=\"MyBB.popupWindow('index.php?module=forum-management&action=permissions&pid={$perms['pid']}&ajax=1', null, TRUE); return false;\">{$lang->edit_permissions}</a>", array("class" => "align_center"));
 		$form_container->output_cell("<a href=\"index.php?module=forum-management&amp;action=clear_permission&amp;pid={$perms['pid']}&amp;my_post_key={$mybb->post_code}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_clear_custom_permission}')\">{$lang->clear_custom_perms}</a>", array("class" => "align_center"));
 	}
 	else
 	{
-		$form_container->output_cell("<a href=\"index.php?module=forum-management&amp;action=permissions&amp;gid={$usergroup['gid']}&amp;fid={$fid}\"  onclick=\"MyBB.popupWindow('index.php?module=forum-management&action=permissions&gid={$usergroup['gid']}&fid={$fid}&ajax=1', null, true); return false;\">{$lang->set_custom_perms}</a>", array("class" => "align_center", "colspan" => 2));
+		$form_container->output_cell("<a href=\"index.php?module=forum-management&amp;action=permissions&amp;gid={$usergroup['gid']}&amp;fid={$fid}\"  onclick=\"MyBB.popupWindow('index.php?module=forum-management&action=permissions&gid={$usergroup['gid']}&fid={$fid}&ajax=1', null, TRUE); return false;\">{$lang->set_custom_perms}</a>", array("class" => "align_center", "colspan" => 2));
 	}
 	$form_container->construct_row();
-	return $form_container->output_row_cells(0, true);
+	return $form_container->output_row_cells(0, TRUE);
 }
 

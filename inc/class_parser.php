@@ -864,7 +864,7 @@ class postParser
 		}
 
 		$username .= "'";
-		$delete_quote = true;
+		$delete_quote = TRUE;
 
 		preg_match("#pid=(?:&quot;|\"|')?([0-9]+)[\"']?(?:&quot;|\"|')?#i", $username, $match);
 		if((int)$match[1])
@@ -950,7 +950,7 @@ class postParser
 	*/
 	function mycode_parse_post_quotes_callback2($matches)
 	{
-		return $this->mycode_parse_post_quotes($matches[4],$matches[2].$matches[3], true);
+		return $this->mycode_parse_post_quotes($matches[4],$matches[2].$matches[3], TRUE);
 	}
 
 	/**
@@ -964,7 +964,7 @@ class postParser
 	{
 		global $lang, $templates;
 
-		if($text_only == true)
+		if($text_only == TRUE)
 		{
 			return empty($this->options['signature_parse']) ? "\n{$lang->code}\n--\n{$code}\n--\n" : $code;
 		}
@@ -997,7 +997,7 @@ class postParser
 	*/
 	function mycode_parse_code_callback($matches)
 	{
-		return $this->mycode_parse_code($matches[1], true);
+		return $this->mycode_parse_code($matches[1], TRUE);
 	}
 
 	/**
@@ -1012,7 +1012,7 @@ class postParser
 	{
 		global $lang, $templates;
 
-		if($text_only == true)
+		if($text_only == TRUE)
 		{
 			return empty($this->options['signature_parse']) ? "\n{$lang->php_code}\n--\n{$str}\n--\n" : $str;
 		}
@@ -1032,18 +1032,18 @@ class postParser
 		$added_open_tag = false;
 		if(!preg_match("#^\s*<\?#si", $str))
 		{
-			$added_open_tag = true;
+			$added_open_tag = TRUE;
 			$str = "<?php \n".$str;
 		}
 
 		$added_end_tag = false;
 		if(!preg_match("#\?>\s*$#si", $str))
 		{
-			$added_end_tag = true;
+			$added_end_tag = TRUE;
 			$str = $str." \n?>";
 		}
 
-		$code = @highlight_string($str, true);
+		$code = @highlight_string($str, TRUE);
 
 		// Do the actual replacing.
 		$code = preg_replace('#<code>\s*<span style="color: \#000000">\s*#i', "<code>", $code);
@@ -1088,7 +1088,7 @@ class postParser
 	*/
 	function mycode_parse_php_callback($matches)
 	{
-		return $this->mycode_parse_php($matches[1], false, true);
+		return $this->mycode_parse_php($matches[1], false, TRUE);
 	}
 
 	/**
@@ -1222,7 +1222,7 @@ class postParser
 
 		if($align)
 		{
-			$this->clear_needed = true;
+			$this->clear_needed = TRUE;
 		}
 
 		$alt = basename($url);
@@ -1823,7 +1823,7 @@ class postParser
 		}
 
 		// Parse quotes first
-		$message = $this->mycode_parse_quotes($message, true);
+		$message = $this->mycode_parse_quotes($message, TRUE);
 
 		$message = preg_replace_callback("#\[php\](.*?)\[/php\](\r\n?|\n?)#is", array($this, 'mycode_parse_php_callback'), $message);
 		$message = preg_replace_callback("#\[code\](.*?)\[/code\](\r\n?|\n?)#is", array($this, 'mycode_parse_code_callback'), $message);

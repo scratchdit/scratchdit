@@ -197,7 +197,7 @@ function task_delayedmoderation($task)
 					}
 					break;
 				case "removesubscriptions":
-					$moderation->remove_thread_subscriptions($tids, true);
+					$moderation->remove_thread_subscriptions($tids, TRUE);
 					break;
 				case "approveunapprovethread":
 					$approved_tids = $unapproved_tids = array();

@@ -55,7 +55,7 @@ $mybb->user['ismoderator'] = is_moderator(0, '', $mybb->user['uid']);
 $mybb->post_code = generate_post_check();
 
 // Set and load the language
-if(isset($mybb->input['language']) && $lang->language_exists($mybb->get_input('language')) && verify_post_check($mybb->get_input('my_post_key'), true))
+if(isset($mybb->input['language']) && $lang->language_exists($mybb->get_input('language')) && verify_post_check($mybb->get_input('my_post_key'), TRUE))
 {
 	$mybb->settings['bblanguage'] = $mybb->get_input('language');
 	// If user is logged in, update their language selection with the new one
@@ -110,7 +110,7 @@ $load_from_forum = $load_from_user = 0;
 $style = array();
 
 // The user used our new quick theme changer
-if(isset($mybb->input['theme']) && verify_post_check($mybb->get_input('my_post_key'), true))
+if(isset($mybb->input['theme']) && verify_post_check($mybb->get_input('my_post_key'), TRUE))
 {
 	// Set up user handler.
 	require_once MYBB_ROOT.'inc/datahandlers/user.php';
@@ -629,7 +629,7 @@ if($mybb->user['uid'] != 0 && is_array($groupleaders) && array_key_exists($mybb-
 
 		if(!empty($groupscache[$user['gid']]['type']) && $groupscache[$user['gid']]['type'] == 4)
 		{
-			$showjoinnotice = true;
+			$showjoinnotice = TRUE;
 			$gids .= ",'{$user['gid']}'";
 		}
 	}
@@ -667,7 +667,7 @@ if($mybb->usergroup['cancp'] == 1 || ($mybb->user['ismoderator'] && $mybb->userg
 	if($mybb->usergroup['cancp'] == 1 && !($mybb->user['ismoderator'] && $mybb->usergroup['canmodcp'] == 1 && $mybb->usergroup['canmanagereportedcontent'] == 1))
 	{
 		// First we check if the user's a super admin: if yes, we don't care about permissions
-		$can_access_moderationqueue = true;
+		$can_access_moderationqueue = TRUE;
 		$is_super_admin = is_super_admin($mybb->user['uid']);
 		if(!$is_super_admin)
 		{
@@ -1011,7 +1011,7 @@ if($mybb->settings['showlanguageselect'] != 0)
 			eval('$lang_options .= "'.$templates->get('footer_languageselect_option').'";');
 		}
 
-		$lang_redirect_url = get_current_location(true, 'language');
+		$lang_redirect_url = get_current_location(TRUE, 'language');
 		eval('$lang_select = "'.$templates->get('footer_languageselect').'";');
 	}
 }
@@ -1020,11 +1020,11 @@ if($mybb->settings['showlanguageselect'] != 0)
 $theme_select = $theme_options = '';
 if($mybb->settings['showthemeselect'] != 0)
 {
-	$theme_options = build_theme_select("theme", $mybb->user['style'], 0, '', false, true);
+	$theme_options = build_theme_select("theme", $mybb->user['style'], 0, '', false, TRUE);
 
 	if(!empty($theme_options))
 	{
-		$theme_redirect_url = get_current_location(true, 'theme');
+		$theme_redirect_url = get_current_location(TRUE, 'theme');
 		eval('$theme_select = "'.$templates->get('footer_themeselect').'";');
 	}
 }
@@ -1039,7 +1039,7 @@ if($mybb->settings['enableshowteam'] != 0)
 $contact_us = '';
 if(($mybb->settings['contactlink'] == "contact.php" && $mybb->settings['contact'] == 1 && ($mybb->settings['contact_guests'] != 1 && $mybb->user['uid'] == 0 || $mybb->user['uid'] > 0)) || $mybb->settings['contactlink'] != "contact.php")
 {
-	if(!my_validate_url($mybb->settings['contactlink'], true) && my_substr($mybb->settings['contactlink'], 0, 7) != 'mailto:')
+	if(!my_validate_url($mybb->settings['contactlink'], TRUE) && my_substr($mybb->settings['contactlink'], 0, 7) != 'mailto:')
 	{
 		$mybb->settings['contactlink'] = $mybb->settings['bburl'].'/'.$mybb->settings['contactlink'];
 	}
@@ -1066,7 +1066,7 @@ $navbits[0]['url'] = $mybb->settings['bburl'].'/index.php';
 $archive_url = build_archive_link();
 
 // Check banned ip addresses
-if(is_banned_ip($session->ipaddress, true))
+if(is_banned_ip($session->ipaddress, TRUE))
 {
 	if($mybb->user['uid'])
 	{
@@ -1180,22 +1180,22 @@ if($mybb->usergroup['canview'] != 1)
 			$allowable_actions = explode(',', ALLOWABLE_PAGE);
 			if(!in_array($mybb->get_input('action'), $allowable_actions))
 			{
-				$notallowed = true;
+				$notallowed = TRUE;
 			}
 
 			unset($allowable_actions);
 		}
 		else if(ALLOWABLE_PAGE !== 1)
 		{
-			$notallowed = true;
+			$notallowed = TRUE;
 		}
 	}
 	else
 	{
-		$notallowed = true;
+		$notallowed = TRUE;
 	}
 
-	if($notallowed == true)
+	if($notallowed == TRUE)
 	{
 		if(!$mybb->get_input('modal'))
 		{

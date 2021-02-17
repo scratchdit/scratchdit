@@ -73,7 +73,7 @@ var themeProperties = (function() {
 		id = idArray[idArray.length - 1];
 		e.preventDefault();
 
-		if (confirm(delete_confirm_lang_string) == true) {
+		if (confirm(delete_confirm_lang_string) == TRUE) {
 			$("#attached_form_" + id).remove();
 		}
 	}

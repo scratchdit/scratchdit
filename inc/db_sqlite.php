@@ -106,7 +106,7 @@ class DB_SQLite implements DB_Base
 	 *
 	 * @var boolean
 	 */
-	public $can_search = true;
+	public $can_search = TRUE;
 
 	/**
 	 * The database encoding currently in use (if supported)
@@ -133,7 +133,7 @@ class DB_SQLite implements DB_Base
 	 * Connect to the database server.
 	 *
 	 * @param array $config Array of DBMS connection details.
-	 * @return bool Returns false on failure, otherwise true
+	 * @return bool Returns false on failure, otherwise TRUE
 	 */
 	function connect($config)
 	{
@@ -152,7 +152,7 @@ class DB_SQLite implements DB_Base
 		if($this->db)
 		{
 			$this->query('PRAGMA short_column_names = 1');
-			return true;
+			return TRUE;
 		}
 		else
 		{
@@ -349,7 +349,7 @@ class DB_SQLite implements DB_Base
 	 */
 	function close_cursors()
 	{
-		$result = true;
+		$result = TRUE;
 
 		foreach($this->query_objects as $query)
 		{
@@ -559,7 +559,7 @@ class DB_SQLite implements DB_Base
 
 		if($exists > 0)
 		{
-			return true;
+			return TRUE;
 		}
 		else
 		{
@@ -592,7 +592,7 @@ class DB_SQLite implements DB_Base
 
 		if($exists > 0)
 		{
-			return true;
+			return TRUE;
 		}
 		else
 		{
@@ -781,7 +781,7 @@ class DB_SQLite implements DB_Base
 		$query = "";
 		$quote = "'";
 
-		if($no_quote == true)
+		if($no_quote == TRUE)
 		{
 			$quote = "";
 		}
@@ -873,11 +873,11 @@ class DB_SQLite implements DB_Base
 	 * Serves no purposes except compatibility
 	 *
 	 * @param PDOStatement $query
-	 * @return boolean Returns true on success, false on failure
+	 * @return boolean Returns TRUE on success, false on failure
 	 */
 	function free_result($query)
 	{
-		return true;
+		return TRUE;
 	}
 
 	/**
@@ -1058,7 +1058,7 @@ class DB_SQLite implements DB_Base
 	 * @param boolean $hard hard drop - no checking
 	 * @param boolean $table_prefix use table prefix
 	 */
-	function drop_table($table, $hard=false, $table_prefix=true)
+	function drop_table($table, $hard=false, $table_prefix=TRUE)
 	{
 		if($table_prefix == false)
 		{
@@ -1095,7 +1095,7 @@ class DB_SQLite implements DB_Base
 	 * @param boolean $table_prefix use table prefix
 	 * @return PDOStatement
 	 */
-	function rename_table($old_table, $new_table, $table_prefix=true)
+	function rename_table($old_table, $new_table, $table_prefix=TRUE)
 	{
 		if($table_prefix == false)
 		{
@@ -1120,7 +1120,7 @@ class DB_SQLite implements DB_Base
 	 * @param boolean $insert_id Whether or not to return an insert id. True by default
 	 * @return int|PDOStatement|bool Returns either the insert id (if a new row is inserted), the query resource (if a row is updated) or false on failure
 	 */
-	function replace_query($table, $replacements=array(), $default_field="", $insert_id=true)
+	function replace_query($table, $replacements=array(), $default_field="", $insert_id=TRUE)
 	{
 		global $mybb;
 
@@ -1173,7 +1173,7 @@ class DB_SQLite implements DB_Base
 				$query = $this->write_query("SELECT COUNT(".$default_field[0].") as count FROM {$this->table_prefix}{$table} WHERE {$search_bit} LIMIT 1");
 				if($this->fetch_field($query, "count") == 1)
 				{
-					$update = true;
+					$update = TRUE;
 				}
 			}
 			else
@@ -1185,13 +1185,13 @@ class DB_SQLite implements DB_Base
 				{
 					if($column[$default_field] == $replacements[$default_field])
 					{
-						$update = true;
+						$update = TRUE;
 						break;
 					}
 				}
 			}
 
-			if($update === true)
+			if($update === TRUE)
 			{
 				return $this->update_query($table, $replacements, $search_bit);
 			}
@@ -1414,7 +1414,7 @@ class DB_SQLite implements DB_Base
 				return false;
 			}
 		}
-		return true;
+		return TRUE;
 	}
 
 	/**
@@ -1452,7 +1452,7 @@ class DB_SQLite implements DB_Base
 	 * @param string $new_definition the new column definition
 	 * @param boolean|string $new_not_null Whether to "drop" or "set" the NOT NULL attribute (no change if false)
 	 * @param boolean|string $new_default_value The new default value, or false to drop the attribute
-	 * @return bool Returns true if all queries are executed successfully or false if one of them failed
+	 * @return bool Returns TRUE if all queries are executed successfully or false if one of them failed
 	 */
 	function modify_column($table, $column, $new_definition, $new_not_null=false, $new_default_value=false)
 	{
@@ -1469,7 +1469,7 @@ class DB_SQLite implements DB_Base
 	 * @param string $new_definition the new column definition
 	 * @param boolean|string $new_not_null Whether to "drop" or "set" the NOT NULL attribute (no change if false)
 	 * @param boolean|string $new_default_value The new default value, or false to drop the attribute
-	 * @return bool Returns true if all queries are executed successfully
+	 * @return bool Returns TRUE if all queries are executed successfully
 	 */
 	function rename_column($table, $old_column, $new_column, $new_definition, $new_not_null=false, $new_default_value=false)
 	{

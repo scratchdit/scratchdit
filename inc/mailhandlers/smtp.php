@@ -132,7 +132,7 @@ class SmtpMail extends MailHandler
 				$protocol = 'ssl://';
 				break;
 			case MYBB_TLS:
-				$this->use_tls = true;
+				$this->use_tls = TRUE;
 				break;
 		}
 
@@ -256,7 +256,7 @@ class SmtpMail extends MailHandler
 			{
 				$this->close();
 			}
-			return true;
+			return TRUE;
 		}
 		else
 		{
@@ -314,7 +314,7 @@ class SmtpMail extends MailHandler
 					$this->fatal_error("The server did not understand the STARTTLS command. Reason: ".$this->get_error());
 					return false;
 				}
-				if(!@stream_socket_enable_crypto($this->connection, true, STREAM_CRYPTO_METHOD_TLS_CLIENT))
+				if(!@stream_socket_enable_crypto($this->connection, TRUE, STREAM_CRYPTO_METHOD_TLS_CLIENT))
 				{
 					$this->fatal_error("Failed to start TLS encryption");
 					return false;
@@ -340,7 +340,7 @@ class SmtpMail extends MailHandler
 					return false;
 				}
 			}
-			return true;
+			return TRUE;
 		}
 		else
 		{
@@ -367,7 +367,7 @@ class SmtpMail extends MailHandler
 			{
 				if($this->code == 503)
 				{
-					return true;
+					return TRUE;
 				}
 				$this->fatal_error("The SMTP server did not respond correctly to the AUTH LOGIN command");
 				return false;
@@ -391,7 +391,7 @@ class SmtpMail extends MailHandler
 			{
 				if($this->code == 503)
 				{
-					return true;
+					return TRUE;
 				}
 				$this->fatal_error("The SMTP server did not respond correctly to the AUTH PLAIN command");
 				return false;
@@ -410,7 +410,7 @@ class SmtpMail extends MailHandler
 			{
 				if($this->code == 503)
 				{
-					return true;
+					return TRUE;
 				}
 				$this->fatal_error("The SMTP server did not respond correctly to the AUTH CRAM-MD5 command");
 				return false;
@@ -432,7 +432,7 @@ class SmtpMail extends MailHandler
 		}
 
 		// Still here, we're authenticated
-		return true;
+		return TRUE;
 	}
 
 	/**
@@ -461,13 +461,13 @@ class SmtpMail extends MailHandler
 	/**
 	 * Check if we're currently connected to an SMTP server
 	 *
-	 * @return boolean true if connected
+	 * @return boolean TRUE if connected
 	 */
 	function connected()
 	{
 		if($this->status == 1)
 		{
-			return true;
+			return TRUE;
 		}
 		return false;
 	}
@@ -498,7 +498,7 @@ class SmtpMail extends MailHandler
 						return false;
 					}
 				}
-				return true;
+				return TRUE;
 			}
 			else
 			{

@@ -190,7 +190,7 @@ if($mybb->input['action'] == "edit")
 	$show_preview = false;
 	if(isset($mybb->input['preview_list']))
 	{
-		$show_preview = true;
+		$show_preview = TRUE;
 	}
 
 	if($errors)
@@ -205,7 +205,7 @@ if($mybb->input['action'] == "edit")
 		}
 	}
 
-	if((isset($mybb->input['preview']) || $show_preview === true) && !$errors)
+	if((isset($mybb->input['preview']) || $show_preview === TRUE) && !$errors)
 	{
 		$table = new Table();
 

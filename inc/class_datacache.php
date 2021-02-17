@@ -128,7 +128,7 @@ class datacache
 	 * Read cache from files or db.
 	 *
 	 * @param string $name The cache component to read.
-	 * @param boolean $hard If true, cannot be overwritten during script execution.
+	 * @param boolean $hard If TRUE, cannot be overwritten during script execution.
 	 * @return mixed
 	 */
 	function read($name, $hard=false)
@@ -159,7 +159,7 @@ class datacache
 
 			if($mybb->debug_mode)
 			{
-				$hit = true;
+				$hit = TRUE;
 				if($data === false)
 				{
 					$hit = false;
@@ -574,7 +574,7 @@ class datacache
 		$this->forum_permissions = $this->built_forum_permissions = array(0);
 
 		// Get our forum list
-		cache_forums(true);
+		cache_forums(TRUE);
 		if(!is_array($forum_cache))
 		{
 			return false;
@@ -606,7 +606,7 @@ class datacache
 		$this->build_forum_permissions();
 		$this->update("forumpermissions", $this->built_forum_permissions);
 
-		return true;
+		return TRUE;
 	}
 
 	/**
@@ -618,7 +618,7 @@ class datacache
 	 */
 	private function build_forum_permissions($permissions=array(), $pid=0)
 	{
-		$usergroups = array_keys($this->read("usergroups", true));
+		$usergroups = array_keys($this->read("usergroups", TRUE));
 		if($this->forum_permissions_forum_cache[$pid])
 		{
 			foreach($this->forum_permissions_forum_cache[$pid] as $main)
@@ -721,7 +721,7 @@ class datacache
 		$this->built_moderators = array(0);
 
 		// Get our forum list
-		cache_forums(true);
+		cache_forums(TRUE);
 		if(!is_array($forum_cache))
 		{
 			return false;
@@ -791,7 +791,7 @@ class datacache
 
 		$this->update("moderators", $this->built_moderators);
 
-		return true;
+		return TRUE;
 	}
 
 	/**

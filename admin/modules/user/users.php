@@ -343,7 +343,7 @@ if($mybb->input['action'] == "add")
 			"additionalgroups" => $additionalgroups,
 			"displaygroup" => $mybb->get_input('displaygroup'),
 			"profile_fields" => $mybb->get_input('profile_fields', MyBB::INPUT_ARRAY),
-			"profile_fields_editable" => true,
+			"profile_fields_editable" => TRUE,
 		);
 
 		// Set the data of the user in the datahandler.
@@ -416,7 +416,7 @@ if($mybb->input['action'] == "add")
 	}
 
 	$form_container->output_row($lang->primary_user_group." <em>*</em>", "", $form->generate_select_box('usergroup', $options, $mybb->get_input('usergroup'), array('id' => 'usergroup')), 'usergroup');
-	$form_container->output_row($lang->additional_user_groups, $lang->additional_user_groups_desc, $form->generate_select_box('additionalgroups[]', $options, $mybb->get_input('additionalgroups', MyBB::INPUT_ARRAY), array('id' => 'additionalgroups', 'multiple' => true, 'size' => 5)), 'additionalgroups');
+	$form_container->output_row($lang->additional_user_groups, $lang->additional_user_groups_desc, $form->generate_select_box('additionalgroups[]', $options, $mybb->get_input('additionalgroups', MyBB::INPUT_ARRAY), array('id' => 'additionalgroups', 'multiple' => TRUE, 'size' => 5)), 'additionalgroups');
 	$form_container->output_row($lang->display_user_group." <em>*</em>", "", $form->generate_select_box('displaygroup', $display_group_options, $mybb->get_input('displaygroup'), array('id' => 'displaygroup')), 'displaygroup');
 
 	// Output custom profile fields - required
@@ -492,7 +492,7 @@ if($mybb->input['action'] == "edit")
 			$awaytimestamp = gmmktime(0, 0, 0, my_date('n', $awaydate), my_date('j', $awaydate), my_date('Y', $awaydate));
 			if($return_year < my_date('Y', $awaydate) || ($returntimestamp < $awaytimestamp && $return_year == my_date('Y', $awaydate)))
 			{
-				$away_in_past = true;
+				$away_in_past = TRUE;
 			}
 
 			$returndate = "{$return_day}-{$return_month}-{$return_year}";
@@ -517,7 +517,7 @@ if($mybb->input['action'] == "edit")
 			"timezone" => $mybb->get_input('timezone'),
 			"language" => $mybb->get_input('language'),
 			"profile_fields" => $mybb->get_input('profile_fields', MyBB::INPUT_ARRAY),
-			"profile_fields_editable" => true,
+			"profile_fields_editable" => TRUE,
 			"website" => $mybb->get_input('website'),
 			"icq" => $mybb->get_input('icq'),
 			"skype" => $mybb->get_input('skype'),
@@ -736,7 +736,7 @@ if($mybb->input['action'] == "edit")
 					"action" => "suspendsignature", // The moderator action we're performing
 					"period" => "action_period", // The time period we've selected from the dropdown box
 					"time" => "action_time", // The time we've entered
-					"update_field" => "suspendsignature", // The field in the database to update if true
+					"update_field" => "suspendsignature", // The field in the database to update if TRUE
 					"update_length" => "suspendsigtime" // The length of suspension field in the database
 				),
 				2 => array(
@@ -1154,7 +1154,7 @@ EOF;
 	}
 
 	$form_container->output_row($lang->primary_user_group." <em>*</em>", "", $form->generate_select_box('usergroup', $options, $mybb->get_input('usergroup'), array('id' => 'usergroup')), 'usergroup');
-	$form_container->output_row($lang->additional_user_groups, $lang->additional_user_groups_desc, $form->generate_select_box('additionalgroups[]', $options, $mybb->get_input('additionalgroups', MyBB::INPUT_ARRAY), array('id' => 'additionalgroups', 'multiple' => true, 'size' => 5)), 'additionalgroups');
+	$form_container->output_row($lang->additional_user_groups, $lang->additional_user_groups_desc, $form->generate_select_box('additionalgroups[]', $options, $mybb->get_input('additionalgroups', MyBB::INPUT_ARRAY), array('id' => 'additionalgroups', 'multiple' => TRUE, 'size' => 5)), 'additionalgroups');
 	$form_container->output_row($lang->display_user_group." <em>*</em>", "", $form->generate_select_box('displaygroup', $display_group_options, $mybb->get_input('displaygroup'), array('id' => 'displaygroup')), 'displaygroup');
 	$form_container->output_row($lang->post_count." <em>*</em>", "", $form->generate_numeric_field('postnum', $mybb->get_input('postnum'), array('id' => 'postnum', 'min' => 0)), 'postnum');
 	$form_container->output_row($lang->thread_count." <em>*</em>", "", $form->generate_numeric_field('threadnum', $mybb->get_input('threadnum'), array('id' => 'threadnum', 'min' => 0)), 'threadnum');
@@ -1213,10 +1213,10 @@ EOF;
 	if($mybb->settings['allowaway'] != 0)
 	{
 		$form_container = new FormContainer($lang->away_information.': '.htmlspecialchars_uni($user['username']));
-		$awaycheck = array(false, true);
+		$awaycheck = array(false, TRUE);
 		if($mybb->input['away'] == 1)
 		{
-			$awaycheck = array(true, false);
+			$awaycheck = array(TRUE, false);
 		}
 		$form_container->output_row($lang->away_status, $lang->away_status_desc, $form->generate_radio_button('away', 1, $lang->im_away, array('id' => 'away', "checked" => $awaycheck[0]))." ".$form->generate_radio_button('away', 0, $lang->im_here, array('id' => 'away2', "checked" => $awaycheck[1])), 'away');
 		$form_container->output_row($lang->away_reason, $lang->away_reason_desc, $form->generate_text_box('awayreason', $mybb->input['awayreason'], array('id' => 'awayreason')), 'awayreason');
@@ -1369,7 +1369,7 @@ EOF;
 		$form->generate_check_box("showredirect", 1, $lang->show_redirect, array("checked" => $mybb->get_input('showredirect'))),
 		$form->generate_check_box("showcodebuttons", "1", $lang->show_code_buttons, array("checked" => $mybb->get_input('showcodebuttons'))),
 		$form->generate_check_box("sourceeditor", "1", $lang->source_editor, array("checked" => $mybb->get_input('sourceeditor'))),
-		"<label for=\"style\">{$lang->theme}:</label><br />".build_theme_select("style", $mybb->get_input('style'), 0, "", true, false, true),
+		"<label for=\"style\">{$lang->theme}:</label><br />".build_theme_select("style", $mybb->get_input('style'), 0, "", TRUE, false, TRUE),
 		"<label for=\"language\">{$lang->board_language}:</label><br />".$form->generate_select_box("language", $languages, $mybb->get_input('language'), array('id' => 'language'))
 	);
 
@@ -1701,7 +1701,7 @@ function toggleBox(action)
 		$("#suspendposting").attr("checked", false);
 		$("#suspost").hide();
 
-		if($("#moderateposting").is(":checked") == true)
+		if($("#moderateposting").is(":checked") == TRUE)
 		{
 			$("#modpost").show();
 		}
@@ -1715,7 +1715,7 @@ function toggleBox(action)
 		$("#moderateposting").attr("checked", false);
 		$("#modpost").hide();
 
-		if($("#suspendposting").is(":checked") == true)
+		if($("#suspendposting").is(":checked") == TRUE)
 		{
 			$("#suspost").show();
 		}
@@ -1893,7 +1893,7 @@ if($mybb->input['action'] == "ipaddresses")
 		$popup->add_item($lang->show_users_regged_with_ip,
 			"index.php?module=user-users&amp;action=search&amp;results=1&amp;conditions=".urlencode(my_serialize(array("regip" => $user['lastip']))));
 		$popup->add_item($lang->show_users_posted_with_ip, "index.php?module=user-users&amp;results=1&amp;action=search&amp;conditions=".urlencode(my_serialize(array("postip" => $user['lastip']))));
-		$popup->add_item($lang->info_on_ip, "index.php?module=user-users&amp;action=iplookup&ipaddress={$user['lastip']}", "MyBB.popupWindow('index.php?module=user-users&amp;action=iplookup&ipaddress={$user['lastip']}', null, true); return false;");
+		$popup->add_item($lang->info_on_ip, "index.php?module=user-users&amp;action=iplookup&ipaddress={$user['lastip']}", "MyBB.popupWindow('index.php?module=user-users&amp;action=iplookup&ipaddress={$user['lastip']}', null, TRUE); return false;");
 		$popup->add_item($lang->ban_ip, "index.php?module=config-banning&amp;filter={$user['lastip']}");
 		$controls = $popup->fetch();
 	}
@@ -1912,7 +1912,7 @@ if($mybb->input['action'] == "ipaddresses")
 		$popup = new PopupMenu("user_reg", $lang->options);
 		$popup->add_item($lang->show_users_regged_with_ip, "index.php?module=user-users&amp;results=1&amp;action=search&amp;conditions=".urlencode(my_serialize(array("regip" => $user['regip']))));
 		$popup->add_item($lang->show_users_posted_with_ip, "index.php?module=user-users&amp;results=1&amp;action=search&amp;conditions=".urlencode(my_serialize(array("postip" => $user['regip']))));
-		$popup->add_item($lang->info_on_ip, "index.php?module=user-users&amp;action=iplookup&ipaddress={$user['regip']}", "MyBB.popupWindow('index.php?module=user-users&amp;action=iplookup&ipaddress={$user['regip']}', null, true); return false;");
+		$popup->add_item($lang->info_on_ip, "index.php?module=user-users&amp;action=iplookup&ipaddress={$user['regip']}", "MyBB.popupWindow('index.php?module=user-users&amp;action=iplookup&ipaddress={$user['regip']}', null, TRUE); return false;");
 		$popup->add_item($lang->ban_ip, "index.php?module=config-banning&amp;filter={$user['regip']}");
 		$controls = $popup->fetch();
 	}
@@ -1930,7 +1930,7 @@ if($mybb->input['action'] == "ipaddresses")
 		$popup = new PopupMenu("id_{$counter}", $lang->options);
 		$popup->add_item($lang->show_users_regged_with_ip, "index.php?module=user-users&amp;results=1&amp;action=search&amp;conditions=".urlencode(my_serialize(array("regip" => $ip['ipaddress']))));
 		$popup->add_item($lang->show_users_posted_with_ip, "index.php?module=user-users&amp;results=1&amp;action=search&amp;conditions=".urlencode(my_serialize(array("postip" => $ip['ipaddress']))));
-		$popup->add_item($lang->info_on_ip, "index.php?module=user-users&amp;action=iplookup&ipaddress={$ip['ipaddress']}", "MyBB.popupWindow('index.php?module=user-users&amp;action=iplookup&ipaddress={$ip['ipaddress']}', null, true); return false;");
+		$popup->add_item($lang->info_on_ip, "index.php?module=user-users&amp;action=iplookup&ipaddress={$ip['ipaddress']}", "MyBB.popupWindow('index.php?module=user-users&amp;action=iplookup&ipaddress={$ip['ipaddress']}', null, TRUE); return false;");
 		$popup->add_item($lang->ban_ip, "index.php?module=config-banning&amp;filter={$ip['ipaddress']}");
 		$controls = $popup->fetch();
 
@@ -2411,7 +2411,7 @@ if($mybb->input['action'] == "search")
 	);
 	$form_container->output_row($lang->sort_results_by, "", $form->generate_select_box('sortby', $sort_options, $mybb->get_input('sortby'), array('id' => 'sortby'))." {$lang->in} ".$form->generate_select_box('order', $sort_directions, $mybb->get_input('order'), array('id' => 'order')), 'sortby');
 	$form_container->output_row($lang->results_per_page, "", $form->generate_numeric_field('perpage', $mybb->get_input('perpage'), array('id' => 'perpage', 'min' => 1)), 'perpage');
-	$form_container->output_row($lang->display_results_as, "", $form->generate_radio_button('displayas', 'table', $lang->table, array('checked' => ($mybb->get_input('displayas') != "card" ? true : false)))."<br />".$form->generate_radio_button('displayas', 'card', $lang->business_card, array('checked' => ($mybb->get_input('displayas') == "card" ? true : false))));
+	$form_container->output_row($lang->display_results_as, "", $form->generate_radio_button('displayas', 'table', $lang->table, array('checked' => ($mybb->get_input('displayas') != "card" ? TRUE : false)))."<br />".$form->generate_radio_button('displayas', 'card', $lang->business_card, array('checked' => ($mybb->get_input('displayas') == "card" ? TRUE : false))));
 	$form_container->end();
 
 	$buttons[] = $form->generate_submit_button($lang->find_users);
@@ -3064,7 +3064,7 @@ if($mybb->input['action'] == "inline_edit")
 			}
 
 			$form_container->output_row($lang->primary_user_group, "", $form->generate_select_box('usergroup', $options, $mybb->input['usergroup'], array('id' => 'usergroup')), 'usergroup');
-			$form_container->output_row($lang->additional_user_groups, $lang->additional_user_groups_desc, $form->generate_select_box('additionalgroups[]', $options, $mybb->input['additionalgroups'], array('id' => 'additionalgroups', 'multiple' => true, 'size' => 5)), 'additionalgroups');
+			$form_container->output_row($lang->additional_user_groups, $lang->additional_user_groups_desc, $form->generate_select_box('additionalgroups[]', $options, $mybb->input['additionalgroups'], array('id' => 'additionalgroups', 'multiple' => TRUE, 'size' => 5)), 'additionalgroups');
 			$form_container->output_row($lang->display_user_group, "", $form->generate_select_box('displaygroup', $display_group_options, $mybb->input['displaygroup'], array('id' => 'displaygroup')), 'displaygroup');
 
 			$form_container->end();
@@ -3156,7 +3156,7 @@ if(!$mybb->input['action'])
 	// If we have any error messages, show them
 	if($errors)
 	{
-		if($inline != true)
+		if($inline != TRUE)
 		{
 			echo "<div style=\"display: inline; float: right;\">{$admin_view['popup']}</div><br />\n";
 		}
@@ -3752,7 +3752,7 @@ function build_users_view($view)
 		$search_action = substr($search_action, 0, $view_upos);
 	}
 	$search_action = str_replace("&amp;", "&", $search_action);
-	$search = new Form(htmlspecialchars_uni($search_action), 'post', 'search_form', 0, '', true);
+	$search = new Form(htmlspecialchars_uni($search_action), 'post', 'search_form', 0, '', TRUE);
 	$built_view = $search->construct_return;
 	$built_view .= "<div class=\"{$search_class}\" style=\"padding-bottom: 3px; margin-top: -9px; {$search_style}\">";
 	$built_view .= $search->generate_hidden_field('action', 'search')."\n";
@@ -4054,7 +4054,7 @@ function output_custom_profile_fields($fields, $values, &$form_container, &$form
 
 				$select_options = explode("\n", $options);
 				$options = array();
-				if($search == true)
+				if($search == TRUE)
 				{
 					$select_options[''] = $lang->na;
 				}
@@ -4068,11 +4068,11 @@ function output_custom_profile_fields($fields, $values, &$form_container, &$form
 				{
 					$profile_field['length'] = 3;
 				}
-				$code = $form->generate_select_box("profile_fields[{$field_name}][]", $options, $selected_options, array('id' => "profile_field_{$field_name}", 'multiple' => true, 'size' => $profile_field['length']));
+				$code = $form->generate_select_box("profile_fields[{$field_name}][]", $options, $selected_options, array('id' => "profile_field_{$field_name}", 'multiple' => TRUE, 'size' => $profile_field['length']));
 				break;
 			case "select":
 				$select_options = array();
-				if($search == true)
+				if($search == TRUE)
 				{
 					$select_options[''] = $lang->na;
 				}
@@ -4087,7 +4087,7 @@ function output_custom_profile_fields($fields, $values, &$form_container, &$form
 				{
 					$profile_field['length'] = 1;
 				}
-				if($search == true)
+				if($search == TRUE)
 				{
 					$code = $form->generate_select_box("profile_fields[{$field_name}][{$field_name}]", $options, htmlspecialchars_uni($values[$field_name]), array('id' => "profile_field_{$field_name}", 'size' => $profile_field['length']));
 				}
@@ -4098,7 +4098,7 @@ function output_custom_profile_fields($fields, $values, &$form_container, &$form
 				break;
 			case "radio":
 				$radio_options = array();
-				if($search == true)
+				if($search == TRUE)
 				{
 					$radio_options[''] = $lang->na;
 				}
@@ -4107,7 +4107,7 @@ function output_custom_profile_fields($fields, $values, &$form_container, &$form
 				foreach($radio_options as $val)
 				{
 					$val = trim($val);
-					$code .= $form->generate_radio_button("profile_fields[{$field_name}]", $val, htmlspecialchars_uni($val), array('id' => "profile_field_{$field_name}", 'checked' => ($val == $values[$field_name] ? true : false)))."<br />";
+					$code .= $form->generate_radio_button("profile_fields[{$field_name}]", $val, htmlspecialchars_uni($val), array('id' => "profile_field_{$field_name}", 'checked' => ($val == $values[$field_name] ? TRUE : false)))."<br />";
 				}
 				break;
 			case "checkbox":
@@ -4127,7 +4127,7 @@ function output_custom_profile_fields($fields, $values, &$form_container, &$form
 					$selected_options[$val] = $val;
 				}
 
-				if($search == true)
+				if($search == TRUE)
 				{
 					$select_options[''] = $lang->na;
 				}
@@ -4136,7 +4136,7 @@ function output_custom_profile_fields($fields, $values, &$form_container, &$form
 				foreach($select_options as $val)
 				{
 					$val = trim($val);
-					$code .= $form->generate_check_box("profile_fields[{$field_name}][]", $val, htmlspecialchars_uni($val), array('id' => "profile_field_{$field_name}", 'checked' => ($val == $selected_options[$val] ? true : false)))."<br />";
+					$code .= $form->generate_check_box("profile_fields[{$field_name}][]", $val, htmlspecialchars_uni($val), array('id' => "profile_field_{$field_name}", 'checked' => ($val == $selected_options[$val] ? TRUE : false)))."<br />";
 				}
 				break;
 			case "textarea":
@@ -4227,7 +4227,7 @@ function user_search_conditions($input, &$form)
 		$options[$usergroup['gid']] = htmlspecialchars_uni($usergroup['title']);
 	}
 
-	$form_container->output_row($lang->is_member_of_groups, $lang->additional_user_groups_desc, $form->generate_select_box('conditions[usergroup][]', $options, $input['conditions']['usergroup'], array('id' => 'usergroups', 'multiple' => true, 'size' => 5)), 'usergroups');
+	$form_container->output_row($lang->is_member_of_groups, $lang->additional_user_groups_desc, $form->generate_select_box('conditions[usergroup][]', $options, $input['conditions']['usergroup'], array('id' => 'usergroups', 'multiple' => TRUE, 'size' => 5)), 'usergroups');
 
 	$form_container->output_row($lang->website_contains, "", $form->generate_text_box('conditions[website]', $input['conditions']['website'], array('id' => 'website'))." {$lang->or} ".$form->generate_check_box('conditions[website_blank]', 1, $lang->is_not_blank, array('id' => 'website_blank', 'checked' => $input['conditions']['website_blank'])), 'website');
 	$form_container->output_row($lang->icq_number_contains, "", $form->generate_text_box('conditions[icq]', $input['conditions']['icq'], array('id' => 'icq'))." {$lang->or} ".$form->generate_check_box('conditions[icq_blank]', 1, $lang->is_not_blank, array('id' => 'icq_blank', 'checked' => $input['conditions']['icq_blank'])), 'icq');
@@ -4272,8 +4272,8 @@ function user_search_conditions($input, &$form)
 		}
 	}
 
-	output_custom_profile_fields($profile_fields['required'], $input['profile_fields'], $form_container, $form, true);
-	output_custom_profile_fields($profile_fields['optional'], $input['profile_fields'], $form_container, $form, true);
+	output_custom_profile_fields($profile_fields['required'], $input['profile_fields'], $form_container, $form, TRUE);
+	output_custom_profile_fields($profile_fields['optional'], $input['profile_fields'], $form_container, $form, TRUE);
 
 	$form_container->end();
 
@@ -4380,7 +4380,7 @@ function merge_thread_ratings($source_uid, $destination_uid)
 		{
 			if(is_array($ratings))
 			{
-				$db->update_query('threads', array('numratings' => 'numratings-'.count($ratings), 'totalratings' => 'totalratings-'.array_sum($ratings)), "tid='{$tid}'", 1, true);
+				$db->update_query('threads', array('numratings' => 'numratings-'.count($ratings), 'totalratings' => 'totalratings-'.array_sum($ratings)), "tid='{$tid}'", 1, TRUE);
 			}
 		}
 	}

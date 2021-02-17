@@ -88,7 +88,7 @@ class memcachedCacheHandler implements CacheHandlerInterface
 		// Set a unique identifier for all queries in case other forums are using the same memcache server
 		$this->unique_id = md5(MYBB_ROOT);
 
-		return true;
+		return TRUE;
 	}
 
 	/**

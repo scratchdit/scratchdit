@@ -15,7 +15,7 @@ if(!defined("IN_MYBB"))
 }
 
 /**
- * @return bool true
+ * @return bool TRUE
  */
 function style_meta()
 {
@@ -28,7 +28,7 @@ function style_meta()
 	$sub_menu = $plugins->run_hooks("admin_style_menu", $sub_menu);
 
 	$page->add_menu_item($lang->templates_and_style, "style", "index.php?module=style", 40, $sub_menu);
-	return true;
+	return TRUE;
 }
 
 /**

@@ -79,12 +79,12 @@ function generate_thumbnail($file, $path, $filename, $maxheight, $maxwidth)
 		$scale = scale_image($imgwidth, $imgheight, $maxwidth, $maxheight);
 		$thumbwidth = $scale['width'];
 		$thumbheight = $scale['height'];
-		$thumbim = @imagecreatetruecolor($thumbwidth, $thumbheight);
+		$thumbim = @imagecreateTRUEcolor($thumbwidth, $thumbheight);
 
 		if(!$thumbim)
 		{
 			$thumbim = @imagecreate($thumbwidth, $thumbheight);
-			$resized = true;
+			$resized = TRUE;
 		}
 
 		// Attempt to preserve the transparency if there is any
@@ -95,7 +95,7 @@ function generate_thumbnail($file, $path, $filename, $maxheight, $maxwidth)
 			imagefill($thumbim, 0, 0, imagecolorallocatealpha($thumbim, 0, 0, 0, 127));
 
 			// Save Alpha...
-			imagesavealpha($thumbim, true);
+			imagesavealpha($thumbim, TRUE);
 		}
 		elseif($imgtype == 1)
 		{
@@ -219,7 +219,7 @@ function check_thumbnail_memory($width, $height, $type, $bitdepth, $channels)
 		@ini_set("memory_limit", $memory_limit);
 	}
 
-	return true;
+	return TRUE;
 }
 
 /**

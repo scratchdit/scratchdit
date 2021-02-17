@@ -20,7 +20,7 @@ var UserCP = {
 			$.ajax(
 			{
 				url: 'xmlhttp.php?action=get_buddyselect',
-				async: true,
+				async: TRUE,
 	            complete: function (request)
 	            {
 	                UserCP.buddySelectLoaded(request);
@@ -72,7 +72,7 @@ var UserCP = {
 		}
 
 		// Clone off screen
-		var clone = container.clone(true);
+		var clone = container.clone(TRUE);
 		$("body").append(clone);
 		clone.css("width", "300px")
 			 .css("top", "-10000px")
@@ -123,7 +123,7 @@ var UserCP = {
 
 	closeBuddySelect: function(canceled)
 	{
-		if(canceled != true)
+		if(canceled != TRUE)
 		{
 			var buddies = $("#buddyselect_buddies").text();
 			existing_buddies = $(this.buddy_field).select2("data");
@@ -137,17 +137,17 @@ var UserCP = {
 				$.each(exp_buddies, function(index, buddy)
 				{
 					buddy = buddy.replace(/^\s+|\s+$/g, "");
-					
+
 					var newbuddy = { id: buddy, text: buddy };
 					newbuddies.push(newbuddy);
 				});
-				
+
 				// Merge both
 				var newarray = $.merge(existing_buddies, newbuddies);
-				
+
 				// Update data
 				$(this.buddy_field).select2("data", newarray);
-				
+
 			}
 			else
 			{
@@ -175,13 +175,13 @@ var UserCP = {
 		}
 		if(use_xmlhttprequest != 1)
 		{
-			return true;
+			return TRUE;
 		}
 
 		var old_value = type_submit.val();
 
-		type_add_username.attr("disabled", true);
-		type_submit.attr("disabled", true);
+		type_add_username.attr("disabled", TRUE);
+		type_submit.attr("disabled", TRUE);
 
 		if(type == "ignored")
 		{
@@ -199,7 +199,7 @@ var UserCP = {
 			type: 'post',
 			url: 'usercp.php?action=do_editlists&my_post_key='+my_post_key+'&manage='+type,
 			data: { ajax: 1, add_username: type_add_username.val() },
-			async: true,
+			async: TRUE,
 	        complete: function (request)
 	        {
 				if(request.responseText.indexOf("buddy_count") >= 0 || request.responseText.indexOf("ignored_count") >= 0)
@@ -210,7 +210,7 @@ var UserCP = {
 				{
 					$("#sentrequests").html(request.responseText);
 				}
-				
+
 		        type_submit.prop("disabled", false);
 		        type_add_username.prop("disabled", false);
 		        type_submit.attr("value", old_value);
@@ -236,18 +236,18 @@ var UserCP = {
 
 		MyBB.prompt(message, {
 			buttons:[
-					{title: yes_confirm, value: true},
+					{title: yes_confirm, value: TRUE},
 					{title: no_confirm, value: false}
 			],
 			submit: function(e,v,m,f){
-				if(v == true)
+				if(v == TRUE)
 				{
 					$.ajax(
 					{
 						type: 'post',
 						url: 'usercp.php?action=do_editlists&my_post_key='+my_post_key+'&manage='+type+'&delete='+uid,
 						data: { ajax: 1 },
-						async: true
+						async: TRUE
 					});
 				}
 			}

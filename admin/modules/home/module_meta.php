@@ -15,7 +15,7 @@ if(!defined("IN_MYBB"))
 }
 
 /**
- * @return bool true
+ * @return bool TRUE
  */
 function home_meta()
 {
@@ -30,7 +30,7 @@ function home_meta()
 
 	$page->add_menu_item($lang->home, "home", "index.php", 1, $sub_menu);
 
-	return true;
+	return TRUE;
 }
 
 /**

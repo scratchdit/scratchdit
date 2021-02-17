@@ -488,7 +488,7 @@ function check_existing_regex($regex='', $current=array())
 	{
 		if($mycode['regex'] == $regex)
 		{
-			return true;
+			return TRUE;
 		}
 	}
 

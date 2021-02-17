@@ -15,7 +15,7 @@ if(!defined("IN_MYBB"))
 }
 
 /**
- * @return bool true
+ * @return bool TRUE
  */
 function user_meta()
 {
@@ -34,7 +34,7 @@ function user_meta()
 	$sub_menu = $plugins->run_hooks("admin_user_menu", $sub_menu);
 
 	$page->add_menu_item($lang->users_and_groups, "user", "index.php?module=user", 30, $sub_menu);
-	return true;
+	return TRUE;
 }
 
 /**

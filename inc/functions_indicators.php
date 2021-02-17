@@ -18,7 +18,7 @@ function mark_thread_read($tid, $fid)
 {
 	global $mybb, $db;
 
-	// Can only do "true" tracking for registered users
+	// Can only do "TRUE" tracking for registered users
 	if($mybb->settings['threadreadcut'] > 0 && $mybb->user['uid'])
 	{
 		// For registered users, store the information in the database.
@@ -178,7 +178,7 @@ function mark_forum_read($fid)
 {
 	global $mybb, $db;
 
-	// Can only do "true" tracking for registered users
+	// Can only do "TRUE" tracking for registered users
 	if($mybb->settings['threadreadcut'] > 0 && $mybb->user['uid'])
 	{
 		// Experimental setting to mark parent forums as read
@@ -264,7 +264,7 @@ function mark_all_forums_read()
 {
 	global $mybb, $db, $cache;
 
-	// Can only do "true" tracking for registered users
+	// Can only do "TRUE" tracking for registered users
 	if($mybb->user['uid'] > 0)
 	{
 		$db->update_query("users", array('lastvisit' => TIME_NOW), "uid='".$mybb->user['uid']."'");

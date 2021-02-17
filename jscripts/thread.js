@@ -32,19 +32,19 @@ var Thread = {
 				mquote_quick.show();
 			}
 		}
-		return true;
+		return TRUE;
 	},
 
 	multiQuote: function(pid)
 	{
 		var new_post_ids = new Array();
 		var quoted = Cookie.get("multiquote");
-		var is_new = true;
+		var is_new = TRUE;
 		var deleted = false;
 		if($("#pid" + pid).next("div.post").hasClass('deleted_post'))
 		{
 			$.jGrowl(lang.post_deleted_error, {theme:'jgrowl_error'});
-			deleted = true;
+			deleted = TRUE;
 		}
 
 		if(quoted && !deleted)
@@ -64,7 +64,7 @@ var Thread = {
 		}
 
 		var mquote_a = $("#multiquote_"+pid).closest('a')
-		if(is_new == true && !deleted)
+		if(is_new == TRUE && !deleted)
 		{
 			new_post_ids[new_post_ids.length] = pid;
 			mquote_a.removeClass('postbit_multiquote').addClass('postbit_multiquote_on');
@@ -114,7 +114,7 @@ var Thread = {
 		}
 		else
 		{
-			return true;
+			return TRUE;
 		}
 	},
 
@@ -455,11 +455,11 @@ var Thread = {
 	{
 		MyBB.prompt(quickdelete_confirm, {
 			buttons:[
-					{title: yes_confirm, value: true},
+					{title: yes_confirm, value: TRUE},
 					{title: no_confirm, value: false}
 			],
 			submit: function(e,v,m,f){
-				if(v == true)
+				if(v == TRUE)
 				{
 					$.ajax(
 					{
@@ -534,11 +534,11 @@ var Thread = {
 	{
 		MyBB.prompt(quickrestore_confirm, {
 			buttons:[
-					{title: yes_confirm, value: true},
+					{title: yes_confirm, value: TRUE},
 					{title: no_confirm, value: false}
 			],
 			submit: function(e,v,m,f){
-				if(v == true)
+				if(v == TRUE)
 				{
 					$.ajax(
 					{

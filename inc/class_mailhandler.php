@@ -334,7 +334,7 @@ class MailHandler
 			$http_host = "unknown.local";
 		}
 
-		$msg_id = md5(uniqid(TIME_NOW, true)) . "@" . $http_host;
+		$msg_id = md5(uniqid(TIME_NOW, TRUE)) . "@" . $http_host;
 
 		if($mybb->settings['mail_message_id'])
 		{

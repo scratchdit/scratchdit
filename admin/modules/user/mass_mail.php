@@ -311,13 +311,13 @@ if($mybb->input['action'] == "edit")
 
 	if($input['type'] == 0)
 	{
-		$type_email_checked = true;
+		$type_email_checked = TRUE;
 		$type_pm_checked = false;
 	}
 	else if($input['type'] == 1)
 	{
 		$type_email_checked = false;
-		$type_pm_checked = true;
+		$type_pm_checked = TRUE;
 	}
 
 	$type_options = array(
@@ -382,7 +382,7 @@ if($mybb->input['action'] == "edit")
 
 			$('.'+id+'s_check').each(function(e, val)
 			{
-				if($(this).prop('checked') == true)
+				if($(this).prop('checked') == TRUE)
 				{
 					checked = $(this).val();
 				}
@@ -435,7 +435,7 @@ if($mybb->input['action'] == "edit")
 	{
 		if(!empty($input['automatic_text']) && empty($email['mid']))
 		{
-			$automatic_text_check = true;
+			$automatic_text_check = TRUE;
 			$text_display = 'display: none';
 			$automatic_display = 'display: none;';
 		}
@@ -498,7 +498,7 @@ if($mybb->input['action'] == "edit")
 		function ToggleType()
 		{
 			var v = $('#type_pm').prop('checked');
-			if(v == true)
+			if(v == TRUE)
 			{
 				$('#message_html').hide();
 				$('#message_text').show();
@@ -522,7 +522,7 @@ if($mybb->input['action'] == "edit")
 		function ToggleAutomatic()
 		{
 			var v = $('#automatic_text').prop('checked');
-			if(v == true)
+			if(v == TRUE)
 			{
 				$('#message_text').hide();
 			}
@@ -590,7 +590,7 @@ if($mybb->input['action'] == "edit")
 		$options[$usergroup['gid']] = $usergroup['title'];
 	}
 
-	$form_container->output_row($lang->members_of, $lang->additional_user_groups_desc, $form->generate_select_box('conditions[usergroup][]', $options, $input['conditions']['usergroup'], array('id' => 'usergroups', 'multiple' => true, 'size' => 5)), 'usergroups');
+	$form_container->output_row($lang->members_of, $lang->additional_user_groups_desc, $form->generate_select_box('conditions[usergroup][]', $options, $input['conditions']['usergroup'], array('id' => 'usergroups', 'multiple' => TRUE, 'size' => 5)), 'usergroups');
 
 	$greater_options = array(
 		"greater_than" => $lang->greater_than,
@@ -781,7 +781,7 @@ if($mybb->input['action'] == "send")
 		$format_preview = '';
 		if($email['format'] == 0 || $email['format'] == 2)
 		{
-			$format_preview .= "{$lang->text_based} - <a href=\"#\" onclick=\"javascript:MyBB.popupWindow('index.php?module=user-mass_mail&amp;action=preview&amp;mid={$email['mid']}&amp;format=text', null, true);\">{$lang->preview}</a>";
+			$format_preview .= "{$lang->text_based} - <a href=\"#\" onclick=\"javascript:MyBB.popupWindow('index.php?module=user-mass_mail&amp;action=preview&amp;mid={$email['mid']}&amp;format=text', null, TRUE);\">{$lang->preview}</a>";
 		}
 		if($email['format'] == 2)
 		{
@@ -789,7 +789,7 @@ if($mybb->input['action'] == "send")
 		}
 		if($email['format'] == 1 || $email['format'] == 2)
 		{
-			$format_preview.= "{$lang->html_based} - <a href=\"#\" onclick=\"javascript:MyBB.popupWindow('index.php?module=user-mass_mail&amp;action=preview&amp;mid={$email['mid']}', null, true);\">{$lang->preview}</a>";
+			$format_preview.= "{$lang->html_based} - <a href=\"#\" onclick=\"javascript:MyBB.popupWindow('index.php?module=user-mass_mail&amp;action=preview&amp;mid={$email['mid']}', null, TRUE);\">{$lang->preview}</a>";
 		}
 		$table->construct_cell($format_preview);
 		$table->construct_row();
@@ -892,7 +892,7 @@ if($mybb->input['action'] == "send")
 
 				$('.'+id+'s_check').each(function(e, val)
 				{
-					if($(this).prop('checked') == true)
+					if($(this).prop('checked') == TRUE)
 					{
 						checked = $(this).val();
 					}
@@ -1016,7 +1016,7 @@ if($mybb->input['action'] == "send")
 			$options[$usergroup['gid']] = $usergroup['title'];
 		}
 
-		$form_container->output_row($lang->members_of, $lang->additional_user_groups_desc, $form->generate_select_box('conditions[usergroup][]', $options, $input['conditions']['usergroup'], array('id' => 'usergroups', 'multiple' => true, 'size' => 5)), 'usergroups');
+		$form_container->output_row($lang->members_of, $lang->additional_user_groups_desc, $form->generate_select_box('conditions[usergroup][]', $options, $input['conditions']['usergroup'], array('id' => 'usergroups', 'multiple' => TRUE, 'size' => 5)), 'usergroups');
 
 		$greater_options = array(
 			"greater_than" => $lang->greater_than,
@@ -1244,13 +1244,13 @@ if($mybb->input['action'] == "send")
 
 		if($mybb->get_input('type') == 0)
 		{
-			$type_email_checked = true;
+			$type_email_checked = TRUE;
 			$type_pm_checked = false;
 		}
 		else if($mybb->get_input('type') == 1)
 		{
 			$type_email_checked = false;
-			$type_pm_checked = true;
+			$type_pm_checked = TRUE;
 		}
 		else
 		{
@@ -1285,7 +1285,7 @@ if($mybb->input['action'] == "send")
 		{
 			if($mybb->get_input('automatic_text') && !$email['mid'])
 			{
-				$automatic_text_check = true;
+				$automatic_text_check = TRUE;
 				$text_display = 'display: none';
 				$automatic_display = 'display: none;';
 			}
@@ -1348,7 +1348,7 @@ if($mybb->input['action'] == "send")
 		function ToggleType()
 		{
 			var v = $('#type_pm').prop('checked');
-			if(v == true)
+			if(v == TRUE)
 			{
 				$('#message_html').hide();
 				$('#message_text').show();
@@ -1372,7 +1372,7 @@ if($mybb->input['action'] == "send")
 		function ToggleAutomatic()
 		{
 			var v = $('#automatic_text').prop('checked');
-			if(v == true)
+			if(v == TRUE)
 			{
 				$('#message_text').hide();
 			}

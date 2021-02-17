@@ -1044,7 +1044,7 @@ if($mybb->input['action'] == "modlogs")
 		eval("\$user_options .= \"".$templates->get("modcp_modlogs_user")."\";");
 	}
 
-	$forum_select = build_forum_jump("", $mybb->get_input('fid', MyBB::INPUT_INT), 1, '', 0, true, '', "fid");
+	$forum_select = build_forum_jump("", $mybb->get_input('fid', MyBB::INPUT_INT), 1, '', 0, TRUE, '', "fid");
 
 	eval("\$modlogs = \"".$templates->get("modcp_modlogs")."\";");
 	output_page($modlogs);
@@ -1690,7 +1690,7 @@ if($mybb->input['action'] == "edit_announcement")
 	$makeshift_end = false;
 	if(!$announcement['enddate'])
 	{
-		$makeshift_end = true;
+		$makeshift_end = TRUE;
 		$makeshift_time = TIME_NOW;
 		if($announcement['startdate'])
 		{
@@ -1729,7 +1729,7 @@ if($mybb->input['action'] == "edit_announcement")
 		$endday = $mybb->get_input('endtime_day', MyBB::INPUT_INT);
 		$endtime_time = htmlspecialchars_uni($mybb->input['endtime_time']);
 
-		$errored = true;
+		$errored = TRUE;
 	}
 	else
 	{
@@ -1834,7 +1834,7 @@ if($mybb->input['action'] == "edit_announcement")
 	}
 
 	$end_type_sel = array('infinite' => '', 'finite' => '');
-	if(($errored && $mybb->get_input('endtime_type', MyBB::INPUT_INT) == 2) || (!$errored && (int)$announcement['enddate'] == 0) || $makeshift_end == true)
+	if(($errored && $mybb->get_input('endtime_type', MyBB::INPUT_INT) == 2) || (!$errored && (int)$announcement['enddate'] == 0) || $makeshift_end == TRUE)
 	{
 		$end_type_sel['infinite'] = ' checked="checked"';
 	}
@@ -2585,7 +2585,7 @@ if($mybb->input['action'] == "do_editprofile")
 	$updated_user = array(
 		"uid" => $user['uid'],
 		"profile_fields" => $mybb->get_input('profile_fields', MyBB::INPUT_ARRAY),
-		"profile_fields_editable" => true,
+		"profile_fields_editable" => TRUE,
 		"website" => $mybb->get_input('website'),
 		"icq" => $mybb->get_input('icq'),
 		"skype" => $mybb->get_input('skype'),
@@ -2644,7 +2644,7 @@ if($mybb->input['action'] == "do_editprofile")
 				"action" => "suspendsignature", // The moderator action we're performing
 				"period" => "action_period", // The time period we've selected from the dropdown box
 				"time" => "action_time", // The time we've entered
-				"update_field" => "suspendsignature", // The field in the database to update if true
+				"update_field" => "suspendsignature", // The field in the database to update if TRUE
 				"update_length" => "suspendsigtime" // The length of suspension field in the database
 			),
 			2 => array(
@@ -3716,7 +3716,7 @@ if($mybb->input['action'] == "ipsearch")
 			{
 				$where_sql = '';
 
-				$unviewable_forums = get_unviewable_forums(true);
+				$unviewable_forums = get_unviewable_forums(TRUE);
 
 				if($unviewable_forums)
 				{
@@ -3907,7 +3907,7 @@ if($mybb->input['action'] == "ipsearch")
 				if($ip)
 				{
 					eval("\$results .= \"".$templates->get("modcp_ipsearch_result")."\";");
-					$result = true;
+					$result = TRUE;
 				}
 				if($result)
 				{
@@ -4287,7 +4287,7 @@ if($mybb->input['action'] == "do_banuser" && $mybb->request_method == "post")
 
 		if($user['uid'])
 		{
-			$existing_ban = true;
+			$existing_ban = TRUE;
 		}
 
 		// Permission to edit this ban?

@@ -6,7 +6,7 @@ var MyBB = {
 			MyBB.pageLoaded();
 		});
 
-		return true;
+		return TRUE;
 	},
 
 	pageLoaded: function()
@@ -99,7 +99,7 @@ var MyBB = {
 	popupWindow: function(url, options, root)
 	{
 		if(!options) options = { fadeDuration: 250, zIndex: (typeof modal_zindex !== 'undefined' ? modal_zindex : 9999) }
-		if(root != true)
+		if(root != TRUE)
 			url = rootpath + url;
 
 		$.get(url, function(html)
@@ -155,11 +155,11 @@ var MyBB = {
 	{
 		MyBB.prompt(deleteevent_confirm, {
 			buttons:[
-					{title: yes_confirm, value: true},
+					{title: yes_confirm, value: TRUE},
 					{title: no_confirm, value: false}
 			],
 			submit: function(e,v,m,f){
-				if(v == true)
+				if(v == TRUE)
 				{
 					var form = $("<form />",
 							   {
@@ -243,11 +243,11 @@ var MyBB = {
 	{
 		MyBB.prompt(delete_reputation_confirm, {
 			buttons:[
-					{title: yes_confirm, value: true},
+					{title: yes_confirm, value: TRUE},
 					{title: no_confirm, value: false}
 			],
 			submit: function(e,v,m,f){
-				if(v == true)
+				if(v == TRUE)
 				{
 					var form = $("<form />",
 					{
@@ -349,7 +349,7 @@ var MyBB = {
 		$.ajax(
 		{
 			url: 'misc.php?action=markread&fid=' + fid + '&ajax=1&my_post_key=' + my_post_key,
-			async: true,
+			async: TRUE,
         	success: function (request)
         	{
 		  		MyBB.forumMarkedRead(fid, request);
@@ -422,7 +422,7 @@ var MyBB = {
 			$.ajax(
 			{
 				url: 'misc.php?action=dstswitch&ajax=1',
-				async: true,
+				async: TRUE,
 				method: 'post',
 	          	error: function (request)
 	          	{
@@ -462,7 +462,7 @@ var MyBB = {
 
 		if(use_xmlhttprequest != 1)
 		{
-			return true;
+			return TRUE;
 		}
 
 		$.ajax(
@@ -470,7 +470,7 @@ var MyBB = {
 			type: 'post',
 			url: bburl + 'private.php?action=dismiss_notice',
 			data: { ajax: 1, my_post_key: my_post_key },
-			async: true
+			async: TRUE
 		});
 		pm_notice.remove();
 		return false;
@@ -509,11 +509,11 @@ var MyBB = {
 	{
 		MyBB.prompt(announcement_quickdelete_confirm, {
 			buttons:[
-					{title: yes_confirm, value: true},
+					{title: yes_confirm, value: TRUE},
 					{title: no_confirm, value: false}
 			],
 			submit: function(e,v,m,f){
-				if(v == true)
+				if(v == TRUE)
 				{
 					window.location=data.href.replace('action=delete_announcement','action=do_delete_announcement');
 				}
@@ -629,7 +629,7 @@ var Cookie = {
 			expires: expire,
 			path: cookiePath,
 			domain: cookieDomain,
-			secure: cookieSecureFlag == true,
+			secure: cookieSecureFlag == TRUE,
 		};
 
 		return Cookies.set(name, value, options);
@@ -733,7 +733,7 @@ var expandables = {
 				this.saveCollapsed(controls, 1);
 			}
 		}
-		return true;
+		return TRUE;
 	},
 
 	saveCollapsed: function(id, add)

@@ -39,7 +39,7 @@ var Rating = {
 		{
 			return;
 		}
-		
+
 		list.addClass("star_rating")
 			.addClass(options.extra_class);
 
@@ -70,7 +70,7 @@ var Rating = {
 		$.ajax(
 		{
 			url: 'ratethread.php?ajax=1&my_post_key='+my_post_key+'&tid='+tid+'&rating='+rating,
-			async: true,
+			async: TRUE,
 			method: 'post',
 			dataType: 'json',
 	        complete: function (request)

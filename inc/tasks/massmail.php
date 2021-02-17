@@ -84,7 +84,7 @@ function task_massmail($task)
 			if($mass_email['type'] == 1)
 			{
 				$pm_handler = new PMDataHandler();
-				$pm_handler->admin_override = true;
+				$pm_handler->admin_override = TRUE;
 
 				$pm = array(
 					"subject" => $mass_email['subject'],

@@ -115,7 +115,7 @@ if(!$mybb->input['action'])
 		$no_errors = false;
 		if($table->num_rows() == 0)
 		{
-			$no_errors = true;
+			$no_errors = TRUE;
 			$table->construct_cell($lang->no_corrupt_files_found, array('colspan' => 3));
 			$table->construct_row();
 		}

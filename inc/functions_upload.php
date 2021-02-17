@@ -234,7 +234,7 @@ function upload_avatar($avatar=array(), $uid=0)
 	if(defined('IN_ADMINCP'))
 	{
 		$avatarpath = '../'.$mybb->settings['avataruploadpath'];
-		$lang->load("messages", true);
+		$lang->load("messages", TRUE);
 	}
 	else
 	{
@@ -638,7 +638,7 @@ function upload_attachment($attachment, $update_attachment=false)
 
 	$attacharray = $plugins->run_hooks("upload_attachment_do_insert", $attacharray);
 
-	if(!empty($prevattach) && $prevattach['aid'] && $update_attachment == true)
+	if(!empty($prevattach) && $prevattach['aid'] && $update_attachment == TRUE)
 	{
 		unset($attacharray['downloads']); // Keep our download count if we're updating an attachment
 		$db->update_query("attachments", $attacharray, "aid='".$db->escape_string($prevattach['aid'])."'");
@@ -768,7 +768,7 @@ function add_attachments($pid, $forumpermissions, $attachwhere, $action=false)
 
 			while ($row = $db->fetch_array($query))
 			{
-				$aid[$row['filename']] = true;
+				$aid[$row['filename']] = TRUE;
 			}
 		}
 
@@ -791,14 +791,14 @@ function add_attachments($pid, $forumpermissions, $attachwhere, $action=false)
 					{
 						if($exists && $mybb->get_input('updateattachment') && ($mybb->usergroup['caneditattachments'] || $forumpermissions['caneditattachments']))
 						{
-							$update_attachment = true;
+							$update_attachment = TRUE;
 						}
 					}
 					else
 					{
 						if($exists && $mybb->get_input('updateattachment'))
 						{
-							$update_attachment = true;
+							$update_attachment = TRUE;
 						}
 					}
 

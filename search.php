@@ -154,7 +154,7 @@ if($mybb->input['action'] == "results")
 	$highlight = "";
 	if($search['keywords'])
 	{
-		if($mybb->seo_support == true)
+		if($mybb->seo_support == TRUE)
 		{
 			$highlight = "?highlight=".urlencode($search['keywords']);
 		}
@@ -220,13 +220,13 @@ if($mybb->input['action'] == "results")
 	$is_mod = $is_supermod = $show_inline_moderation = false;
 	if($mybb->usergroup['issupermod'])
 	{
-		$is_supermod = true;
+		$is_supermod = TRUE;
 	}
 	if($is_supermod || is_moderator())
 	{
 		$inlinecookie = "inlinemod_search".$sid;
 		$inlinecount = 0;
-		$is_mod = true;
+		$is_mod = TRUE;
 		$return_url = 'search.php?'.htmlspecialchars_uni($_SERVER['QUERY_STRING']);
 	}
 
@@ -507,13 +507,13 @@ if($mybb->input['action'] == "results")
 			$threadpages = '';
 			$morelink = '';
 			$thread['posts'] = $thread['replies'] + 1;
-			if(is_moderator($thread['fid'], "canviewdeleted") == true || is_moderator($thread['fid'], "canviewunapprove") == true)
+			if(is_moderator($thread['fid'], "canviewdeleted") == TRUE || is_moderator($thread['fid'], "canviewunapprove") == TRUE)
 			{
-				if(is_moderator($thread['fid'], "canviewdeleted") == true)
+				if(is_moderator($thread['fid'], "canviewdeleted") == TRUE)
 				{
 					$thread['posts'] += $thread['deletedposts'];
 				}
-				if(is_moderator($thread['fid'], "canviewunapprove") == true)
+				if(is_moderator($thread['fid'], "canviewunapprove") == TRUE)
 				{
 					$thread['posts'] += $thread['unapprovedposts'];
 				}
@@ -630,7 +630,7 @@ if($mybb->input['action'] == "results")
 				}
 
 				// If this user is allowed to use the inline moderation tools for at least one thread, include the necessary scripts
-				$show_inline_moderation = true;
+				$show_inline_moderation = TRUE;
 
 				eval("\$inline_mod_checkbox = \"".$templates->get("search_results_threads_inlinecheck")."\";");
 			}
@@ -808,7 +808,7 @@ if($mybb->input['action'] == "results")
 			$query = $db->simple_select("posts", "DISTINCT tid,uid", "uid='{$mybb->user['uid']}' AND tid IN({$db->escape_string($tids)}) AND ({$unapproved_where})");
 			while($post = $db->fetch_array($query))
 			{
-				$dot_icon[$post['tid']] = true;
+				$dot_icon[$post['tid']] = TRUE;
 			}
 		}
 
@@ -1020,7 +1020,7 @@ if($mybb->input['action'] == "results")
 					$inlinecheck = '';
 				}
 
-				$show_inline_moderation = true;
+				$show_inline_moderation = TRUE;
 
 				eval("\$inline_mod_checkbox = \"".$templates->get("search_results_posts_inlinecheck")."\";");
 			}
@@ -1151,7 +1151,7 @@ elseif($mybb->input['action'] == "findguest")
 		$comma = ',';
 	}
 
-	$sid = md5(uniqid(microtime(), true));
+	$sid = md5(uniqid(microtime(), TRUE));
 	$searcharray = array(
 		"sid" => $db->escape_string($sid),
 		"uid" => $mybb->user['uid'],
@@ -1231,7 +1231,7 @@ elseif($mybb->input['action'] == "finduser")
 		$comma = ',';
 	}
 
-	$sid = md5(uniqid(microtime(), true));
+	$sid = md5(uniqid(microtime(), TRUE));
 	$searcharray = array(
 		"sid" => $db->escape_string($sid),
 		"uid" => $mybb->user['uid'],
@@ -1292,7 +1292,7 @@ elseif($mybb->input['action'] == "finduserthreads")
 		$comma = ',';
 	}
 
-	$sid = md5(uniqid(microtime(), true));
+	$sid = md5(uniqid(microtime(), TRUE));
 	$searcharray = array(
 		"sid" => $db->escape_string($sid),
 		"uid" => $mybb->user['uid'],
@@ -1372,7 +1372,7 @@ elseif($mybb->input['action'] == "getnew")
 		$comma = ',';
 	}
 
-	$sid = md5(uniqid(microtime(), true));
+	$sid = md5(uniqid(microtime(), TRUE));
 	$searcharray = array(
 		"sid" => $db->escape_string($sid),
 		"uid" => $mybb->user['uid'],
@@ -1462,7 +1462,7 @@ elseif($mybb->input['action'] == "getdaily")
 		$comma = ',';
 	}
 
-	$sid = md5(uniqid(microtime(), true));
+	$sid = md5(uniqid(microtime(), TRUE));
 	$searcharray = array(
 		"sid" => $db->escape_string($sid),
 		"uid" => $mybb->user['uid'],
@@ -1540,7 +1540,7 @@ elseif($mybb->input['action'] == "do_search")
 		$search_data['visible'] = $mybb->get_input('visible', MyBB::INPUT_INT);
 	}
 
-	if($db->can_search == true)
+	if($db->can_search == TRUE)
 	{
 		if($mybb->settings['searchtype'] == "fulltext" && $db->supports_fulltext_boolean("posts") && $db->is_fulltext("posts"))
 		{
@@ -1555,7 +1555,7 @@ elseif($mybb->input['action'] == "do_search")
 	{
 		error($lang->error_no_search_support);
 	}
-	$sid = md5(uniqid(microtime(), true));
+	$sid = md5(uniqid(microtime(), TRUE));
 	$searcharray = array(
 		"sid" => $db->escape_string($sid),
 		"uid" => $mybb->user['uid'],
@@ -1589,7 +1589,7 @@ else if($mybb->input['action'] == "thread")
 	$thread = get_thread($mybb->get_input('tid', MyBB::INPUT_INT));
 	$ismod = is_moderator($thread['fid']);
 
-	if(!$thread || ($thread['visible'] != 1 && $ismod == false && ($thread['visible'] != -1 || $mybb->settings['soft_delete'] != 1 || !$mybb->user['uid'] || $mybb->user['uid'] != $thread['uid'])) || ($thread['visible'] > 1 && $ismod == true))
+	if(!$thread || ($thread['visible'] != 1 && $ismod == false && ($thread['visible'] != -1 || $mybb->settings['soft_delete'] != 1 || !$mybb->user['uid'] || $mybb->user['uid'] != $thread['uid'])) || ($thread['visible'] > 1 && $ismod == TRUE))
 	{
 		error($lang->error_invalidthread);
 	}
@@ -1653,7 +1653,7 @@ else if($mybb->input['action'] == "thread")
 		"tid" => $mybb->get_input('tid', MyBB::INPUT_INT)
 	);
 
-	if($db->can_search == true)
+	if($db->can_search == TRUE)
 	{
 		if($mybb->settings['searchtype'] == "fulltext" && $db->supports_fulltext_boolean("posts") && $db->is_fulltext("posts"))
 		{
@@ -1668,7 +1668,7 @@ else if($mybb->input['action'] == "thread")
 	{
 		error($lang->error_no_search_support);
 	}
-	$sid = md5(uniqid(microtime(), true));
+	$sid = md5(uniqid(microtime(), TRUE));
 	$searcharray = array(
 		"sid" => $db->escape_string($sid),
 		"uid" => $mybb->user['uid'],

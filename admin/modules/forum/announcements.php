@@ -116,7 +116,7 @@ if($mybb->input['action'] == "add")
 		{
 			if(isset($mybb->input['preview']))
 			{
-				$lang->load('global', true);
+				$lang->load('global', TRUE);
 
 				$parser_options = array();
 				$parser_options['allow_html'] = $mybb->settings['announcementshtml'] && $mybb->get_input('allowhtml', MyBB::INPUT_INT);
@@ -371,7 +371,7 @@ if($mybb->input['action'] == "add")
 
 		$('.'+id+'s_check').each(function(e, val)
 		{
-			if($(this).prop('checked') == true)
+			if($(this).prop('checked') == TRUE)
 			{
 				checked = $(this).val();
 			}
@@ -500,7 +500,7 @@ if($mybb->input['action'] == "edit")
 		{
 			if(isset($mybb->input['preview']))
 			{
-				$lang->load('global', true);
+				$lang->load('global', TRUE);
 
 				$parser_options = array();
 				$parser_options['allow_html'] = $mybb->settings['announcementshtml'] && $mybb->get_input('allowhtml', MyBB::INPUT_INT);
@@ -738,7 +738,7 @@ if($mybb->input['action'] == "edit")
 
 		$('.'+id+'s_check').each(function(e, val)
 		{
-			if($(this).prop('checked') == true)
+			if($(this).prop('checked') == TRUE)
 			{
 				checked = $(this).val();
 			}

@@ -40,13 +40,13 @@ class StopForumSpamChecker
 	 *
 	 * @var bool
 	 */
-	private $check_emails = true;
+	private $check_emails = TRUE;
 	/**
 	 * Whether to check IP addresses against StopForumSPam. If set to false, the username weighting won't be used.
 	 *
 	 * @var bool
 	 */
-	private $check_ips = true;
+	private $check_ips = TRUE;
 	/**
 	 * Whether to log whenever a user is found to be a spammer.
 	 *
@@ -63,7 +63,7 @@ class StopForumSpamChecker
 	 * @param bool         $check_emails              Whether to check email address against StopForumSpam.
 	 * @param bool         $check_ips                 Whether to check IP addresses against StopForumSpam.
 	 */
-	public function __construct(&$plugins, $min_weighting_before_spam = 50.00, $check_usernames = false, $check_emails = true, $check_ips = true, $log_blocks = true)
+	public function __construct(&$plugins, $min_weighting_before_spam = 50.00, $check_usernames = false, $check_emails = TRUE, $check_ips = TRUE, $log_blocks = TRUE)
 	{
 		$this->plugins                   = $plugins;
 		$this->min_weighting_before_spam = (double)$min_weighting_before_spam;
@@ -146,7 +146,7 @@ class StopForumSpamChecker
 
 				if($confidence > $this->min_weighting_before_spam)
 				{
-					$is_spammer = true;
+					$is_spammer = TRUE;
 				}
 			}
 			else

@@ -15,7 +15,7 @@ if(!defined("IN_MYBB"))
 }
 
 /**
- * @return bool true
+ * @return bool TRUE
  */
 function forum_meta()
 {
@@ -31,7 +31,7 @@ function forum_meta()
 
 	$page->add_menu_item($lang->forums_and_posts, "forum", "index.php?module=forum", 20, $sub_menu);
 
-	return true;
+	return TRUE;
 }
 
 /**

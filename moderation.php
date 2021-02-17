@@ -406,7 +406,7 @@ switch($mybb->input['action'])
 				$mybb->input['delayedmoderation']['subject'] = htmlspecialchars_uni($mybb->input['delayedmoderation']['subject']);
 				$mybb->input['delayedmoderation']['threadurl'] = htmlspecialchars_uni($mybb->input['delayedmoderation']['threadurl']);
 
-				$forumselect = build_forum_jump("", $mybb->input['delayedmoderation']['new_forum'], 1, '', 0, true, '', "delayedmoderation[new_forum]");
+				$forumselect = build_forum_jump("", $mybb->input['delayedmoderation']['new_forum'], 1, '', 0, TRUE, '', "delayedmoderation[new_forum]");
 			}
 		}
 		else
@@ -423,7 +423,7 @@ switch($mybb->input['action'])
 			$mybb->input['delayedmoderation']['subject'] = $thread['subject'];
 			$mybb->input['delayedmoderation']['threadurl'] = '';
 
-			$forumselect = build_forum_jump("", $fid, 1, '', 0, true, '', "delayedmoderation[new_forum]");
+			$forumselect = build_forum_jump("", $fid, 1, '', 0, TRUE, '', "delayedmoderation[new_forum]");
 		}
 
 		if(isset($errors) && count($errors) > 0)
@@ -1014,7 +1014,7 @@ switch($mybb->input['action'])
 
 		$plugins->run_hooks("moderation_move");
 
-		$forumselect = build_forum_jump("", '', 1, '', 0, true, '', "moveto");
+		$forumselect = build_forum_jump("", '', 1, '', 0, TRUE, '', "moveto");
 		eval("\$movethread = \"".$templates->get("moderation_move")."\";");
 		output_page($movethread);
 		break;
@@ -1576,7 +1576,7 @@ switch($mybb->input['action'])
 		}
 
 		clearinline($tid, 'thread');
-		$forumselect = build_forum_jump("", $fid, 1, '', 0, true, '', "moveto");
+		$forumselect = build_forum_jump("", $fid, 1, '', 0, TRUE, '', "moveto");
 
 		$plugins->run_hooks("moderation_split");
 
@@ -1673,7 +1673,7 @@ switch($mybb->input['action'])
 
 		$plugins->run_hooks("moderation_removesubscriptions");
 
-		$moderation->remove_thread_subscriptions($tid, true);
+		$moderation->remove_thread_subscriptions($tid, TRUE);
 
 		log_moderator_action($modlogdata, $lang->removed_subscriptions);
 
@@ -2126,7 +2126,7 @@ switch($mybb->input['action'])
 		{
 			clearinline($fid, 'forum');
 		}
-		$forumselect = build_forum_jump("", '', 1, '', 0, true, '', "moveto");
+		$forumselect = build_forum_jump("", '', 1, '', 0, TRUE, '', "moveto");
 		$return_url = htmlspecialchars_uni($mybb->get_input('url'));
 		eval("\$movethread = \"".$templates->get("moderation_inline_movethreads")."\";");
 		output_page($movethread);
@@ -2477,7 +2477,7 @@ switch($mybb->input['action'])
 		{
 			clearinline($tid, 'thread');
 		}
-		$forumselect = build_forum_jump("", $fid, 1, '', 0, true, '', "moveto");
+		$forumselect = build_forum_jump("", $fid, 1, '', 0, TRUE, '', "moveto");
 
 		$return_url = htmlspecialchars_uni($mybb->get_input('url'));
 
@@ -2665,7 +2665,7 @@ switch($mybb->input['action'])
 		{
 			clearinline($tid, 'thread');
 		}
-		$forumselect = build_forum_jump("", $fid, 1, '', 0, true, '', "moveto");
+		$forumselect = build_forum_jump("", $fid, 1, '', 0, TRUE, '', "moveto");
 		eval("\$moveposts = \"".$templates->get("moderation_inline_moveposts")."\";");
 		output_page($moveposts);
 		break;
@@ -3435,7 +3435,7 @@ function extendinline($id, $type)
 /**
  * Checks if the current user is a moderator of all the posts specified
  *
- * Note: If no posts are specified, this function will return true.  It is the
+ * Note: If no posts are specified, this function will return TRUE.  It is the
  * responsibility of the calling script to error-check this case if necessary.
  *
  * @param array $posts Array of post IDs
@@ -3449,7 +3449,7 @@ function is_moderator_by_pids($posts, $permission='')
 	// Speedy determination for supermods/admins and guests
 	if($mybb->usergroup['issupermod'])
 	{
-		return true;
+		return TRUE;
 	}
 	elseif(!$mybb->user['uid'])
 	{
@@ -3473,13 +3473,13 @@ function is_moderator_by_pids($posts, $permission='')
 			return false;
 		}
 	}
-	return true;
+	return TRUE;
 }
 
 /**
  * Checks if the current user is a moderator of all the threads specified
  *
- * Note: If no threads are specified, this function will return true.  It is the
+ * Note: If no threads are specified, this function will return TRUE.  It is the
  * responsibility of the calling script to error-check this case if necessary.
  *
  * @param array $threads Array of thread IDs
@@ -3493,7 +3493,7 @@ function is_moderator_by_tids($threads, $permission='')
 	// Speedy determination for supermods/admins and guests
 	if($mybb->usergroup['issupermod'])
 	{
-		return true;
+		return TRUE;
 	}
 	elseif(!$mybb->user['uid'])
 	{
@@ -3517,7 +3517,7 @@ function is_moderator_by_tids($threads, $permission='')
 			return false;
 		}
 	}
-	return true;
+	return TRUE;
 }
 
 /**

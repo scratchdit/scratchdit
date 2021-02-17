@@ -105,7 +105,7 @@ $lang->forum_announcement = $lang->sprintf($lang->forum_announcement, htmlspecia
 
 if($announcementarray['startdate'] > $mybb->user['lastvisit'])
 {
-	$setcookie = true;
+	$setcookie = TRUE;
 	if(isset($mybb->cookies['mybb']['announcements']) && is_scalar($mybb->cookies['mybb']['announcements']))
 	{
 		$cookie = my_unserialize(stripslashes($mybb->cookies['mybb']['announcements']));

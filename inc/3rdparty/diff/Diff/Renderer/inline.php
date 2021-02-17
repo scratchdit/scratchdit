@@ -95,7 +95,7 @@ class Horde_Text_Diff_Renderer_Inline extends Horde_Text_Diff_Renderer
         return $header;
     }
 
-    protected function _lines($lines, $prefix = ' ', $encode = true)
+    protected function _lines($lines, $prefix = ' ', $encode = TRUE)
     {
         if ($encode) {
             array_walk($lines, array(&$this, '_encode'));

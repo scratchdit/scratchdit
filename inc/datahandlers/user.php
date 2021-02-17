@@ -99,7 +99,7 @@ class UserDataHandler extends DataHandler
 		}
 
 		// Check if the username belongs to the list of banned usernames.
-		if(is_banned_username($username, true))
+		if(is_banned_username($username, TRUE))
 		{
 			$this->set_error('banned_username');
 			return false;
@@ -119,7 +119,7 @@ class UserDataHandler extends DataHandler
 			return false;
 		}
 
-		return true;
+		return TRUE;
 	}
 
 	/**
@@ -140,13 +140,13 @@ class UserDataHandler extends DataHandler
 			return false;
 		}
 
-		return true;
+		return TRUE;
 	}
 
 	/**
 	 * Verifies if a username is already in use or not.
 	 *
-	 * @return boolean False when the username is not in use, true when it is.
+	 * @return boolean False when the username is not in use, TRUE when it is.
 	 */
 	function verify_username_exists()
 	{
@@ -162,7 +162,7 @@ class UserDataHandler extends DataHandler
 		if(!empty($user['uid']))
 		{
 			$this->set_error("username_exists", array($username));
-			return true;
+			return TRUE;
 		}
 
 		return false;
@@ -224,7 +224,7 @@ class UserDataHandler extends DataHandler
 		$password_fields = create_password($user['password'], false, $user);
 		$user = array_merge($user, $password_fields);
 
-		return true;
+		return TRUE;
 	}
 
 	/**
@@ -234,7 +234,7 @@ class UserDataHandler extends DataHandler
 	*/
 	function verify_usergroup()
 	{
-		return true;
+		return TRUE;
 	}
 	/**
 	* Verifies if an email address is valid or not.
@@ -262,7 +262,7 @@ class UserDataHandler extends DataHandler
 		}
 
 		// Check banned emails
-		if(is_banned_email($user['email'], true))
+		if(is_banned_email($user['email'], TRUE))
 		{
 			$this->set_error('banned_email');
 			return false;
@@ -291,7 +291,7 @@ class UserDataHandler extends DataHandler
 			return false;
 		}
 
-		return true;
+		return TRUE;
 	}
 
 	/**
@@ -314,7 +314,7 @@ class UserDataHandler extends DataHandler
 			return false;
 		}
 
-		return true;
+		return TRUE;
 	}
 
 	/**
@@ -332,7 +332,7 @@ class UserDataHandler extends DataHandler
 			return false;
 		}
 		$icq = (int)$icq;
-		return true;
+		return TRUE;
 	}
 
 	/**
@@ -349,7 +349,7 @@ class UserDataHandler extends DataHandler
 
 		if(!is_array($birthday))
 		{
-			return true;
+			return TRUE;
 		}
 
 		// Sanitize any input we have
@@ -419,7 +419,7 @@ class UserDataHandler extends DataHandler
 			// No field is specified, so return an empty string for an unknown birthday
 			$user['bday'] = '';
 		}
-		return true;
+		return TRUE;
 	}
 
 	/**
@@ -449,7 +449,7 @@ class UserDataHandler extends DataHandler
 				return false;
 			}
 		}
-		return true;
+		return TRUE;
 	}
 
 	/**
@@ -467,7 +467,7 @@ class UserDataHandler extends DataHandler
 			return false;
 		}
 
-		return true;
+		return TRUE;
 	}
 
 	/**
@@ -485,7 +485,7 @@ class UserDataHandler extends DataHandler
 			return false;
 		}
 
-		return true;
+		return TRUE;
 	}
 
 	/**
@@ -597,7 +597,7 @@ class UserDataHandler extends DataHandler
 			}
 		}
 
-		return true;
+		return TRUE;
 	}
 
 	/**
@@ -629,7 +629,7 @@ class UserDataHandler extends DataHandler
 			$user['referrer_uid'] = 0;
 		}
 
-		return true;
+		return TRUE;
 	}
 
 	/**
@@ -781,7 +781,7 @@ class UserDataHandler extends DataHandler
 		{
 			$regdate = TIME_NOW;
 		}
-		return true;
+		return TRUE;
 	}
 
 	/**
@@ -799,7 +799,7 @@ class UserDataHandler extends DataHandler
 		{
 			$lastvisit = TIME_NOW;
 		}
-		return true;
+		return TRUE;
 
 	}
 
@@ -818,7 +818,7 @@ class UserDataHandler extends DataHandler
 		{
 			$lastactive = TIME_NOW;
 		}
-		return true;
+		return TRUE;
 
 	}
 
@@ -839,7 +839,7 @@ class UserDataHandler extends DataHandler
 			$user['away']['date'] = 0;
 			$user['away']['returndate'] = 0;
 			$user['away']['awayreason'] = '';
-			return true;
+			return TRUE;
 		}
 		elseif($user['away']['returndate'])
 		{
@@ -861,7 +861,7 @@ class UserDataHandler extends DataHandler
 			// Validate the return date lengths
 			$user['away']['returndate'] = substr($returnday, 0, 2).'-'.substr($returnmonth, 0, 2).'-'.substr($returnyear, 0, 4);
 		}
-		return true;
+		return TRUE;
 	}
 
 	/**
@@ -881,7 +881,7 @@ class UserDataHandler extends DataHandler
 			$this->set_error("invalid_language");
 			return false;
 		}
-		return true;
+		return TRUE;
 	}
 
 	/**
@@ -906,7 +906,7 @@ class UserDataHandler extends DataHandler
 			}
 		}
 
-		return true;
+		return TRUE;
 	}
 
 	/**
@@ -919,12 +919,12 @@ class UserDataHandler extends DataHandler
 		$user = &$this->data;
 
 		// An invalid language has been specified?
-		if($user['regcheck1'] !== "" || $user['regcheck2'] !== "true")
+		if($user['regcheck1'] !== "" || $user['regcheck2'] !== "TRUE")
 		{
 			$this->set_error("invalid_checkfield");
 			return false;
 		}
-		return true;
+		return TRUE;
 	}
 
 	/**
@@ -947,7 +947,7 @@ class UserDataHandler extends DataHandler
 			return false;
 		}
 
-		return true;
+		return TRUE;
 	}
 
 	/**
@@ -1072,14 +1072,14 @@ class UserDataHandler extends DataHandler
 		$plugins->run_hooks("datahandler_user_validate", $this);
 
 		// We are done validating, return.
-		$this->set_validated(true);
+		$this->set_validated(TRUE);
 		if(count($this->get_errors()) > 0)
 		{
 			return false;
 		}
 		else
 		{
-			return true;
+			return TRUE;
 		}
 	}
 
@@ -1506,7 +1506,7 @@ class UserDataHandler extends DataHandler
 			}
 		}
 
-		return true;
+		return TRUE;
 	}
 
 	/**
@@ -1811,7 +1811,7 @@ class UserDataHandler extends DataHandler
 
 		if(!isset($this->data['signature']))
 		{
-			return true;
+			return TRUE;
 		}
 
 		if(!isset($parser))
@@ -1876,6 +1876,6 @@ class UserDataHandler extends DataHandler
 		{
 			return false;
 		}
-		return true;
+		return TRUE;
 	}
 }

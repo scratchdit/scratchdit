@@ -48,7 +48,7 @@ require_once MYBB_ROOT."inc/class_error.php";
 $error_handler = new errorHandler();
 
 // Show errors triggered during initialization
-$error_handler->force_display_errors = true;
+$error_handler->force_display_errors = TRUE;
 
 if(!function_exists('json_encode') || !function_exists('json_decode'))
 {
@@ -66,7 +66,7 @@ $mybb = new MyBB;
 $not_installed = false;
 if(!file_exists(MYBB_ROOT."inc/config.php"))
 {
-	$not_installed = true;
+	$not_installed = TRUE;
 }
 else
 {
@@ -76,7 +76,7 @@ else
 
 	if(!isset($config['database']))
 	{
-		$not_installed = true;
+		$not_installed = TRUE;
 	}
 }
 
@@ -220,7 +220,7 @@ $mybb->parse_cookies();
 $mybb->cache = &$cache;
 $mybb->asset_url = $mybb->get_asset_url();
 
-if($mybb->use_shutdown == true)
+if($mybb->use_shutdown == TRUE)
 {
 	register_shutdown_function('run_shutdown');
 }
@@ -250,7 +250,7 @@ add_shutdown('send_mail_queue');
 /* URL Definitions */
 if($mybb->settings['seourls'] == "yes" || ($mybb->settings['seourls'] == "auto" && isset($_SERVER['SEO_SUPPORT']) && $_SERVER['SEO_SUPPORT'] == 1))
 {
-	$mybb->seo_support = true;
+	$mybb->seo_support = TRUE;
 
 	define('FORUM_URL', "forum-{fid}.html");
 	define('FORUM_URL_PAGED', "forum-{fid}-page-{page}.html");

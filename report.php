@@ -73,7 +73,7 @@ if($report_type == 'post')
 		}
 		else
 		{
-			$verified = true;
+			$verified = TRUE;
 			$button = '#post_'.$id.' .postbit_report';
 		}
 
@@ -93,7 +93,7 @@ else if($report_type == 'profile')
 	}
 	else
 	{
-		$verified = true;
+		$verified = TRUE;
 		$report_type_db = "type = 'profile'";
 		$id2 = $id3 = 0; // We don't use these on the profile
 		$id = $checkid = $user['uid']; // id is the profile user
@@ -111,7 +111,7 @@ else if($report_type == 'reputation')
 	}
 	else
 	{
-		$verified = true;
+		$verified = TRUE;
 		$reputation = $db->fetch_array($query);
 		$id = $reputation['rid']; // id is the reputation id
 		$id2 = $checkid = $reputation['adduid']; // id2 is the user who gave the comment
@@ -149,7 +149,7 @@ if(!empty($report_type_db))
 
 $mybb->input['action'] = $mybb->get_input('action');
 
-if(empty($error) && $verified == true && $mybb->input['action'] == "do_report" && $mybb->request_method == "post")
+if(empty($error) && $verified == TRUE && $mybb->input['action'] == "do_report" && $mybb->request_method == "post")
 {
 	verify_post_check($mybb->get_input('my_post_key'));
 

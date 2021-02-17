@@ -260,7 +260,7 @@ if(!$mybb->input['action'])
 	if($mybb->settings['captchaimage'] && $mybb->user['uid'] == 0)
 	{
 		require_once MYBB_ROOT.'inc/class_captcha.php';
-		$post_captcha = new captcha(true, "post_captcha");
+		$post_captcha = new captcha(TRUE, "post_captcha");
 
 		if($post_captcha->html)
 		{

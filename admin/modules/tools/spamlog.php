@@ -44,7 +44,7 @@ if($mybb->input['action'] == 'prune')
 		$mybb->input['older_than'] = $mybb->get_input('older_than', MyBB::INPUT_INT);
 		if($mybb->input['older_than'] <= 0)
 		{
-			$is_today = true;
+			$is_today = TRUE;
 			$mybb->input['older_than'] = 1;
 		}
 		$where = 'dateline < '.(TIME_NOW-($mybb->input['older_than']*86400));
@@ -70,11 +70,11 @@ if($mybb->input['action'] == 'prune')
 		log_admin_action($mybb->input['older_than'], $mybb->input['filter_username'], $mybb->input['filter_email'], $num_deleted);
 
 		$success = $lang->success_pruned_spam_logs;
-		if($is_today == true && $num_deleted > 0)
+		if($is_today == TRUE && $num_deleted > 0)
 		{
 			$success .= ' '.$lang->note_logs_locked;
 		}
-		elseif($is_today == true && $num_deleted == 0)
+		elseif($is_today == TRUE && $num_deleted == 0)
 		{
 			flash_message($lang->note_logs_locked, 'error');
 			admin_redirect('index.php?module=tools-spamlog');

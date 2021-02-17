@@ -122,7 +122,7 @@ if($mybb->input['action'] == "browse")
 	{
 		$table->construct_cell($lang->error_no_results_found, array("colspan" => 3));
 		$table->construct_row();
-		$no_results = true;
+		$no_results = TRUE;
 	}
 
 	$search = new Form("index.php?module=config-plugins&amp;action=browse", 'post', 'search_form');
@@ -301,7 +301,7 @@ if($mybb->input['action'] == "check")
 	foreach($tree['plugins']['plugin'] as $plugin)
 	{
 		$compare_by = array_key_exists("codename", $plugin['attributes']) ? "codename" : "guid";
-		$is_vulnerable = array_key_exists("vulnerable", $plugin) ? true : false;
+		$is_vulnerable = array_key_exists("vulnerable", $plugin) ? TRUE : false;
 
 		if(version_compare($names[$plugin['attributes'][$compare_by]]['version'], $plugin['version']['value'], "<"))
 		{
@@ -403,8 +403,8 @@ if($mybb->input['action'] == "activate" || $mybb->input['action'] == "deactivate
 	require_once MYBB_ROOT."inc/plugins/$file";
 
 	$installed_func = "{$codename}_is_installed";
-	$installed = true;
-	if(function_exists($installed_func) && $installed_func() != true)
+	$installed = TRUE;
+	if(function_exists($installed_func) && $installed_func() != TRUE)
 	{
 		$installed = false;
 	}
@@ -427,7 +427,7 @@ if($mybb->input['action'] == "activate" || $mybb->input['action'] == "deactivate
 		{
 			call_user_func("{$codename}_install");
 			$message = $lang->success_plugin_installed;
-			$install_uninstall = true;
+			$install_uninstall = TRUE;
 		}
 
 		if(function_exists("{$codename}_activate"))
@@ -451,7 +451,7 @@ if($mybb->input['action'] == "activate" || $mybb->input['action'] == "deactivate
 		{
 			call_user_func("{$codename}_uninstall");
 			$message = $lang->success_plugin_uninstalled;
-			$install_uninstall = true;
+			$install_uninstall = TRUE;
 		}
 
 		unset($active_plugins[$codename]);
@@ -650,23 +650,23 @@ function build_plugin_list($plugin_list)
 		$install_func = "{$plugininfo['codename']}_install";
 		$uninstall_func = "{$plugininfo['codename']}_uninstall";
 
-		$installed = true;
+		$installed = TRUE;
 		$install_button = false;
 		$uninstall_button = false;
 
-		if(function_exists($installed_func) && $installed_func() != true)
+		if(function_exists($installed_func) && $installed_func() != TRUE)
 		{
 			$installed = false;
 		}
 
 		if(function_exists($install_func))
 		{
-			$install_button = true;
+			$install_button = TRUE;
 		}
 
 		if(function_exists($uninstall_func))
 		{
-			$uninstall_button = true;
+			$uninstall_button = TRUE;
 		}
 
 		$table->construct_cell("<strong>{$plugininfo['name']}</strong> ({$plugininfo['version']})<br /><small>{$plugininfo['description']}</small><br /><i><small>{$lang->created_by} {$plugininfo['author']}</small></i>");
@@ -697,7 +697,7 @@ function build_plugin_list($plugin_list)
 			}
 		}
 		// Plugin is installed but not active
-		else if($installed == true)
+		else if($installed == TRUE)
 		{
 			if($compatibility_warning && !$uninstall_button)
 			{

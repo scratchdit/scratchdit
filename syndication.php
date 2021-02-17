@@ -61,7 +61,7 @@ elseif($mybb->get_input('fid'))
 }
 
 // Get the forums the user is not allowed to see.
-$unviewableforums = get_unviewable_forums(true);
+$unviewableforums = get_unviewable_forums(TRUE);
 $inactiveforums = get_inactive_forums();
 
 $unviewable = '';

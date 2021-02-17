@@ -10,18 +10,18 @@ var ViewManager = {
 		{
 			return;
 		}
-		
+
 		$("#fields_enabled").sortable({
 			connectWith: "#fields_disabled",
-			dropOnEmpty: true,
+			dropOnEmpty: TRUE,
 			update: function(event, ui) {
 				ViewManager.buildFieldsList();
 			}
 		}).disableSelection();
-		
+
 		$("#fields_disabled").sortable({
 			connectWith: "#fields_enabled",
-			dropOnEmpty: true,
+			dropOnEmpty: TRUE,
 			update: function(event, ui) {
 				ViewManager.buildFieldsList();
 			}
@@ -33,7 +33,7 @@ var ViewManager = {
 		new_input = '';
 		$('#fields_enabled').children().each(function() {
 			id = $(this).attr('id').split("-");
-		
+
 			if(id[1])
 			{
 				if(new_input)

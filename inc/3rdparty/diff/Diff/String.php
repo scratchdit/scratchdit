@@ -177,9 +177,9 @@ class Horde_String
      * Makes a string lowercase.
      *
      * @param string $string   The string to be converted.
-     * @param boolean $locale  If true the string will be converted based on
+     * @param boolean $locale  If TRUE the string will be converted based on
      *                         a given charset, locale independent else.
-     * @param string $charset  If $locale is true, the charset to use when
+     * @param string $charset  If $locale is TRUE, the charset to use when
      *                         converting.
      *
      * @return string  The string with lowercase characters.
@@ -213,9 +213,9 @@ class Horde_String
      * Makes a string uppercase.
      *
      * @param string $string   The string to be converted.
-     * @param boolean $locale  If true the string will be converted based on a
+     * @param boolean $locale  If TRUE the string will be converted based on a
      *                         given charset, locale independent else.
-     * @param string $charset  If $locale is true, the charset to use when
+     * @param string $charset  If $locale is TRUE, the charset to use when
      *                         converting. If not provided the current charset.
      *
      * @return string  The string with uppercase characters.
@@ -250,7 +250,7 @@ class Horde_String
      * alphabetic.
      *
      * @param string $string   The string to be capitalized.
-     * @param boolean $locale  If true the string will be converted based on a
+     * @param boolean $locale  If TRUE the string will be converted based on a
      *                         given charset, locale independent else.
      * @param string $charset  The charset to use, defaults to current charset.
      *
@@ -264,7 +264,7 @@ class Horde_String
             }
             $first = self::substr($string, 0, 1, $charset);
             if (self::isAlpha($first, $charset)) {
-                $string = self::upper($first, true, $charset) . self::substr($string, 1, null, $charset);
+                $string = self::upper($first, TRUE, $charset) . self::substr($string, 1, null, $charset);
             }
         } else {
             $string = self::upper(substr($string, 0, 1), false) . substr($string, 1);
@@ -280,7 +280,7 @@ class Horde_String
      * Sentences are splitted into words at whitestrings.
      *
      * @param string $string   The string to be capitalized.
-     * @param boolean $locale  If true the string will be converted based on a
+     * @param boolean $locale  If TRUE the string will be converted based on a
      *                         given charset, locale independent else.
      * @param string $charset  The charset to use, defaults to current charset.
      *
@@ -328,7 +328,7 @@ class Horde_String
             if (strlen($ret)) {
                 return $ret;
             }
-            $error = true;
+            $error = TRUE;
         }
 
         /* Try iconv. */
@@ -339,7 +339,7 @@ class Horde_String
             if ($ret !== false) {
                 return $ret;
             }
-            $error = true;
+            $error = TRUE;
         }
 
         /* Try intl. */
@@ -358,7 +358,7 @@ class Horde_String
             if ($ret !== false) {
                 return $ret;
             }
-            $error = true;
+            $error = TRUE;
         }
 
         return $error
@@ -632,7 +632,7 @@ class Horde_String
                 preg_match('/^(.*?)(;|:)(\s+.*)$/us', $line, $match)) {
                 $wrapped .= $match[1] . $match[2];
                 $string = $break . $match[3] . $string;
-                $hasWrapped = true;
+                $hasWrapped = TRUE;
                 continue;
             }
 
@@ -645,7 +645,7 @@ class Horde_String
                 $wrapped .= $match[1];
                 $string = $break . ($line_folding ? $match[2] : '')
                     . $match[3] . $string;
-                $hasWrapped = true;
+                $hasWrapped = TRUE;
                 continue;
             }
 
@@ -653,7 +653,7 @@ class Horde_String
             if ($cut) {
                 $wrapped .= $line;
                 $string = $break . $string;
-                $hasWrapped = true;
+                $hasWrapped = TRUE;
                 continue;
             }
 
@@ -671,7 +671,7 @@ class Horde_String
      * @param integer $length     Wrap $text at this number of characters.
      * @param string $break_char  Character(s) to use when breaking lines.
      * @param boolean $quote      Ignore lines that are wrapped with the '>'
-     *                            character (RFC 2646)? If true, we don't
+     *                            character (RFC 2646)? If TRUE, we don't
      *                            remove any padding whitespace at the end of
      *                            the string.
      *
@@ -751,7 +751,7 @@ class Horde_String
     }
 
     /**
-     * Returns true if the every character in the parameter is an alphabetic
+     * Returns TRUE if the every character in the parameter is an alphabetic
      * character.
      *
      * @param string $string   The string to test.
@@ -780,7 +780,7 @@ class Horde_String
     }
 
     /**
-     * Returns true if ever character in the parameter is a lowercase letter in
+     * Returns TRUE if ever character in the parameter is a lowercase letter in
      * the current locale.
      *
      * @param string $string   The string to test.
@@ -790,12 +790,12 @@ class Horde_String
      */
     public static function isLower($string, $charset)
     {
-        return ((self::lower($string, true, $charset) === $string) &&
+        return ((self::lower($string, TRUE, $charset) === $string) &&
                 self::isAlpha($string, $charset));
     }
 
     /**
-     * Returns true if every character in the parameter is an uppercase letter
+     * Returns TRUE if every character in the parameter is an uppercase letter
      * in the current locale.
      *
      * @param string $string   The string to test.
@@ -805,7 +805,7 @@ class Horde_String
      */
     public static function isUpper($string, $charset)
     {
-        return ((self::upper($string, true, $charset) === $string) &&
+        return ((self::upper($string, TRUE, $charset) === $string) &&
                 self::isAlpha($string, $charset));
     }
 
@@ -885,7 +885,7 @@ class Horde_String
             }
         }
 
-        return true;
+        return TRUE;
     }
 
     /**

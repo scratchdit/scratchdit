@@ -306,7 +306,7 @@ if(!$mybb->input['action'])
 		if($log['type'] == 1)
 		{
 			$table->construct_cell("<img src=\"styles/{$page->style}/images/icons/maillogs_user.png\" title=\"{$lang->email_sent_to_user}\" alt=\"\" />", array("width" => 1));
-			$table->construct_cell("<a href=\"javascript:MyBB.popupWindow('index.php?module=tools-maillogs&amp;action=view&amp;mid={$log['mid']}', null, true);\">{$log['subject']}</a>");
+			$table->construct_cell("<a href=\"javascript:MyBB.popupWindow('index.php?module=tools-maillogs&amp;action=view&amp;mid={$log['mid']}', null, TRUE);\">{$log['subject']}</a>");
 		}
 		elseif($log['type'] == 2)
 		{
@@ -320,17 +320,17 @@ if(!$mybb->input['action'])
 				$thread_link = $lang->deleted;
 			}
 			$table->construct_cell("<img src=\"styles/{$page->style}/images/icons/maillogs_thread.png\" title=\"{$lang->sent_using_send_thread_feature}\" alt=\"\" />", array("width" => 1));
-			$table->construct_cell("<a href=\"javascript:MyBB.popupWindow('index.php?module=tools-maillogs&amp;action=view&amp;mid={$log['mid']}', null, true);\">{$log['subject']}</a><br /><small>{$lang->thread} {$thread_link}</small>");
+			$table->construct_cell("<a href=\"javascript:MyBB.popupWindow('index.php?module=tools-maillogs&amp;action=view&amp;mid={$log['mid']}', null, TRUE);\">{$log['subject']}</a><br /><small>{$lang->thread} {$thread_link}</small>");
 		}
 		elseif($log['type'] == 3)
 		{
 			$table->construct_cell("<img src=\"styles/{$page->style}/images/icons/maillogs_contact.png\" title=\"{$lang->email_sent_using_contact_form}\" alt=\"\" />", array("width" => 1));
-			$table->construct_cell("<a href=\"javascript:MyBB.popupWindow('index.php?module=tools-maillogs&amp;action=view&amp;mid={$log['mid']}', null, true);\">{$log['subject']}</a>");
+			$table->construct_cell("<a href=\"javascript:MyBB.popupWindow('index.php?module=tools-maillogs&amp;action=view&amp;mid={$log['mid']}', null, TRUE);\">{$log['subject']}</a>");
 		}
 		else
 		{
 			$table->construct_cell("<img src=\"styles/{$page->style}/images/icons/default.png\" title=\"{$lang->email}\" alt=\"\" />", array("width" => 1));
-			$table->construct_cell("<a href=\"javascript:MyBB.popupWindow('index.php?module=tools-maillogs&amp;action=view&amp;mid={$log['mid']}', null, true);\">{$log['subject']}</a>");
+			$table->construct_cell("<a href=\"javascript:MyBB.popupWindow('index.php?module=tools-maillogs&amp;action=view&amp;mid={$log['mid']}', null, TRUE);\">{$log['subject']}</a>");
 		}
 
 		if($log['fromuid'] > 0)

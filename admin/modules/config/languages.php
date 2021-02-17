@@ -229,7 +229,7 @@ if($mybb->input['action'] == "quick_phrases")
 		if($mybb->request_method == 'post')
 		{
 			// We have more than one file to edit, lets set flag for all of them.
-			$editsuccess = true;
+			$editsuccess = TRUE;
 			foreach($quick_phrases as $file => $phrases)
 			{
 				@include $folder.$file;
@@ -267,7 +267,7 @@ if($mybb->input['action'] == "quick_phrases")
 					$contents_wfile = $lang_file_credits;
 					foreach($contents_file as $key => $value)
 					{
-						$contents_wfile .= "\$l['".$key."'] = ".var_export($value, true).";\n";
+						$contents_wfile .= "\$l['".$key."'] = ".var_export($value, TRUE).";\n";
 					}
 
 					flock($fp, LOCK_EX);
@@ -282,7 +282,7 @@ if($mybb->input['action'] == "quick_phrases")
 				}
 			}
 
-			if($editsuccess == true)
+			if($editsuccess == TRUE)
 			{
 				// Log admin action
 				log_admin_action($editlang);
@@ -460,7 +460,7 @@ if($mybb->input['action'] == "edit")
 			// Then fetch from input only valid keys
 			foreach($valid_keys as $key => $value)
 			{
-				$contents_wfile .= "\$l['".$key."'] = ".var_export($mybb->input['edit'][$key], true).";\n";
+				$contents_wfile .= "\$l['".$key."'] = ".var_export($mybb->input['edit'][$key], TRUE).";\n";
 			}
 
 			// Save edited language file
@@ -612,7 +612,7 @@ if($mybb->input['action'] == "edit")
 					$textarea_issue_class = "";
 				}
 
-				$form_container->output_row($key, "", $form->generate_text_area("", $withvars[$key], array('readonly' => true,  'rows' => 2, 'class' => "langeditor_textarea_editwith {$editwith_dir_class}")), "", array('width' => '50%', 'skip_construct' => true));
+				$form_container->output_row($key, "", $form->generate_text_area("", $withvars[$key], array('readonly' => TRUE,  'rows' => 2, 'class' => "langeditor_textarea_editwith {$editwith_dir_class}")), "", array('width' => '50%', 'skip_construct' => TRUE));
 				$form_container->output_row($key, "", $form->generate_text_area("edit[$key]", $editvars[$key], array('id' => 'lang_'.$key, 'rows' => 2, 'class' => "langeditor_textarea_edit {$textarea_issue_class} {$editlang_dir_class}")), 'lang_'.$key, array('width' => '50%'));
 			}
 
@@ -631,7 +631,7 @@ if($mybb->input['action'] == "edit")
 						$editvars[$key] = preg_replace_callback("#%u([0-9A-F]{1,4})#i", 'encode_language_string', $editvars[$key]);
 					}
 
-					$form_container->output_row("", "", "", "", array('width' => '50%', 'skip_construct' => true));
+					$form_container->output_row("", "", "", "", array('width' => '50%', 'skip_construct' => TRUE));
 					$form_container->output_row($key, "", $form->generate_text_area("edit[$key]", $editvars[$key], array('id' => 'lang_'.$key, 'rows' => 2, 'class' => "langeditor_textarea_edit {$editlang_dir_class}")), 'lang_'.$key, array('width' => '50%'));
 				}
 			}

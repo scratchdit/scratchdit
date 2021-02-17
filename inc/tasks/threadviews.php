@@ -21,7 +21,7 @@ function task_threadviews($task)
 	$query = $db->simple_select("threadviews", "tid, COUNT(tid) AS views", "", array('group_by' => 'tid'));
 	while($threadview = $db->fetch_array($query))
 	{
-		$db->update_query("threads", array('views' => "views+{$threadview['views']}"), "tid='{$threadview['tid']}'", 1, true);
+		$db->update_query("threads", array('views' => "views+{$threadview['views']}"), "tid='{$threadview['tid']}'", 1, TRUE);
 	}
 
 	$db->write_query("TRUNCATE TABLE ".TABLE_PREFIX."threadviews");

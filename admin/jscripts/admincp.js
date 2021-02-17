@@ -7,7 +7,7 @@ var AdminCP = {
 	{
 		if(!element) return false;
 		confirmReturn = confirm(message);
-		if(confirmReturn == true)
+		if(confirmReturn == TRUE)
 		{
 			form = $("<form />", { method: "post", action: element.href, style: "display: none;" });
 			$("body").append(form);

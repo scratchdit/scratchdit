@@ -62,7 +62,7 @@ class timer {
 	{
 		if(!$this->start)
 		{
-			$this->start = microtime(true);
+			$this->start = microtime(TRUE);
 		}
 	}
 
@@ -79,7 +79,7 @@ class timer {
 		}
 		elseif($this->start && !$this->end) // timer is still going
 		{
-			$currenttime = microtime(true);
+			$currenttime = microtime(TRUE);
 			$totaltime = $currenttime - $this->start;
 			return $this->format($totaltime);
 		}
@@ -98,7 +98,7 @@ class timer {
 	{
 		if($this->start)
 		{
-			$this->end = microtime(true);
+			$this->end = microtime(TRUE);
 			$totaltime = $this->end - $this->start;
 			$this->totaltime = $totaltime;
 			$this->formatted = $this->format($totaltime);

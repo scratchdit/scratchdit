@@ -160,7 +160,7 @@ class Horde_Text_Diff_Engine_Native
         if ($xlim - $xoff > $ylim - $yoff) {
             /* Things seems faster (I'm not sure I understand why) when the
              * shortest sequence is in X. */
-            $flip = true;
+            $flip = TRUE;
             list ($xoff, $xlim, $yoff, $ylim)
                 = array($yoff, $ylim, $xoff, $xlim);
         }
