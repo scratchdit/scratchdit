@@ -1,5 +1,13 @@
-steps:
-  - name: Run composer
+name: Run composer
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  runs-on: ubuntu-latest
+  steps:
+    name: Run composer
     uses: nick-zh/composer-php@master
     with:
       action: 'install -oa'
