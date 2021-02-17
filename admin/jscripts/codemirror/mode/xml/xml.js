@@ -12,37 +12,37 @@
 "use strict";
 
 var htmlConfig = {
-  autoSelfClosers: {'area': TRUE, 'base': TRUE, 'br': TRUE, 'col': TRUE, 'command': TRUE,
-                    'embed': TRUE, 'frame': TRUE, 'hr': TRUE, 'img': TRUE, 'input': TRUE,
-                    'keygen': TRUE, 'link': TRUE, 'meta': TRUE, 'param': TRUE, 'source': TRUE,
-                    'track': TRUE, 'wbr': TRUE, 'menuitem': TRUE},
-  implicitlyClosed: {'dd': TRUE, 'li': TRUE, 'optgroup': TRUE, 'option': TRUE, 'p': TRUE,
-                     'rp': TRUE, 'rt': TRUE, 'tbody': TRUE, 'td': TRUE, 'tfoot': TRUE,
-                     'th': TRUE, 'tr': TRUE},
+  autoSelfClosers: {'area': true, 'base': true, 'br': true, 'col': true, 'command': true,
+                    'embed': true, 'frame': true, 'hr': true, 'img': true, 'input': true,
+                    'keygen': true, 'link': true, 'meta': true, 'param': true, 'source': true,
+                    'track': true, 'wbr': true, 'menuitem': true},
+  implicitlyClosed: {'dd': true, 'li': true, 'optgroup': true, 'option': true, 'p': true,
+                     'rp': true, 'rt': true, 'tbody': true, 'td': true, 'tfoot': true,
+                     'th': true, 'tr': true},
   contextGrabbers: {
-    'dd': {'dd': TRUE, 'dt': TRUE},
-    'dt': {'dd': TRUE, 'dt': TRUE},
-    'li': {'li': TRUE},
-    'option': {'option': TRUE, 'optgroup': TRUE},
-    'optgroup': {'optgroup': TRUE},
-    'p': {'address': TRUE, 'article': TRUE, 'aside': TRUE, 'blockquote': TRUE, 'dir': TRUE,
-          'div': TRUE, 'dl': TRUE, 'fieldset': TRUE, 'footer': TRUE, 'form': TRUE,
-          'h1': TRUE, 'h2': TRUE, 'h3': TRUE, 'h4': TRUE, 'h5': TRUE, 'h6': TRUE,
-          'header': TRUE, 'hgroup': TRUE, 'hr': TRUE, 'menu': TRUE, 'nav': TRUE, 'ol': TRUE,
-          'p': TRUE, 'pre': TRUE, 'section': TRUE, 'table': TRUE, 'ul': TRUE},
-    'rp': {'rp': TRUE, 'rt': TRUE},
-    'rt': {'rp': TRUE, 'rt': TRUE},
-    'tbody': {'tbody': TRUE, 'tfoot': TRUE},
-    'td': {'td': TRUE, 'th': TRUE},
-    'tfoot': {'tbody': TRUE},
-    'th': {'td': TRUE, 'th': TRUE},
-    'thead': {'tbody': TRUE, 'tfoot': TRUE},
-    'tr': {'tr': TRUE}
+    'dd': {'dd': true, 'dt': true},
+    'dt': {'dd': true, 'dt': true},
+    'li': {'li': true},
+    'option': {'option': true, 'optgroup': true},
+    'optgroup': {'optgroup': true},
+    'p': {'address': true, 'article': true, 'aside': true, 'blockquote': true, 'dir': true,
+          'div': true, 'dl': true, 'fieldset': true, 'footer': true, 'form': true,
+          'h1': true, 'h2': true, 'h3': true, 'h4': true, 'h5': true, 'h6': true,
+          'header': true, 'hgroup': true, 'hr': true, 'menu': true, 'nav': true, 'ol': true,
+          'p': true, 'pre': true, 'section': true, 'table': true, 'ul': true},
+    'rp': {'rp': true, 'rt': true},
+    'rt': {'rp': true, 'rt': true},
+    'tbody': {'tbody': true, 'tfoot': true},
+    'td': {'td': true, 'th': true},
+    'tfoot': {'tbody': true},
+    'th': {'td': true, 'th': true},
+    'thead': {'tbody': true, 'tfoot': true},
+    'tr': {'tr': true}
   },
-  doNotIndent: {"pre": TRUE},
-  allowUnquoted: TRUE,
-  allowMissing: TRUE,
-  caseFold: TRUE
+  doNotIndent: {"pre": true},
+  allowUnquoted: true,
+  allowMissing: true,
+  caseFold: true
 }
 
 var xmlConfig = {
@@ -79,7 +79,7 @@ CodeMirror.defineMode("xml", function(editorConf, config_) {
           else return null;
         } else if (stream.match("--")) {
           return chain(inBlock("comment", "-->"));
-        } else if (stream.match("DOCTYPE", TRUE, TRUE)) {
+        } else if (stream.match("DOCTYPE", true, true)) {
           stream.eatWhile(/[\w\._\-]/);
           return chain(doctype(1));
         } else {
@@ -111,7 +111,7 @@ CodeMirror.defineMode("xml", function(editorConf, config_) {
       return null;
     }
   }
-  inText.isInText = TRUE;
+  inText.isInText = true;
 
   function inTag(stream, state) {
     var ch = stream.next();
@@ -148,7 +148,7 @@ CodeMirror.defineMode("xml", function(editorConf, config_) {
       }
       return "string";
     };
-    closure.isInAttribute = TRUE;
+    closure.isInAttribute = true;
     return closure;
   }
 
@@ -191,14 +191,14 @@ CodeMirror.defineMode("xml", function(editorConf, config_) {
     this.indent = state.indented;
     this.startOfLine = startOfLine;
     if (config.doNotIndent.hasOwnProperty(tagName) || (state.context && state.context.noIndent))
-      this.noIndent = TRUE;
+      this.noIndent = true;
   }
   function popContext(state) {
     if (state.context) state.context = state.context.prev;
   }
   function maybePopContext(state, nextTagName) {
     var parentTagName;
-    while (TRUE) {
+    while (true) {
       if (!state.context) {
         return;
       }
@@ -389,6 +389,6 @@ CodeMirror.defineMode("xml", function(editorConf, config_) {
 CodeMirror.defineMIME("text/xml", "xml");
 CodeMirror.defineMIME("application/xml", "xml");
 if (!CodeMirror.mimeModes.hasOwnProperty("text/html"))
-  CodeMirror.defineMIME("text/html", {name: "xml", htmlMode: TRUE});
+  CodeMirror.defineMIME("text/html", {name: "xml", htmlMode: true});
 
 });

@@ -72,7 +72,7 @@
   CodeMirror.defineMode("htmlmixed", function (config, parserConfig) {
     var htmlMode = CodeMirror.getMode(config, {
       name: "xml",
-      htmlMode: TRUE,
+      htmlMode: true,
       multilineTagIndentFactor: parserConfig.multilineTagIndentFactor,
       multilineTagIndentPastTag: parserConfig.multilineTagIndentPastTag
     });
@@ -95,7 +95,7 @@
         state.inTag = null
         var modeSpec = stream.current() == ">" && findMatchingMode(tags[inTag[1]], inTag[2])
         var mode = CodeMirror.getMode(config, modeSpec)
-        var endTagA = getTagRegexp(inTag[1], TRUE), endTag = getTagRegexp(inTag[1], false);
+        var endTagA = getTagRegexp(inTag[1], true), endTag = getTagRegexp(inTag[1], false);
         state.token = function (stream, state) {
           if (stream.match(endTagA, false)) {
             state.token = html;

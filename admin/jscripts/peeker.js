@@ -3,7 +3,7 @@
  *
  * Examples:
  * new Peeker($('#myController'), $('#myDomain'), 1, false);
- * new Peeker($('.myControllerNode'), $('#myDomain, #myDomain2'), 1, TRUE);
+ * new Peeker($('.myControllerNode'), $('#myDomain, #myDomain2'), 1, true);
  * new Peeker($('#myController'), $('#nestedPeeker'), /works/, false);
  * new Peeker($('#nestedPeeker'), $('#nestedPeekerChild'), /\d+/, false);
  */
@@ -15,7 +15,7 @@ var Peeker = (function() {
 	 * @param string ID of the controlling select menu
 	 * @param string ID of the thing to show/hide
 	 * @param regexp If this regexp matches value of the select menu, then the 'thing' will be shown
-	 * @param boolean Should be set to TRUE for radio/checkboxes
+	 * @param boolean Should be set to true for radio/checkboxes
 	 */
 	function Peeker(controller, domain, match, isNodelist) {
 		var fn;
@@ -58,7 +58,7 @@ var Peeker = (function() {
 			this.controller.each(function(i, el) {
 				if ($(el).is(':visible') && el.checked &&
 				    el.value.match(regex)) {
-					show = TRUE;
+					show = true;
 					return false;
 				}
 			});

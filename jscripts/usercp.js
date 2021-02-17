@@ -20,7 +20,7 @@ var UserCP = {
 			$.ajax(
 			{
 				url: 'xmlhttp.php?action=get_buddyselect',
-				async: TRUE,
+				async: true,
 	            complete: function (request)
 	            {
 	                UserCP.buddySelectLoaded(request);
@@ -72,7 +72,7 @@ var UserCP = {
 		}
 
 		// Clone off screen
-		var clone = container.clone(TRUE);
+		var clone = container.clone(true);
 		$("body").append(clone);
 		clone.css("width", "300px")
 			 .css("top", "-10000px")
@@ -123,7 +123,7 @@ var UserCP = {
 
 	closeBuddySelect: function(canceled)
 	{
-		if(canceled != TRUE)
+		if(canceled != true)
 		{
 			var buddies = $("#buddyselect_buddies").text();
 			existing_buddies = $(this.buddy_field).select2("data");
@@ -175,13 +175,13 @@ var UserCP = {
 		}
 		if(use_xmlhttprequest != 1)
 		{
-			return TRUE;
+			return true;
 		}
 
 		var old_value = type_submit.val();
 
-		type_add_username.attr("disabled", TRUE);
-		type_submit.attr("disabled", TRUE);
+		type_add_username.attr("disabled", true);
+		type_submit.attr("disabled", true);
 
 		if(type == "ignored")
 		{
@@ -199,7 +199,7 @@ var UserCP = {
 			type: 'post',
 			url: 'usercp.php?action=do_editlists&my_post_key='+my_post_key+'&manage='+type,
 			data: { ajax: 1, add_username: type_add_username.val() },
-			async: TRUE,
+			async: true,
 	        complete: function (request)
 	        {
 				if(request.responseText.indexOf("buddy_count") >= 0 || request.responseText.indexOf("ignored_count") >= 0)
@@ -236,18 +236,18 @@ var UserCP = {
 
 		MyBB.prompt(message, {
 			buttons:[
-					{title: yes_confirm, value: TRUE},
+					{title: yes_confirm, value: true},
 					{title: no_confirm, value: false}
 			],
 			submit: function(e,v,m,f){
-				if(v == TRUE)
+				if(v == true)
 				{
 					$.ajax(
 					{
 						type: 'post',
 						url: 'usercp.php?action=do_editlists&my_post_key='+my_post_key+'&manage='+type+'&delete='+uid,
 						data: { ajax: 1 },
-						async: TRUE
+						async: true
 					});
 				}
 			}

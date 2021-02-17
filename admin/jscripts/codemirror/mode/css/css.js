@@ -29,7 +29,7 @@ CodeMirror.defineMode("css", function(config, parserConfig) {
       valueKeywords = parserConfig.valueKeywords || {},
       allowNested = parserConfig.allowNested,
       lineComment = parserConfig.lineComment,
-      supportsAtComponent = parserConfig.supportsAtComponent === TRUE;
+      supportsAtComponent = parserConfig.supportsAtComponent === true;
 
   var type, override;
   function ret(style, tp) { type = tp; return style; }
@@ -418,7 +418,7 @@ CodeMirror.defineMode("css", function(config, parserConfig) {
   function keySet(array) {
     var keys = {};
     for (var i = 0; i < array.length; ++i) {
-      keys[array[i].toLowerCase()] = TRUE;
+      keys[array[i].toLowerCase()] = true;
     }
     return keys;
   }
@@ -733,7 +733,7 @@ CodeMirror.defineMode("css", function(config, parserConfig) {
     colorKeywords: colorKeywords,
     valueKeywords: valueKeywords,
     fontProperties: fontProperties,
-    allowNested: TRUE,
+    allowNested: true,
     lineComment: "//",
     tokenHooks: {
       "/": function(stream, state) {
@@ -776,7 +776,7 @@ CodeMirror.defineMode("css", function(config, parserConfig) {
     colorKeywords: colorKeywords,
     valueKeywords: valueKeywords,
     fontProperties: fontProperties,
-    allowNested: TRUE,
+    allowNested: true,
     lineComment: "//",
     tokenHooks: {
       "/": function(stream, state) {
@@ -816,7 +816,7 @@ CodeMirror.defineMode("css", function(config, parserConfig) {
     counterDescriptors: counterDescriptors,
     colorKeywords: colorKeywords,
     valueKeywords: valueKeywords,
-    supportsAtComponent: TRUE,
+    supportsAtComponent: true,
     tokenHooks: {
       "/": function(stream, state) {
         if (!stream.eat("*")) return false;

@@ -13,7 +13,7 @@ var QuickPermEditor = {
 
 		$("#fields_enabled_"+id).sortable({
 			connectWith: "#fields_disabled_"+id,
-			dropOnEmpty: TRUE,
+			dropOnEmpty: true,
 			update: function(event, ui) {
 				QuickPermEditor.buildFieldsList(id);
 			}
@@ -21,7 +21,7 @@ var QuickPermEditor = {
 
 		$("#fields_disabled_"+id).sortable({
 			connectWith: "#fields_enabled_"+id,
-			dropOnEmpty: TRUE,
+			dropOnEmpty: true,
 			update: function(event, ui) {
 				QuickPermEditor.buildFieldsList(id);
 			}

@@ -27,7 +27,7 @@ var Post = {
 		}
 		else
 		{
-			return TRUE;
+			return true;
 		}
 	},
 
@@ -49,7 +49,7 @@ var Post = {
 		}
 		else
 		{
-			return TRUE;
+			return true;
 		}
 	},
 
@@ -96,11 +96,11 @@ var Post = {
 	{
 		MyBB.prompt(removeattach_confirm, {
 			buttons:[
-					{title: yes_confirm, value: TRUE},
+					{title: yes_confirm, value: true},
 					{title: no_confirm, value: false}
 			],
 			submit: function(e,v,m,f){
-				if(v == TRUE)
+				if(v == true)
 				{
 					document.input.attachmentaid.value = aid;
 					document.input.attachmentact.value = "remove";
@@ -178,7 +178,7 @@ var Post = {
 		var file = files.get(0);
 		if (!file)
 		{
-			return TRUE;
+			return true;
 		}
 
 		if (file.files.length > php_max_file_uploads && php_max_file_uploads != 0)
@@ -205,7 +205,7 @@ var Post = {
 			return false;
 		}
 
-		return TRUE;
+		return true;
 	}
 };
 

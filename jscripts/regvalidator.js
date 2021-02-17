@@ -4,7 +4,7 @@ $(function () {
 	$('#registration_form').validate({
 		rules: {
 			username: {
-				required: TRUE,
+				required: true,
 				minlength: regsettings.minnamelength,
 				maxlength: regsettings.maxnamelength,
 				remote: {
@@ -18,8 +18,8 @@ $(function () {
 				},
 			},
 			email: {
-				required: TRUE,
-				email: TRUE,
+				required: true,
+				email: true,
 				remote: {
 					url: 'xmlhttp.php?action=email_availability',
 					type: 'post',
@@ -31,8 +31,8 @@ $(function () {
 				},
 			},
 			email2: {
-				required: TRUE,
-				email: TRUE,
+				required: true,
+				email: true,
 				equalTo: '#email'
 			},
 		},
@@ -67,13 +67,13 @@ $(function () {
 		}
 
 		$(input_type + '[name="profile_fields[' + this.fid + ']' + depth + '"]').rules('add', {
-			required: TRUE,
+			required: true,
 		});
 	});
 
 	if (regsettings.captchaimage == "1" && regsettings.captchahtml == "1") {
 		$('#imagestring').rules('add', {
-			required: TRUE,
+			required: true,
 			remote: {
 				url: 'xmlhttp.php?action=validate_captcha',
 				type: 'post',
@@ -94,7 +94,7 @@ $(function () {
 
 	if (regsettings.securityquestion == "1" && regsettings.questionexists == "1") {
 		$('#answer').rules('add', {
-			required: TRUE,
+			required: true,
 			remote: {
 				url: 'xmlhttp.php?action=validate_question',
 				type: 'post',
@@ -127,7 +127,7 @@ $(function () {
 
 		if (regsettings.requirecomplexpasswords == "1") {
 			$('#password').rules('add', {
-				required: TRUE,
+				required: true,
 				minlength: regsettings.minpasswordlength,
 				remote: {
 					url: 'xmlhttp.php?action=complex_password',
@@ -146,7 +146,7 @@ $(function () {
 			});
 		} else {
 			$('#password').rules('add', {
-				required: TRUE,
+				required: true,
 				minlength: regsettings.minpasswordlength,
 				passwordSecurity: '',
 				messages: {
@@ -157,7 +157,7 @@ $(function () {
 		}
 
 		$('#password2').rules('add', {
-			required: TRUE,
+			required: true,
 			minlength: regsettings.minpasswordlength,
 			equalTo: '#password',
 			messages: {

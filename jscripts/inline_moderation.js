@@ -16,7 +16,7 @@ var inlineModeration = {
 
 		var inlineIds = inlineModeration.getCookie(inlineModeration.cookieName);
 		var removedIds = inlineModeration.getCookie(inlineModeration.cookieName+'_removed');
-		var allChecked = TRUE;
+		var allChecked = true;
 
 		$(inputs).each(function() {
 			var element = $(this);
@@ -34,7 +34,7 @@ var inlineModeration = {
 				{
 					if(inlineIds.indexOf(id) != -1 || (inlineIds.indexOf('ALL') != -1 && removedIds.indexOf(id) == -1))
 					{
-						element.prop('checked', TRUE);
+						element.prop('checked', true);
 						var post = element.parents('.post');
 						var thread = element.parents('.inline_row');
 						var fieldset = element.parents('fieldset');
@@ -82,7 +82,7 @@ var inlineModeration = {
 				allSelectedRow.show();
 			}
 		}
-		else if(inlineIds.indexOf('ALL') == -1 && allChecked == TRUE)
+		else if(inlineIds.indexOf('ALL') == -1 && allChecked == true)
 		{
 			var selectRow = $('#selectAllrow');
 			if(selectRow)
@@ -90,7 +90,7 @@ var inlineModeration = {
 				selectRow.show();
 			}
 		}
-		return TRUE;
+		return true;
 	},
 
 	checkItem: function()
@@ -113,7 +113,7 @@ var inlineModeration = {
 		var inlineIds = inlineModeration.getCookie(inlineModeration.cookieName);
 		var removedIds = inlineModeration.getCookie(inlineModeration.cookieName+'_removed');
 
-		if(element.prop('checked') == TRUE)
+		if(element.prop('checked') == true)
 		{
 			if(inlineIds.indexOf('ALL') == -1)
 			{
@@ -176,7 +176,7 @@ var inlineModeration = {
 
 		inlineModeration.updateCookies(inlineIds, removedIds);
 
-		return TRUE;
+		return true;
 	},
 
 	clearChecked: function()
@@ -212,7 +212,7 @@ var inlineModeration = {
 		Cookie.unset(inlineModeration.cookieName);
 		Cookie.unset(inlineModeration.cookieName + '_removed');
 
-		return TRUE;
+		return true;
 	},
 
 	checkAll: function(master)
@@ -243,7 +243,7 @@ var inlineModeration = {
 				var thread = element.parents('.inline_row');
 				if(post.length)
 				{
-					if(master.prop('checked') == TRUE)
+					if(master.prop('checked') == true)
 					{
 						post.addClass('trow_selected');
 					}
@@ -254,7 +254,7 @@ var inlineModeration = {
 				}
 				else if(thread.length)
 				{
-					if(master.prop('checked') == TRUE)
+					if(master.prop('checked') == true)
 					{
 						thread.addClass('trow_selected');
 					}
@@ -266,7 +266,7 @@ var inlineModeration = {
 
 				if(fieldset.length)
 				{
-					if(master.prop('checked') == TRUE)
+					if(master.prop('checked') == true)
 					{
 						fieldset.addClass('inline_selected');
 					}
@@ -280,7 +280,7 @@ var inlineModeration = {
 				{
 					element.trigger('click');
 
-					if(master.prop('checked') == TRUE)
+					if(master.prop('checked') == true)
 					{
 						if(inlineIds.indexOf('ALL') == -1)
 						{
@@ -313,7 +313,7 @@ var inlineModeration = {
 			var selectRow = $('#selectAllrow');
 			if(selectRow.length)
 			{
-				if(master.prop('checked') == TRUE)
+				if(master.prop('checked') == true)
 				{
 					selectRow.show();
 				}

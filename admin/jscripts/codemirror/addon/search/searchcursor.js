@@ -227,7 +227,7 @@
 
   SearchCursor.prototype = {
     findNext: function() {return this.find(false)},
-    findPrevious: function() {return this.find(TRUE)},
+    findPrevious: function() {return this.find(true)},
 
     find: function(reverse) {
       var result = this.matches(reverse, this.doc.clipPos(reverse ? this.pos.from : this.pos.to))
@@ -248,8 +248,8 @@
 
       if (result) {
         this.pos = result
-        this.atOccurrence = TRUE
-        return this.pos.match || TRUE
+        this.atOccurrence = true
+        return this.pos.match || true
       } else {
         var end = Pos(reverse ? this.doc.firstLine() : this.doc.lastLine() + 1, 0)
         this.pos = {from: end, to: end}

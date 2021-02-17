@@ -42,7 +42,7 @@ var ThemeSelector = {
 		ThemeSelector.font_style = $("#css_bits\\[font_style\\]").val();
 		ThemeSelector.font_weight = $("#css_bits\\[font_weight\\]").val();
 
-		$("#save").on('click', function(event) { ThemeSelector.save(event, TRUE); } );
+		$("#save").on('click', function(event) { ThemeSelector.save(event, true); } );
 		$("#save_close").on('click', function(event) { ThemeSelector.saveClose(event); } );
 
 
@@ -65,7 +65,7 @@ var ThemeSelector = {
 	 * @return void
 	 */
 	saveClose: function(e) {
-		ThemeSelector.isClosing = TRUE;
+		ThemeSelector.isClosing = true;
 	},
 
 	/**
@@ -80,7 +80,7 @@ var ThemeSelector = {
 
 		e.preventDefault()
 
-		ThemeSelector.saveCheck(e, TRUE);
+		ThemeSelector.saveCheck(e, true);
 
 		postData = "file=" + encodeURIComponent(ThemeSelector.file) + "&tid=" + encodeURIComponent(ThemeSelector.tid) + "&selector=" + encodeURIComponent(ThemeSelector.selector.val()) + "&my_post_key=" + encodeURIComponent(my_post_key);
 
@@ -99,7 +99,7 @@ var ThemeSelector = {
 	 * handles the AJAX return data
 	 *
 	 * @param  object the request
-	 * @return TRUE
+	 * @return true
 	 */
 	onComplete: function(request) {
 		var message, saved;
@@ -138,7 +138,7 @@ var ThemeSelector = {
 		$("#mini_spinner").html(ThemeSelector.selectorGoText);
 		ThemeSelector.selectorGoText = '';
 
-		return TRUE;
+		return true;
 	},
 
 	isChanged: function()
@@ -158,17 +158,17 @@ var ThemeSelector = {
 	 * check if anything has changed
 	 *
 	 * @param  object the event
-	 * @param  bool TRUE if AJAX, false if not
-	 * @return TRUE
+	 * @param  bool true if AJAX, false if not
+	 * @return true
 	 */
 	saveCheck: function(e, isAjax) {
 
 
-		if (ThemeSelector.isClosing == TRUE) {
-			return TRUE;
+		if (ThemeSelector.isClosing == true) {
+			return true;
 		}
 
-		if(e != null && isAjax == TRUE)
+		if(e != null && isAjax == true)
 			e.preventDefault();
 
 		if (ThemeSelector.isChanged()) {
@@ -180,16 +180,16 @@ var ThemeSelector = {
 			else
 			{
 				confirmReturn = confirm(save_changes_lang_string);
-				if (confirmReturn == TRUE) {
+				if (confirmReturn == true) {
 					ThemeSelector.save(false, isAjax);
 					$.jGrowl(lang.saved, {theme:'jgrowl_success'});
 				}
 			}
 		}
-		else if(isAjax == TRUE)
+		else if(isAjax == true)
 		{
 			ThemeSelector.selectorPrevOpt = ThemeSelector.selector.val();
-			return TRUE;
+			return true;
 		}
 	},
 
@@ -197,8 +197,8 @@ var ThemeSelector = {
 	 * saves the selector info
 	 *
 	 * @param  object the event
-	 * @param  bool TRUE if AJAX, false if not
-	 * @return TRUE
+	 * @param  bool true if AJAX, false if not
+	 * @return true
 	 */
 	save: function(e, isAjax) {
 		var cssBits, postData, completeMethod = 'onUnloadSaveComplete';
@@ -221,13 +221,13 @@ var ThemeSelector = {
 
 		postData = "css_bits=" + encodeURIComponent(jsArrayToPhpArray(cssBits)) + "&selector=" + encodeURIComponent(ThemeSelector.selectorPrevOpt) + "&file=" + encodeURIComponent(ThemeSelector.file) + "&tid=" + encodeURIComponent(ThemeSelector.tid) + "&my_post_key=" + encodeURIComponent(my_post_key) + "&serialized=1";
 
-		if (isAjax == TRUE) {
+		if (isAjax == true) {
 			postData += "&ajax=1";
 		}
 
 		ThemeSelector.isAjax = isAjax;
 
-		if (isAjax == TRUE) {
+		if (isAjax == true) {
 			completeMethod = 'onSaveComplete';
 			$.jGrowl(lang.saving, {theme:'jgrowl_process'});
 		}
@@ -245,7 +245,7 @@ var ThemeSelector = {
 	 * handle errors, reset values and clean up
 	 *
 	 * @param  object the request
-	 * @return TRUE
+	 * @return true
 	 */
 	onSaveComplete: function(request) {
 		var message;
@@ -275,14 +275,14 @@ var ThemeSelector = {
 		ThemeSelector.font_style = $("#css_bits\\[font_style\\]").val();
 		ThemeSelector.font_weight = $("#css_bits\\[font_weight\\]").val();
 
-		return TRUE;
+		return true;
 	},
 
 	/**
 	 * handle leaving page save
 	 *
 	 * @param  object the request
-	 * @return TRUE
+	 * @return true
 	 */
 	onUnloadSaveComplete: function(request) {
 		var message;
@@ -296,7 +296,7 @@ var ThemeSelector = {
 			$.jGrowl(lang.theme_info_save_error + '\n\n' + message[1], {theme:'jgrowl_error'});
 			return false;
 		}
-		return TRUE;
+		return true;
 	},
 
 	url: null,

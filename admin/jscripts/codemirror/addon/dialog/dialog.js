@@ -46,7 +46,7 @@
         inp.value = newVal;
       } else {
         if (closed) return;
-        closed = TRUE;
+        closed = true;
         dialog.parentNode.removeChild(dialog);
         me.focus();
 
@@ -101,7 +101,7 @@
     var closed = false, me = this, blurring = 1;
     function close() {
       if (closed) return;
-      closed = TRUE;
+      closed = true;
       dialog.parentNode.removeChild(dialog);
       me.focus();
     }
@@ -139,7 +139,7 @@
 
     function close() {
       if (closed) return;
-      closed = TRUE;
+      closed = true;
       clearTimeout(doneTimer);
       dialog.parentNode.removeChild(dialog);
     }

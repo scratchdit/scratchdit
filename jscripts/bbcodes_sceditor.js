@@ -29,7 +29,7 @@ $(function ($) {
 			'Mixer': {
 				'match': /mixer\.com\/([^\/]+)/,
 				'url': '//mixer.com/embed/player/',
-				'html': '<iframe allowfullscreen="TRUE" src="{url}" width="620" height="349" frameborder="0" data-mybb-vt="{type}" data-mybb-vsrc="{src}"></iframe>'
+				'html': '<iframe allowfullscreen="true" src="{url}" width="620" height="349" frameborder="0" data-mybb-vt="{type}" data-mybb-vsrc="{src}"></iframe>'
 			},
 			'Vimeo': {
 				'match': /vimeo.com\/(\d+)($|\/)/,
@@ -84,16 +84,16 @@ $(function ($) {
 				return '<' + type + '>' + content + '</' + type + '>';
 			},
 			isInline: false,
-			skipLastLineBreak: TRUE,
-			breakStart: TRUE,
-			breakAfter: TRUE,
+			skipLastLineBreak: true,
+			breakStart: true,
+			breakAfter: true,
 		})
 		.set('ul', {
 			format: '[list]{0}[/list]',
 			isInline: false,
-			skipLastLineBreak: TRUE,
-			breakStart: TRUE,
-			breakAfter: TRUE,
+			skipLastLineBreak: true,
+			breakStart: true,
+			breakAfter: true,
 		})
 		.set('ol', {
 			format: function ($elm, content) {
@@ -102,20 +102,20 @@ $(function ($) {
 				return '[list=' + type + ']' + content + '[/list]';
 			},
 			isInline: false,
-			skipLastLineBreak: TRUE,
-			breakStart: TRUE,
-			breakAfter: TRUE,
+			skipLastLineBreak: true,
+			breakStart: true,
+			breakAfter: true,
 		})
 		.set('li', {
 			format: '[*]{0}',
 			isInline: false,
-			skipLastLineBreak: TRUE,
+			skipLastLineBreak: true,
 		})
 		.set('*', {
 			html: '<li>{0}</li>',
 			isInline: false,
-			excludeClosing: TRUE,
-			skipLastLineBreak: TRUE,
+			excludeClosing: true,
+			skipLastLineBreak: true,
 			breakAfter: false,
 		});
 
@@ -198,7 +198,7 @@ $(function ($) {
 			var content = $('<div />'),
 				clickFunc = function (e) {
 					callback($(this).data('size'));
-					editor.closeDropDown(TRUE);
+					editor.closeDropDown(true);
 					e.preventDefault();
 				};
 
@@ -279,8 +279,8 @@ $(function ($) {
 
 			return quoteChar + val + quoteChar;
 		},
-		breakStart: TRUE,
-		breakEnd: TRUE
+		breakStart: true,
+		breakEnd: true
 	});
 
 	// Update font tag to allow limiting to only first in stack
@@ -347,14 +347,14 @@ $(function ($) {
 		},
 		html: function (token, attrs, content) {
 			return '<font color="' +
-				$.sceditor.escapeEntities(_normaliseColour(attrs.defaultattr), TRUE) +
+				$.sceditor.escapeEntities(_normaliseColour(attrs.defaultattr), true) +
 				'">' + content + '</font>';
 		}
 	});
 
 	// Add MyBB PHP command
 	$.sceditor.formats.bbcode.set('php', {
-		allowsEmpty: TRUE,
+		allowsEmpty: true,
 		isInline: false,
 		allowedChildren: ['#', '#newline'],
 		format: '[php]{0}[/php]',
@@ -390,7 +390,7 @@ $(function ($) {
 				}
 
 				editor.insert(before, end);
-				editor.closeDropDown(TRUE);
+				editor.closeDropDown(true);
 				e.preventDefault();
 			});
 
@@ -409,7 +409,7 @@ $(function ($) {
 
 	// Update code to support PHP
 	$.sceditor.formats.bbcode.set('code', {
-		allowsEmpty: TRUE,
+		allowsEmpty: true,
 		tags: {
 			code: null
 		},
@@ -453,7 +453,7 @@ $(function ($) {
 				}
 
 				editor.insert(before, end);
-				editor.closeDropDown(TRUE);
+				editor.closeDropDown(true);
 				e.preventDefault();
 			});
 
@@ -505,7 +505,7 @@ $(function ($) {
 						editor.execCommand('createlink', 'mailto:' + val);
 				}
 
-				editor.closeDropDown(TRUE);
+				editor.closeDropDown(true);
 				e.preventDefault();
 			});
 
@@ -518,7 +518,7 @@ $(function ($) {
 
 	// Add MyBB video command
 	$.sceditor.formats.bbcode.set('video', {
-		allowsEmpty: TRUE,
+		allowsEmpty: true,
 		allowedChildren: ['#', '#newline'],
 		tags: {
 			iframe: {
@@ -571,7 +571,7 @@ $(function ($) {
 				if (videourl !== '' && videourl !== '//')
 					editor.insert('[video=' + videotype + ']' + videourl + '[/video]');
 
-				editor.closeDropDown(TRUE);
+				editor.closeDropDown(true);
 				e.preventDefault();
 			});
 
@@ -621,8 +621,8 @@ $(function ($) {
 
 				if (width !== undefined && height !== undefined && width > 0 && height > 0) {
 					attribs +=
-						' width="' + $.sceditor.escapeEntities(width, TRUE) + '"' +
-						' height="' + $.sceditor.escapeEntities(height, TRUE) + '"';
+						' width="' + $.sceditor.escapeEntities(width, true) + '"' +
+						' height="' + $.sceditor.escapeEntities(height, true) + '"';
 				}
 			}
 
@@ -672,7 +672,7 @@ $(function ($) {
 				if (url)
 					editor.insert('[img' + attrs + ']' + url + '[/img]');
 
-				editor.closeDropDown(TRUE);
+				editor.closeDropDown(true);
 				e.preventDefault();
 			});
 

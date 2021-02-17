@@ -1,14 +1,14 @@
 var SettingSearch = {
 
 	error_unknown : "",
-	
+
 	init: function(settings_search, error_unknown)
 	{
 		this.error_unknown = error_unknown;
-		
+
 		$('#settings_search').on("submit", this.onSubmit);
 		$('#search_results').css('display', 'none');
-		
+
 		$('#search').focusin(function() {
 			if($('#search').val() == settings_search)
 			{
@@ -16,7 +16,7 @@ var SettingSearch = {
 				$('#search').val('');
 			}
 		});
-		
+
 		$('#search').focusout(function() {
 			if($('#search').val() == "")
 			{

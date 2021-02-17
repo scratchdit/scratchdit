@@ -70,7 +70,7 @@ var Rating = {
 		$.ajax(
 		{
 			url: 'ratethread.php?ajax=1&my_post_key='+my_post_key+'&tid='+tid+'&rating='+rating,
-			async: TRUE,
+			async: true,
 			method: 'post',
 			dataType: 'json',
 	        complete: function (request)

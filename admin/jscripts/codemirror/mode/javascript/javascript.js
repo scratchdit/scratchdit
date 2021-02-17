@@ -33,7 +33,7 @@ CodeMirror.defineMode("javascript", function(config, parserConfig) {
       "function": kw("function"), "catch": kw("catch"),
       "for": kw("for"), "switch": kw("switch"), "case": kw("case"), "default": kw("default"),
       "in": operator, "typeof": operator, "instanceof": operator,
-      "TRUE": atom, "false": atom, "null": atom, "undefined": atom, "NaN": atom, "Infinity": atom,
+      "true": atom, "false": atom, "null": atom, "undefined": atom, "NaN": atom, "Infinity": atom,
       "this": kw("this"), "class": kw("class"), "super": kw("atom"),
       "yield": C, "export": kw("export"), "import": kw("import"), "extends": C,
       "await": C
@@ -77,7 +77,7 @@ CodeMirror.defineMode("javascript", function(config, parserConfig) {
     while ((next = stream.next()) != null) {
       if (!escaped) {
         if (next == "/" && !inSet) return;
-        if (next == "[") inSet = TRUE;
+        if (next == "[") inSet = true;
         else if (inSet && next == "]") inSet = false;
       }
       escaped = !escaped && next == "\\";
@@ -220,11 +220,11 @@ CodeMirror.defineMode("javascript", function(config, parserConfig) {
       var bracket = brackets.indexOf(ch);
       if (bracket >= 0 && bracket < 3) {
         if (!depth) { ++pos; break; }
-        if (--depth == 0) { if (ch == "(") sawSomething = TRUE; break; }
+        if (--depth == 0) { if (ch == "(") sawSomething = true; break; }
       } else if (bracket >= 3 && bracket < 6) {
         ++depth;
       } else if (wordRE.test(ch)) {
-        sawSomething = TRUE;
+        sawSomething = true;
       } else if (/["'\/]/.test(ch)) {
         return;
       } else if (sawSomething && !depth) {
@@ -237,7 +237,7 @@ CodeMirror.defineMode("javascript", function(config, parserConfig) {
 
   // Parser
 
-  var atomicTypes = {"atom": TRUE, "number": TRUE, "variable": TRUE, "string": TRUE, "regexp": TRUE, "this": TRUE, "jsonld-keyword": TRUE};
+  var atomicTypes = {"atom": true, "number": true, "variable": true, "string": true, "regexp": true, "this": true, "jsonld-keyword": true};
 
   function JSLexical(indented, column, type, align, prev, info) {
     this.indented = indented;
@@ -250,10 +250,10 @@ CodeMirror.defineMode("javascript", function(config, parserConfig) {
 
   function inScope(state, varname) {
     for (var v = state.localVars; v; v = v.next)
-      if (v.name == varname) return TRUE;
+      if (v.name == varname) return true;
     for (var cx = state.context; cx; cx = cx.prev) {
       for (var v = cx.vars; v; v = v.next)
-        if (v.name == varname) return TRUE;
+        if (v.name == varname) return true;
     }
   }
 
@@ -264,9 +264,9 @@ CodeMirror.defineMode("javascript", function(config, parserConfig) {
     cx.state = state; cx.stream = stream; cx.marked = null, cx.cc = cc; cx.style = style;
 
     if (!state.lexical.hasOwnProperty("align"))
-      state.lexical.align = TRUE;
+      state.lexical.align = true;
 
-    while(TRUE) {
+    while(true) {
       var combinator = cc.length ? cc.pop() : jsonMode ? expression : statement;
       if (combinator(type, content)) {
         while(cc.length && cc[cc.length - 1].lex)
@@ -286,12 +286,12 @@ CodeMirror.defineMode("javascript", function(config, parserConfig) {
   }
   function cont() {
     pass.apply(null, arguments);
-    return TRUE;
+    return true;
   }
   function register(varname) {
     function inList(list) {
       for (var v = list; v; v = v.next)
-        if (v.name == varname) return TRUE;
+        if (v.name == varname) return true;
       return false;
     }
     var state = cx.state;
@@ -325,7 +325,7 @@ CodeMirror.defineMode("javascript", function(config, parserConfig) {
         indent = outer.indented;
       state.lexical = new JSLexical(indent, cx.stream.column(), type, null, state.lexical, info);
     };
-    result.lex = TRUE;
+    result.lex = true;
     return result;
   }
   function poplex() {
@@ -336,7 +336,7 @@ CodeMirror.defineMode("javascript", function(config, parserConfig) {
       state.lexical = state.lexical.prev;
     }
   }
-  poplex.lex = TRUE;
+  poplex.lex = true;
 
   function expect(wanted) {
     function exp(type) {
@@ -389,7 +389,7 @@ CodeMirror.defineMode("javascript", function(config, parserConfig) {
     return expressionInner(type, false);
   }
   function expressionNoComma(type) {
-    return expressionInner(type, TRUE);
+    return expressionInner(type, true);
   }
   function parenExpr(type) {
     if (type != "(") return pass()
@@ -838,10 +838,10 @@ CodeMirror.defineMIME("text/ecmascript", "javascript");
 CodeMirror.defineMIME("application/javascript", "javascript");
 CodeMirror.defineMIME("application/x-javascript", "javascript");
 CodeMirror.defineMIME("application/ecmascript", "javascript");
-CodeMirror.defineMIME("application/json", {name: "javascript", json: TRUE});
-CodeMirror.defineMIME("application/x-json", {name: "javascript", json: TRUE});
-CodeMirror.defineMIME("application/ld+json", {name: "javascript", jsonld: TRUE});
-CodeMirror.defineMIME("text/typescript", { name: "javascript", typescript: TRUE });
-CodeMirror.defineMIME("application/typescript", { name: "javascript", typescript: TRUE });
+CodeMirror.defineMIME("application/json", {name: "javascript", json: true});
+CodeMirror.defineMIME("application/x-json", {name: "javascript", json: true});
+CodeMirror.defineMIME("application/ld+json", {name: "javascript", jsonld: true});
+CodeMirror.defineMIME("text/typescript", { name: "javascript", typescript: true });
+CodeMirror.defineMIME("application/typescript", { name: "javascript", typescript: true });
 
 });

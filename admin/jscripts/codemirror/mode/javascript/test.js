@@ -197,32 +197,32 @@
      "}");
 
   MT("async",
-     "[keyword async] [keyword function] [def foo]([def args]) { [keyword return] [atom TRUE]; }");
+     "[keyword async] [keyword function] [def foo]([def args]) { [keyword return] [atom true]; }");
 
   MT("async_assignment",
-     "[keyword const] [def foo] [operator =] [keyword async] [keyword function] ([def args]) { [keyword return] [atom TRUE]; };");
+     "[keyword const] [def foo] [operator =] [keyword async] [keyword function] ([def args]) { [keyword return] [atom true]; };");
 
   MT("async_object",
      "[keyword let] [def obj] [operator =] { [property async]: [atom false] };");
 
   // async be highlighet as keyword and foo as def, but it requires potentially expensive look-ahead. See #4173
   MT("async_object_function",
-     "[keyword let] [def obj] [operator =] { [property async] [property foo]([def args]) { [keyword return] [atom TRUE]; } };");
+     "[keyword let] [def obj] [operator =] { [property async] [property foo]([def args]) { [keyword return] [atom true]; } };");
 
   MT("async_object_properties",
      "[keyword let] [def obj] [operator =] {",
-     "  [property prop1]: [keyword async] [keyword function] ([def args]) { [keyword return] [atom TRUE]; },",
-     "  [property prop2]: [keyword async] [keyword function] ([def args]) { [keyword return] [atom TRUE]; },",
-     "  [property prop3]: [keyword async] [keyword function] [def prop3]([def args]) { [keyword return] [atom TRUE]; },",
+     "  [property prop1]: [keyword async] [keyword function] ([def args]) { [keyword return] [atom true]; },",
+     "  [property prop2]: [keyword async] [keyword function] ([def args]) { [keyword return] [atom true]; },",
+     "  [property prop3]: [keyword async] [keyword function] [def prop3]([def args]) { [keyword return] [atom true]; },",
      "};");
 
   MT("async_arrow",
-     "[keyword const] [def foo] [operator =] [keyword async] ([def args]) [operator =>] { [keyword return] [atom TRUE]; };");
+     "[keyword const] [def foo] [operator =] [keyword async] ([def args]) [operator =>] { [keyword return] [atom true]; };");
 
   MT("async_jquery",
      "[variable $].[property ajax]({",
      "  [property url]: [variable url],",
-     "  [property async]: [atom TRUE],",
+     "  [property async]: [atom true],",
      "  [property method]: [string 'GET']",
      "});");
 
@@ -265,12 +265,12 @@
   TS("typescript_literal_types",
      "[keyword import] [keyword *] [keyword as] [def Sequelize] [keyword from] [string 'sequelize'];",
      "[keyword interface] [def MyAttributes] {",
-     "  [property truthy]: [string 'TRUE'] [operator |] [number 1] [operator |] [atom TRUE];",
+     "  [property truthy]: [string 'true'] [operator |] [number 1] [operator |] [atom true];",
      "  [property falsy]: [string 'false'] [operator |] [number 0] [operator |] [atom false];",
      "}",
      "[keyword interface] [def MyInstance] [keyword extends] [type Sequelize].[type Instance] [operator <] [type MyAttributes] [operator >] {",
      "  [property rawAttributes]: [type MyAttributes];",
-     "  [property truthy]: [string 'TRUE'] [operator |] [number 1] [operator |] [atom TRUE];",
+     "  [property truthy]: [string 'true'] [operator |] [number 1] [operator |] [atom true];",
      "  [property falsy]: [string 'false'] [operator |] [number 0] [operator |] [atom false];",
      "}")
 
@@ -366,7 +366,7 @@
 
   var jsonld_mode = CodeMirror.getMode(
     {indentUnit: 2},
-    {name: "javascript", jsonld: TRUE}
+    {name: "javascript", jsonld: true}
   );
   function LD(name) {
     test.mode(name, jsonld_mode, Array.prototype.slice.call(arguments, 1));

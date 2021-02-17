@@ -24,7 +24,7 @@ MyCodeSandbox.prototype.update = function(e)
     $.ajax(
     {
         url: this.url,
-        async: TRUE,
+        async: true,
         method: 'post',
         data: postData,
         complete: function (request)
@@ -53,5 +53,5 @@ MyCodeSandbox.prototype.onComplete = function(request)
 		$(this.html_textbox).val(request.responseText);
 	}
 
-	return TRUE;
+	return true;
 };

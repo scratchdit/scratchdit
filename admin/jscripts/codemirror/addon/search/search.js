@@ -54,13 +54,13 @@
 
   function getSearchCursor(cm, query, pos) {
     // Heuristic: if the query string is all lowercase, do a case insensitive search.
-    return cm.getSearchCursor(query, pos, {caseFold: queryCaseInsensitive(query), multiline: TRUE});
+    return cm.getSearchCursor(query, pos, {caseFold: queryCaseInsensitive(query), multiline: true});
   }
 
   function persistentDialog(cm, text, deflt, onEnter, onKeyDown) {
     cm.openDialog(text, onEnter, {
       value: deflt,
-      selectValueOnOpen: TRUE,
+      selectValueOnOpen: true,
       closeOnEnter: false,
       onClose: function() { clearSearch(cm); },
       onKeyDown: onKeyDown
@@ -68,7 +68,7 @@
   }
 
   function dialog(cm, text, shortText, deflt, f) {
-    if (cm.openDialog) cm.openDialog(text, f, {value: deflt, selectValueOnOpen: TRUE});
+    if (cm.openDialog) cm.openDialog(text, f, {value: deflt, selectValueOnOpen: true});
     else f(prompt(shortText, deflt));
   }
 
@@ -241,12 +241,12 @@
   }
 
   CodeMirror.commands.find = function(cm) {clearSearch(cm); doSearch(cm);};
-  CodeMirror.commands.findPersistent = function(cm) {clearSearch(cm); doSearch(cm, false, TRUE);};
-  CodeMirror.commands.findPersistentNext = function(cm) {doSearch(cm, false, TRUE, TRUE);};
-  CodeMirror.commands.findPersistentPrev = function(cm) {doSearch(cm, TRUE, TRUE, TRUE);};
+  CodeMirror.commands.findPersistent = function(cm) {clearSearch(cm); doSearch(cm, false, true);};
+  CodeMirror.commands.findPersistentNext = function(cm) {doSearch(cm, false, true, true);};
+  CodeMirror.commands.findPersistentPrev = function(cm) {doSearch(cm, true, true, true);};
   CodeMirror.commands.findNext = doSearch;
-  CodeMirror.commands.findPrev = function(cm) {doSearch(cm, TRUE);};
+  CodeMirror.commands.findPrev = function(cm) {doSearch(cm, true);};
   CodeMirror.commands.clearSearch = clearSearch;
   CodeMirror.commands.replace = replace;
-  CodeMirror.commands.replaceAll = function(cm) {replace(cm, TRUE);};
+  CodeMirror.commands.replaceAll = function(cm) {replace(cm, true);};
 });

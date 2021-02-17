@@ -13,7 +13,7 @@ var ViewManager = {
 
 		$("#fields_enabled").sortable({
 			connectWith: "#fields_disabled",
-			dropOnEmpty: TRUE,
+			dropOnEmpty: true,
 			update: function(event, ui) {
 				ViewManager.buildFieldsList();
 			}
@@ -21,7 +21,7 @@ var ViewManager = {
 
 		$("#fields_disabled").sortable({
 			connectWith: "#fields_enabled",
-			dropOnEmpty: TRUE,
+			dropOnEmpty: true,
 			update: function(event, ui) {
 				ViewManager.buildFieldsList();
 			}

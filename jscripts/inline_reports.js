@@ -11,7 +11,7 @@ var inlineReports = {
 
 		var inlineIds = inlineReports.getCookie(inlineReports.cookieName);
 		var removedIds = inlineReports.getCookie(inlineReports.cookieName+'_removed');
-		var allChecked = TRUE;
+		var allChecked = true;
 
 		$(inputs).each(function() {
 			var element = $(this);
@@ -29,7 +29,7 @@ var inlineReports = {
 				{
 					if(inlineIds.indexOf(id) != -1 || (inlineIds.indexOf('ALL') != -1 && removedIds.indexOf(id) == -1))
 					{
-						element.prop('checked', TRUE);
+						element.prop('checked', true);
 						var report = element.parents('.inline_row');
 						if(report.length)
 						{
@@ -60,7 +60,7 @@ var inlineReports = {
 				allSelectedRow.show();
 			}
 		}
-		else if(inlineIds.indexOf('ALL') == -1 && allChecked == TRUE)
+		else if(inlineIds.indexOf('ALL') == -1 && allChecked == true)
 		{
 			var selectRow = $('#selectAllrow');
 			if(selectRow)
@@ -68,7 +68,7 @@ var inlineReports = {
 				selectRow.show();
 			}
 		}
-		return TRUE;
+		return true;
 	},
 
 	checkItem: function()
@@ -91,7 +91,7 @@ var inlineReports = {
 		var inlineIds = inlineReports.getCookie(inlineReports.cookieName);
 		var removedIds = inlineReports.getCookie(inlineReports.cookieName+'_removed');
 
-		if(element.prop('checked') == TRUE)
+		if(element.prop('checked') == true)
 		{
 			if(inlineIds.indexOf('ALL') == -1)
 			{
@@ -144,7 +144,7 @@ var inlineReports = {
 
 		inlineReports.updateCookies(inlineIds, removedIds);
 
-		return TRUE;
+		return true;
 	},
 
 	clearChecked: function()
@@ -176,7 +176,7 @@ var inlineReports = {
 		Cookie.unset(inlineReports.cookieName);
 		Cookie.unset(inlineReports.cookieName + '_removed');
 
-		return TRUE;
+		return true;
 	},
 
 	checkAll: function(master)
@@ -206,7 +206,7 @@ var inlineReports = {
 				var report = element.parents('.inline_row');
 				if(report.length)
 				{
-					if(master.prop('checked') == TRUE)
+					if(master.prop('checked') == true)
 					{
 						report.addClass('trow_selected');
 					}
@@ -218,7 +218,7 @@ var inlineReports = {
 
 				if(changed)
 				{
-					if(master.prop('checked') == TRUE)
+					if(master.prop('checked') == true)
 					{
 						if(inlineIds.indexOf('ALL') == -1)
 						{
@@ -251,7 +251,7 @@ var inlineReports = {
 			var selectRow = $('#selectAllrow');
 			if(selectRow.length)
 			{
-				if(master.prop('checked') == TRUE)
+				if(master.prop('checked') == true)
 				{
 					selectRow.show();
 				}

@@ -28,14 +28,14 @@
       for (var i = 0; i < marks.length; ++i) {
         if (marks[i].__isFold && force !== "fold") {
           if (!allowFolded) return null;
-          range.cleared = TRUE;
+          range.cleared = true;
           marks[i].clear();
         }
       }
       return range;
     }
 
-    var range = getRange(TRUE);
+    var range = getRange(true);
     if (getOption(cm, options, "scanUp")) while (!range && pos.line > cm.firstLine()) {
       pos = CodeMirror.Pos(pos.line - 1, 0);
       range = getRange(false);
@@ -50,7 +50,7 @@
     var myRange = cm.markText(range.from, range.to, {
       replacedWith: myWidget,
       clearOnEnter: getOption(cm, options, "clearOnEnter"),
-      __isFold: TRUE
+      __isFold: true
     });
     myRange.on("clear", function(from, to) {
       CodeMirror.signal(cm, "unfold", cm, from, to);
@@ -66,7 +66,7 @@
       widget.appendChild(text);
       widget.className = "CodeMirror-foldmarker";
     } else if (widget) {
-      widget = widget.cloneNode(TRUE)
+      widget = widget.cloneNode(true)
     }
     return widget;
   }
@@ -84,7 +84,7 @@
   CodeMirror.defineExtension("isFolded", function(pos) {
     var marks = this.findMarksAt(pos);
     for (var i = 0; i < marks.length; ++i)
-      if (marks[i].__isFold) return TRUE;
+      if (marks[i].__isFold) return true;
   });
 
   CodeMirror.commands.toggleFold = function(cm) {
@@ -132,7 +132,7 @@
     widget: "\u2194",
     minFoldSize: 0,
     scanUp: false,
-    clearOnEnter: TRUE
+    clearOnEnter: true
   };
 
   CodeMirror.defineOption("foldOptions", null);

@@ -7,7 +7,7 @@
 // will style strings that match the selection throughout the
 // document.
 //
-// The option can be set to TRUE to simply enable it, or to a
+// The option can be set to true to simply enable it, or to a
 // {minChars, style, wordsOnly, showToken, delay} object to explicitly
 // configure it. minChars is the minimum amount of characters that should be
 // selected for the behavior to occur, and style is the token style to
@@ -36,7 +36,7 @@
     wordsOnly: false,
     annotateScrollbar: false,
     showToken: false,
-    trim: TRUE
+    trim: true
   }
 
   function State(options) {
@@ -59,7 +59,7 @@
     if (val) {
       var state = cm.state.matchHighlighter = new State(val);
       if (cm.hasFocus()) {
-        state.active = TRUE
+        state.active = true
         highlightMatches(cm)
       } else {
         cm.on("focus", onFocus)
@@ -76,7 +76,7 @@
   function onFocus(cm) {
     var state = cm.state.matchHighlighter
     if (!state.active) {
-      state.active = TRUE
+      state.active = true
       scheduleHighlight(cm, state)
     }
   }
@@ -113,7 +113,7 @@
       var state = cm.state.matchHighlighter;
       removeOverlay(cm);
       if (!cm.somethingSelected() && state.options.showToken) {
-        var re = state.options.showToken === TRUE ? /[\w$]/ : state.options.showToken;
+        var re = state.options.showToken === true ? /[\w$]/ : state.options.showToken;
         var cur = cm.getCursor(), line = cm.getLine(cur.line), start = cur.ch, end = start;
         while (start && re.test(line.charAt(start - 1))) --start;
         while (end < line.length && re.test(line.charAt(end))) ++end;
@@ -144,7 +144,7 @@
             var chr = cm.getRange(to, pos);
             if (chr.match(/\W/) === null) return false;
         }
-        return TRUE;
+        return true;
     } else return false;
   }
 
