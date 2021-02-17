@@ -190,31 +190,31 @@ class MyBB
 	 *
 	 * @see get_input
 	 */
-	const INPUT_STRING = 0;
+	public const INPUT_STRING = 0;
 	/**
 	 * Integer input constant for use with get_input().
 	 *
 	 * @see get_input
 	 */
-	const INPUT_INT = 1;
+	public const INPUT_INT = 1;
 	/**
 	 * Array input constant for use with get_input().
 	 *
 	 * @see get_input
 	 */
-	const INPUT_ARRAY = 2;
+	public const INPUT_ARRAY = 2;
 	/**
 	 * Float input constant for use with get_input().
 	 *
 	 * @see get_input
 	 */
-	const INPUT_FLOAT = 3;
+	public const INPUT_FLOAT = 3;
 	/**
 	 * Boolean input constant for use with get_input().
 	 *
 	 * @see get_input
 	 */
-	const INPUT_BOOL = 4;
+	public const INPUT_BOOL = 4;
 
 	/**
 	 * Constructor of class.
@@ -235,20 +235,6 @@ class MyBB
 			} else {
 				$this->ignore_clean_variables = IGNORE_CLEAN_VARS;
 			}
-		}
-
-		// Determine Magic Quotes Status (< PHP 6.0)
-		if (version_compare(PHP_VERSION, '6.0', '<')) {
-			if (@get_magic_quotes_gpc()) {
-				$this->magicquotes = 1;
-				$this->strip_slashes_array($_POST);
-				$this->strip_slashes_array($_GET);
-				$this->strip_slashes_array($_COOKIE);
-			}
-
-			@set_magic_quotes_runtime(0);
-			@ini_set("magic_quotes_gpc", 0);
-			@ini_set("magic_quotes_runtime", 0);
 		}
 
 		// Determine input
@@ -381,24 +367,22 @@ class MyBB
 		foreach ($this->clean_variables as $type => $variables) {
 			foreach ($variables as $var) {
 				// If this variable is in the ignored array, skip and move to next.
-				if (in_array($var, $this->ignore_clean_variables)) {
+				if (in_array($var, $this->ignore_clean_variables) || !isset($this->input[$var])) {
 					continue;
 				}
 
-				if (isset($this->input[$var])) {
-					switch ($type) {
-						case "int":
-							$this->input[$var] = $this->get_input($var, self::INPUT_INT);
-							break;
-						case "a-z":
-							$this->input[$var] = preg_replace("#[^a-z\.\-_]#i", "", $this->get_input($var));
-							break;
-						case "pos":
-							if (($this->input[$var] < 0 && $var != "page") || ($var == "page" && $this->input[$var] != "last" && $this->input[$var] < 0)) {
-								$this->input[$var] = 0;
-							}
-							break;
-					}
+				switch ($type) {
+					case "int":
+						$this->input[$var] = $this->get_input($var, self::INPUT_INT);
+						break;
+					case "a-z":
+						$this->input[$var] = preg_replace("#[^a-z\.\-_]#i", "", $this->get_input($var));
+						break;
+					case "pos":
+						if (($this->input[$var] < 0 && $var != "page") || ($var == "page" && $this->input[$var] != "last" && $this->input[$var] < 0)) {
+							$this->input[$var] = 0;
+						}
+						break;
 				}
 			}
 		}
@@ -453,41 +437,25 @@ class MyBB
 	 */
 	public function get_asset_url($path = '', $use_cdn = TRUE)
 	{
-		echo "
-		<!-- ONE: get_asset_url($path, $use_cdn) -->
-		";
 		$path = ltrim((string)$path, '/');
-		echo "<!-- TWO: $path -->
-		";
 		if (substr($path, 0, 4) != 'http') {
 			if (substr($path, 0, 2) == './') {
 				$path = substr($path, 2);
-				echo "<!-- THREE: $path -->";
 			}
 
 			if ($use_cdn && $this->settings['usecdn'] && !empty($this->settings['cdnurl'])) {
 				$base_path = rtrim($this->settings['cdnurl'], '/');
-				echo "<!-- FOUR: $base_path -->
-				";
 			} else {
 				$base_path = rtrim($this->settings['bburl'], '/');
-				echo "<!-- FIVE: $base_path -->
-				";
 			}
 
 			$url = $base_path;
-			echo "<!-- SIX: $path -->
-			";
 
 			if (!empty($path)) {
 				$url = $base_path . '/' . $path;
-				echo "<!-- SEVEN: $url -->
-				";
 			}
 		} else {
 			$url = $path;
-			echo "<!-- EIGHT: $url -->
-			";
 		}
 
 		return $url;

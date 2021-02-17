@@ -1460,8 +1460,8 @@ a.button.report_user_button span {
 .jGrowl-notification {
 	background-color: transparent;
 	opacity: 0.9;
-	filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=(0.9*100));
 	-ms-filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=(0.9*100));
+	filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=(0.9*100));
 	transform: scale(1);
 	width: 250px;
 	padding: 10px;
@@ -1503,8 +1503,8 @@ a.button.report_user_button span {
 .jGrowl-closer {
 	background-color: #000000;
 	opacity: 0.9;
-	filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=(0.9*100));
 	-ms-filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=(0.9*100));
+	filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=(0.9*100));
 	transform: scale(1);
 	width: 250px;
 	padding: 10px;
@@ -1664,9 +1664,9 @@ div.jqi {
 	font-size: 11px;
 	text-align: left;
 	border: solid 1px #eeeeee;
-	border-radius: 6px;
 	-moz-border-radius: 6px;
 	-webkit-border-radius: 6px;
+	border-radius: 6px;
 	padding: 7px;
 }
 
@@ -1709,9 +1709,9 @@ div.jqi .jqibuttons {
 	margin: 0 -7px -7px -7px;
 	border-top: solid 1px #e4e4e4;
 	background-color: #f4f4f4;
-	border-radius: 0 0 6px 6px;
 	-moz-border-radius: 0 0 6px 6px;
 	-webkit-border-radius: 0 0 6px 6px;
+	border-radius: 0 0 6px 6px;
 }
 
 div.jqi .jqibuttons button {
@@ -1755,9 +1755,9 @@ div.jqi .jqiparentstate::after {
 	left: 0;
 	bottom: 0;
 	right: 0;
-	border-radius: 6px;
 	-moz-border-radius: 6px;
 	-webkit-border-radius: 6px;
+	border-radius: 6px;
 }
 
 div.jqi .jqisubstate {
@@ -1768,9 +1768,9 @@ div.jqi .jqisubstate {
 	padding: 7px;
 	border: solid 1px #eeeeee;
 	border-top: none;
-	border-radius: 0 0 6px 6px;
 	-moz-border-radius: 0 0 6px 6px;
 	-webkit-border-radius: 0 0 6px 6px;
+	border-radius: 0 0 6px 6px;
 }
 
 div.jqi .jqisubstate .jqibuttons button {

@@ -15,8 +15,7 @@ define("TIME_NOW", time());
 define("IN_MYBB", 1);
 define("IN_INSTALL", 1);
 
-if(function_exists('date_default_timezone_set') && !ini_get('date.timezone'))
-{
+if(function_exists('date_default_timezone_set') && !ini_get('date.timezone')) {
 	date_default_timezone_set('GMT');
 }
 
@@ -24,7 +23,7 @@ require_once MYBB_ROOT.'inc/class_error.php';
 $error_handler = new errorHandler();
 
 require_once MYBB_ROOT.'inc/class_core.php';
-$mybb = new MyBB;
+$mybb = new MyBB();
 
 // Include the files necessary for installation
 require_once MYBB_ROOT.'inc/class_timers.php';
@@ -33,19 +32,15 @@ require_once MYBB_ROOT.'inc/functions.php';
 $admin_dir = "admin";
 
 // Perform a check if MyBB is already installed or not
-$installed = false;
-if(file_exists(MYBB_ROOT."/inc/config.php"))
-{
-	require MYBB_ROOT."/inc/config.php";
-	if(isset($config) && is_array($config))
-	{
+$installed = FALSE;
+if(file_exists(MYBB_ROOT."/inc/config.php")) {
+	include MYBB_ROOT."/inc/config.php";
+	if(isset($config) && is_array($config)) {
 		$installed = TRUE;
-		if(isset($config['admindir']))
-		{
+		if(isset($config['admindir'])) {
 			$admin_dir = $config['admindir'];
 		}
-		else if(isset($config['admin_dir']))
-		{
+		else if(isset($config['admin_dir'])) {
 			$admin_dir = $config['admin_dir'];
 		}
 	}
@@ -64,19 +59,18 @@ require_once MYBB_ROOT."inc/db_base.php";
 $done_shutdown = 1;
 
 // Include the necessary constants for installation
-$grouppermignore = array('gid', 'type', 'title', 'description', 'namestyle', 'usertitle', 'stars', 'starimage', 'image');
-$groupzerogreater = array('pmquota', 'maxpmrecipients', 'maxreputationsday', 'attachquota', 'maxemails', 'maxwarningsday', 'maxposts', 'edittimelimit', 'canusesigxposts', 'maxreputationsperuser', 'maxreputationsperthread', 'emailfloodtime');
+$grouppermignore    = array('gid', 'type', 'title', 'description', 'namestyle', 'usertitle', 'stars', 'starimage', 'image');
+$groupzerogreater   = array('pmquota', 'maxpmrecipients', 'maxreputationsday', 'attachquota', 'maxemails', 'maxwarningsday', 'maxposts', 'edittimelimit', 'canusesigxposts', 'maxreputationsperuser', 'maxreputationsperthread', 'emailfloodtime');
 $displaygroupfields = array('title', 'description', 'namestyle', 'usertitle', 'stars', 'starimage', 'image');
-$fpermfields = array('canview', 'canviewthreads', 'candlattachments', 'canpostthreads', 'canpostreplys', 'canpostattachments', 'canratethreads', 'caneditposts', 'candeleteposts', 'candeletethreads', 'caneditattachments', 'canpostpolls', 'canvotepolls', 'cansearch', 'modposts', 'modthreads', 'modattachments', 'mod_edit_posts');
+$fpermfields        = array('canview', 'canviewthreads', 'candlattachments', 'canpostthreads', 'canpostreplys', 'canpostattachments', 'canratethreads', 'caneditposts', 'candeleteposts', 'candeletethreads', 'caneditattachments', 'canpostpolls', 'canvotepolls', 'cansearch', 'modposts', 'modthreads', 'modattachments', 'mod_edit_posts');
 
 // Include the installation resources
 require_once INSTALL_ROOT.'resources/output.php';
-$output = new installerOutput;
+$output = new installerOutput();
 
 $dboptions = array();
 
-if(function_exists('mysqli_connect'))
-{
+if(function_exists('mysqli_connect')) {
 	$dboptions['mysqli'] = array(
 		'class' => 'DB_MySQLi',
 		'title' => 'MySQL Improved',
@@ -86,8 +80,7 @@ if(function_exists('mysqli_connect'))
 	);
 }
 
-if(function_exists('mysql_connect'))
-{
+if(function_exists('mysql_connect')) {
 	$dboptions['mysql'] = array(
 		'class' => 'DB_MySQL',
 		'title' => 'MySQL',
@@ -97,8 +90,7 @@ if(function_exists('mysql_connect'))
 	);
 }
 
-if(function_exists('pg_connect'))
-{
+if(function_exists('pg_connect')) {
 	$dboptions['pgsql'] = array(
 		'class' => 'DB_PgSQL',
 		'title' => 'PostgreSQL',
@@ -108,11 +100,9 @@ if(function_exists('pg_connect'))
 	);
 }
 
-if(class_exists('PDO'))
-{
+if(class_exists('PDO')) {
 	$supported_dbs = PDO::getAvailableDrivers();
-	if(in_array('sqlite', $supported_dbs))
-	{
+	if(in_array('sqlite', $supported_dbs)) {
 		$dboptions['sqlite'] = array(
 			'class' => 'DB_SQLite',
 			'title' => 'SQLite 3',
@@ -123,12 +113,10 @@ if(class_exists('PDO'))
 	}
 }
 
-if(file_exists('lock') && $mybb->dev_mode != TRUE)
-{
+if(file_exists('lock') && $mybb->dev_mode != TRUE) {
 	$output->print_error($lang->locked);
 }
-else if($installed == TRUE && empty($mybb->input['action']))
-{
+else if($installed == TRUE && empty($mybb->input['action'])) {
 	$output->print_header($lang->already_installed, "errormsg", 0);
 	echo $lang->sprintf($lang->mybb_already_installed, $mybb->version);
 	$output->print_footer();
@@ -192,10 +180,10 @@ function intro()
 	global $output, $mybb, $lang;
 
 	$output->print_header();
-	if(strpos(strtolower(get_current_location('', '', TRUE)), '/upload/') !== false)
-	{
+	if(strpos(strtolower(get_current_location('', '', TRUE)), '/upload/') !== FALSE) {
 		echo $lang->sprintf($lang->mybb_incorrect_folder);
 	}
+
 	echo $lang->sprintf($lang->welcome_step, $mybb->version);
 	$output->print_footer('license');
 }
@@ -210,16 +198,15 @@ function license_agreement()
 	ob_start();
 	$output->print_header($lang->license_agreement, 'license');
 
-	if($mybb->get_input('allow_anonymous_info', MyBB::INPUT_INT) == 1)
-	{
-		require_once MYBB_ROOT."inc/functions_serverstats.php";
+	if($mybb->get_input('allow_anonymous_info', MyBB::INPUT_INT) == 1) {
+		include_once MYBB_ROOT."inc/functions_serverstats.php";
 		$build_server_stats = build_server_stats(1, '', $mybb->version_code);
 
-		if($build_server_stats['info_sent_success'] == false)
-		{
+		if($build_server_stats['info_sent_success'] == FALSE) {
 			echo $build_server_stats['info_image'];
 		}
 	}
+
 	ob_end_flush();
 
 	$license = <<<EOF
@@ -1027,28 +1014,24 @@ function requirements_check()
 	$mybb->input['action'] = "requirements_check";
 	$output->print_header($lang->req_check, 'requirements');
 	echo $lang->req_step_top;
-	$errors = array();
+	$errors    = array();
 	$showerror = 0;
 
-	if(!file_exists(MYBB_ROOT."/inc/config.php"))
-	{
-		if(!@rename(MYBB_ROOT."/inc/config.default.php", MYBB_ROOT."/inc/config.php"))
-		{
-			if(!$configwritable)
-			{
-				$errors[] = $lang->sprintf($lang->req_step_error_box, $lang->req_step_error_configdefaultfile);
+	if(!file_exists(MYBB_ROOT."/inc/config.php")) {
+		if(!@rename(MYBB_ROOT."/inc/config.default.php", MYBB_ROOT."/inc/config.php")) {
+			if(!$configwritable) {
+				$errors[]     = $lang->sprintf($lang->req_step_error_box, $lang->req_step_error_configdefaultfile);
 				$configstatus = $lang->sprintf($lang->req_step_span_fail, $lang->not_writable);
-				$showerror = 1;
+				$showerror    = 1;
 			}
 		}
 	}
 
 	// Check PHP Version
-	if(version_compare(PHP_VERSION, '5.2.0', "<"))
-	{
-		$errors[] = $lang->sprintf($lang->req_step_error_box, $lang->sprintf($lang->req_step_error_phpversion, PHP_VERSION));
+	if(version_compare(PHP_VERSION, '5.2.0', "<")) {
+		$errors[]   = $lang->sprintf($lang->req_step_error_box, $lang->sprintf($lang->req_step_error_phpversion, PHP_VERSION));
 		$phpversion = $lang->sprintf($lang->req_step_span_fail, PHP_VERSION);
-		$showerror = 1;
+		$showerror  = 1;
 	}
 	else
 	{
@@ -1057,19 +1040,16 @@ function requirements_check()
 
 	$mboptions = array();
 
-	if(function_exists('mb_detect_encoding'))
-	{
+	if(function_exists('mb_detect_encoding')) {
 		$mboptions[] = $lang->multi_byte;
 	}
 
-	if(function_exists('iconv'))
-	{
+	if(function_exists('iconv')) {
 		$mboptions[] = 'iconv';
 	}
 
 	// Check Multibyte extensions
-	if(count($mboptions) < 1)
-	{
+	if(count($mboptions) < 1) {
 		$mbstatus = $lang->sprintf($lang->req_step_span_fail, $lang->none);
 	}
 	else
@@ -1078,11 +1058,10 @@ function requirements_check()
 	}
 
 	// Check database engines
-	if(count($dboptions) < 1)
-	{
-		$errors[] = $lang->sprintf($lang->req_step_error_box, $lang->req_step_error_dboptions);
+	if(count($dboptions) < 1) {
+		$errors[]      = $lang->sprintf($lang->req_step_error_box, $lang->req_step_error_dboptions);
 		$dbsupportlist = $lang->sprintf($lang->req_step_span_fail, $lang->none);
-		$showerror = 1;
+		$showerror     = 1;
 	}
 	else
 	{
@@ -1090,13 +1069,13 @@ function requirements_check()
 		{
 			$dbsupportlist[] = $dboption['title'];
 		}
+
 		$dbsupportlist = implode(', ', $dbsupportlist);
 	}
 
 	// Check XML parser is installed
-	if(!function_exists('xml_parser_create'))
-	{
-		$errors[] = $lang->sprintf($lang->req_step_error_box, $lang->req_step_error_xmlsupport);
+	if(!function_exists('xml_parser_create')) {
+		$errors[]  = $lang->sprintf($lang->req_step_error_box, $lang->req_step_error_xmlsupport);
 		$xmlstatus = $lang->sprintf($lang->req_step_span_fail, $lang->not_installed);
 		$showerror = 1;
 	}
@@ -1107,39 +1086,38 @@ function requirements_check()
 
 	// Check config file is writable
 	$configwritable = @fopen(MYBB_ROOT.'inc/config.php', 'w');
-	if(!$configwritable)
-	{
-		$errors[] = $lang->sprintf($lang->req_step_error_box, $lang->req_step_error_configfile);
+	if(!$configwritable) {
+		$errors[]     = $lang->sprintf($lang->req_step_error_box, $lang->req_step_error_configfile);
 		$configstatus = $lang->sprintf($lang->req_step_span_fail, $lang->not_writable);
-		$showerror = 1;
+		$showerror    = 1;
 	}
 	else
 	{
 		$configstatus = $lang->sprintf($lang->req_step_span_pass, $lang->writable);
 	}
+
 	@fclose($configwritable);
 
 	// Check settings file is writable
 	$settingswritable = @fopen(MYBB_ROOT.'inc/settings.php', 'w');
-	if(!$settingswritable)
-	{
-		$errors[] = $lang->sprintf($lang->req_step_error_box, $lang->req_step_error_settingsfile);
+	if(!$settingswritable) {
+		$errors[]       = $lang->sprintf($lang->req_step_error_box, $lang->req_step_error_settingsfile);
 		$settingsstatus = $lang->sprintf($lang->req_step_span_fail, $lang->not_writable);
-		$showerror = 1;
+		$showerror      = 1;
 	}
 	else
 	{
 		$settingsstatus = $lang->sprintf($lang->req_step_span_pass, $lang->writable);
 	}
+
 	@fclose($settingswritable);
 
 	// Check cache directory is writable
 	$cachewritable = @fopen(MYBB_ROOT.'cache/test.write', 'w');
-	if(!$cachewritable)
-	{
-		$errors[] = $lang->sprintf($lang->req_step_error_box, $lang->req_step_error_cachedir);
+	if(!$cachewritable) {
+		$errors[]    = $lang->sprintf($lang->req_step_error_box, $lang->req_step_error_cachedir);
 		$cachestatus = $lang->sprintf($lang->req_step_span_fail, $lang->not_writable);
-		$showerror = 1;
+		$showerror   = 1;
 		@fclose($cachewritable);
 	}
 	else
@@ -1153,11 +1131,10 @@ function requirements_check()
 
 	// Check upload directory is writable
 	$uploadswritable = @fopen(MYBB_ROOT.'uploads/test.write', 'w');
-	if(!$uploadswritable)
-	{
-		$errors[] = $lang->sprintf($lang->req_step_error_box, $lang->req_step_error_uploaddir);
+	if(!$uploadswritable) {
+		$errors[]      = $lang->sprintf($lang->req_step_error_box, $lang->req_step_error_uploaddir);
 		$uploadsstatus = $lang->sprintf($lang->req_step_span_fail, $lang->not_writable);
-		$showerror = 1;
+		$showerror     = 1;
 		@fclose($uploadswritable);
 	}
 	else
@@ -1171,11 +1148,10 @@ function requirements_check()
 
 	// Check avatar directory is writable
 	$avatarswritable = @fopen(MYBB_ROOT.'uploads/avatars/test.write', 'w');
-	if(!$avatarswritable)
-	{
-		$errors[] =  $lang->sprintf($lang->req_step_error_box, $lang->req_step_error_avatardir);
+	if(!$avatarswritable) {
+		$errors[]      = $lang->sprintf($lang->req_step_error_box, $lang->req_step_error_avatardir);
 		$avatarsstatus = $lang->sprintf($lang->req_step_span_fail, $lang->not_writable);
-		$showerror = 1;
+		$showerror     = 1;
 		@fclose($avatarswritable);
 	}
 	else
@@ -1185,13 +1161,12 @@ function requirements_check()
 		@my_chmod(MYBB_ROOT.'uploads/avatars', '0777');
 	  	@my_chmod(MYBB_ROOT.'uploads/avatars/test.write', '0777');
 		@unlink(MYBB_ROOT.'uploads/avatars/test.write');
-  	}
+ }
 
 	// Output requirements page
 	echo $lang->sprintf($lang->req_step_reqtable, $phpversion, $dbsupportlist, $mbstatus, $xmlstatus, $configstatus, $settingsstatus, $cachestatus, $uploadsstatus, $avatarsstatus);
 
-	if($showerror == 1)
-	{
+	if($showerror == 1) {
 		$error_list = error_list($errors);
 		echo $lang->sprintf($lang->req_step_error_tablelist, $error_list);
 		echo "\n			<input type=\"hidden\" name=\"action\" value=\"{$mybb->input['action']}\" />";
@@ -1240,8 +1215,7 @@ function database_info()
 		</script>";
 
 	// Check for errors from this stage
-	if(is_array($errors))
-	{
+	if(is_array($errors)) {
 		$error_list = error_list($errors);
 		echo $lang->sprintf($lang->db_step_error_config, $error_list);
 	}
@@ -1255,8 +1229,7 @@ function database_info()
 	// Loop through database engines
 	foreach($dboptions as $dbfile => $dbtype)
 	{
-		if($mybb->get_input('dbengine') == $dbfile)
-		{
+		if($mybb->get_input('dbengine') == $dbfile) {
 			$dbengines .= "<option value=\"{$dbfile}\" selected=\"selected\">{$dbtype['title']}</option>";
 		}
 		else
@@ -1268,44 +1241,42 @@ function database_info()
 	$db_info = array();
 	foreach($dboptions as $dbfile => $dbtype)
 	{
-		require_once MYBB_ROOT."inc/db_{$dbfile}.php";
-		$db = new $dbtype['class'];
-		$encodings = $db->fetch_db_charsets();
-		$encoding_select = '';
+		include_once MYBB_ROOT."inc/db_{$dbfile}.php";
+		$db                    = new $dbtype['class']();
+		$encodings             = $db->fetch_db_charsets();
+		$encoding_select       = '';
 		$mybb->input['config'] = $mybb->get_input('config', MyBB::INPUT_ARRAY);
-		if(empty($mybb->input['config'][$dbfile]['dbhost']))
-		{
+		if(empty($mybb->input['config'][$dbfile]['dbhost'])) {
 			$mybb->input['config'][$dbfile]['dbhost'] = "localhost";
 		}
-		if(empty($mybb->input['config'][$dbfile]['tableprefix']))
-		{
+
+		if(empty($mybb->input['config'][$dbfile]['tableprefix'])) {
 			$mybb->input['config'][$dbfile]['tableprefix'] = "mybb_";
 		}
-		if(empty($mybb->input['config'][$dbfile]['dbname']))
-		{
+
+		if(empty($mybb->input['config'][$dbfile]['dbname'])) {
 			$mybb->input['config'][$dbfile]['dbname'] = '';
 		}
-		if(empty($mybb->input['config'][$dbfile]['dbuser']))
-		{
+
+		if(empty($mybb->input['config'][$dbfile]['dbuser'])) {
 			$mybb->input['config'][$dbfile]['dbuser'] = '';
 		}
-		if(empty($mybb->input['config'][$dbfile]['dbpass']))
-		{
+
+		if(empty($mybb->input['config'][$dbfile]['dbpass'])) {
 			$mybb->input['config'][$dbfile]['dbpass'] = '';
 		}
-		if(empty($mybb->input['config'][$dbfile]['encoding']))
-		{
+
+		if(empty($mybb->input['config'][$dbfile]['encoding'])) {
 			$mybb->input['config'][$dbfile]['encoding'] = "utf8";
 		}
 
 		$class = '';
-		if(empty($first) && !$mybb->get_input('dbengine'))
-		{
+		if(empty($first) && !$mybb->get_input('dbengine')) {
 			$mybb->input['dbengine'] = $dbfile;
-			$first = TRUE;
+			$first                   = TRUE;
 		}
-		if($dbfile == $mybb->input['dbengine'])
-		{
+
+		if($dbfile == $mybb->input['dbengine']) {
 			$class = "_selected";
 		}
 
@@ -1316,8 +1287,7 @@ function database_info()
 				</tr>";
 
 		// SQLite gets some special settings
-		if($dbfile == 'sqlite')
-		{
+		if($dbfile == 'sqlite') {
 			$db_info[$dbfile] .= "
 				<tr class=\"alt_row\">
 					<td class=\"first\"><label for=\"config_{$dbfile}_dbname\">{$lang->database_path}</label></td>
@@ -1358,13 +1328,11 @@ function database_info()
 			";
 
 		// Encoding selection only if supported
-		if(is_array($encodings))
-		{
+		if(is_array($encodings)) {
 			$select_options = "";
 			foreach($encodings as $encoding => $title)
 			{
-				if($mybb->input['config'][$dbfile]['encoding'] == $encoding)
-				{
+				if($mybb->input['config'][$dbfile]['encoding'] == $encoding) {
 					$select_options .= "<option value=\"{$encoding}\" selected=\"selected\">{$title}</option>";
 				}
 				else
@@ -1372,6 +1340,7 @@ function database_info()
 					$select_options .= "<option value=\"{$encoding}\">{$title}</option>";
 				}
 			}
+
 			$db_info[$dbfile] .= "
 				<tr class=\"last\">
 					<td class=\"first\"><label for=\"config_{$dbfile}_encoding\">{$lang->table_encoding}</label></td>
@@ -1380,6 +1349,7 @@ function database_info()
 				</tbody>";
 		}
 	}
+
 	$dbconfig = implode("", $db_info);
 
 	echo $lang->sprintf($lang->db_step_config_table, $dbengines, $dbconfig);
@@ -1394,45 +1364,42 @@ function create_tables()
 	global $output, $dbinfo, $errors, $mybb, $dboptions, $lang;
 
 	$mybb->input['dbengine'] = $mybb->get_input('dbengine');
-	if(!file_exists(MYBB_ROOT."inc/db_{$mybb->input['dbengine']}.php"))
-	{
+	if(!file_exists(MYBB_ROOT."inc/db_{$mybb->input['dbengine']}.php")) {
 		$errors[] = $lang->db_step_error_invalidengine;
 		database_info();
 	}
 
 	$mybb->input['config'] = $mybb->get_input('config', MyBB::INPUT_ARRAY);
-	$config = $mybb->input['config'][$mybb->input['dbengine']];
+	$config                = $mybb->input['config'][$mybb->input['dbengine']];
 
-	if(strstr($mybb->input['dbengine'], "sqlite") !== false)
-	{
-		if(strstr($config['dbname'], "./") !== false || strstr($config['dbname'], "../") !== false || empty($config['dbname']))
-		{
+	if(strstr($mybb->input['dbengine'], "sqlite") !== FALSE) {
+		if(strstr($config['dbname'], "./") !== FALSE || strstr($config['dbname'], "../") !== FALSE || empty($config['dbname'])) {
 			$errors[] = $lang->db_step_error_sqlite_invalid_dbname;
 			database_info();
 		}
 	}
 
 	// Attempt to connect to the db
-	require_once MYBB_ROOT."inc/db_{$mybb->input['dbengine']}.php";
+	include_once MYBB_ROOT."inc/db_{$mybb->input['dbengine']}.php";
 	switch($mybb->input['dbengine'])
 	{
 		case "sqlite":
-			$db = new DB_SQLite;
+			$db = new DB_SQLite();
 			break;
 		case "pgsql":
-			$db = new DB_PgSQL;
+			$db = new DB_PgSQL();
 			break;
 		case "mysqli":
-			$db = new DB_MySQLi;
+			$db = new DB_MySQLi();
 			break;
 		default:
-			$db = new DB_MySQL;
+			$db = new DB_MySQL();
 	}
+
  	$db->error_reporting = 0;
 
-	if(!isset($config['encoding']))
-	{
-		$config['encoding'] = null;
+	if(!isset($config['encoding'])) {
+		$config['encoding'] = NULL;
 	}
 
 	$connect_array = array(
@@ -1444,42 +1411,35 @@ function create_tables()
 	);
 
 	$connection = $db->connect($connect_array);
-	if($connection === false)
-	{
+	if($connection === FALSE) {
 		$errors[] = $lang->sprintf($lang->db_step_error_noconnect, htmlspecialchars_uni($config['dbhost']));
 	}
 	// double check if the DB exists for MySQL
-	elseif(method_exists($db, 'select_db') && !$db->select_db($config['dbname']))
-	{
+	else if(method_exists($db, 'select_db') && !$db->select_db($config['dbname'])) {
 		$errors[] = $lang->sprintf($lang->db_step_error_nodbname, htmlspecialchars_uni($config['dbname']));
 	}
 
 	// Most DB engines only allow certain characters in the table name. Oracle requires an alphabetic character first.
-	if((!preg_match("#^[A-Za-z][A-Za-z0-9_]*$#", $config['tableprefix'])) && $config['tableprefix'] != '')
-	{
+	if((!preg_match("#^[A-Za-z][A-Za-z0-9_]*$#", $config['tableprefix'])) && $config['tableprefix'] != '') {
 		$errors[] = $lang->db_step_error_invalid_tableprefix;
 	}
 
 	// Needs to be smaller then 64 characters total (MySQL Limit).
 	// This allows 24 characters for the actual table name, which should be sufficient.
-	if(strlen($config['tableprefix']) > 40)
-	{
+	if(strlen($config['tableprefix']) > 40) {
 		$errors[] = $lang->db_step_error_tableprefix_too_long;
 	}
 
-	if($connection !== false && ($db->engine == 'mysql' || $db->engine == 'mysqli') && $config['encoding'] == 'utf8mb4' && version_compare($db->get_version(), '5.5.3', '<'))
-	{
+	if($connection !== FALSE && ($db->engine == 'mysql' || $db->engine == 'mysqli') && $config['encoding'] == 'utf8mb4' && version_compare($db->get_version(), '5.5.3', '<')) {
 		$errors[] = $lang->db_step_error_utf8mb4_error;
 	}
 
-	if(is_array($errors))
-	{
+	if(is_array($errors)) {
 		database_info();
 	}
 
 	// Decide if we can use a database encoding or not
-	if($db->fetch_db_charsets() != false)
-	{
+	if($db->fetch_db_charsets() != FALSE) {
 		$db_encoding = "\$config['database']['encoding'] = '".addcslashes($config['encoding'], "'")."';";
 	}
 	else
@@ -1637,8 +1597,7 @@ function create_tables()
 	fwrite($file, $configdata);
 	fclose($file);
 
-	if(function_exists('opcache_invalidate'))
-	{
+	if(function_exists('opcache_invalidate')) {
 		opcache_invalidate(MYBB_ROOT."inc/config.php");
 	}
 
@@ -1648,8 +1607,7 @@ function create_tables()
 	$output->print_header($lang->table_creation, 'createtables');
 	echo $lang->sprintf($lang->tablecreate_step_connected, $dboptions[$mybb->input['dbengine']]['short_title'], $db->get_version());
 
-	if($dboptions[$mybb->input['dbengine']]['structure_file'])
-	{
+	if($dboptions[$mybb->input['dbengine']]['structure_file']) {
 		$structure_file = $dboptions[$mybb->input['dbengine']]['structure_file'];
 	}
 	else
@@ -1657,23 +1615,23 @@ function create_tables()
 		$structure_file = 'mysql_db_tables.php';
 	}
 
-	require_once INSTALL_ROOT."resources/{$structure_file}";
+	include_once INSTALL_ROOT."resources/{$structure_file}";
 	foreach($tables as $val)
 	{
 		$val = preg_replace('#mybb_(\S+?)([\s\.,\(]|$)#', $config['tableprefix'].'\\1\\2', $val);
 		$val = preg_replace('#;$#', $db->build_create_table_collation().";", $val);
 		preg_match('#CREATE TABLE (\S+)(\s?|\(?)\(#i', $val, $match);
-		if($match[1])
-		{
-			$db->drop_table($match[1], false, false);
+		if($match[1]) {
+			$db->drop_table($match[1], FALSE, FALSE);
 			echo $lang->sprintf($lang->tablecreate_step_created, $match[1]);
 		}
+
 		$db->query($val);
-		if($match[1])
-		{
+		if($match[1]) {
 			echo $lang->done . "<br />\n";
 		}
 	}
+
 	echo $lang->tablecreate_step_done;
 	$output->print_footer('populate_tables');
 }
@@ -1685,14 +1643,13 @@ function populate_tables()
 {
 	global $output, $lang, $dboptions;
 
-	require MYBB_ROOT.'inc/config.php';
+	include MYBB_ROOT.'inc/config.php';
 	$db = db_connection($config);
 
 	$output->print_header($lang->table_population, 'tablepopulate');
 	echo $lang->sprintf($lang->populate_step_insert);
 
-	if(!empty($dboptions[$db->type]['population_file']))
-	{
+	if(!empty($dboptions[$db->type]['population_file'])) {
 		$population_file = $dboptions[$db->type]['population_file'];
 	}
 	else
@@ -1700,7 +1657,7 @@ function populate_tables()
 		$population_file = 'mysql_db_inserts.php';
 	}
 
-	require_once INSTALL_ROOT."resources/{$population_file}";
+	include_once INSTALL_ROOT."resources/{$population_file}";
 	foreach($inserts as $val)
 	{
 		$val = preg_replace('#mybb_(\S+?)([\s\.,]|$)#', $config['database']['table_prefix'].'\\1\\2', $val);
@@ -1708,8 +1665,7 @@ function populate_tables()
 	}
 
 	// Update the sequences for PgSQL
-	if($config['database']['type'] == "pgsql")
-	{
+	if($config['database']['type'] == "pgsql") {
 		$db->query("SELECT setval('{$config['database']['table_prefix']}attachtypes_atid_seq', (SELECT max(atid) FROM {$config['database']['table_prefix']}attachtypes));");
 		$db->query("SELECT setval('{$config['database']['table_prefix']}forums_fid_seq', (SELECT max(fid) FROM {$config['database']['table_prefix']}forums));");
 		$db->query("SELECT setval('{$config['database']['table_prefix']}helpdocs_hid_seq', (SELECT max(hid) FROM {$config['database']['table_prefix']}helpdocs));");
@@ -1732,11 +1688,11 @@ function insert_templates()
 {
 	global $mybb, $output, $cache, $db, $lang;
 
-	require MYBB_ROOT.'inc/config.php';
+	include MYBB_ROOT.'inc/config.php';
 	$db = db_connection($config);
 
-	require_once MYBB_ROOT.'inc/class_datacache.php';
-	$cache = new datacache;
+	include_once MYBB_ROOT.'inc/class_datacache.php';
+	$cache = new datacache();
 
 	$output->print_header($lang->theme_installation, 'theme');
 
@@ -1750,31 +1706,30 @@ function insert_templates()
 	$insert_array = array(
 		'title' => 'Default Templates'
 	);
-	$templateset = $db->insert_query("templatesets", $insert_array);
+	$templateset  = $db->insert_query("templatesets", $insert_array);
 
 	$contents = @file_get_contents(INSTALL_ROOT.'resources/mybb_theme.xml');
-	if(!empty($mybb->config['admin_dir']) && file_exists(MYBB_ROOT.$mybb->config['admin_dir']."/inc/functions_themes.php"))
-	{
-		require_once MYBB_ROOT.$mybb->config['admin_dir']."/inc/functions.php";
-		require_once MYBB_ROOT.$mybb->config['admin_dir']."/inc/functions_themes.php";
+	if(!empty($mybb->config['admin_dir']) && file_exists(MYBB_ROOT.$mybb->config['admin_dir']."/inc/functions_themes.php")) {
+		include_once MYBB_ROOT.$mybb->config['admin_dir']."/inc/functions.php";
+		include_once MYBB_ROOT.$mybb->config['admin_dir']."/inc/functions_themes.php";
 	}
-	elseif(file_exists(MYBB_ROOT."admin/inc/functions_themes.php"))
-	{
-		require_once MYBB_ROOT."admin/inc/functions.php";
-		require_once MYBB_ROOT."admin/inc/functions_themes.php";
+	else if(file_exists(MYBB_ROOT."admin/inc/functions_themes.php")) {
+		include_once MYBB_ROOT."admin/inc/functions.php";
+		include_once MYBB_ROOT."admin/inc/functions_themes.php";
 	}
 	else
 	{
 		$output->print_error("Please make sure your admin directory is uploaded correctly.");
 	}
+
 	$theme_id = import_theme_xml($contents, array("templateset" => -2, "version_compat" => 1));
-	$tid = build_new_theme("Default", null, $theme_id);
+	$tid      = build_new_theme("Default", NULL, $theme_id);
 
 	// Update our properties template set to the correct one
 	$query = $db->simple_select("themes", "stylesheets, properties", "tid='{$tid}'", array('limit' => 1));
 
-	$theme = $db->fetch_array($query);
-	$properties = my_unserialize($theme['properties']);
+	$theme       = $db->fetch_array($query);
+	$properties  = my_unserialize($theme['properties']);
 	$stylesheets = my_unserialize($theme['stylesheets']);
 
 	$properties['templateset'] = $templateset;
@@ -1784,12 +1739,10 @@ function insert_templates()
 	$contents = @file_get_contents(INSTALL_ROOT.'resources/mybb_theme_colors.xml');
 
 	$parser = create_xml_parser($contents);
-	$tree = $parser->get_tree();
+	$tree   = $parser->get_tree();
 
-	if(is_array($tree) && is_array($tree['colors']))
-	{
-		if(is_array($tree['colors']['scheme']))
-		{
+	if(is_array($tree) && is_array($tree['colors'])) {
+		if(is_array($tree['colors']['scheme'])) {
 			foreach($tree['colors']['scheme'] as $tag => $value)
 			{
 				$exp = explode("=", $value['value']);
@@ -1798,8 +1751,7 @@ function insert_templates()
 			}
 		}
 
-		if(is_array($tree['colors']['stylesheets']))
-		{
+		if(is_array($tree['colors']['stylesheets'])) {
 			$count = count($properties['disporder']) + 1;
 			foreach($tree['colors']['stylesheets']['stylesheet'] as $stylesheet)
 			{
@@ -1812,18 +1764,17 @@ function insert_templates()
 					"cachefile" => $db->escape_string($stylesheet['attributes']['name'])
 				);
 
-				$sid = $db->insert_query("themestylesheets", $new_stylesheet);
+				$sid     = $db->insert_query("themestylesheets", $new_stylesheet);
 				$css_url = "css.php?stylesheet={$sid}";
 
 				$cached = cache_stylesheet($tid, $stylesheet['attributes']['name'], $stylesheet['value']);
 
-				if($cached)
-				{
+				if($cached) {
 					$css_url = $cached;
 				}
 
 				// Add to display and stylesheet list
-				$properties['disporder'][$stylesheet['attributes']['name']] = $count;
+				$properties['disporder'][$stylesheet['attributes']['name']]       = $count;
 				$stylesheets[$stylesheet['attributes']['attachedto']]['global'][] = $css_url;
 
 				++$count;
@@ -1882,51 +1833,45 @@ function configure()
 EOF;
 
 	// If board configuration errors
-	if(is_array($errors))
-	{
+	if(is_array($errors)) {
 		$error_list = error_list($errors);
 		echo $lang->sprintf($lang->config_step_error_config, $error_list);
 
-		$bbname = htmlspecialchars_uni($mybb->get_input('bbname'));
-		$bburl = htmlspecialchars_uni($mybb->get_input('bburl'));
-		$websitename = htmlspecialchars_uni($mybb->get_input('websitename'));
-		$websiteurl = htmlspecialchars_uni($mybb->get_input('websiteurl'));
+		$bbname       = htmlspecialchars_uni($mybb->get_input('bbname'));
+		$bburl        = htmlspecialchars_uni($mybb->get_input('bburl'));
+		$websitename  = htmlspecialchars_uni($mybb->get_input('websitename'));
+		$websiteurl   = htmlspecialchars_uni($mybb->get_input('websiteurl'));
 		$cookiedomain = htmlspecialchars_uni($mybb->get_input('cookiedomain'));
-		$cookiepath = htmlspecialchars_uni($mybb->get_input('cookiepath'));
-		$contactemail =  htmlspecialchars_uni($mybb->get_input('contactemail'));
+		$cookiepath   = htmlspecialchars_uni($mybb->get_input('cookiepath'));
+		$contactemail = htmlspecialchars_uni($mybb->get_input('contactemail'));
 	}
 	else
 	{
-		$bbname = 'Forums';
+		$bbname       = 'Forums';
 		$cookiedomain = '';
-		$websitename = 'Your Website';
+		$websitename  = 'Your Website';
 
 		$protocol = "//";
-		if((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != "off"))
-		{
+		if((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != "off")) {
 			$protocol = "//";
 		}
 
 		// Attempt auto-detection
-		if(!empty($_SERVER['HTTP_HOST']))
-		{
-			$hostname = $protocol.$_SERVER['HTTP_HOST'];
+		if(!empty($_SERVER['HTTP_HOST'])) {
+			$hostname     = $protocol.$_SERVER['HTTP_HOST'];
 			$cookiedomain = $_SERVER['HTTP_HOST'];
 		}
-		elseif(!empty($_SERVER['SERVER_NAME']))
-		{
-			$hostname = $protocol.$_SERVER['SERVER_NAME'];
+		else if(!empty($_SERVER['SERVER_NAME'])) {
+			$hostname     = $protocol.$_SERVER['SERVER_NAME'];
 			$cookiedomain = $_SERVER['SERVER_NAME'];
 		}
 
-		if(my_substr($cookiedomain, 0, 4) == "www.")
-		{
+		if(my_substr($cookiedomain, 0, 4) == "www.") {
 			$cookiedomain = substr($cookiedomain, 4);
 		}
 
 		// IP addresses and hostnames are not valid
-		if(my_inet_pton($cookiedomain) !== false || strpos($cookiedomain, '.') === false)
-		{
+		if(my_inet_pton($cookiedomain) !== FALSE || strpos($cookiedomain, '.') === FALSE) {
 			$cookiedomain = '';
 		}
 		else
@@ -1934,36 +1879,32 @@ EOF;
 			$cookiedomain = ".{$cookiedomain}";
 		}
 
-		if(!empty($_SERVER['SERVER_PORT']))
-		{
+		if(!empty($_SERVER['SERVER_PORT'])) {
 			$port = ":{$_SERVER['SERVER_PORT']}";
-			$pos = strrpos($cookiedomain, $port);
+			$pos  = strrpos($cookiedomain, $port);
 
-			if($pos !== false)
-			{
+			if($pos !== FALSE) {
 				$cookiedomain = substr($cookiedomain, 0, $pos);
 			}
 
-			if($_SERVER['SERVER_PORT'] != 80 && $_SERVER['SERVER_PORT'] != 443 && !preg_match("#:[0-9]#i", $hostname))
-			{
+			if($_SERVER['SERVER_PORT'] != 80 && $_SERVER['SERVER_PORT'] != 443 && !preg_match("#:[0-9]#i", $hostname)) {
 				$hostname .= $port;
 			}
 		}
 
 		$currentlocation = get_current_location('', '', TRUE);
-		$noinstall = substr($currentlocation, 0, strrpos($currentlocation, '/install/'));
+		$noinstall       = substr($currentlocation, 0, strrpos($currentlocation, '/install/'));
 
 		$cookiepath = $noinstall.'/';
-		$bburl = $hostname.$noinstall;
+		$bburl      = $hostname.$noinstall;
 		$websiteurl = $hostname.'/';
 
-		if(isset($_SERVER['SERVER_ADMIN']) && filter_var($_SERVER['SERVER_ADMIN'], FILTER_VALIDATE_EMAIL))
-		{
+		if(isset($_SERVER['SERVER_ADMIN']) && filter_var($_SERVER['SERVER_ADMIN'], FILTER_VALIDATE_EMAIL)) {
 			$contactemail = $_SERVER['SERVER_ADMIN'];
 		}
 		else
 		{
-			$contactemail = null;
+			$contactemail = NULL;
 		}
 	}
 
@@ -1980,21 +1921,20 @@ function create_admin_user()
 
 	$mybb->input['action'] = "adminuser";
 	// If no errors then check for errors from last step
-	if(!is_array($errors))
-	{
-		if(empty($mybb->input['bburl']))
-		{
+	if(!is_array($errors)) {
+		if(empty($mybb->input['bburl'])) {
 			$errors[] = $lang->config_step_error_url;
 		}
-		if(empty($mybb->input['bbname']))
-		{
+
+		if(empty($mybb->input['bbname'])) {
 			$errors[] = $lang->config_step_error_name;
 		}
-		if(is_array($errors))
-		{
+
+		if(is_array($errors)) {
 			configure();
 		}
 	}
+
 	$output->print_header($lang->create_admin, 'admin');
 
 	echo <<<EOF
@@ -2017,26 +1957,25 @@ function create_admin_user()
 
 EOF;
 
-	if(is_array($errors))
-	{
+	if(is_array($errors)) {
 		$error_list = error_list($errors);
 		echo $lang->sprintf($lang->admin_step_error_config, $error_list);
-		$adminuser = $mybb->get_input('adminuser');
+		$adminuser  = $mybb->get_input('adminuser');
 		$adminemail = $mybb->get_input('adminemail');
 	}
 	else
 	{
-		require MYBB_ROOT.'inc/config.php';
+		include MYBB_ROOT.'inc/config.php';
 		$db = db_connection($config);
 
 		echo $lang->admin_step_setupsettings;
 		$adminuser = $adminemail = '';
 
-		$settings = file_get_contents(INSTALL_ROOT.'resources/settings.xml');
-		$parser = create_xml_parser($settings);
+		$settings              = file_get_contents(INSTALL_ROOT.'resources/settings.xml');
+		$parser                = create_xml_parser($settings);
 		$parser->collapse_dups = 0;
-		$tree = $parser->get_tree();
-		$groupcount = $settingcount = 0;
+		$tree                  = $parser->get_tree();
+		$groupcount            = $settingcount = 0;
 
 		// Insert all the settings
 		foreach($tree['settings'][0]['settinggroup'] as $settinggroup)
@@ -2048,7 +1987,7 @@ EOF;
 				'disporder' => (int)$settinggroup['attributes']['disporder'],
 				'isdefault' => $settinggroup['attributes']['isdefault'],
 			);
-			$gid = $db->insert_query('settinggroups', $groupdata);
+			$gid       = $db->insert_query('settinggroups', $groupdata);
 			++$groupcount;
 			foreach($settinggroup['setting'] as $setting)
 			{
@@ -2068,8 +2007,7 @@ EOF;
 			}
 		}
 
-		if(my_substr($mybb->get_input('bburl'), -1, 1) == '/')
-		{
+		if(my_substr($mybb->get_input('bburl'), -1, 1) == '/') {
 			$mybb->input['bburl'] = my_substr($mybb->get_input('bburl'), 0, -1);
 		}
 
@@ -2103,11 +2041,11 @@ EOF;
 		@fclose($file);
 
 		include_once MYBB_ROOT."inc/functions_task.php";
-		$tasks = file_get_contents(INSTALL_ROOT.'resources/tasks.xml');
-		$parser = create_xml_parser($tasks);
+		$tasks                 = file_get_contents(INSTALL_ROOT.'resources/tasks.xml');
+		$parser                = create_xml_parser($tasks);
 		$parser->collapse_dups = 0;
-		$tree = $parser->get_tree();
-		$taskcount = 0;
+		$tree                  = $parser->get_tree();
+		$taskcount             = 0;
 
 		// Insert scheduled tasks
 		foreach($tree['tasks'][0]['task'] as $task)
@@ -2141,11 +2079,11 @@ EOF;
 
 		echo $lang->sprintf($lang->admin_step_insertedtasks, $taskcount);
 
-		$views = file_get_contents(INSTALL_ROOT.'resources/adminviews.xml');
-		$parser = create_xml_parser($views);
+		$views                 = file_get_contents(INSTALL_ROOT.'resources/adminviews.xml');
+		$parser                = create_xml_parser($views);
 		$parser->collapse_dups = 0;
-		$tree = $parser->get_tree();
-		$view_count = 0;
+		$tree                  = $parser->get_tree();
+		$view_count            = 0;
 
 		// Insert admin views
 		foreach($tree['adminviews'][0]['view'] as $view)
@@ -2157,22 +2095,22 @@ EOF;
 			}
 
 			$conditions = array();
-			if(isset($view['conditions'][0]['condition']) && is_array($view['conditions'][0]['condition']))
-			{
+			if(isset($view['conditions'][0]['condition']) && is_array($view['conditions'][0]['condition'])) {
 				foreach($view['conditions'][0]['condition'] as $condition)
 				{
-					if(!$condition['value']) continue;
-					if($condition['attributes']['is_serialized'] == 1)
-					{
+					if(!$condition['value']) { continue;
+					}
+
+					if($condition['attributes']['is_serialized'] == 1) {
 						$condition['value'] = my_unserialize($condition['value']);
 					}
+
 					$conditions[$condition['attributes']['name']] = $condition['value'];
 				}
 			}
 
 			$custom_profile_fields = array();
-			if(isset($view['custom_profile_fields'][0]['field']) && is_array($view['custom_profile_fields'][0]['field']))
-			{
+			if(isset($view['custom_profile_fields'][0]['field']) && is_array($view['custom_profile_fields'][0]['field'])) {
 				foreach($view['custom_profile_fields'][0]['field'] as $field)
 				{
 					$custom_profile_fields[] = $field['attributes']['name'];
@@ -2212,31 +2150,30 @@ function install_done()
 {
 	global $output, $db, $mybb, $errors, $cache, $lang;
 
-	if(empty($mybb->input['adminuser']))
-	{
+	if(empty($mybb->input['adminuser'])) {
 		$errors[] = $lang->admin_step_error_nouser;
 	}
-	if(empty($mybb->input['adminpass']))
-	{
+
+	if(empty($mybb->input['adminpass'])) {
 		$errors[] = $lang->admin_step_error_nopassword;
 	}
-	if($mybb->get_input('adminpass') != $mybb->get_input('adminpass2'))
-	{
+
+	if($mybb->get_input('adminpass') != $mybb->get_input('adminpass2')) {
 		$errors[] = $lang->admin_step_error_nomatch;
 	}
-	if(empty($mybb->input['adminemail']))
-	{
+
+	if(empty($mybb->input['adminemail'])) {
 		$errors[] = $lang->admin_step_error_noemail;
 	}
-	if(is_array($errors))
-	{
+
+	if(is_array($errors)) {
 		create_admin_user();
 	}
 
-	require MYBB_ROOT.'inc/config.php';
+	include MYBB_ROOT.'inc/config.php';
 	$db = db_connection($config);
 
-	require MYBB_ROOT.'inc/settings.php';
+	include MYBB_ROOT.'inc/settings.php';
 	$mybb->settings = &$settings;
 
 	ob_start();
@@ -2245,12 +2182,12 @@ function install_done()
 	echo $lang->done_step_usergroupsinserted;
 
 	// Insert all of our user groups from the XML file
-	$usergroup_settings = file_get_contents(INSTALL_ROOT.'resources/usergroups.xml');
-	$parser = create_xml_parser($usergroup_settings);
+	$usergroup_settings    = file_get_contents(INSTALL_ROOT.'resources/usergroups.xml');
+	$parser                = create_xml_parser($usergroup_settings);
 	$parser->collapse_dups = 0;
-	$tree = $parser->get_tree();
+	$tree                  = $parser->get_tree();
 
-	$admin_gid = '';
+	$admin_gid   = '';
 	$group_count = 0;
 	foreach($tree['usergroups'][0]['usergroup'] as $usergroup)
 	{
@@ -2258,34 +2195,33 @@ function install_done()
 		$new_group = array();
 		foreach($usergroup as $key => $value)
 		{
-			if(!is_array($value))
-			{
+			if(!is_array($value)) {
 				continue;
 			}
 
 			$new_group[$key] = $db->escape_string($value[0]['value']);
 		}
-		$db->insert_query("usergroups", $new_group, false);
+
+		$db->insert_query("usergroups", $new_group, FALSE);
 
 		// If this group can access the admin CP and we haven't established the admin group - set it (just in case we ever change IDs)
-		if($new_group['cancp'] == 1 && !$admin_gid)
-		{
+		if($new_group['cancp'] == 1 && !$admin_gid) {
 			$admin_gid = $usergroup['gid'][0]['value'];
 		}
+
 		$group_count++;
 	}
 
 	// Restart usergroup sequence with correct # of groups
-	if($config['database']['type'] == "pgsql")
-	{
+	if($config['database']['type'] == "pgsql") {
 		$db->query("SELECT setval('{$config['database']['table_prefix']}usergroups_gid_seq', (SELECT max(gid) FROM {$config['database']['table_prefix']}usergroups));");
 	}
 
 	echo $lang->done . '</p>';
 
 	echo $lang->done_step_admincreated;
-	$now = TIME_NOW;
-	$salt = random_str();
+	$now      = TIME_NOW;
+	$salt     = random_str();
 	$loginkey = generate_loginkey();
 	$saltedpw = md5(md5($salt).md5($mybb->get_input('adminpass')));
 
@@ -2301,8 +2237,8 @@ function install_done()
 		'lastvisit' => $now,
 		'website' => '',
 		'icq' => '',
-		'skype' =>'',
-		'google' =>'',
+		'skype' => '',
+		'google' => '',
 		'birthday' => '',
 		'signature' => '',
 		'allownotices' => 1,
@@ -2341,11 +2277,11 @@ function install_done()
 	echo $lang->done . '</p>';
 
 	echo $lang->done_step_adminoptions;
-	$adminoptions = file_get_contents(INSTALL_ROOT.'resources/adminoptions.xml');
-	$parser = create_xml_parser($adminoptions);
+	$adminoptions          = file_get_contents(INSTALL_ROOT.'resources/adminoptions.xml');
+	$parser                = create_xml_parser($adminoptions);
 	$parser->collapse_dups = 0;
-	$tree = $parser->get_tree();
-	$insertmodule = array();
+	$tree                  = $parser->get_tree();
+	$insertmodule          = array();
 
 	$db->delete_query("adminoptions");
 
@@ -2380,27 +2316,27 @@ function install_done()
 
 		$db->insert_query('adminoptions', $adminoptiondata);
 	}
+
 	echo $lang->done . '</p>';
 
 	// Automatic Login
 	my_unsetcookie("sid");
 	my_unsetcookie("mybbuser");
-	my_setcookie('mybbuser', $uid.'_'.$loginkey, null, TRUE, "lax");
+	my_setcookie('mybbuser', $uid.'_'.$loginkey, NULL, TRUE, "lax");
 	ob_end_flush();
 
 	// Make fulltext columns if supported
-	if($db->supports_fulltext('threads'))
-	{
+	if($db->supports_fulltext('threads')) {
 		$db->create_fulltext_index('threads', 'subject');
 	}
-	if($db->supports_fulltext_boolean('posts'))
-	{
+
+	if($db->supports_fulltext_boolean('posts')) {
 		$db->create_fulltext_index('posts', 'message');
 	}
 
 	echo $lang->done_step_cachebuilding;
-	require_once MYBB_ROOT.'inc/class_datacache.php';
-	$cache = new datacache;
+	include_once MYBB_ROOT.'inc/class_datacache.php';
+	$cache = new datacache();
 	$cache->update_version();
 	$cache->update_attachtypes();
 	$cache->update_smilies();
@@ -2430,14 +2366,14 @@ function install_done()
 	$cache->update_reportreasons(TRUE);
 
 	$version_history = array();
-	$dh = opendir(INSTALL_ROOT."resources");
-	while(($file = readdir($dh)) !== false)
+	$dh              = opendir(INSTALL_ROOT."resources");
+	while(($file = readdir($dh)) !== FALSE)
 	{
-		if(preg_match("#upgrade([0-9]+).php$#i", $file, $match))
-		{
+		if(preg_match("#upgrade([0-9]+).php$#i", $file, $match)) {
 			$version_history[$match[1]] = $match[1];
 		}
 	}
+
 	sort($version_history, SORT_NUMERIC);
 	$cache->update("version_history", $version_history);
 
@@ -2453,20 +2389,19 @@ function install_done()
 	echo $lang->done_step_success;
 
 	$written = 0;
-	if(is_writable('./'))
-	{
-		$lock = @fopen('./lock', 'w');
+	if(is_writable('./')) {
+		$lock    = @fopen('./lock', 'w');
 		$written = @fwrite($lock, '1');
 		@fclose($lock);
-		if($written)
-		{
+		if($written) {
 			echo $lang->done_step_locked;
 		}
 	}
-	if(!$written)
-	{
+
+	if(!$written) {
 		echo $lang->done_step_dirdelete;
 	}
+
 	echo $lang->done_whats_next;
 	$output->print_footer('');
 }
@@ -2478,20 +2413,20 @@ function install_done()
  */
 function db_connection($config)
 {
-	require_once MYBB_ROOT."inc/db_{$config['database']['type']}.php";
+	include_once MYBB_ROOT."inc/db_{$config['database']['type']}.php";
 	switch($config['database']['type'])
 	{
 		case "sqlite":
-			$db = new DB_SQLite;
+			$db = new DB_SQLite();
 			break;
 		case "pgsql":
-			$db = new DB_PgSQL;
+			$db = new DB_PgSQL();
 			break;
 		case "mysqli":
-			$db = new DB_MySQLi;
+			$db = new DB_MySQLi();
 			break;
 		default:
-			$db = new DB_MySQL;
+			$db = new DB_MySQL();
 	}
 
 	// Connect to Database
@@ -2516,6 +2451,7 @@ function error_list($array)
 	{
 		$string .= "<li>{$error}</li>\n";
 	}
+
 	$string .= "</ul>\n";
 	return $string;
 }
@@ -2528,17 +2464,17 @@ function write_settings()
 	global $db;
 
 	$settings = '';
-	$query = $db->simple_select('settings', '*', '', array('order_by' => 'title'));
+	$query    = $db->simple_select('settings', '*', '', array('order_by' => 'title'));
 	while($setting = $db->fetch_array($query))
 	{
-		$setting['name'] = addcslashes($setting['name'], "\\'");
+		$setting['name']  = addcslashes($setting['name'], "\\'");
 		$setting['value'] = addcslashes($setting['value'], '\\"$');
-		$settings .= "\$settings['{$setting['name']}'] = \"{$setting['value']}\";\n";
+		$settings        .= "\$settings['{$setting['name']}'] = \"{$setting['value']}\";\n";
 	}
-	if(!empty($settings))
-	{
+
+	if(!empty($settings)) {
 		$settings = "<?php\n/*********************************\ \n  DO NOT EDIT THIS FILE, PLEASE USE\n  THE SETTINGS EDITOR\n\*********************************/\n\n{$settings}\n";
-		$file = fopen(MYBB_ROOT."inc/settings.php", "w");
+		$file     = fopen(MYBB_ROOT."inc/settings.php", "w");
 		fwrite($file, $settings);
 		fclose($file);
 	}

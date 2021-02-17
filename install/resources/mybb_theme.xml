@@ -3970,7 +3970,7 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 <br />]]></template>
 		<template name="forumdisplay_searchforum" version="1822"><![CDATA[<form action="search.php">
 	<span class="smalltext"><strong>{$lang->search_forum}</strong></span>
-	<input type="text" class="textbox" name="keywords" /> {$gobutton}
+	<input type="text" class="textbox" name="keywords" aria-label="Search" /> {$gobutton}
 	<input type="hidden" name="action" value="do_search" />
 	<input type="hidden" name="forums" value="{$fid}" />
 	<input type="hidden" name="postthread" value="1" />
@@ -4251,7 +4251,7 @@ $(".forumjump").on('change', function() {
 		<template name="header_menu_search" version="1800"><![CDATA[<li><a href="{$mybb->settings['bburl']}/search.php" class="search">{$lang->toplinks_search}</a></li>]]></template>
 		<template name="header_quicksearch" version="1822"><![CDATA[						<form action="{$mybb->settings['bburl']}/search.php">
 						<fieldset id="search">
-							<input name="keywords" type="text" class="textbox" />
+							<input name="keywords" aria-label="Search" type="text" class="textbox" />
 							<input value="{$lang->search_button}" type="submit" class="button" />
 							<input type="hidden" name="action" value="do_search" />
 							<input type="hidden" name="postthread" value="1" />
@@ -6045,7 +6045,7 @@ if(use_xmlhttprequest == "1")
 <td class="trow1">
 <form action="misc.php" method="post">
 <div class="float_left" style="padding-top: 5px;">
-<input type="text" name="keywords" value="{$lang->enter_keywords}" onfocus="if(this.value == '{$lang->enter_keywords}') { this.value = ''; }" onblur="if(this.value=='') { this.value='{$lang->enter_keywords}'; }" class="textbox" size="25" />
+<input type="text" name="keywords" aria-label="Search" value="{$lang->enter_keywords}" onfocus="if(this.value == '{$lang->enter_keywords}') { this.value = ''; }" onblur="if(this.value=='') { this.value='{$lang->enter_keywords}'; }" class="textbox" size="25" />
 </div>
 <div class="float_left" style="padding-left: 20px;">
 <span class="smalltext">
@@ -9360,7 +9360,7 @@ if(use_xmlhttprequest == "1")
 <input type="hidden" name="postthread" value="1" />
 <input type="hidden" name="forums" value="all" />
 <input type="hidden" name="showresults" value="threads" />
-<input type="text" class="textbox portal_search" name="keywords" value="" />
+<input type="text" class="textbox portal_search" name="keywords" aria-label="Search" value="" />
 {$gobutton}
 </form><br />
 <span class="smalltext">
@@ -9901,7 +9901,7 @@ img { max-width: 100%; height: auto; }
 <tr>
 <td class="thead" colspan="6">
 	<div class="float_right">
-	<input type="text" name="keywords" value="{$lang->enter_keywords}" onfocus="if(this.value == '{$lang->enter_keywords}') { this.value = ''; }" onblur="if(this.value=='') { this.value='{$lang->enter_keywords}'; }" class="textbox" size="25" />
+	<input type="text" name="keywords" aria-label="Search" value="{$lang->enter_keywords}" onfocus="if(this.value == '{$lang->enter_keywords}') { this.value = ''; }" onblur="if(this.value=='') { this.value='{$lang->enter_keywords}'; }" class="textbox" size="25" />
 	<input type="submit" class="button" name="quick_search" value="{$lang->search_pms}" />
 	(<a href="private.php?action=advanced_search">{$lang->advanced_search}</a>)</div>
 	<strong>{$foldername}</strong></td>
@@ -9961,7 +9961,7 @@ img { max-width: 100%; height: auto; }
 	<tr>
 		<td class="trow1" width="20%"><strong><label for="keywords">{$lang->keywords}</label></strong></td>
 		<td class="trow1">
-			<input type="text" class="textbox" name="keywords" id="keywords" size="35" maxlength="250" />
+			<input type="text" class="textbox" name="keywords" aria-label="Search" id="keywords" size="35" maxlength="250" />
 			<br />
 			<span class="smalltext">
 				<label><input type="checkbox" name="subject" checked="checked" value="1" /> {$lang->search_in_subject}</label><br />
@@ -10421,7 +10421,7 @@ if(use_xmlhttprequest == "1")
 <tr>
 <td class="thead" colspan="7">
 	<div class="float_right">
-	<input type="text" name="keywords" value="{$lang->enter_keywords}" onfocus="if(this.value == '{$lang->enter_keywords}') { this.value = ''; }" onblur="if(this.value=='') { this.value='{$lang->enter_keywords}'; }" class="textbox" size="25" />
+	<input type="text" name="keywords" aria-label="Search" value="{$lang->enter_keywords}" onfocus="if(this.value == '{$lang->enter_keywords}') { this.value = ''; }" onblur="if(this.value=='') { this.value='{$lang->enter_keywords}'; }" class="textbox" size="25" />
 	<input type="submit" class="button" name="quick_search" value="{$lang->search_pms}" />
 	(<a href="private.php?action=advanced_search">{$lang->advanced_search}</a>)</div>
 	<strong>{$lang->pm_search_results}</strong></td>
@@ -11080,7 +11080,7 @@ document.write('<br /><span class="smalltext"><a href="javascript:void(0)" oncli
 <tr>
 <td class="trow1">
 <table><tr>
-<td valign="top"><input type="text" class="textbox" name="keywords" size="35" maxlength="250" /></td>
+<td valign="top"><input type="text" class="textbox" name="keywords" aria-label="Search" size="35" maxlength="250" /></td>
 </tr>
 <tr>
 <td>
@@ -11816,7 +11816,7 @@ if(use_xmlhttprequest == "1")
 		<form action="search.php" method="post">
 			<input type="hidden" name="action" value="thread" />
 			<input type="hidden" name="tid" value="{$thread['tid']}" />
-			<input type="text" name="keywords" value="{$lang->enter_keywords}" onfocus="if(this.value == '{$lang->enter_keywords}') { this.value = ''; }" onblur="if(this.value=='') { this.value='{$lang->enter_keywords}'; }" class="textbox" size="25" />
+			<input type="text" name="keywords" aria-label="Search" value="{$lang->enter_keywords}" onfocus="if(this.value == '{$lang->enter_keywords}') { this.value = ''; }" onblur="if(this.value=='') { this.value='{$lang->enter_keywords}'; }" class="textbox" size="25" />
 			<input type="submit" class="button" value="{$lang->search_thread}" />
 		</form>
 	</div>]]></template>
