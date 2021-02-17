@@ -2,7 +2,7 @@ name: Multi-branch Compatibility
 
 on:
   pull_request:
-    branches: [feature]
+    branches: [main]
 
 jobs:
   cherry_pick_develop19:
