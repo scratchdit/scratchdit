@@ -5,7 +5,6 @@
  *
  * Website: //www.mybb.com
  * License: //www.mybb.com/about/license
- *
  */
 
 // Disallow direct access to this file for security reasons
@@ -16,7 +15,6 @@ if(!defined("IN_MYBB"))
 
 /**
  * User handling class, provides common structure to handle user data.
- *
  */
 class UserDataHandler extends DataHandler
 {

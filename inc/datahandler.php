@@ -5,12 +5,10 @@
  *
  * Website: //www.mybb.com
  * License: //www.mybb.com/about/license
- *
  */
 
 /**
  * Base data handler class.
- *
  */
 class DataHandler
 {

@@ -5,7 +5,6 @@
  *
  * Website: //www.mybb.com
  * License: //www.mybb.com/about/license
- *
  */
 
 require_once MYBB_ROOT."inc/class_xmlparser.php";

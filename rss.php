@@ -5,7 +5,6 @@
  *
  * Website: //www.mybb.com
  * License: //www.mybb.com/about/license
- *
  */
 
 /* Redirect traffic using old URI to new URI. */

@@ -5,7 +5,6 @@
  *
  * Website: //www.mybb.com
  * License: //www.mybb.com/about/license
- *
  */
 
 $uid_list = $aid_list = $pid_list = $tid_list = $fid_list = $ann_list = $eid_list = array();

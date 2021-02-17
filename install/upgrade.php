@@ -5,7 +5,6 @@
  *
  * Website: //www.mybb.com
  * License: //www.mybb.com/about/license
- *
  */
 
 define('MYBB_ROOT', dirname(dirname(__FILE__))."/");

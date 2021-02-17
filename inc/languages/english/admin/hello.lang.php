@@ -5,7 +5,6 @@
  *
  * Website: //www.mybb.com
  * License: //www.mybb.com/about/license
- *
  */
 
 $l['hello_desc'] = 'A sample plugin that allows you to create messages on the index page and appends them to each post.';

@@ -5,7 +5,6 @@
  *
  * Website: //www.mybb.com
  * License: //www.mybb.com/about/license
- *
  */
 
 /**
@@ -447,7 +446,6 @@ function remove_subscribed_forum($fid, $uid=0)
 
 /**
  * Constructs the usercp navigation menu.
- *
  */
 function usercp_menu()
 {
@@ -483,7 +481,6 @@ function usercp_menu()
 
 /**
  * Constructs the usercp messenger menu.
- *
  */
 function usercp_menu_messenger()
 {
@@ -546,7 +543,6 @@ function usercp_menu_messenger()
 
 /**
  * Constructs the usercp profile menu.
- *
  */
 function usercp_menu_profile()
 {
@@ -583,7 +579,6 @@ function usercp_menu_profile()
 
 /**
  * Constructs the usercp misc menu.
- *
  */
 function usercp_menu_misc()
 {

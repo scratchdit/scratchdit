@@ -24,7 +24,6 @@
  *      echo "<h1>{$title}</h1>";
  *   }
  * }
- *
  */
 
 // Disallow direct access to this file for security reasons

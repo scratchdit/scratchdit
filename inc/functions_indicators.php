@@ -5,7 +5,6 @@
  *
  * Website: //www.mybb.com
  * License: //www.mybb.com/about/license
- *
  */
 
 /**
@@ -258,7 +257,6 @@ function mark_forum_read($fid)
 
 /**
  * Marks all forums as read.
- *
  */
 function mark_all_forums_read()
 {

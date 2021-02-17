@@ -5,7 +5,6 @@
  *
  * Website: //www.mybb.com
  * License: //www.mybb.com/about/license
- *
  */
 
 /**
@@ -63,7 +62,6 @@ function archive_header($title="", $fulltitle="", $fullurl="")
 <title><?= $title ?></title>
 <meta http-equiv="content-type" content="text/html; charset=<?= $charset ?>" />
 <meta name="robots" content="index,follow" />
-<!--<?= $archiveurl ?>-->
 <link type="text/css" rel="stylesheet" rev="stylesheet" href="<?= $archiveurl ?>/screen.css" media="screen" />
 <link type="text/css" rel="stylesheet" rev="stylesheet" href="<?= $archiveurl ?>/print.css" media="print" />
 </head>
@@ -154,7 +152,6 @@ function archive_multipage($count, $perpage, $page, $url)
 
 /**
  * Output the archive footer.
- *
  */
 function archive_footer()
 {

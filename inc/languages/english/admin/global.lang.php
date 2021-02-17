@@ -2,7 +2,6 @@
 /**
  * MyBB 1.8 English Language Pack
  * Copyright 2014 MyBB Group, All Rights Reserved
- *
  */
 
 $l['today_rel'] = "<span title=\"{1}\">Today</span>";

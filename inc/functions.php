@@ -116,7 +116,6 @@ function add_shutdown($name, $arguments = array())
 
 /**
  * Runs the shutdown items after the page has been sent to the browser.
- *
  */
 function run_shutdown()
 {
@@ -5729,7 +5728,6 @@ function email_already_in_use($email, $uid = 0)
 
 /**
  * Rebuilds settings.php
- *
  */
 function rebuild_settings()
 {
