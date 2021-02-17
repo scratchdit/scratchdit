@@ -3,8 +3,8 @@
  * MyBB 1.8
  * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * Website: http://www.mybb.com
- * License: http://www.mybb.com/about/license
+ * Website: //www.mybb.com
+ * License: //www.mybb.com/about/license
  *
  */
 
@@ -53,7 +53,7 @@ class DefaultTable
 		foreach($this->_cells as $key => $cell)
 		{
 			$cells .= "\t\t\t<td";
-			
+
 			if(!isset($cell['extra']['class']))
 			{
 				$cell['extra']['class'] = '';

@@ -3,8 +3,8 @@
  * MyBB 1.8
  * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * Website: http://www.mybb.com
- * License: http://www.mybb.com/about/license
+ * Website: //www.mybb.com
+ * License: //www.mybb.com/about/license
  *
  */
 
@@ -554,7 +554,7 @@ class MyBB {
 				$error_code = MYBB_NOT_UPGRADED;
 				break;
 			case "sql_load_error":
-				$message = "MyBB was unable to load the SQL extension. Please contact the MyBB Group for support. <a href=\"https://mybb.com\">MyBB Website</a>";
+				$message = "MyBB was unable to load the SQL extension. Please contact the MyBB Group for support. <a href=\"//mybb.com\">MyBB Website</a>";
 				$error_code = MYBB_SQL_LOAD_ERROR;
 				break;
 			case "apc_load_error":
@@ -586,7 +586,7 @@ class MyBB {
 				$error_code = MYBB_CACHEHANDLER_LOAD_ERROR;
 				break;
 			default:
-				$message = "MyBB has experienced an internal error. Please contact the MyBB Group for support. <a href=\"https://mybb.com\">MyBB Website</a>";
+				$message = "MyBB has experienced an internal error. Please contact the MyBB Group for support. <a href=\"//mybb.com\">MyBB Website</a>";
 				$error_code = MYBB_GENERAL;
 		}
 		$error_handler->trigger($message, $error_code);

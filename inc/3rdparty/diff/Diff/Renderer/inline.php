@@ -4,10 +4,10 @@
  *
  * This class renders diffs in the Wiki-style "inline" format.
  *
- * Copyright 2004-2017 Horde LLC (http://www.horde.org/)
+ * Copyright 2004-2017 Horde LLC (//www.horde.org/)
  *
  * See the enclosed file COPYING for license information (LGPL). If you did
- * not receive this file, see http://www.horde.org/licenses/lgpl21.
+ * not receive this file, see //www.horde.org/licenses/lgpl21.
  *
  * @author  Ciprian Popovici
  * @package Text_Diff

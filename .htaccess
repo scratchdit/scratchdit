@@ -60,8 +60,30 @@ Options -MultiViews +FollowSymlinks -Indexes
 	AddOutputFilterByType DEFLATE text/css text/html application/xhtml+xml text/xml application/xml text/plain text/x-component application/javascript application/x-javascript application/rss+xml application/atom+xml application/json application/manifest+json application/x-web-app-manifest+json application/vnd.ms-fontobject application/font-sfnt application/font-woff application/font-woff2 image/svg+xml image/x-icon
 </IfModule>
 
-# Note: You are able to choose a different name in the Admin CP. If you've done that you need to change it here too
-<Files "error.log">
-	Order Deny,Allow
-	Deny from all
-</Files>
+# strip www
+RewriteEngine On
+
+RewriteRule ^(.*)$ http://www.scratchdit.herokuapp.com [NC]
+
+RewriteCond %{HTTP_HOST} ^scratchdit.herokuapp.com/$1 [L,R=301]
+
+# force ssl
+RewriteEngine On
+RewriteCond %{HTTP_HOST} ^scratchdit.herokuapp\.com [NC]
+RewriteCond %{SERVER_PORT} 80
+RewriteRule ^(.*)$ https://scratchdit.herokuapp.com/$1 [R,L]
+
+# strip file extentions
+RewriteEngine on
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}\.html -f
+RewriteRule ^(.*)$ $1.html [NC,L]
+RewriteEngine on
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}\.php -f
+RewriteRule ^(.*)$ $1.php [NC,L]
+
+#force trailing slashes
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)/$ /$1 [L,R=301]

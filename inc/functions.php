@@ -3,8 +3,8 @@
  * MyBB 1.8
  * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * Website: http://www.mybb.com
- * License: http://www.mybb.com/about/license
+ * Website: //www.mybb.com
+ * License: //www.mybb.com/about/license
  *
  */
 
@@ -297,10 +297,10 @@ function parse_page($contents)
 	}
 	else
 	{
-		$contents = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n".$contents;
+		$contents = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"//www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n".$contents;
 	}
 
-	$contents = str_replace("<html", "<html xmlns=\"http://www.w3.org/1999/xhtml\"", $contents);
+	$contents = str_replace("<html", "<html xmlns=\"//www.w3.org/1999/xhtml\"", $contents);
 
 	if($lang->settings['rtl'] == 1)
 	{
@@ -1815,7 +1815,7 @@ function is_moderator($fid=0, $action="", $uid=0)
 	);
 
 	$plugins->run_hooks("is_moderator", $hook_args);
-	
+
 	if(isset($hook_args['is_moderator']))
 	{
 		return (boolean) $hook_args['is_moderator'];
@@ -2155,7 +2155,7 @@ define('MAX_SERIALIZED_ARRAY_LENGTH', 256);
 define('MAX_SERIALIZED_ARRAY_DEPTH', 5);
 
 /**
- * Credits go to https://github.com/piwik
+ * Credits go to //github.com/piwik
  * Safe unserialize() replacement
  * - accepts a strict subset of PHP's native my_serialized representation
  * - does not unserialize objects
@@ -2336,7 +2336,7 @@ function _safe_unserialize($str)
 }
 
 /**
- * Credits go to https://github.com/piwik
+ * Credits go to //github.com/piwik
  * Wrapper for _safe_unserialize() that handles exceptions and multibyte encoding issue
  *
  * @param string $str
@@ -2362,7 +2362,7 @@ function my_unserialize($str)
 }
 
 /**
- * Credits go to https://github.com/piwik
+ * Credits go to //github.com/piwik
  * Safe serialize() replacement
  * - output a strict subset of PHP's native serialized representation
  * - does not my_serialize objects
@@ -2414,7 +2414,7 @@ function _safe_serialize( $value )
 }
 
 /**
- * Credits go to https://github.com/piwik
+ * Credits go to //github.com/piwik
  * Wrapper for _safe_serialize() that handles exceptions and multibyte encoding issue
  *
  * @param mixed $value
@@ -4468,7 +4468,7 @@ function get_unviewable_forums($only_readable_threads=false)
 function fix_mktime($format, $year)
 {
 	// Our little work around for the date < 1970 thing.
-	// -2 idea provided by Matt Light (http://www.mephex.com)
+	// -2 idea provided by Matt Light (//www.mephex.com)
 	$format = str_replace("Y", $year, $format);
 	$format = str_replace("y", my_substr($year, -2), $format);
 
@@ -4720,8 +4720,8 @@ function debug_page()
 		$gzipen = "Disabled";
 	}
 
-	echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
-	echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\">";
+	echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"//www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
+	echo "<html xmlns=\"//www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\">";
 	echo "<head>";
 	echo "<meta name=\"robots\" content=\"noindex\" />";
 	echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />";
@@ -6882,7 +6882,7 @@ function build_highlight_array_sort($a, $b)
 
 /**
  * Converts a decimal reference of a character to its UTF-8 equivalent
- * (Code by Anne van Kesteren, http://annevankesteren.nl/2005/05/character-references)
+ * (Code by Anne van Kesteren, //annevankesteren.nl/2005/05/character-references)
  *
  * @param int $src Decimal value of a character reference
  * @return string|bool
@@ -7907,9 +7907,9 @@ function my_inet_pton($ip)
 		 *
 		 * @category    PHP
 		 * @package     PHP_Compat
-		 * @license     LGPL - http://www.gnu.org/licenses/lgpl.html
+		 * @license     LGPL - //www.gnu.org/licenses/lgpl.html
 		 * @copyright   2004-2007 Aidan Lister <aidan@php.net>, Arpad Ray <arpad@php.net>
-		 * @link        http://php.net/inet_pton
+		 * @link        //php.net/inet_pton
 		 * @author      Arpad Ray <arpad@php.net>
 		 * @version     $Revision: 269597 $
 		 */
@@ -7960,9 +7960,9 @@ function my_inet_ntop($ip)
 		 *
 		 * @category    PHP
 		 * @package     PHP_Compat
-		 * @license     LGPL - http://www.gnu.org/licenses/lgpl.html
+		 * @license     LGPL - //www.gnu.org/licenses/lgpl.html
 		 * @copyright   2004-2007 Aidan Lister <aidan@php.net>, Arpad Ray <arpad@php.net>
-		 * @link        http://php.net/inet_ntop
+		 * @link        //php.net/inet_ntop
 		 * @author      Arpad Ray <arpad@php.net>
 		 * @version     $Revision: 269597 $
 		 */
@@ -8045,7 +8045,7 @@ function fetch_ip_range($ipaddress)
 		}
 
 		/**
-		 * Taken from: https://github.com/NewEraCracker/php_work/blob/master/ipRangeCalculate.php
+		 * Taken from: //github.com/NewEraCracker/php_work/blob/master/ipRangeCalculate.php
 		 * Author: NewEraCracker
 		 * License: Public Domain
 		 */
@@ -8424,7 +8424,7 @@ function my_rand($min=0, $max=PHP_INT_MAX)
 
 /**
  * More robust version of PHP's trim() function. It includes a list of UTF-8 blank characters
- * from http://kb.mozillazine.org/Network.IDN.blacklist_chars
+ * from //kb.mozillazine.org/Network.IDN.blacklist_chars
  *
  * @param string $string The string to trim from
  * @param string $charlist Optional. The stripped characters can also be specified using the charlist parameter
@@ -9033,7 +9033,7 @@ function my_strip_tags($string, $allowable_tags = '')
 
 /**
  * Escapes a RFC 4180-compliant CSV string.
- * Based on https://github.com/Automattic/camptix/blob/f80725094440bf09861383b8f11e96c177c45789/camptix.php#L2867
+ * Based on //github.com/Automattic/camptix/blob/f80725094440bf09861383b8f11e96c177c45789/camptix.php#L2867
  *
  * @param string $string The string to be escaped
  * @param boolean $escape_active_content Whether or not to escape active content trigger characters

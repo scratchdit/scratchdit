@@ -6,9 +6,9 @@
  *
  * The algorithm used here is mostly lifted from the perl module
  * Algorithm::Diff (version 1.06) by Ned Konz, which is available at:
- * http://www.perl.com/CPAN/authors/id/N/NE/NEDKONZ/Algorithm-Diff-1.06.zip
+ * //www.perl.com/CPAN/authors/id/N/NE/NEDKONZ/Algorithm-Diff-1.06.zip
  *
- * More ideas are taken from: http://www.ics.uci.edu/~eppstein/161/960229.html
+ * More ideas are taken from: //www.ics.uci.edu/~eppstein/161/960229.html
  *
  * Some ideas (and a bit of code) are taken from analyze.c, of GNU
  * diffutils-2.7, which can be found at:
@@ -18,10 +18,10 @@
  * Geoffrey T. Dairiki <dairiki@dairiki.org>. The original PHP version of this
  * code was written by him, and is used/adapted with his permission.
  *
- * Copyright 2004-2017 Horde LLC (http://www.horde.org/)
+ * Copyright 2004-2017 Horde LLC (//www.horde.org/)
  *
  * See the enclosed file COPYING for license information (LGPL). If you did
- * not receive this file, see http://www.horde.org/licenses/lgpl21.
+ * not receive this file, see //www.horde.org/licenses/lgpl21.
  *
  * @author  Geoffrey T. Dairiki <dairiki@dairiki.org>
  * @package Text_Diff

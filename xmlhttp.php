@@ -3,8 +3,8 @@
  * MyBB 1.8
  * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * Website: http://www.mybb.com
- * License: http://www.mybb.com/about/license
+ * Website: //www.mybb.com
+ * License: //www.mybb.com/about/license
  *
  */
 
@@ -849,10 +849,10 @@ else if($mybb->input['action'] == "refresh_question" && $mybb->settings['securit
 	");
 
 	$plugins->run_hooks("xmlhttp_refresh_question");
-	
+
 	require_once MYBB_ROOT."inc/class_parser.php";
 	$parser = new postParser;
-	
+
 	$parser_options = array(
 		"allow_html" => 0,
 		"allow_mycode" => 1,
@@ -863,7 +863,7 @@ else if($mybb->input['action'] == "refresh_question" && $mybb->settings['securit
 		"me_username" => 0,
 		"shorten_urls" => 0,
 		"highlight" => 0,
-	);	
+	);
 
 	if($db->num_rows($query) > 0)
 	{

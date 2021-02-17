@@ -3,8 +3,8 @@
  * MyBB 1.8
  * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * Website: http://www.mybb.com
- * License: http://www.mybb.com/about/license
+ * Website: //www.mybb.com
+ * License: //www.mybb.com/about/license
  *
  */
 
@@ -311,7 +311,7 @@ else
 			}
 		}
 	}
-  
+
 	$sorturl = htmlspecialchars_uni("memberlist.php?perpage={$mybb->input['perpage']}{$search_url}");
 	$search_url = htmlspecialchars_uni("memberlist.php?sort={$mybb->input['sort']}&order={$mybb->input['order']}&perpage={$mybb->input['perpage']}{$search_url}");
 
@@ -454,7 +454,7 @@ else
 				}
 			}
 		}
-		
+
 		$user['usertitle'] = htmlspecialchars_uni($user['usertitle']);
 
 		if(!empty($usergroup['stars']))

@@ -5,10 +5,10 @@
  * This class renders the diff in classic diff format. It is intended that
  * this class be customized via inheritance, to obtain fancier outputs.
  *
- * Copyright 2004-2017 Horde LLC (http://www.horde.org/)
+ * Copyright 2004-2017 Horde LLC (//www.horde.org/)
  *
  * See the enclosed file COPYING for license information (LGPL). If you did
- * not receive this file, see http://www.horde.org/licenses/lgpl21.
+ * not receive this file, see //www.horde.org/licenses/lgpl21.
  *
  * @package Text_Diff
  */

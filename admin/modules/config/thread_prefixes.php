@@ -3,8 +3,8 @@
  * MyBB 1.8
  * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * Website: http://www.mybb.com
- * License: http://www.mybb.com/about/license
+ * Website: //www.mybb.com
+ * License: //www.mybb.com/about/license
  *
  */
 
@@ -564,7 +564,7 @@ if(!$mybb->input['action'])
 						$forum_names[] = '<a href="index.php?module=config-thread_prefixes&amp;fid='.(int)$fid.'">'.$forum['name'].'</a>';
 					}
 				}
-				
+
 				$forum_names = implode($lang->comma, $forum_names);
 			}
 

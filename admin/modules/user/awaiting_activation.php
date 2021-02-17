@@ -3,8 +3,8 @@
  * MyBB 1.8
  * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * Website: http://www.mybb.com
- * License: http://www.mybb.com/about/license
+ * Website: //www.mybb.com
+ * License: //www.mybb.com/about/license
  *
  */
 
@@ -111,8 +111,8 @@ if($mybb->input['action'] == "activate" && $mybb->request_method == "post")
 		admin_redirect("index.php?module=user-awaiting_activation");
 	}
 }
-	
-if(!$mybb->input['action']) 
+
+if(!$mybb->input['action'])
 {
 	$plugins->run_hooks("admin_user_awaiting_activation_start");
 

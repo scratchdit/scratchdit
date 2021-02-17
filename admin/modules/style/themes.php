@@ -3,8 +3,8 @@
  * MyBB 1.8
  * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * Website: http://www.mybb.com
- * License: http://www.mybb.com/about/license
+ * Website: //www.mybb.com
+ * License: //www.mybb.com/about/license
  *
  */
 
@@ -174,7 +174,7 @@ if($mybb->input['action'] == "browse")
 	// Convert to mods site version codes
 	$search_version = ($major_version_code/100).'x';
 
-	$contents = fetch_remote_file("https://community.mybb.com/xmlbrowse.php?api=2&type=themes&version={$search_version}{$keywords}{$url_page}");
+	$contents = fetch_remote_file("//community.mybb.com/xmlbrowse.php?api=2&type=themes&version={$search_version}{$keywords}{$url_page}");
 
 	if(!$contents)
 	{
@@ -218,9 +218,9 @@ if($mybb->input['action'] == "browse")
 			$result['author']['name']['value'] = htmlspecialchars_uni($result['author']['name']['value']);
 			$result['download_url']['value'] = htmlspecialchars_uni(html_entity_decode($result['download_url']['value']));
 
-			$table->construct_cell("<img src=\"https://community.mybb.com/{$result['thumbnail']['value']}\" alt=\"{$lang->theme_thumbnail}\" title=\"{$lang->theme_thumbnail}\"/>", array("class" => "align_center", "width" => 100));
+			$table->construct_cell("<img src=\"//community.mybb.com/{$result['thumbnail']['value']}\" alt=\"{$lang->theme_thumbnail}\" title=\"{$lang->theme_thumbnail}\"/>", array("class" => "align_center", "width" => 100));
 			$table->construct_cell("<strong>{$result['name']['value']}</strong><br /><small>{$result['description']['value']}</small><br /><i><small>{$lang->created_by} <a href=\"{$result['author']['url']['value']}\" target=\"_blank\" rel=\"noopener\">{$result['author']['name']['value']}</a></small></i>");
-			$table->construct_cell("<strong><a href=\"https://community.mybb.com/{$result['download_url']['value']}\" target=\"_blank\" rel=\"noopener\">{$lang->download}</a></strong>", array("class" => "align_center"));
+			$table->construct_cell("<strong><a href=\"//community.mybb.com/{$result['download_url']['value']}\" target=\"_blank\" rel=\"noopener\">{$lang->download}</a></strong>", array("class" => "align_center"));
 			$table->construct_row();
 		}
 	}
@@ -288,11 +288,11 @@ if($mybb->input['action'] == "browse")
 	// Recommended themes = Default; Otherwise search results & pagination
 	if($mybb->request_method == "post")
 	{
-		$table->output("<span style=\"float: right;\"><small><a href=\"https://community.mybb.com/mods.php?action=browse&category=themes\" target=\"_blank\" rel=\"noopener\">{$lang->browse_all_themes}</a></small></span>".$lang->sprintf($lang->browse_results_for_mybb, $mybb->version));
+		$table->output("<span style=\"float: right;\"><small><a href=\"//community.mybb.com/mods.php?action=browse&category=themes\" target=\"_blank\" rel=\"noopener\">{$lang->browse_all_themes}</a></small></span>".$lang->sprintf($lang->browse_results_for_mybb, $mybb->version));
 	}
 	else
 	{
-		$table->output("<span style=\"float: right;\"><small><a href=\"https://community.mybb.com/mods.php?action=browse&category=themes\" target=\"_blank\" rel=\"noopener\">{$lang->browse_all_themes}</a></small></span>".$lang->sprintf($lang->recommended_themes_for_mybb, $mybb->version));
+		$table->output("<span style=\"float: right;\"><small><a href=\"//community.mybb.com/mods.php?action=browse&category=themes\" target=\"_blank\" rel=\"noopener\">{$lang->browse_all_themes}</a></small></span>".$lang->sprintf($lang->recommended_themes_for_mybb, $mybb->version));
 	}
 
 	if(!empty($tree['results']['attributes']['total']))

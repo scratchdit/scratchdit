@@ -76,13 +76,13 @@ $l['d7_document'] = "You can use MyCode, also known as BB Codes to add effects o
 <td class=\"trow2\"></td>
 </tr>
 <tr>
-<td class=\"trow1\"><span style=\"font-weight: bold; color: #ff0000;\">[url]</span>http://www.example.com/<span style=\"font-weight: bold; color: #ff0000;\">[/url]</span></td>
-<td class=\"trow1\"><a href=\"http://www.example.com/\" class=\"mycode_url\" rel=\"nofollow\">http://www.example.com/</a></td>
+<td class=\"trow1\"><span style=\"font-weight: bold; color: #ff0000;\">[url]</span>//www.example.com/<span style=\"font-weight: bold; color: #ff0000;\">[/url]</span></td>
+<td class=\"trow1\"><a href=\"//www.example.com/\" class=\"mycode_url\" rel=\"nofollow\">//www.example.com/</a></td>
 <td class=\"trow1\">URLs will auto-link if proper protocol is included (vaild protocols are http, https, ftp, news, irc, ircs and irc6).</td>
 </tr>
 <tr>
-<td class=\"trow2\"><span style=\"font-weight: bold; color: #ff0000;\">[url=http://www.example.com/]</span>Example.com<span style=\"font-weight: bold; color: #ff0000;\">[/url]</span></td>
-<td class=\"trow2\"><a href=\"http://www.example.com/\" class=\"mycode_url\" rel=\"nofollow\">Example.com</a></td>
+<td class=\"trow2\"><span style=\"font-weight: bold; color: #ff0000;\">[url=//www.example.com/]</span>Example.com<span style=\"font-weight: bold; color: #ff0000;\">[/url]</span></td>
+<td class=\"trow2\"><a href=\"//www.example.com/\" class=\"mycode_url\" rel=\"nofollow\">Example.com</a></td>
 <td class=\"trow2\"></td>
 </tr>
 <tr>
@@ -102,8 +102,8 @@ $l['d7_document'] = "You can use MyCode, also known as BB Codes to add effects o
 </tr>
 <tr>
 <td class=\"trow2\"><span style=\"font-weight: bold; color: #ff0000;\">[quote='Admin' pid='1' dateline='946684800']</span>Quoted text will be here<span style=\"font-weight: bold; color: #ff0000;\">[/quote]</span></td>
-<td class=\"trow2\"><blockquote class=\"mycode_quote\"><cite><span> (01-01-2000, 12:00 AM)</span>Admin Wrote:  <a href=\"http://www.example.com/showthread.php?pid=1#pid1\" class=\"quick_jump\" rel=\"nofollow\"></a></cite>Quoted text will be here</blockquote></td>
-<td class=\"trow2\">This format is used when quoting posts. <strong>pid</strong> links to a post, <strong>dateline</strong> is a <a href=\"https://www.unixtimestamp.com/\">UNIX timestamp</a>.</td>
+<td class=\"trow2\"><blockquote class=\"mycode_quote\"><cite><span> (01-01-2000, 12:00 AM)</span>Admin Wrote:  <a href=\"//www.example.com/showthread.php?pid=1#pid1\" class=\"quick_jump\" rel=\"nofollow\"></a></cite>Quoted text will be here</blockquote></td>
+<td class=\"trow2\">This format is used when quoting posts. <strong>pid</strong> links to a post, <strong>dateline</strong> is a <a href=\"//www.unixtimestamp.com/\">UNIX timestamp</a>.</td>
 </tr>
 <tr>
 <td class=\"trow1\"><span style=\"font-weight: bold; color: #ff0000;\">[code]</span>Text with preserved formatting<span style=\"font-weight: bold; color: #ff0000;\">[/code]</span></td>
@@ -116,19 +116,19 @@ $l['d7_document'] = "You can use MyCode, also known as BB Codes to add effects o
 <td class=\"trow2\"></td>
 </tr>
 <tr>
-<td class=\"trow1\"><span style=\"font-weight: bold; color: #ff0000;\">[img]</span>https://secure.php.net/images/php.gif<span style=\"font-weight: bold; color: #ff0000;\">[/img]</span></td>
-<td class=\"trow1\"><img src=\"https://secure.php.net/images/php.gif\" class=\"mycode_img\"></td>
+<td class=\"trow1\"><span style=\"font-weight: bold; color: #ff0000;\">[img]</span>//secure.php.net/images/php.gif<span style=\"font-weight: bold; color: #ff0000;\">[/img]</span></td>
+<td class=\"trow1\"><img src=\"//secure.php.net/images/php.gif\" class=\"mycode_img\"></td>
 <td class=\"trow1\"></td>
 </tr>
 <tr>
-<td class=\"trow2\"><span style=\"font-weight: bold; color: #ff0000;\">[img=50x50]</span>https://secure.php.net/images/php.gif<span style=\"font-weight: bold; color: #ff0000;\">[/img]</span></td>
-<td class=\"trow2\"><img src=\"https://secure.php.net/images/php.gif\" width=\"50\" height=\"50\" class=\"mycode_img\"></td>
+<td class=\"trow2\"><span style=\"font-weight: bold; color: #ff0000;\">[img=50x50]</span>//secure.php.net/images/php.gif<span style=\"font-weight: bold; color: #ff0000;\">[/img]</span></td>
+<td class=\"trow2\"><img src=\"//secure.php.net/images/php.gif\" width=\"50\" height=\"50\" class=\"mycode_img\"></td>
 <td class=\"trow2\">Format is width x height</td>
 </tr>
 <tr>
 <td class=\"trow1\"><span style=\"font-weight: bold; color: #ff0000;\">[color=red]</span>This text is red<span style=\"font-weight: bold; color: #ff0000;\">[/color]</span></td>
 <td class=\"trow1\"><span style=\"color: red;\" class=\"mycode_color\">This text is red</span></td>
-<td class=\"trow1\">Can use either <a href=\"https://www.w3schools.com/cssref/css_colors.asp\">CSS color name</a> or HEX code.</td>
+<td class=\"trow1\">Can use either <a href=\"//www.w3schools.com/cssref/css_colors.asp\">CSS color name</a> or HEX code.</td>
 </tr>
 <tr>
 <td class=\"trow2\"><span style=\"font-weight: bold; color: #ff0000;\">[size=large]</span>This text is large<span style=\"font-weight: bold; color: #ff0000;\">[/size]</span></td>
@@ -166,7 +166,7 @@ $l['d7_document'] = "You can use MyCode, also known as BB Codes to add effects o
 <td class=\"trow2\"></td>
 </tr>
 <tr>
-<td class=\"trow1\"><span style=\"font-weight: bold; color: #ff0000;\">[video=youtube]</span>https://www.youtube.com/watch?v=dQw4w9WgXcQ<span style=\"font-weight: bold; color: #ff0000;\">[/video]</span></td>
+<td class=\"trow1\"><span style=\"font-weight: bold; color: #ff0000;\">[video=youtube]</span>//www.youtube.com/watch?v=dQw4w9WgXcQ<span style=\"font-weight: bold; color: #ff0000;\">[/video]</span></td>
 <td class=\"trow1\"><iframe src=\"//www.youtube.com/embed/dQw4w9WgXcQ\" allowfullscreen=\"\" width=\"460\" height=\"255\" frameborder=\"0\"></iframe></td>
 <td class=\"trow1\">Currently accepts Dailymotion, Facebook, LiveLeak, Metacafe, Mixer, MySpace TV, Twitch, Vimeo, Yahoo Videos and YouTube.</td>
 </tr>

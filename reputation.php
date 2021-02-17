@@ -3,8 +3,8 @@
  * MyBB 1.8
  * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * Website: http://www.mybb.com
- * License: http://www.mybb.com/about/license
+ * Website: //www.mybb.com
+ * License: //www.mybb.com/about/license
  *
  */
 
@@ -610,7 +610,7 @@ if(!$mybb->input['action'])
 		}
 		unset($usertitles, $title);
 	}
-	
+
 	$usertitle = htmlspecialchars_uni($usertitle);
 
 	// If the user has permission to add reputations - show the image
@@ -765,7 +765,7 @@ if(!$mybb->input['action'])
 			}
 		}
 	}
-	
+
 	// Format all reputation numbers
 	$rep_total = my_number_format($user['reputation']);
 	$f_positive_count = my_number_format($positive_count);
@@ -780,7 +780,7 @@ if(!$mybb->input['action'])
 	$f_positive_6months = my_number_format($positive_6months);
 	$f_negative_6months = my_number_format($negative_6months);
 	$f_neutral_6months = my_number_format($neutral_6months);
-	
+
 	// Format the user's 'total' reputation
 	if($user['reputation'] < 0)
 	{

@@ -3,8 +3,8 @@
  * MyBB 1.8
  * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * Website: http://www.mybb.com
- * License: http://www.mybb.com/about/license
+ * Website: //www.mybb.com
+ * License: //www.mybb.com/about/license
  *
  */
 
@@ -82,7 +82,7 @@ function run_task($tid=0)
 		// Update the nextrun time now, so if the task causes a fatal error, it doesn't get stuck first in the queue
 		$nextrun = fetch_next_run($task);
 		$db->update_query("tasks", array("nextrun" => $nextrun), "tid='{$task['tid']}'");
-		
+
 		include_once MYBB_ROOT."inc/tasks/{$file}.php";
 		$function = "task_{$task['file']}";
 		if(function_exists($function))

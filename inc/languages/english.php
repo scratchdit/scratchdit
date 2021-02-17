@@ -12,7 +12,7 @@ $langinfo['name'] = "English (American)";
 $langinfo['author'] = "MyBB Group";
 
 // The language authors website
-$langinfo['website'] = "https://mybb.com/";
+$langinfo['website'] = "//mybb.com/";
 
 // The documentation site link
 //$langinfo['docs_link'] = "";

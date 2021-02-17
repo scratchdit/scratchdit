@@ -3,8 +3,8 @@
  * MyBB 1.8
  * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * Website: http://www.mybb.com
- * License: http://www.mybb.com/about/license
+ * Website: //www.mybb.com
+ * License: //www.mybb.com/about/license
  *
  */
 
@@ -658,7 +658,7 @@ if($mybb->input['action'] == "edit")
 						$maxheight = (int)$maxwidth;
 
 						$extra_user_updates = array(
-							"avatar" => "https://www.gravatar.com/avatar/{$email}{$s}",
+							"avatar" => "//www.gravatar.com/avatar/{$email}{$s}",
 							"avatardimensions" => "{$maxheight}|{$maxheight}",
 							"avatartype" => "gravatar"
 						);

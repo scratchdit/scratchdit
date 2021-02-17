@@ -3,8 +3,8 @@
  * MyBB 1.8
  * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * Website: http://www.mybb.com
- * License: http://www.mybb.com/about/license
+ * Website: //www.mybb.com
+ * License: //www.mybb.com/about/license
  *
  */
 
@@ -91,9 +91,9 @@ class DefaultPage
 			$rtl = " dir=\"rtl\"";
 		}
 
-		echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
-		echo "<html xmlns=\"http://www.w3.org/1999/xhtml\"{$rtl}>\n";
-		echo "<head profile=\"http://gmpg.org/xfn/1\">\n";
+		echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"//www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
+		echo "<html xmlns=\"//www.w3.org/1999/xhtml\"{$rtl}>\n";
+		echo "<head profile=\"//gmpg.org/xfn/1\">\n";
 		echo "	<title>".$title."</title>\n";
 		echo "	<meta name=\"author\" content=\"MyBB Group\" />\n";
 		echo "	<meta name=\"copyright\" content=\"Copyright ".COPY_YEAR." MyBB Group.\" />\n";
@@ -226,7 +226,7 @@ lang.saved = \"{$lang->saved}\";
 		echo "	<br style=\"clear: both;\" />";
 		echo "	<br style=\"clear: both;\" />";
 		echo "	</div>\n";
-		echo "<div id=\"footer\"><p class=\"generation\">".$lang->sprintf($lang->generated_in, $totaltime, $debuglink, $querycount, $memory_usage)."</p><p class=\"powered\">Powered By <a href=\"https://mybb.com/\" target=\"_blank\" rel=\"noopener\">MyBB</a>, &copy; 2002-".COPY_YEAR." <a href=\"https://mybb.com/\" target=\"_blank\" rel=\"noopener\">MyBB Group</a>.</p></div>\n";
+		echo "<div id=\"footer\"><p class=\"generation\">".$lang->sprintf($lang->generated_in, $totaltime, $debuglink, $querycount, $memory_usage)."</p><p class=\"powered\">Powered By <a href=\"//mybb.com/\" target=\"_blank\" rel=\"noopener\">MyBB</a>, &copy; 2002-".COPY_YEAR." <a href=\"//mybb.com/\" target=\"_blank\" rel=\"noopener\">MyBB Group</a>.</p></div>\n";
 		if($mybb->debug_mode)
 		{
 			echo $db->explain;
@@ -384,9 +384,9 @@ lang.saved = \"{$lang->saved}\";
 		}
 
 		$login_page = <<<EOF
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
-<head profile="http://gmpg.org/xfn/1">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "//www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="//www.w3.org/1999/xhtml" lang="en">
+<head profile="//gmpg.org/xfn/1">
 <title>{$lang->mybb_admin_login}</title>
 <meta name="author" content="MyBB Group" />
 <meta name="copyright" content="Copyright {$copy_year} MyBB Group." />
@@ -518,9 +518,9 @@ EOF;
 		$copy_year = COPY_YEAR;
 
 		$mybb2fa_page = <<<EOF
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
-<head profile="http://gmpg.org/xfn/1">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "//www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="//www.w3.org/1999/xhtml" lang="en">
+<head profile="//gmpg.org/xfn/1">
 <title>{$lang->my2fa}</title>
 <meta name="author" content="MyBB Group" />
 <meta name="copyright" content="Copyright {$copy_year} MyBB Group." />
@@ -589,9 +589,9 @@ EOF;
 		$lockedout_message = $lang->sprintf($lang->error_mybb_admin_lockedout_message, $allowed_attempts);
 
 		print <<<EOF
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
-<head profile="http://gmpg.org/xfn/1">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "//www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="//www.w3.org/1999/xhtml" lang="en">
+<head profile="//gmpg.org/xfn/1">
 <title>{$lang->mybb_admin_cp} - {$lang->error_mybb_admin_lockedout}</title>
 <meta name="author" content="MyBB Group" />
 <meta name="copyright" content="Copyright {$copy_year} MyBB Group." />
@@ -658,9 +658,9 @@ EOF;
 		}
 
 		print <<<EOF
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
-<head profile="http://gmpg.org/xfn/1">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "//www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="//www.w3.org/1999/xhtml" lang="en">
+<head profile="//gmpg.org/xfn/1">
 <title>{$lang->mybb_admin_cp} - {$lang->lockout_unlock}</title>
 <meta name="author" content="MyBB Group" />
 <meta name="copyright" content="Copyright {$copy_year} MyBB Group." />

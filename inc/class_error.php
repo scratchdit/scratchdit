@@ -3,8 +3,8 @@
  * MyBB 1.8
  * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * Website: http://www.mybb.com
- * License: http://www.mybb.com/about/license
+ * Website: //www.mybb.com
+ * License: //www.mybb.com/about/license
  *
  */
 
@@ -423,7 +423,7 @@ class errorHandler {
 		{
 			$mybb->settings['bbname'] = "MyBB";
 		}
-		
+
 		if($type == MYBB_SQL)
 		{
 			$title = "MyBB SQL Error";
@@ -554,9 +554,9 @@ HTML;
 		}
 
 		$additional_name = '';
-		$docs_link = 'https://docs.mybb.com';
-		$common_issues_link = 'https://docs.mybb.com/1.8/faq/';
-		$support_link = 'https://community.mybb.com/';
+		$docs_link = '//docs.mybb.com';
+		$common_issues_link = '//docs.mybb.com/1.8/faq/';
+		$support_link = '//community.mybb.com/';
 
 		if(isset($lang->settings['docs_link']))
 		{
@@ -598,9 +598,9 @@ HTML;
 			$file_name = htmlspecialchars_uni(basename($_SERVER['SCRIPT_FILENAME']));
 
 			echo <<<EOF
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
-<head profile="http://gmpg.org/xfn/11">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "//www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="//www.w3.org/1999/xhtml" xml:lang="en">
+<head profile="//gmpg.org/xfn/11">
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<title>{$mybb->settings['bbname']} - Internal Error</title>
 	<style type="text/css">
@@ -621,7 +621,7 @@ HTML;
 <body>
 	<div id="container">
 		<div id="logo">
-			<h1><a href="https://mybb.com/" title="MyBB"><span class="invisible">MyBB</span></a></h1>
+			<h1><a href="//mybb.com/" title="MyBB"><span class="invisible">MyBB</span></a></h1>
 		</div>
 
 		<div id="content">

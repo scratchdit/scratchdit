@@ -3,8 +3,8 @@
  * MyBB 1.8
  * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * Website: http://www.mybb.com
- * License: http://www.mybb.com/about/license
+ * Website: //www.mybb.com
+ * License: //www.mybb.com/about/license
  *
  */
 
@@ -27,7 +27,7 @@ function task_hourlycleanup($task)
 		);
 		$plugins->run_hooks('task_hourlycleanup', $args);
 	}
-	
+
 	require_once  MYBB_ROOT."inc/class_moderation.php";
 	$moderation = new Moderation;
 

@@ -3,14 +3,14 @@
  * MyBB 1.8
  * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * Website: http://www.mybb.com
- * License: http://www.mybb.com/about/license
+ * Website: //www.mybb.com
+ * License: //www.mybb.com/about/license
  *
  */
 
 /**
  * The following class is based upon code by Eric Pollman
- * @ http://eric.pollman.net/work/public_domain/
+ * @ //eric.pollman.net/work/public_domain/
  * and is licensed under the public domain license.
  */
 

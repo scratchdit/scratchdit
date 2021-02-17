@@ -3,12 +3,12 @@
  * MyBB 1.8
  * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * Website: http://www.mybb.com
- * License: http://www.mybb.com/about/license
+ * Website: //www.mybb.com
+ * License: //www.mybb.com/about/license
  *
  * This class is based from reCAPTCHA's PHP library, adapted for use in MyBB.
  *
- * Copyright (c) 2007 reCAPTCHA -- http://recaptcha.net
+ * Copyright (c) 2007 reCAPTCHA -- //recaptcha.net
  * AUTHORS:
  *   Mike Crawford
  *   Ben Maurer
@@ -51,7 +51,7 @@ class captcha
 
 	/**
 	 * CAPTCHA constants declaration
-	 * 
+	 *
 	 * @var int
 	 */
 	const DEFAULT_CAPTCHA = 1;
@@ -146,7 +146,7 @@ class captcha
 		{
 			// We want to use noCAPTCHA or reCAPTCHA invisible, set the server options
 			$this->server = "//www.google.com/recaptcha/api.js";
-			$this->verify_server = "https://www.google.com/recaptcha/api/siteverify";
+			$this->verify_server = "//www.google.com/recaptcha/api/siteverify";
 
 			if($build == true)
 			{
@@ -157,7 +157,7 @@ class captcha
 		{
 			// We want to use hCaptcha or hCaptcha invisible, set the server options
 			$this->server = "//www.hcaptcha.com/1/api.js";
-			$this->verify_server = "https://hcaptcha.com/siteverify";
+			$this->verify_server = "//hcaptcha.com/siteverify";
 
 			if($build == true)
 			{
@@ -223,7 +223,7 @@ class captcha
 		$public_key = $mybb->settings['hcaptchapublickey'];
 		$captcha_theme = $mybb->settings['hcaptchatheme'];
 		$captcha_size = $mybb->settings['hcaptchasize'];
-		
+
 		eval("\$this->html = \"".$templates->get($this->captcha_template, 1, 0)."\";");
 	}
 

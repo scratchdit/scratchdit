@@ -4,7 +4,7 @@
  *
  * Please see the MyBB Docs for advanced
  * database configuration for larger installations
- * https://docs.mybb.com/
+ * //docs.mybb.com/
  */
 
 $databaseInfo = array(
@@ -94,7 +94,7 @@ $config['super_admins'] = '1';
  *  If you wish to set an encoding for MyBB uncomment
  *  the line below (if it isn't already) and change
  *  the current value to the mysql charset:
- *  http://dev.mysql.com/doc/refman/5.1/en/charset-mysql.html
+ *  //dev.mysql.com/doc/refman/5.1/en/charset-mysql.html
  */
 
 $config['database']['encoding'] = 'utf8';

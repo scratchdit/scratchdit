@@ -3,8 +3,8 @@
  * MyBB 1.8
  * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * Website: http://www.mybb.com
- * License: http://www.mybb.com/about/license
+ * Website: //www.mybb.com
+ * License: //www.mybb.com/about/license
  *
  */
 
@@ -424,7 +424,7 @@ function build_postbit($post, $post_type=0)
 
 			// Fetch profile fields to display
 			$pfcache = $cache->read('profilefields');
-		
+
 			if(is_array($pfcache))
 			{
 				foreach($pfcache as $profilefield)
@@ -433,7 +433,7 @@ function build_postbit($post, $post_type=0)
 					{
 						continue;
 					}
-		
+
 					$profile_fields[$profilefield['fid']] = $profilefield;
 				}
 			}
@@ -730,7 +730,7 @@ function build_postbit($post, $post_type=0)
 
 	$post['iplogged'] = '';
 	$show_ips = $mybb->settings['logip'];
-	
+
 	// Show post IP addresses... PMs now can have IP addresses too as of 1.8!
 	if($post_type == 2)
 	{
@@ -1020,8 +1020,8 @@ function get_post_attachments($id, &$post)
 						if ($forumpermissions['candlattachments'])
 						{
 							eval("\$post['imagelist'] .= \"".$templates->get("postbit_attachments_images_image")."\";");
-						} 
-						else 
+						}
+						else
 						{
 							eval("\$post['thumblist'] .= \"".$templates->get("postbit_attachments_thumbnails_thumbnail")."\";");
 							if($tcount == 5)

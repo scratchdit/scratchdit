@@ -3,8 +3,8 @@
  * MyBB 1.8
  * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * Website: http://www.mybb.com
- * License: http://www.mybb.com/about/license
+ * Website: //www.mybb.com
+ * License: //www.mybb.com/about/license
  *
  */
 
@@ -57,8 +57,8 @@ function archive_header($title="", $fulltitle="", $fullurl="")
 		$htmllang = " xml:lang=\"en\" lang=\"en\"";
 	}
 ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"<?php echo $dir; echo $htmllang; ?>>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "//www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="//www.w3.org/1999/xhtml"<?php echo $dir; echo $htmllang; ?>>
 <head>
 <title><?php echo $title; ?></title>
 <meta http-equiv="content-type" content="text/html; charset=<?php echo $charset; ?>" />
@@ -172,7 +172,7 @@ function archive_footer()
 <div class="navigation"><?php echo $nav; ?></div>
 </div>
 <div id="footer">
-<?php echo $lang->powered_by; ?> <a href="https://mybb.com">MyBB</a><?php echo $mybbversion; ?>, &copy; 2002-<?php echo date("Y"); ?> <a href="https://mybb.com">MyBB Group</a>
+<?php echo $lang->powered_by; ?> <a href="//mybb.com">MyBB</a><?php echo $mybbversion; ?>, &copy; 2002-<?php echo date("Y"); ?> <a href="//mybb.com">MyBB Group</a>
 </div>
 </body>
 </html>

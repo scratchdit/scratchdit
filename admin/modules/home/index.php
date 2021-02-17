@@ -3,8 +3,8 @@
  * MyBB 1.8
  * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * Website: http://www.mybb.com
- * License: http://www.mybb.com/about/license
+ * Website: //www.mybb.com
+ * License: //www.mybb.com/about/license
  *
  */
 
@@ -38,7 +38,7 @@ if($mybb->input['action'] == "version_check")
 		"last_check" => TIME_NOW
 	);
 
-	$contents = fetch_remote_file("https://mybb.com/version_check.php");
+	$contents = fetch_remote_file("//mybb.com/version_check.php");
 
 	if(!$contents)
 	{
@@ -85,7 +85,7 @@ if($mybb->input['action'] == "version_check")
 	require_once MYBB_ROOT."inc/class_feedparser.php";
 
 	$feed_parser = new FeedParser();
-	$feed_parser->parse_feed("http://feeds.feedburner.com/MyBBDevelopmentBlog");
+	$feed_parser->parse_feed("//feeds.feedburner.com/MyBBDevelopmentBlog");
 
 	$updated_cache['news'] = array();
 
@@ -257,7 +257,7 @@ elseif(!$mybb->input['action'])
 	// If the update check contains information about a newer version, show an alert
 	if(isset($update_check['latest_version_code']) && $update_check['latest_version_code'] > $mybb->version_code)
 	{
-		$lang->new_version_available = $lang->sprintf($lang->new_version_available, "MyBB {$mybb->version}", "<a href=\"https://mybb.com/download\" target=\"_blank\" rel=\"noopener\">MyBB {$update_check['latest_version']}</a>");
+		$lang->new_version_available = $lang->sprintf($lang->new_version_available, "MyBB {$mybb->version}", "<a href=\"//mybb.com/download\" target=\"_blank\" rel=\"noopener\">MyBB {$update_check['latest_version']}</a>");
 		$page->output_error("<p><em>{$lang->new_version_available}</em></p>");
 	}
 
@@ -287,7 +287,7 @@ elseif(!$mybb->input['action'])
 	$table->construct_cell("<strong>{$lang->posts}</strong>", array('width' => '25%'));
 
 	$table->construct_cell("<strong>{$posts}</strong> {$lang->posts}<br /><strong>{$newposts}</strong> {$lang->new_today}<br /><a href=\"index.php?module=forum-moderation_queue&amp;type=posts\"><strong>{$unapproved_posts}</strong> {$lang->unapproved}</a><br /><strong>{$reported_posts}</strong> {$lang->reported_posts}<br /><strong>{$new_reported_posts}</strong> {$lang->unread_reports}", array('width' => '25%'));
-	
+
 	$table->construct_row();
 
 	$table->construct_cell("<strong>{$lang->sql_engine}</strong>", array('width' => '25%'));
