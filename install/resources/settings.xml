@@ -29,7 +29,7 @@
 		</setting>
 		<setting name="bburl">
 			<title>Board URL</title>
-			<description><![CDATA[The url to your forums.<br />Include the http://. Do NOT include a trailing slash.]]></description>
+			<description><![CDATA[The url to your forums.<br />Include the //. Do NOT include a trailing slash.]]></description>
 			<disporder>2</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[]]></settingvalue>
@@ -332,7 +332,7 @@ min=0]]></optionscode>
 	<settinggroup name="server" title="Server and Optimization Options" description="These options allow you to set various server and optimization preferences allowing you to reduce the load on your server, and gain better performance on your board." disporder="4" isdefault="1">
 		<setting name="seourls">
 			<title>Enable search engine friendly URLs?</title>
-			<description><![CDATA[Search engine friendly URLs change the MyBB links to shorter URLs which search engines prefer and are easier to type. showthread.php?tid=1 becomes thread-1.html. <strong>Once this setting is enabled you need to make sure you have the MyBB .htaccess in your MyBB root directory (or the equivalent for your web server). Automatic detection may not work on all servers.</strong> Please see the <a href="https://docs.mybb.com/1.8/administration/configuring-search-engine-friendly-URLs">MyBB Docs</a> for assistance.]]></description>
+			<description><![CDATA[Search engine friendly URLs change the MyBB links to shorter URLs which search engines prefer and are easier to type. showthread.php?tid=1 becomes thread-1.html. <strong>Once this setting is enabled you need to make sure you have the MyBB .htaccess in your MyBB root directory (or the equivalent for your web server). Automatic detection may not work on all servers.</strong> Please see the <a href="//docs.mybb.com/1.8/administration/configuring-search-engine-friendly-URLs">MyBB Docs</a> for assistance.]]></description>
 			<disporder>1</disporder>
 			<optionscode><![CDATA[select
 auto=Automatic Detection
@@ -750,7 +750,7 @@ min=0]]></optionscode>
 		</setting>
 		<setting name="readparentforums">
 			<title>Attempt to Mark Parent Forums as Read</title>
-			<description><![CDATA[When set to Yes, this setting will attempt to mark the parent forums of a sub-forum as read if there are no more unread posts. Please note that this setting can lead to a decrease in performance and multiple database queries and therefore must be treated as experimental. See the <a href="https://docs.mybb.com/versions/1.6.5/">MyBB Docs</a> for more information regarding this change.]]></description>
+			<description><![CDATA[When set to Yes, this setting will attempt to mark the parent forums of a sub-forum as read if there are no more unread posts. Please note that this setting can lead to a decrease in performance and multiple database queries and therefore must be treated as experimental. See the <a href="//docs.mybb.com/versions/1.6.5/">MyBB Docs</a> for more information regarding this change.]]></description>
 			<disporder>9</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
@@ -1027,7 +1027,7 @@ min=0]]></optionscode>
 		</setting>
 		<setting name="coppa">
 			<title>COPPA Compliance</title>
-			<description><![CDATA[If you wish to enable <a href="https://www.ftc.gov/enforcement/rules/rulemaking-regulatory-reform-proceedings/childrens-online-privacy-protection-rule">COPPA</a> support on your forums, please select the registration allowance below.]]></description>
+			<description><![CDATA[If you wish to enable <a href="//www.ftc.gov/enforcement/rules/rulemaking-regulatory-reform-proceedings/childrens-online-privacy-protection-rule">COPPA</a> support on your forums, please select the registration allowance below.]]></description>
 			<disporder>18</disporder>
 			<optionscode><![CDATA[select
 enabled=Enabled
@@ -2289,7 +2289,7 @@ smtp=SMTP mail]]></optionscode>
 		</setting>
 		<setting name="mail_parameters">
 			<title>Additional Parameters for PHP's mail()</title>
-			<description><![CDATA[This setting allows you to set additional parameters for the PHP mail() function. Only used when 'PHP mail' is selected as Mail Handler. <a href="http://php.net/function.mail" target="_blank" rel="noopener">More information</a>]]></description>
+			<description><![CDATA[This setting allows you to set additional parameters for the PHP mail() function. Only used when 'PHP mail' is selected as Mail Handler. <a href="//php.net/function.mail" target="_blank" rel="noopener">More information</a>]]></description>
 			<disporder>7</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[]]></settingvalue>
@@ -2419,7 +2419,7 @@ delete=Delete]]></optionscode>
 		</setting>
 		<setting name="purgespammerapikey">
 			<title>Stop Forum Spam API Key</title>
-			<description><![CDATA[In order to be able to submit information on a spammer to the Stop Forum Spam database, you need an API key. You can get one of these <a href="https://www.stopforumspam.com/forum/register.php" target="_blank" rel="noopener">here</a>. When you have your key, paste it into the box below.]]></description>
+			<description><![CDATA[In order to be able to submit information on a spammer to the Stop Forum Spam database, you need an API key. You can get one of these <a href="//www.stopforumspam.com/forum/register.php" target="_blank" rel="noopener">here</a>. When you have your key, paste it into the box below.]]></description>
 			<disporder>6</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[]]></settingvalue>

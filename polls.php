@@ -3,8 +3,8 @@
  * MyBB 1.8
  * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * Website: http://www.mybb.com
- * License: http://www.mybb.com/about/license
+ * Website: //www.mybb.com
+ * License: //www.mybb.com/about/license
  *
  */
 
@@ -260,7 +260,7 @@ if($mybb->input['action'] == "do_newpoll" && $mybb->request_method == "post")
 			$sequenceerror = 1;
 			break;
 		}
-		
+
 		if(trim($options[$i]) != "")
 		{
 			$optioncount++;
@@ -276,7 +276,7 @@ if($mybb->input['action'] == "do_newpoll" && $mybb->request_method == "post")
 	{
 		error($lang->error_polloptionsequence);
 	}
-	
+
 	$mybb->input['question'] = $mybb->get_input('question');
 
 	if(trim($mybb->input['question']) == '' || $optioncount < 2)
@@ -648,7 +648,7 @@ if($mybb->input['action'] == "do_editpoll" && $mybb->request_method == "post")
 			$sequenceerror = 1;
 			break;
 		}
-		
+
 		if(trim($options[$i]) != "")
 		{
 			$optioncount++;
@@ -659,7 +659,7 @@ if($mybb->input['action'] == "do_editpoll" && $mybb->request_method == "post")
 	{
 		error($lang->error_polloptiontoolong);
 	}
-	
+
 	if(isset($sequenceerror))
 	{
 		error($lang->error_polloptionsequence);

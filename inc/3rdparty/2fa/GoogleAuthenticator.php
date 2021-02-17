@@ -5,9 +5,9 @@
  *
  * @author Michael Kliewe
  * @copyright 2012 Michael Kliewe
- * @license http://www.opensource.org/licenses/bsd-license.php BSD License
+ * @license //www.opensource.org/licenses/bsd-license.php BSD License
  *
- * @link http://www.phpgangsta.de/
+ * @link //www.phpgangsta.de/
  */
 class PHPGangsta_GoogleAuthenticator
 {
@@ -109,7 +109,7 @@ class PHPGangsta_GoogleAuthenticator
             $urlencoded .= urlencode('&issuer='.urlencode($title));
         }
 
-        return 'https://chart.googleapis.com/chart?chs='.$width.'x'.$height.'&chld='.$level.'|0&cht=qr&chl='.$urlencoded.'';
+        return '//chart.googleapis.com/chart?chs='.$width.'x'.$height.'&chld='.$level.'|0&cht=qr&chl='.$urlencoded.'';
     }
 
     /**
@@ -221,7 +221,7 @@ class PHPGangsta_GoogleAuthenticator
 
     /**
      * A timing safe equals comparison
-     * more info here: http://blog.ircmaxell.com/2014/11/its-all-about-time.html.
+     * more info here: //blog.ircmaxell.com/2014/11/its-all-about-time.html.
      *
      * @param string $safeString The internal (safe) value to be checked
      * @param string $userString The user submitted (unsafe) value

@@ -1,11 +1,11 @@
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
-// Distributed under an MIT license: http://codemirror.net/LICENSE
+// Distributed under an MIT license: //codemirror.net/LICENSE
 
-// This is CodeMirror (http://codemirror.net), a code editor
+// This is CodeMirror (//codemirror.net), a code editor
 // implemented in JavaScript on top of the browser's DOM.
 //
 // You can find some technical background for some of the code below
-// at http://marijnhaverbeke.nl/blog/#cm-internals .
+// at //marijnhaverbeke.nl/blog/#cm-internals .
 
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
@@ -934,7 +934,7 @@ function getBidiPartAt(order, ch, sticky) {
 }
 
 // Bidirectional ordering algorithm
-// See http://unicode.org/reports/tr9/tr9-13.html for the algorithm
+// See //unicode.org/reports/tr9/tr9-13.html for the algorithm
 // that this (partially) implements.
 
 // One-char codes used for character types:
@@ -2607,7 +2607,7 @@ function clearCaches(cm) {
 }
 
 function pageScrollX() {
-  // Work around https://bugs.chromium.org/p/chromium/issues/detail?id=489206
+  // Work around //bugs.chromium.org/p/chromium/issues/detail?id=489206
   // which causes page_Offset and bounding client rects to use
   // different reference viewports and invalidate our calculations.
   if (chrome && android) { return -(document.body.getBoundingClientRect().left - parseInt(getComputedStyle(document.body).marginLeft)) }
@@ -5447,7 +5447,7 @@ function changeLine(doc, handle, changeType, op) {
 // It also indexes by height, and is used to convert between height
 // and line object, and to find the total height of the document.
 //
-// See also http://marijnhaverbeke.nl/blog/codemirror-line-tree.html
+// See also //marijnhaverbeke.nl/blog/codemirror-line-tree.html
 
 function LeafChunk(lines) {
   var this$1 = this;

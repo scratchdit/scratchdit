@@ -3,8 +3,8 @@
  * MyBB 1.8
  * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * Website: http://www.mybb.com
- * License: http://www.mybb.com/about/license
+ * Website: //www.mybb.com
+ * License: //www.mybb.com/about/license
  *
  */
 
@@ -472,12 +472,12 @@ class CustomModeration extends Moderation
 				}
 			}
 		}
-		
+
 		// Do we have a PM subject and PM message?
 		if(isset($thread_options['pm_subject']) && $thread_options['pm_subject'] != '' && isset($thread_options['pm_message']) && $thread_options['pm_message'] != '')
 		{
 			$tid_list = implode(',', $tids);
-			
+
 			// For each thread, we send a PM to the author
 			$query = $db->simple_select("threads", 'uid', "tid IN ($tid_list)");
 			while($uid = $db->fetch_field($query, 'uid'))
@@ -491,7 +491,7 @@ class CustomModeration extends Moderation
 				send_pm($pm, $mybb->user['uid'], 1);
 			}
 		}
-		
+
 		return true;
 	}
 }

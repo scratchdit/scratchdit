@@ -2,17 +2,17 @@
 /**
  * Provides static methods for charset and locale safe string manipulation.
  *
- * Copyright 2003-2017 Horde LLC (http://www.horde.org/)
+ * Copyright 2003-2017 Horde LLC (//www.horde.org/)
  *
  * See the enclosed file COPYING for license information (LGPL). If you
- * did not receive this file, see http://www.horde.org/licenses/lgpl21.
+ * did not receive this file, see //www.horde.org/licenses/lgpl21.
  *
  * @todo Split up in Horde_String_Multibyte for multibyte-safe methods and
  *       Horde_String_Locale for locale-safe methods.
  *
  * @author   Jan Schneider <jan@horde.org>
  * @category Horde
- * @license  http://www.horde.org/licenses/lgpl21 LGPL 2.1
+ * @license  //www.horde.org/licenses/lgpl21 LGPL 2.1
  * @package  Util
  */
 
@@ -901,7 +901,7 @@ class Horde_String
          * 'ks_c_5601-1989' charsets. However, these charsets are used, for
          * example, by various versions of Outlook to send Korean characters.
          * Use UHC (CP949) encoding instead. See, e.g.,
-         * http://lists.w3.org/Archives/Public/ietf-charsets/2001AprJun/0030.html */
+         * //lists.w3.org/Archives/Public/ietf-charsets/2001AprJun/0030.html */
         return in_array(self::lower($charset), array('ks_c_5601-1987', 'ks_c_5601-1989'))
             ? 'UHC'
             : $charset;

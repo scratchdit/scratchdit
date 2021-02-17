@@ -3,8 +3,8 @@
  * MyBB 1.8
  * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * Website: http://www.mybb.com
- * License: http://www.mybb.com/about/license
+ * Website: //www.mybb.com
+ * License: //www.mybb.com/about/license
  *
  */
 
@@ -156,9 +156,9 @@ function get_unsearchable_forums($pid=0, $first=1)
  *  - visible = 1 - for normal users
  *  - visible >= -1 - for admins & super mods
  *  - (visible = 1 OR (visible = ? AND fid IN ...)) - for forum moderators
- * 
+ *
  * @param string $table_alias The alias of the table eg t to use t.visible instead of visible
- * @return string the query condition 
+ * @return string the query condition
  */
 function get_visible_where($table_alias = null)
 {
@@ -181,7 +181,7 @@ function get_visible_where($table_alias = null)
 		$unapprove_forums = array();
 		$deleted_forums = array();
 		$unapproved_where = "({$aliasdot}visible = 1";
-		
+
 		$moderated_fids = get_moderated_fids($mybb->user['uid']);
 
 		if($moderated_fids !== false)
@@ -193,21 +193,21 @@ function get_visible_where($table_alias = null)
 					// Shouldn't occur.
 					continue;
 				}
-	
+
 				// Use moderates this forum
 				$modperms = get_moderator_permissions($fid, $mybb->user['uid']);
-	
+
 				if($modperms['canviewunapprove'] == 1)
 				{
 					$unapprove_forums[] = $fid;
 				}
-	
+
 				if($modperms['canviewdeleted'] == 1)
 				{
 					$deleted_forums[] = $fid;
 				}
 			}
-	
+
 			if(!empty($unapprove_forums))
 			{
 				$unapproved_where .= " OR ({$aliasdot}visible = 0 AND {$aliasdot}fid IN(".implode(',', $unapprove_forums)."))";
@@ -217,7 +217,7 @@ function get_visible_where($table_alias = null)
 				$unapproved_where .= " OR ({$aliasdot}visible = -1 AND {$aliasdot}fid IN(".implode(',', $deleted_forums)."))";
 			}
 			$unapproved_where .= ')';
-	
+
 			return $unapproved_where;
 		}
 	}
@@ -353,7 +353,7 @@ function clean_keywords_ft($keywords)
 
 	$words = array(array());
 
-	// Fulltext search syntax validation: http://dev.mysql.com/doc/refman/5.6/en/fulltext-boolean.html
+	// Fulltext search syntax validation: //dev.mysql.com/doc/refman/5.6/en/fulltext-boolean.html
 	// Search for phrases
 	$keywords = explode("\"", $keywords);
 	$boolean = array('+');
@@ -456,7 +456,7 @@ function clean_keywords_ft($keywords)
 						}
 						// Removed operators that are only allowed at the beginning
 						$word = preg_replace("#(-|\+|<|>|~|@)#s", '', $word);
-						// Removing wildcards at the beginning http://bugs.mysql.com/bug.php?id=72605
+						// Removing wildcards at the beginning //bugs.mysql.com/bug.php?id=72605
 						$word = preg_replace("#^\*#s", '', $word);
 						$word = $operator.$word;
 						if(strlen($word) <= 1)

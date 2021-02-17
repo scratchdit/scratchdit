@@ -3,8 +3,8 @@
  * MyBB 1.8
  * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * Website: http://www.mybb.com
- * License: http://www.mybb.com/about/license
+ * Website: //www.mybb.com
+ * License: //www.mybb.com/about/license
  *
  */
 
@@ -19,7 +19,7 @@ function task_versioncheck($task)
 	);
 
 	// Check for the latest version
-	$contents = fetch_remote_file("https://mybb.com/version_check.php");
+	$contents = fetch_remote_file("//mybb.com/version_check.php");
 
 	if(!$contents)
 	{
@@ -50,7 +50,7 @@ function task_versioncheck($task)
 	require_once MYBB_ROOT."inc/class_feedparser.php";
 
 	$feed_parser = new FeedParser();
-	$feed_parser->parse_feed("http://feeds.feedburner.com/MyBBDevelopmentBlog");
+	$feed_parser->parse_feed("//feeds.feedburner.com/MyBBDevelopmentBlog");
 
 	$updated_cache['news'] = array();
 

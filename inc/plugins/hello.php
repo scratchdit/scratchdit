@@ -3,8 +3,8 @@
  * MyBB 1.8
  * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * Website: http://www.mybb.com
- * License: http://www.mybb.com/about/license
+ * Website: //www.mybb.com
+ * License: //www.mybb.com/about/license
  *
  */
 
@@ -74,9 +74,9 @@ function hello_info()
 	return array(
 		'name'			=> 'Hello World!',
 		'description'	=> $lang->hello_desc,
-		'website'		=> 'https://mybb.com',
+		'website'		=> '//mybb.com',
 		'author'		=> 'MyBB Group',
-		'authorsite'	=> 'https://mybb.com',
+		'authorsite'	=> '//mybb.com',
 		'version'		=> '2.0',
 		'compatibility'	=> '18*',
 		'codename'		=> 'hello'

@@ -3,8 +3,8 @@
  * MyBB 1.8
  * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * Website: http://www.mybb.com
- * License: http://www.mybb.com/about/license
+ * Website: //www.mybb.com
+ * License: //www.mybb.com/about/license
  *
  */
 
@@ -1178,7 +1178,7 @@ if($mybb->input['action'] == "edit_post_tool")
 		{
 			$mybb->input['group_1_groups'] = '';
 		}
-	
+
 		if($mybb->input['approvethread'] != '' && $mybb->input['approvethread'] != 'approve' && $mybb->input['approvethread'] != 'unapprove' && $mybb->input['approvethread'] != 'toggle')
 		{
 			$mybb->input['approvethread'] = '';

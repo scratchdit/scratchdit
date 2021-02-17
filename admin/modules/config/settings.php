@@ -3,8 +3,8 @@
  * MyBB 1.8
  * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * Website: http://www.mybb.com
- * License: http://www.mybb.com/about/license
+ * Website: //www.mybb.com
+ * License: //www.mybb.com/about/license
  *
  */
 
@@ -986,9 +986,9 @@ if($mybb->input['action'] == "change")
 				admin_redirect("index.php?module=config-settings&action=change&gid=".$gid);
 			}
 		}
-		
+
 		require_once MYBB_ROOT.'inc/class_captcha.php';
-		
+
 		// Have we opted for a reCAPTCHA or hCaptcha and not set a public/private key in input?
 		$set_captcha_image = false;
 		if(isset($mybb->input['upsetting']['captchaimage']))

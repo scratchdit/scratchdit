@@ -3,8 +3,8 @@
  * MyBB 1.8
  * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * Website: http://www.mybb.com
- * License: http://www.mybb.com/about/license
+ * Website: //www.mybb.com
+ * License: //www.mybb.com/about/license
  *
  */
 
@@ -279,7 +279,7 @@ if($mybb->input['action'] == "add")
 	<script type=\"text/javascript\">
 		checkAction('forums');
 	</script>";
-	
+
 	$mybb->input['forcedownload'] = $mybb->get_input('forcedownload', MyBB::INPUT_INT);
 
 	$form_container = new FormContainer($lang->add_new_attachment_type);
@@ -437,7 +437,7 @@ if($mybb->input['action'] == "edit")
 				$mybb->input['forums'] = '';
 				break;
 		}
-	
+
 		$page->output_inline_error($errors);
 	}
 	else

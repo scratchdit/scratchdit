@@ -1687,7 +1687,7 @@ a.button.report_user_button span {
 /** Impromptu Start **/
 
 /*! jQuery-Impromptu - v6.2.3 - 2016-04-23
-* http://trentrichardson.com/Impromptu
+* //trentrichardson.com/Impromptu
 * Copyright (c) 2016 Trent Richardson; Licensed MIT */
 
 .jqifade{
@@ -3684,7 +3684,7 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 					you may be refused support on the MyBB Community Forums.
 
 					This is free software, support us and we'll support you. -->
-				{$lang->powered_by} <a href="https://mybb.com" target="_blank" rel="noopener">MyBB{$mybbversion}</a>, &copy; 2002-{$copy_year} <a href="https://mybb.com" target="_blank" rel="noopener">MyBB Group</a>.
+				{$lang->powered_by} <a href="//mybb.com" target="_blank" rel="noopener">MyBB{$mybbversion}</a>, &copy; 2002-{$copy_year} <a href="//mybb.com" target="_blank" rel="noopener">MyBB Group</a>.
 				<!-- End powered by -->
 			</span>
 		</div>
@@ -7337,7 +7337,7 @@ if(use_xmlhttprequest == "1")
 					</table>
 					{$multipage}
 					<br />]]></template>
-		<template name="modcp_ipsearch_results_information" version="1813"><![CDATA[<div class="float_right">(<a href="modcp.php?action=iplookup&ipaddress={$ipaddress}" onclick="MyBB.popupWindow('/modcp.php?action=iplookup&ipaddress={$ipaddress_url}&modal=1'); return false;">{$lang->info_on_ip}</a> | <a href="http://www.stopforumspam.com/ipcheck/{$ipaddress}" target="_blank" rel="noopener">{$lang->search_ip_sfs}</a>)</div>]]></template>
+		<template name="modcp_ipsearch_results_information" version="1813"><![CDATA[<div class="float_right">(<a href="modcp.php?action=iplookup&ipaddress={$ipaddress}" onclick="MyBB.popupWindow('/modcp.php?action=iplookup&ipaddress={$ipaddress_url}&modal=1'); return false;">{$lang->info_on_ip}</a> | <a href="//www.stopforumspam.com/ipcheck/{$ipaddress}" target="_blank" rel="noopener">{$lang->search_ip_sfs}</a>)</div>]]></template>
 		<template name="modcp_lastattachment" version="1800"><![CDATA[<span class="smalltext">
 <a href="{$attachment['link']}#pid{$attachment['pid']}"><strong>{$attachment['filename']}</strong></a>
 <br />{$attachment['date']}<br />{$lang->by} {$attachment['profilelink']}</span>]]></template>
@@ -13756,16 +13756,16 @@ if(use_xmlhttprequest == "1")
 				<td class="{$alt_bg}" align="center">{$issuedby}</td>
 	</tr>]]></template>
 		<template name="usercp_warnings_warning_post" version="1800"><![CDATA[<br /><small>{$lang->warning_for_post} <a href="{$warning['postlink']}">{$warning['post_subject']}</a></small>]]></template>
-		<template name="video_metacafe_embed" version="1807"><![CDATA[<iframe src="http://www.metacafe.com/embed/{$id}/" width="440" height="248" allowFullScreen frameborder=0></iframe>]]></template>
+		<template name="video_metacafe_embed" version="1807"><![CDATA[<iframe src="//www.metacafe.com/embed/{$id}/" width="440" height="248" allowFullScreen frameborder=0></iframe>]]></template>
 		<template name="video_dailymotion_embed" version="1807"><![CDATA[<iframe frameborder="0" width="480" height="270" src="//www.dailymotion.com/embed/video/{$id}" allowfullscreen></iframe>]]></template>
-		<template name="video_facebook_embed" version="1800"><![CDATA[<iframe src="https://www.facebook.com/video/embed?video_id={$id}" width="625" height="350" frameborder="0"></iframe>]]></template>
-		<template name="video_liveleak_embed" version="1811"><![CDATA[<iframe width="500" height="300" src="https://www.liveleak.com/ll_embed?i={$id}" frameborder="0" allowfullscreen></iframe>]]></template>
+		<template name="video_facebook_embed" version="1800"><![CDATA[<iframe src="//www.facebook.com/video/embed?video_id={$id}" width="625" height="350" frameborder="0"></iframe>]]></template>
+		<template name="video_liveleak_embed" version="1811"><![CDATA[<iframe width="500" height="300" src="//www.liveleak.com/ll_embed?i={$id}" frameborder="0" allowfullscreen></iframe>]]></template>
 		<template name="video_myspacetv_embed" version="1807"><![CDATA[<iframe width="480" height="270" src="//media.myspace.com/play/video/{$id}" frameborder="0" allowtransparency="true" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>]]></template>
 		<template name="video_youtube_embed" version="1824"><![CDATA[<iframe width="560" height="315" src="//www.youtube-nocookie.com/embed/{$id}" frameborder="0" allowfullscreen></iframe>]]></template>
-		<template name="video_mixer_embed" version="1818"><![CDATA[<iframe allowfullscreen="true" src="https://mixer.com/embed/player/{$id}?disableLowLatency=1" width="620" height="349"></iframe>]]></template>
+		<template name="video_mixer_embed" version="1818"><![CDATA[<iframe allowfullscreen="true" src="//mixer.com/embed/player/{$id}?disableLowLatency=1" width="620" height="349"></iframe>]]></template>
 		<template name="video_vimeo_embed" version="1807"><![CDATA[<iframe src="//player.vimeo.com/video/{$id}" width="500" height="375" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>]]></template>
 		<template name="video_yahoo_embed" version="1807"><![CDATA[<iframe width="640" height="360" scrolling="no" frameborder="0" src="//{$local}screen.yahoo.com/{$id}?format=embed" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true" allowtransparency="true"></iframe>]]></template>
-		<template name="video_twitch_embed" version="1813"><![CDATA[<iframe src="https://player.twitch.tv/?{$id}&amp;autoplay=false" frameborder="0" scrolling="no" height="378" width="620"></iframe>]]></template>
+		<template name="video_twitch_embed" version="1813"><![CDATA[<iframe src="//player.twitch.tv/?{$id}&amp;autoplay=false" frameborder="0" scrolling="no" height="378" width="620"></iframe>]]></template>
 		<template name="warnings" version="1400"><![CDATA[<html>
 <head>
 	<title>{$mybb->settings['bbname']} - {$lang->warning_log}</title>
@@ -14277,7 +14277,7 @@ $(function() {
 	var modal_zindex = 9999;
 // -->
 </script>]]></template>
-		<template name="htmldoctype" version="120"><![CDATA[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">]]></template>
+		<template name="htmldoctype" version="120"><![CDATA[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "//www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">]]></template>
 		<template name="loginbox" version="1609"><![CDATA[<tr>
 <td class="trow2"><strong>{$lang->username}</strong></td>
 <td class="trow2"><input type="text" class="textbox" name="username" size="30" value="{$username}" /></td>

@@ -3,8 +3,8 @@
  * MyBB 1.8
  * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * Website: http://www.mybb.com
- * License: http://www.mybb.com/about/license
+ * Website: //www.mybb.com
+ * License: //www.mybb.com/about/license
  *
  */
 
@@ -772,10 +772,10 @@ if($mybb->input['action'] == "send")
 		// Set up posthandler.
 		require_once MYBB_ROOT."inc/datahandlers/post.php";
 		$posthandler = new postDataHandler();
-		
+
 		$valid_subject = $posthandler->verify_subject($post);
 		$valid_message = $posthandler->verify_message($post);
-		
+
 		// Fetch friendly error messages if this is an invalid post
 		if(!$valid_subject || !$valid_message)
 		{

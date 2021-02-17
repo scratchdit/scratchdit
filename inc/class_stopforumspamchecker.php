@@ -3,8 +3,8 @@
  * MyBB 1.8
  * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * Website: http://www.mybb.com
- * License: http://www.mybb.com/about/license
+ * Website: //www.mybb.com
+ * License: //www.mybb.com/about/license
  *
  */
 
@@ -18,7 +18,7 @@ class StopForumSpamChecker
 	 *
 	 * @var string
 	 */
-	const STOP_FORUM_SPAM_API_URL_FORMAT = 'https://api.stopforumspam.org/api?username=%s&email=%s&ip=%s&f=json&confidence';
+	const STOP_FORUM_SPAM_API_URL_FORMAT = '//api.stopforumspam.org/api?username=%s&email=%s&ip=%s&f=json&confidence';
 	/**
 	 * @var pluginSystem
 	 */
@@ -138,7 +138,7 @@ class StopForumSpamChecker
 					$checknum++;
 					$confidence += $result_json->ip->confidence;
 				}
-				
+
 				if($checknum > 0 && $confidence)
 				{
 					$confidence = $confidence / $checknum;

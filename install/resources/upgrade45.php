@@ -3,15 +3,15 @@
  * MyBB 1.8
  * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * Website: http://www.mybb.com
- * License: http://www.mybb.com/about/license
+ * Website: //www.mybb.com
+ * License: //www.mybb.com/about/license
  *
  */
- 
+
 /**
  * Upgrade Script: 1.8.17
  */
- 
+
 $upgrade_detail = array(
     "revert_all_templates" => 0,
     "revert_all_themes" => 0,

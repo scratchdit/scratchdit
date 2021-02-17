@@ -2,13 +2,13 @@
 /**
  * Class used internally by Diff to actually compute the diffs.
  *
- * This class uses the xdiff PECL package (http://pecl.php.net/package/xdiff)
+ * This class uses the xdiff PECL package (//pecl.php.net/package/xdiff)
  * to compute the differences between the two input arrays.
  *
- * Copyright 2004-2017 Horde LLC (http://www.horde.org/)
+ * Copyright 2004-2017 Horde LLC (//www.horde.org/)
  *
  * See the enclosed file COPYING for license information (LGPL). If you did
- * not receive this file, see http://www.horde.org/licenses/lgpl21.
+ * not receive this file, see //www.horde.org/licenses/lgpl21.
  *
  * @author  Jon Parise <jon@horde.org>
  * @package Text_Diff

@@ -3,8 +3,8 @@
  * MyBB 1.8
  * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * Website: http://www.mybb.com
- * License: http://www.mybb.com/about/license
+ * Website: //www.mybb.com
+ * License: //www.mybb.com/about/license
  *
  */
 
@@ -73,7 +73,7 @@ if($mybb->input['action'] == "add")
 	);
 
 	$page->output_nav_tabs($sub_tabs, 'add_new_question');
-	
+
 	if(isset($mybb->input['preview']) && !$errors)
 	{
 		$table = new Table();
@@ -91,7 +91,7 @@ if($mybb->input['action'] == "add")
 			"me_username" => 0,
 			"shorten_urls" => 0,
 			"highlight" => 0,
-		);	
+		);
 
 		$table->construct_cell($parser->parse_message($mybb->input['question'], $parser_options));
 		$table->construct_row();
@@ -176,7 +176,7 @@ if($mybb->input['action'] == "edit")
 
 	$page->add_breadcrumb_item($lang->edit_question);
 	$page->output_header($lang->security_questions." - ".$lang->edit_question);
-	
+
 	$sub_tabs['edit_question'] = array(
 		'title' => $lang->edit_question,
 		'link' => "index.php?module=config-questions&amp;action=edit&amp;qid={$question['qid']}",
@@ -184,7 +184,7 @@ if($mybb->input['action'] == "edit")
 	);
 
 	$page->output_nav_tabs($sub_tabs, 'edit_question');
-	
+
 	$form = new Form("index.php?module=config-questions&amp;action=edit&amp;qid={$question['qid']}", "post", "add");
 
 	$show_preview = false;
@@ -192,7 +192,7 @@ if($mybb->input['action'] == "edit")
 	{
 		$show_preview = true;
 	}
-	
+
 	if($errors)
 	{
 		$page->output_inline_error($errors);
@@ -204,7 +204,7 @@ if($mybb->input['action'] == "edit")
 			$mybb->input = $question;
 		}
 	}
-	
+
 	if((isset($mybb->input['preview']) || $show_preview === true) && !$errors)
 	{
 		$table = new Table();
@@ -222,13 +222,13 @@ if($mybb->input['action'] == "edit")
 			"me_username" => 0,
 			"shorten_urls" => 0,
 			"highlight" => 0,
-		);	
+		);
 
 		$table->construct_cell($parser->parse_message($mybb->input['question'], $parser_options));
 		$table->construct_row();
 		$table->output($lang->preview_question);
 	}
-	
+
 	$form_container = new FormContainer($lang->edit_question);
 	$form_container->output_row($lang->question." <em>*</em>", $lang->question_desc, $form->generate_text_area('question', $mybb->input['question'], array('id' => 'question')), 'question');
 	$form_container->output_row($lang->answers." <em>*</em>", $lang->answers_desc, $form->generate_text_area('answer', $mybb->input['answer'], array('id' => 'answer')), 'answer');

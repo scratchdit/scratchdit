@@ -3,8 +3,8 @@
  * MyBB 1.8
  * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * Website: http://www.mybb.com
- * License: http://www.mybb.com/about/license
+ * Website: //www.mybb.com
+ * License: //www.mybb.com/about/license
  *
  */
 
@@ -187,7 +187,7 @@ class WarningsHandler extends DataHandler
 
 			$warning['points'] = round($warning['custom_points']);
 
-			// Build expiry date				
+			// Build expiry date
 			if($warning['expires_period'] == "hours")
 			{
 				$warning['expires'] = $warning['expires']*3600 + TIME_NOW;
@@ -230,7 +230,7 @@ class WarningsHandler extends DataHandler
 			$warning['points'] = $this->warning_type['points'];
 			$warning['title'] = '';
 			$warning['expires'] = 0;
-			
+
 			if($this->warning_type['expirationtime'])
 			{
 				$warning['expires'] = TIME_NOW+$this->warning_type['expirationtime'];

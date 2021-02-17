@@ -3,8 +3,8 @@
  * MyBB 1.8
  * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * Website: http://www.mybb.com
- * License: http://www.mybb.com/about/license
+ * Website: //www.mybb.com
+ * License: //www.mybb.com/about/license
  *
  */
 
@@ -79,7 +79,7 @@ class FeedGenerator
 		$this->items[] = $item;
 	}
 
-	/** 
+	/**
 	 * Generate the feed.
 	 *
 	 */
@@ -92,7 +92,7 @@ class FeedGenerator
 		{
 			// Ouput JSON formatted feed.
 			case "json":
-				$this->feed .= "{\n\t\"version\": ".json_encode('https://jsonfeed.org/version/1').",\n";
+				$this->feed .= "{\n\t\"version\": ".json_encode('//jsonfeed.org/version/1').",\n";
 				$this->feed .= "\t\"title\": \"".$this->channel['title']."\",\n";
 				$this->feed .= "\t\"home_page_url\": ".json_encode($this->channel['link']).",\n";
 				$this->feed .= "\t\"feed_url\": ".json_encode($this->channel['link']."syndication.php").",\n";
@@ -104,20 +104,20 @@ class FeedGenerator
 			case "atom1.0":
 				$this->channel['date'] = gmdate("Y-m-d\TH:i:s\Z", $this->channel['date']);
 				$this->feed .= "<?xml version=\"1.0\" encoding=\"{$lang->settings['charset']}\"?>\n";
-				$this->feed .= "<feed xmlns=\"http://www.w3.org/2005/Atom\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\">\n";
+				$this->feed .= "<feed xmlns=\"//www.w3.org/2005/Atom\" xmlns:dc=\"//purl.org/dc/elements/1.1/\">\n";
 				$this->feed .= "\t<title type=\"html\"><![CDATA[".$this->sanitize_content($this->channel['title'])."]]></title>\n";
 				$this->feed .= "\t<subtitle type=\"html\"><![CDATA[".$this->sanitize_content($this->channel['description'])."]]></subtitle>\n";
 				$this->feed .= "\t<link rel=\"self\" href=\"{$this->channel['link']}syndication.php\"/>\n";
 				$this->feed .= "\t<id>{$this->channel['link']}</id>\n";
 				$this->feed .= "\t<link rel=\"alternate\" type=\"text/html\" href=\"{$this->channel['link']}\"/>\n";
 				$this->feed .= "\t<updated>{$this->channel['date']}</updated>\n";
-				$this->feed .= "\t<generator uri=\"https://mybb.com\">MyBB</generator>\n";
+				$this->feed .= "\t<generator uri=\"//mybb.com\">MyBB</generator>\n";
 				break;
 			// The default is the RSS 2.0 format.
 			default:
 				$this->channel['date'] = gmdate("D, d M Y H:i:s O", $this->channel['date']);
 				$this->feed .= "<?xml version=\"1.0\" encoding=\"{$lang->settings['charset']}\"?>\n";
-				$this->feed .= "<rss version=\"2.0\" xmlns:content=\"http://purl.org/rss/1.0/modules/content/\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\">\n";
+				$this->feed .= "<rss version=\"2.0\" xmlns:content=\"//purl.org/rss/1.0/modules/content/\" xmlns:dc=\"//purl.org/dc/elements/1.1/\">\n";
 				$this->feed .= "\t<channel>\n";
 				$this->feed .= "\t\t<title><![CDATA[".$this->sanitize_content($this->channel['title'])."]]></title>\n";
 				$this->feed .= "\t\t<link>".$this->channel['link']."</link>\n";
@@ -162,7 +162,7 @@ class FeedGenerator
 				// Output Atom 1.0 formatted feed.
 				case "atom1.0":
 					$item['date'] = date("Y-m-d\TH:i:s\Z", $item['date']);
-					$this->feed .= "\t<entry xmlns=\"http://www.w3.org/2005/Atom\">\n";
+					$this->feed .= "\t<entry xmlns=\"//www.w3.org/2005/Atom\">\n";
 					if(!empty($item['author']))
 					{
 						$author = "<a href=\"".$this->channel['link']."member.php?action=profile&uid=".$item['author']['uid']."\">".$item['author']['name']."</a>";
@@ -184,7 +184,7 @@ class FeedGenerator
 					$this->feed .= "\t\t<id>{$item['link']}</id>\n";
 					$this->feed .= "\t\t<title xml:space=\"preserve\"><![CDATA[".$this->sanitize_content($item['title'])."]]></title>\n";
 					$this->feed .= "\t\t<content type=\"html\" xml:space=\"preserve\" xml:base=\"{$item['link']}\"><![CDATA[".$this->sanitize_content($item['description'])."]]></content>\n";
-					$this->feed .= "\t\t<draft xmlns=\"http://purl.org/atom-blog/ns#\">false</draft>\n";
+					$this->feed .= "\t\t<draft xmlns=\"//purl.org/atom-blog/ns#\">false</draft>\n";
 					$this->feed .= "\t</entry>\n";
 					break;
 

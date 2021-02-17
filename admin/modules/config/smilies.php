@@ -3,8 +3,8 @@
  * MyBB 1.8
  * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * Website: http://www.mybb.com
- * License: http://www.mybb.com/about/license
+ * Website: //www.mybb.com
+ * License: //www.mybb.com/about/license
  *
  */
 
@@ -559,8 +559,8 @@ if($mybb->input['action'] == "mass_edit")
 				{
 					unset($mybb->input['find'][$sid][$key]);
 				}
-				$mybb->input['find'][$sid] = implode("\n", $mybb->input['find'][$sid]);				
-				
+				$mybb->input['find'][$sid] = implode("\n", $mybb->input['find'][$sid]);
+
 				$smilie = array(
 					"name" => $db->escape_string($mybb->input['name'][$sid]),
 					"find" => $db->escape_string($mybb->input['find'][$sid]),

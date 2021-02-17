@@ -3,8 +3,8 @@
  * MyBB 1.8
  * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * Website: http://www.mybb.com
- * License: http://www.mybb.com/about/license
+ * Website: //www.mybb.com
+ * License: //www.mybb.com/about/license
  *
  */
 
@@ -203,11 +203,11 @@ function build_server_stats($is_install=1, $prev_version='', $current_version=''
 	}
 
 	// Host URL & hostname
-	// Dropped fetching host details since v.1.8.16 as http://www.whoishostingthis.com API seems to be down and this info is not required by MyBB.
+	// Dropped fetching host details since v.1.8.16 as //www.whoishostingthis.com API seems to be down and this info is not required by MyBB.
 	$info['hosturl'] = $info['hostname'] = "unknown/local";
 	if($_SERVER['HTTP_HOST'] == 'localhost')
-	{	
-		$info['hosturl'] = $info['hostname'] = "localhost";	
+	{
+		$info['hosturl'] = $info['hostname'] = "localhost";
 	}
 
 	if(isset($_SERVER['HTTP_USER_AGENT']))
@@ -235,7 +235,7 @@ function build_server_stats($is_install=1, $prev_version='', $current_version=''
 		$amp = "&amp;";
 	}
 
-	$server_stats_url = 'https://community.mybb.com/server_stats.php?'.$string;
+	$server_stats_url = '//community.mybb.com/server_stats.php?'.$string;
 
 	$return = array();
 	$return['info_sent_success'] = false;

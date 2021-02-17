@@ -3,8 +3,8 @@
  * MyBB 1.8
  * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * Website: http://www.mybb.com
- * License: http://www.mybb.com/about/license
+ * Website: //www.mybb.com
+ * License: //www.mybb.com/about/license
  *
  */
 
@@ -34,7 +34,7 @@ class DB_SQLite implements DB_Base
 	/**
 	 * PDOStatement objects of performed queries.
 	 *
-	 * @var array 
+	 * @var array
 	 */
 	public $query_objects = array();
 
@@ -688,7 +688,7 @@ class DB_SQLite implements DB_Base
 				{
 					$value = $this->escape_binary($value);
 				}
-				
+
 				$array[$field] = $value;
 			}
 			else
@@ -738,7 +738,7 @@ class DB_SQLite implements DB_Base
 					{
 						$value = $this->escape_binary($value);
 					}
-				
+
 					$values[$field] = $value;
 				}
 				else
@@ -794,7 +794,7 @@ class DB_SQLite implements DB_Base
 				{
 					$value = $this->escape_binary($value);
 				}
-				
+
 				$query .= $comma.$field."=".$value;
 			}
 			else
@@ -1136,7 +1136,7 @@ class DB_SQLite implements DB_Base
 				{
 					$value = $this->escape_binary($value);
 				}
-				
+
 				$values .= $comma.$value;
 			}
 			else
@@ -1231,7 +1231,7 @@ class DB_SQLite implements DB_Base
 	}
 
 	/**
-	 * Perform an "Alter Table" query in SQLite < 3.2.0 - Code taken from http://code.jenseng.com/db/
+	 * Perform an "Alter Table" query in SQLite < 3.2.0 - Code taken from //code.jenseng.com/db/
 	 *
 	 * @param string $table The table (optional)
 	 * @param string $alterdefs
@@ -1373,7 +1373,7 @@ class DB_SQLite implements DB_Base
 				$this->query($createtesttableSQL);
 
 				$droptempsql = 'DROP TABLE '.$tmpname;
-				$query = $this->query($droptempsql, 0);	
+				$query = $this->query($droptempsql, 0);
 				if($query === false)
 				{
 					return false;

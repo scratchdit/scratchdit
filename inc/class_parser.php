@@ -3,8 +3,8 @@
  * MyBB 1.8
  * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * Website: http://www.mybb.com
- * License: http://www.mybb.com/about/license
+ * Website: //www.mybb.com
+ * License: //www.mybb.com/about/license
  *
  */
 
@@ -687,7 +687,7 @@ class postParser
 		$ptrn = array('/\\\\/', '/([\[\^\$\.\|\?\(\)\{\}]{1})/', '/\*\++/', '/\++\*/', '/\*+/');
 		$rplc = array('\\\\\\\\','\\\\${1}', '*', '*', '[^\s\n]*');
 		$bad_word = preg_replace($ptrn, $rplc, $bad_word);
-		
+
 		// Count + and generate pattern
 		$bad_word = explode('+', $bad_word);
 		$trap = "";
@@ -704,13 +704,13 @@ class postParser
 				$plus++;
 			}
 		}
-		
+
 		// Handle trailing +
 		if($plus > 1)
 		{
 			$trap .= '[^\s\n]{'.($plus-1).'}';
 		}
-		
+
 		return '\b'.$trap.'\b';
 	}
 
@@ -1103,7 +1103,7 @@ class postParser
 		global $templates;
 		if(!preg_match("#^[a-z0-9]+://#i", $url))
 		{
-			$url = "http://".$url;
+			$url = "//".$url;
 		}
 
 		if(!empty($this->options['allow_html']))
@@ -1453,48 +1453,48 @@ class postParser
 			case "dailymotion":
 				if(isset($path[2]))
 				{
-					list($id) = explode('_', $path[2], 2); // http://www.dailymotion.com/video/fds123_title-goes-here
+					list($id) = explode('_', $path[2], 2); // //www.dailymotion.com/video/fds123_title-goes-here
 				}
 				else
 				{
-					$id = $path[1]; // http://dai.ly/fds123
+					$id = $path[1]; // //dai.ly/fds123
 				}
 				break;
 			case "metacafe":
-				$id = $path[2]; // http://www.metacafe.com/watch/fds123/title_goes_here/
+				$id = $path[2]; // //www.metacafe.com/watch/fds123/title_goes_here/
 				$title = htmlspecialchars_uni($path[3]);
 				break;
 			case "myspacetv":
-				$id = $path[4]; // http://www.myspace.com/video/fds/fds/123
+				$id = $path[4]; // //www.myspace.com/video/fds/fds/123
 				break;
 			case "facebook":
 				if(isset($input['v']))
 				{
-					$id = $input['v']; // http://www.facebook.com/video/video.php?v=123
+					$id = $input['v']; // //www.facebook.com/video/video.php?v=123
 				}
 				elseif(substr($path[3], 0, 3) == 'vb.')
 				{
-					$id = $path[4]; // https://www.facebook.com/fds/videos/vb.123/123/
+					$id = $path[4]; // //www.facebook.com/fds/videos/vb.123/123/
 				}
 				else
 				{
-					$id = $path[3]; // https://www.facebook.com/fds/videos/123/
+					$id = $path[3]; // //www.facebook.com/fds/videos/123/
 				}
 				break;
 			case "mixer":
-				$id = $path[1]; // https://mixer.com/streamer
+				$id = $path[1]; // //mixer.com/streamer
 				break;
 			case "liveleak":
-				$id = $input['i']; // http://www.liveleak.com/view?i=123
+				$id = $input['i']; // //www.liveleak.com/view?i=123
 				break;
 			case "yahoo":
 				if(isset($path[2]))
 				{
-					$id = $path[2]; // http://xy.screen.yahoo.com/fds/fds-123.html
+					$id = $path[2]; // //xy.screen.yahoo.com/fds/fds-123.html
 				}
 				else
 				{
-					$id = $path[1]; // http://xy.screen.yahoo.com/fds-123.html
+					$id = $path[1]; // //xy.screen.yahoo.com/fds-123.html
 				}
 				// Support for localized portals
 				$domain = explode('.', $parsed_url['host']);
@@ -1510,41 +1510,41 @@ class postParser
 			case "vimeo":
 				if(isset($path[3]))
 				{
-					$id = $path[3]; // http://vimeo.com/fds/fds/fds123
+					$id = $path[3]; // //vimeo.com/fds/fds/fds123
 				}
 				else
 				{
-					$id = $path[1]; // http://vimeo.com/fds123
+					$id = $path[1]; // //vimeo.com/fds123
 				}
 				break;
 			case "youtube":
 				if($fragments[0])
 				{
-					$id = str_replace('!v=', '', $fragments[0]); // http://www.youtube.com/watch#!v=fds123
+					$id = str_replace('!v=', '', $fragments[0]); // //www.youtube.com/watch#!v=fds123
 				}
 				elseif($input['v'])
 				{
-					$id = $input['v']; // http://www.youtube.com/watch?v=fds123
+					$id = $input['v']; // //www.youtube.com/watch?v=fds123
 				}
 				else
 				{
-					$id = $path[1]; // http://www.youtu.be/fds123
+					$id = $path[1]; // //www.youtu.be/fds123
 				}
 				break;
 			case "twitch":
 				if(count($path) >= 3 && $path[1] == 'videos')
 				{
-					// Direct video embed with URL like: https://www.twitch.tv/videos/179723472
+					// Direct video embed with URL like: //www.twitch.tv/videos/179723472
 					$id = 'video=v'.$path[2];
 				}
 				elseif(count($path) >= 4 && $path[2] == 'v')
 				{
-					// Direct video embed with URL like: https://www.twitch.tv/waypoint/v/179723472
+					// Direct video embed with URL like: //www.twitch.tv/waypoint/v/179723472
 					$id = 'video=v'.$path[3];
 				}
 				elseif(count($path) >= 2)
 				{
-					// Channel (livestream) embed with URL like: https://twitch.tv/waypoint
+					// Channel (livestream) embed with URL like: //twitch.tv/waypoint
 					$id = 'channel='.$path[1];
 				}
 				break;
@@ -1617,7 +1617,7 @@ class postParser
 		{
 			return $message;
 		}
-		
+
 		// Links should end with slashes, numbers, characters and braces but not with dots, commas or question marks
 		// Don't create links within existing links (handled up-front in the callback function).
 		$message = preg_replace_callback("#<a\\s[^>]*>.*?</a>|([\s\(\)\[\>])(http|https|ftp|news|irc|ircs|irc6){1}(://)([^\/\"\s\<\[\.]+\.([^\/\"\s\<\[\.]+\.)*[\w]+(:[0-9]+)?(/([^\"\s<\[]|\[\])*)?([\w\/\)]))#ius", array($this, 'mycode_auto_url_callback'), $message);
@@ -1643,7 +1643,7 @@ class postParser
 		}
 
 		$external = '';
-		// Allow links like http://en.wikipedia.org/wiki/PHP_(disambiguation) but detect mismatching braces
+		// Allow links like //en.wikipedia.org/wiki/PHP_(disambiguation) but detect mismatching braces
 		while(my_substr($matches[4], -1) == ')')
 		{
 			if(substr_count($matches[4], ')') > substr_count($matches[4], '('))
@@ -1656,7 +1656,7 @@ class postParser
 				break;
 			}
 
-			// Example: ([...] http://en.wikipedia.org/Example_(disambiguation).)
+			// Example: ([...] //en.wikipedia.org/Example_(disambiguation).)
 			$last_char = my_substr($matches[4], -1);
 			while($last_char == '.' || $last_char == ',' || $last_char == '?' || $last_char == '!')
 			{
@@ -1845,9 +1845,9 @@ class postParser
 			"$2 ($1)",
 			"",
 		);
-		
+
 		$messageBefore = "";
-		// The counter limit for this "for" loop is for defensive programming purpose only. It protects against infinite repetition. 
+		// The counter limit for this "for" loop is for defensive programming purpose only. It protects against infinite repetition.
 		for($cnt = 1; $cnt < 20 && $message != $messageBefore; $cnt++)
 		{
 			$messageBefore = $message;
