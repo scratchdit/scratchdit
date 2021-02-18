@@ -8,5 +8,5 @@ jobs:
     steps:
       - name: Install Composer Dependencies
         run: |
-          cd ./
+          cd ../..
           composer install --prefer-dist
