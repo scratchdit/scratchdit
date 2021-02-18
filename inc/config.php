@@ -7,23 +7,18 @@
  * //docs.mybb.com/
  */
 
-$databaseInfo = array(
+$config['database'] = array(
 	'type'         => 'pgsql',
 	'database'     => 'd8rjlipok0f83m',
 	'table_prefix' => 'mybb_',
 	'username'     => 'mknzigyrzqkxrw',
 	'password'     => '459aca8d4ee638bbae583732c67b0fff3c015d37ede47f71098ca573446bd8db',
 	'pconnect'     => 0,
-	'port'         => 5432
+	'port'         => 5432,
+	'hostname'     => "ec2-54-90-13-87.compute-1.amazonaws.com"
 );
-$config['database']                          = $databaseInfo;
-$config['database']['read'][0]               = $databaseInfo;
-$config['database']['write'][0]              = $databaseInfo;
-$config['database']['read'][0]['hostname']   = "ec2-54-90-13-87.compute-1.amazonaws.com";
-$config['database']['write'][0]['hostname']  = "ec2-54-90-13-87.compute-1.amazonaws.com";
-unset($databaseInfo);
 
-/**
+/*
  * Admin CP directory
  *  For security reasons, it is recommended you
  *  rename your Admin CP directory. You then need
@@ -31,9 +26,9 @@ unset($databaseInfo);
  *  new directory.
  */
 
-$config['admin_dir'] = 'admin';
+$config['admin_dir'] = 'admincp';
 
-/**
+/*
  * Hide all Admin CP links
  *  If you wish to hide all Admin CP links
  *  on the front end of the board after
@@ -41,9 +36,9 @@ $config['admin_dir'] = 'admin';
  *  to 1.
  */
 
-$config['hide_admin_links'] = 1;
+$config['hide_admin_links'] = 0;
 
-/**
+/*
  * Data-cache configuration
  *  The data cache is a temporary cache
  *  of the most commonly accessed data in MyBB.
@@ -55,7 +50,7 @@ $config['hide_admin_links'] = 1;
 
 $config['cache_store'] = 'db';
 
-/**
+/*
  * Memcache configuration
  *  If you are using memcache or memcached as your
  *  data-cache, you need to configure the hostname
@@ -67,7 +62,7 @@ $config['cache_store'] = 'db';
 $config['memcache']['host'] = 'localhost';
 $config['memcache']['port'] = 11211;
 
-/**
+/*
  * Redis configuration
  *  If you are using Redis as your data-cache
  *  you need to configure the hostname and port
@@ -76,10 +71,11 @@ $config['memcache']['port'] = 11211;
  *  path to the unix socket as host and leave
  *  the port setting unconfigured or FALSE.
  */
+
 $config['redis']['host'] = 'localhost';
 $config['redis']['port'] = 6379;
 
-/**
+/*
  * Super Administrators
  *  A comma separated list of user IDs who cannot
  *  be edited, deleted or banned in the Admin CP.
@@ -89,7 +85,7 @@ $config['redis']['port'] = 6379;
 
 $config['super_admins'] = '1';
 
-/**
+/*
  * Database Encoding
  *  If you wish to set an encoding for MyBB uncomment
  *  the line below (if it isn't already) and change
@@ -99,7 +95,7 @@ $config['super_admins'] = '1';
 
 $config['database']['encoding'] = 'utf8';
 
-/**
+/*
  * Automatic Log Pruning
  *  The MyBB task system can automatically prune
  *  various log files created by MyBB.
@@ -117,7 +113,7 @@ $config['log_pruning'] = array(
 	'promotion_logs' => 180 // Promotion logs
 );
 
-/**
+/*
  * Disallowed Remote Hosts
  *  List of hosts the fetch_remote_file() function will not
  *  perform requests to.
@@ -130,7 +126,7 @@ $config['disallowed_remote_hosts'] = array(
 	'localhost',
 );
 
-/**
+/*
  * Disallowed Remote Addresses
  *  List of IPv4 addresses the fetch_remote_file() function
  *  will not perform requests to.
@@ -148,7 +144,7 @@ $config['disallowed_remote_addresses'] = array(
 	'192.168.0.0/16',
 );
 
-/**
+/*
  * Admin CP Secret PIN
  *  If you wish to request a PIN
  *  when someone tries to login
