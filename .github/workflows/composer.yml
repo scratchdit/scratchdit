@@ -6,16 +6,7 @@ jobs:
   phpunit:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
-      - name: Setup Symfony
-        run: |
-          cd ./
-          cp .env.dev .env
       - name: Install Composer Dependencies
         run: |
           cd ./
           composer install --prefer-dist
-      - name: Run Tests
-        run: |
-          cd ./
-          php bin/phpunit
