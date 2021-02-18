@@ -1,12 +1,12 @@
-name: Run composer
+name: Composer
 
-on: [push, pull_request]
+on: [push]
 
 jobs:
-  install:
+  phpunit:
     runs-on: ubuntu-latest
     steps:
-    - name: Run composer
-      uses: nick-zh/composer-php@master
-      with:
-        action: 'install -oa'
+      - name: Install Composer Dependencies
+        run: |
+          cd ../..
+          composer install --prefer-dist
