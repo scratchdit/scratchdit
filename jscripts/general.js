@@ -15,29 +15,12 @@ var MyBB = {
 
 		/* Create the Check All feature */
 		$('[name="allbox"]').each(function(key, value) {
-			var allbox = this;
-			var checked = $(this).is(':checked');
-			var checkboxes = $(this).closest('form').find(':checkbox').not('[name="allbox"]');
-
-			checkboxes.on('change', function() {
-				if(checked && !$(this).prop('checked'))
-				{
-					checked = false;
-					$(allbox).trigger('change', ['item']);
-				}
-			});
-
-			$(this).on('change', function(event, origin) {
-				checked = $(this).is(':checked');
-
-				if(typeof(origin) == "undefined")
-				{
-					checkboxes.each(function() {
-						if(checked != $(this).is(':checked'))
-						{
-							$(this).prop('checked', checked).trigger('change');
-						}
-					});
+			$(this).change(function() {
+				var checkboxes = $(this).closest('form').find(':checkbox');
+				if($(this).is(':checked')) {
+					checkboxes.prop('checked', true);
+				} else {
+					checkboxes.removeAttr('checked');
 				}
 			});
 		});
@@ -46,7 +29,7 @@ var MyBB = {
 		var initialfocus = $(".initial_focus");
 		if(initialfocus.length)
 		{
-			initialfocus.trigger('focus');
+			initialfocus.focus();
 		}
 
 		if(typeof(use_xmlhttprequest) != "undefined" && use_xmlhttprequest == 1)
@@ -55,9 +38,9 @@ var MyBB = {
 			mark_read_imgs.each(function()
 			{
 				var element = $(this);
-				if(element.hasClass('forum_off') || element.hasClass('forum_offclose') || element.hasClass('forum_offlink') || element.hasClass('subforum_minioff') || element.hasClass('subforum_minioffclose') || element.hasClass('subforum_miniofflink') || (element.attr("title") && element.attr("title") == lang.no_new_posts)) return;
+				if(element.hasClass('forum_off') || element.hasClass('forum_offlock') || element.hasClass('forum_offlink') || element.hasClass('subforum_minioff') || element.hasClass('subforum_miniofflock') || element.hasClass('subforum_miniofflink') || (element.attr("title") && element.attr("title") == lang.no_new_posts)) return;
 
-				element.on('click', function()
+				element.click(function()
 				{
 					MyBB.markForumRead(this);
 				});
@@ -77,21 +60,12 @@ var MyBB = {
 				$("body").css("overflow", "hidden");
 				if(initialfocus.length > 0)
 				{
-					initialfocus.trigger('focus');
+					initialfocus.focus();
 				}
 			});
 
 			$(document).on($.modal.CLOSE, function(event, modal) {
 				$("body").css("overflow", "auto");
-			});
-		}
-
-		$("a.referralLink").on('click', MyBB.showReferrals);
-
-		if($('.author_avatar').length)
-		{
-			$(".author_avatar img").on('error', function () {
-				$(this).unbind("error").closest('.author_avatar').remove();
 			});
 		}
 	},
@@ -108,52 +82,9 @@ var MyBB = {
 		});
 	},
 
-	prompt: function(message, options)
-	{
-		var defaults = { fadeDuration: 250, zIndex: (typeof modal_zindex !== 'undefined' ? modal_zindex : 9999) };
-		var buttonsText = '', title = '';
-
-		for (var i in options.buttons)
-		{
-			buttonsText += templates.modal_button.replace('__title__', options.buttons[i].title);
-		}
-
-		// Support passing custom title
-		if ($.isArray(message)) {
-			title = message[0];
-			message = message[1];
-		} else {
-			title = lang.confirm_title;
-		}
-
-		var html = templates.modal.replace('__buttons__', buttonsText).replace('__message__', message).replace('__title__', title);
-		var modal = $(html);
-		modal.modal($.extend(defaults, options));
-		var buttons = modal.find('.modal_buttons > .button');
-		buttons.on('click', function(e)
-		{
-			e.preventDefault();
-			var index = $(this).index();
-			if (options.submit(e, options.buttons[index].value) == false)
-				return;
-
-			$.modal.close();
-		});
-
-		if (buttons[0])
-		{
-			modal.on($.modal.OPEN, function()
-			{
-				$(buttons[0]).trigger('focus');
-			});
-		}
-
-		return modal;
-	},
-
 	deleteEvent: function(eid)
 	{
-		MyBB.prompt(deleteevent_confirm, {
+		$.prompt(deleteevent_confirm, {
 			buttons:[
 					{title: yes_confirm, value: true},
 					{title: no_confirm, value: false}
@@ -208,7 +139,7 @@ var MyBB = {
 					);
 
 					$("body").append(form);
-					form.trigger('submit');
+					form.submit();
 				}
 			}
 		});
@@ -229,19 +160,9 @@ var MyBB = {
 		MyBB.popupWindow("/member.php?action=viewnotes&uid="+uid+"&modal=1");
 	},
 
-	getIP: function(pid)
-	{
-		MyBB.popupWindow("/moderation.php?action=getip&pid="+pid+"&modal=1");
-	},
-
-	getPMIP: function(pmid)
-	{
-		MyBB.popupWindow("/moderation.php?action=getpmip&pmid="+pmid+"&modal=1");
-	},
-
 	deleteReputation: function(uid, rid)
 	{
-		MyBB.prompt(delete_reputation_confirm, {
+		$.prompt(delete_reputation_confirm, {
 			buttons:[
 					{title: yes_confirm, value: true},
 					{title: no_confirm, value: false}
@@ -287,7 +208,7 @@ var MyBB = {
 					);
 
 					$("body").append(form);
-					form.trigger('submit');
+					form.submit();
 				}
 			}
 		});
@@ -295,42 +216,9 @@ var MyBB = {
 		return false;
 	},
 
-	whoPosted: function(tid, sortby)
+	whoPosted: function(tid)
 	{
-		var sort = "", url, body;
-
-		if(typeof sortby === "undefined")
-		{
-			sortby = "";
-		}
-
-		if(sortby == "username")
-		{
-			sort = "&sort=" + sortby;
-		}
-		url = "/misc.php?action=whoposted&tid="+tid+sort+"&modal=1";
-
-		// if the modal is already open just replace the contents
-		if($.modal.isActive())
-		{
-			// don't waste a query if we are already sorted correctly
-			if(sortby == MyBB.whoPostedSort)
-			{
-				return;
-			}
-
-			MyBB.whoPostedSort = sortby;
-
-			$.get(rootpath + url, function(html)
-			{
-				// just replace the inner div
-				body = $(html).children("div");
-				$("div.modal").children("div").replaceWith(body);
-			});
-			return;
-		}
-		MyBB.whoPostedSort = "";
-		MyBB.popupWindow(url);
+		MyBB.popupWindow("/misc.php?action=whoposted&tid="+tid+"&modal=1");
 	},
 
 	markForumRead: function(event)
@@ -400,7 +288,7 @@ var MyBB = {
 		{
 			return false;
 		}
-		form.trigger('submit');
+		form.submit();
 	},
 
 	changeTheme: function()
@@ -410,7 +298,7 @@ var MyBB = {
 		{
 			return false;
 		}
-		form.trigger('submit');
+		form.submit();
 	},
 
 	detectDSTChange: function(timezone_with_dst)
@@ -445,7 +333,7 @@ var MyBB = {
 						);
 
 						$("body").append(form);
-						form.trigger('submit');
+						form.submit();
 	                }
 	            }
 			});
@@ -507,7 +395,7 @@ var MyBB = {
 
 	deleteAnnouncement: function(data)
 	{
-		MyBB.prompt(announcement_quickdelete_confirm, {
+		$.prompt(announcement_quickdelete_confirm, {
 			buttons:[
 					{title: yes_confirm, value: true},
 					{title: no_confirm, value: false}
@@ -523,29 +411,7 @@ var MyBB = {
 		return false;
 	},
 
-	showReferrals: function(e)
-	{
-		var idPieces, uid;
-
-		e.preventDefault();
-
-		if(typeof this.id == "undefined")
-		{
-			return false;
-		}
-
-		idPieces = this.id.split("_");
-		uid = parseInt(idPieces[idPieces.length - 1], 10);
-
-		if(uid <= 0)
-		{
-			return false;
-		}
-
-		MyBB.popupWindow("/xmlhttp.php?action=get_referrals&uid="+uid);
-	},
-
-	// Fixes //github.com/mybb/mybb/issues/1232
+	// Fixes https://github.com/mybb/mybb/issues/1232
 	select2: function()
 	{
 		if(typeof $.fn.select2 !== "undefined")
@@ -611,13 +477,13 @@ var Cookie = {
 	get: function(name)
 	{
 		name = cookiePrefix + name;
-		return Cookies.get(name);
+		return $.cookie(name);
 	},
 
 	set: function(name, value, expires)
 	{
 		name = cookiePrefix + name;
-		if(!expires)
+		if(!expires) 
 		{
 			expires = 315360000; // 10*365*24*60*60 => 10 years
 		}
@@ -628,11 +494,10 @@ var Cookie = {
 		options = {
 			expires: expire,
 			path: cookiePath,
-			domain: cookieDomain,
-			secure: cookieSecureFlag == true,
+			domain: cookieDomain
 		};
 
-		return Cookies.set(name, value, options);
+		return $.cookie(name, value, options);
 	},
 
 	unset: function(name)
@@ -643,7 +508,7 @@ var Cookie = {
 			path: cookiePath,
 			domain: cookieDomain
 		};
-		return Cookies.remove(name, options);
+		return $.removeCookie(name, options);
 	}
 };
 
@@ -662,7 +527,7 @@ var expandables = {
 					return;
 				}
 
-				expander.on('click', function()
+				expander.click(function()
 				{
 					controls = expander.attr("id").replace("_img", "");
 					expandables.expandCollapse(this, controls);
@@ -774,10 +639,10 @@ var lang = {
 	{
 		$.modal.defaults.keepelement = false;
 
-		$.modal.prototype.oldCloseFunction = $.modal.prototype.close;
+		$.modal.prototype.oldCloseFuntion = $.modal.prototype.close;
 		$.modal.prototype.close = function()
 		{
-			this.oldCloseFunction();
+			this.oldCloseFuntion();
 
 			// Deletes the element (multi-modal feature: e.g. when you click on multiple report buttons, you will want to see different content for each)
 			if(!this.options.keepelement)
