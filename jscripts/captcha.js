@@ -19,12 +19,12 @@ var captcha = {
 
 	refresh_complete: function(request)
 	{
-		var json = JSON.parse(request.responseText);
+		var json = $.parseJSON(request.responseText);
 		if(json.hasOwnProperty("errors"))
 		{
 			$.each(json.errors, function(i, message)
 			{
-				$.jGrowl(lang.captcha_fetch_failure + ' ' + message, {theme:'jgrowl_error'});
+				$.jGrowl(lang.captcha_fetch_failure + ' ' + message);
 			});
 		}
 		else if(json.imagehash)
@@ -33,7 +33,7 @@ var captcha = {
 			$('#imagehash').val(json.imagehash);
 		}
 
-		$('#imagestring').removeClass('error valid').val('').prop('aria-invalid', null).removeData('previousValue')
+		$('#imagestring').removeClass('error valid').val('').removeAttr('aria-invalid').removeData('previousValue')
 						.next('label').remove();
 	}
 };
