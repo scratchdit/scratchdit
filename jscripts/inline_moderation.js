@@ -46,7 +46,7 @@ var inlineModeration = {
 						{
 							thread.addClass('trow_selected');
 						}
-
+						
 						if(fieldset.length)
 						{
 							fieldset.addClass('inline_selected');
@@ -263,7 +263,7 @@ var inlineModeration = {
 						thread.removeClass('trow_selected');
 					}
 				}
-
+				
 				if(fieldset.length)
 				{
 					if(master.prop('checked') == true)
@@ -279,7 +279,7 @@ var inlineModeration = {
 				if(changed)
 				{
 					element.trigger('click');
-
+					
 					if(master.prop('checked') == true)
 					{
 						if(inlineIds.indexOf('ALL') == -1)

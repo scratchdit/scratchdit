@@ -12,7 +12,7 @@ var Post = {
 		if(use_xmlhttprequest == 1)
 		{
 			tid = document.input.tid.value;
-
+			
 			$.ajax(
 			{
 				url: 'xmlhttp.php?action=get_multiquoted&tid='+tid,
@@ -22,7 +22,7 @@ var Post = {
 					Post.multiQuotedLoaded(request, status);
 				}
 			});
-
+			
 			return false;
 		}
 		else
@@ -44,7 +44,7 @@ var Post = {
 					Post.multiQuotedLoaded(request, status);
 				}
 			});
-
+			
 			return false;
 		}
 		else
@@ -81,17 +81,17 @@ var Post = {
 			}
 			$('#' + id).val($('#' + id).val() + json.message);
 		}
-
+		
 		$('#multiquote_unloaded').hide();
 		document.input.quoted_ids.value = 'all';
 	},
-
+	
 	clearMultiQuoted: function()
 	{
 		$('#multiquote_unloaded').hide();
 		Cookie.unset('multiquote');
 	},
-
+	
 	removeAttachment: function(aid)
 	{
 		MyBB.prompt(removeattach_confirm, {
@@ -104,7 +104,7 @@ var Post = {
 				{
 					document.input.attachmentaid.value = aid;
 					document.input.attachmentact.value = "remove";
-
+					
 					var form = $('input[name^=\'rem\']').parents('form');
 
 					if(use_xmlhttprequest != 1)
@@ -129,8 +129,8 @@ var Post = {
 							}
 							else if (data.success)
 							{
-								if($('[id^=attachment_]').length == 1){
-									$('input[name="updateattachment"]').hide();
+								if($('[id^=attachment_]').length == 1){ 
+									$('input[name="updateattachment"]').hide(); 
 								}
 
 								$('#attachment_'+aid).hide(500, function()
@@ -157,7 +157,7 @@ var Post = {
 				}
 			}
 		});
-
+		
 		return false;
 	},
 
