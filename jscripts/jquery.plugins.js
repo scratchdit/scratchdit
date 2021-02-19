@@ -1,8 +1,8 @@
 /**
  * jGrowl 1.4.5
  *
- * Dual licensed under the MIT (//www.opensource.org/licenses/mit-license.php)
- * and GPL (//www.opensource.org/licenses/gpl-license.php) licenses.
+ * Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php)
+ * and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
  *
  * Written by Stan Lemon <stosh1985@gmail.com>
  * Last updated: 2015.02.01
@@ -252,13 +252,13 @@
 })(jQuery);
 
 /*
-    A simple jQuery modal (//github.com/kylefox/jquery-modal)
+    A simple jQuery modal (http://github.com/kylefox/jquery-modal)
     Version 0.8.0
 */
 
 (function (factory) {
   // Making your jQuery plugin work better with npm tools
-  // //blog.npmjs.org/post/112712169830/making-your-jquery-plugin-work-better-with-npm
+  // http://blog.npmjs.org/post/112712169830/making-your-jquery-plugin-work-better-with-npm
   if(typeof module === "object" && typeof module.exports === "object") {
     factory(require("jquery"), window, document);
   }
@@ -536,7 +536,7 @@
 			popup_menu.show();
 
 			// Closes the popup if we click outside the button (this doesn't seem to work properly - couldn't find any solutions that actually did - if we click the first item on the menu)
-			// Credits: //stackoverflow.com/questions/1160880/detect-click-outside-element
+			// Credits: http://stackoverflow.com/questions/1160880/detect-click-outside-element
 			$('body, .popup_item').bind('click.close_popup', function(e) {
 				if(close_in_popupmenu)
 				{
@@ -569,7 +569,7 @@
 
 /*!
  * JavaScript Cookie v2.1.4
- * //github.com/js-cookie/js-cookie
+ * https://github.com/js-cookie/js-cookie
  *
  * Copyright 2006, 2015 Klaus Hartl & Fagner Brack
  * Released under the MIT license

@@ -528,7 +528,7 @@ var MyBB = {
 		var idPieces, uid;
 
 		e.preventDefault();
-
+		
 		if(typeof this.id == "undefined")
 		{
 			return false;
@@ -545,7 +545,7 @@ var MyBB = {
 		MyBB.popupWindow("/xmlhttp.php?action=get_referrals&uid="+uid);
 	},
 
-	// Fixes //github.com/mybb/mybb/issues/1232
+	// Fixes https://github.com/mybb/mybb/issues/1232
 	select2: function()
 	{
 		if(typeof $.fn.select2 !== "undefined")

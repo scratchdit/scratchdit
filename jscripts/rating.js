@@ -39,7 +39,7 @@ var Rating = {
 		{
 			return;
 		}
-
+		
 		list.addClass("star_rating")
 			.addClass(options.extra_class);
 

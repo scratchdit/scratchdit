@@ -9,7 +9,7 @@ var Report = {
 	{
 		MyBB.popupWindow("/report.php?modal=1&type=post&pid="+pid);
 	},
-
+	
 	reportUser: function(pid)
 	{
 		MyBB.popupWindow("/report.php?modal=1&type=profile&pid="+pid);
@@ -19,7 +19,7 @@ var Report = {
 	{
 		MyBB.popupWindow("/report.php?modal=1&type=reputation&pid="+pid);
 	},
-
+	
 	submitReport: function(pid)
 	{
 		// Get form, serialize it and send it

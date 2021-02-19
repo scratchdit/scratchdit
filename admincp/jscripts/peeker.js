@@ -67,7 +67,7 @@ var Peeker = (function() {
 			type = this.controller.val() || '';
 			this.domain[(type.match(regex) && this.controller.is(':visible')) ? 'show' : 'hide']();
 		}
-
+		
 		$(this.domain).each(function() {
 			$(this).find('input, textarea, select').each(function() {
 				$(this).trigger('change');

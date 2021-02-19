@@ -44,7 +44,7 @@ var ThemeSelector = {
 
 		$("#save").on('click', function(event) { ThemeSelector.save(event, true); } );
 		$("#save_close").on('click', function(event) { ThemeSelector.saveClose(event); } );
-
+		
 
 		$(window).on('beforeunload', function(event){
 			if(ThemeSelector.isChanged())
@@ -53,8 +53,8 @@ var ThemeSelector = {
 			}
 		});
 
-
-
+		
+		
 		ThemeSelector.selector.on("change", ThemeSelector.updateSelector);
 		ThemeSelector.selectorForm.on("submit", ThemeSelector.updateSelector);
     },
@@ -163,7 +163,7 @@ var ThemeSelector = {
 	 */
 	saveCheck: function(e, isAjax) {
 
-
+	
 		if (ThemeSelector.isClosing == true) {
 			return true;
 		}
@@ -172,9 +172,9 @@ var ThemeSelector = {
 			e.preventDefault();
 
 		if (ThemeSelector.isChanged()) {
-
+			
 			e.preventDefault();
-
+			
 			if(isAjax == false)
 				return save_changes_lang_string;
 			else

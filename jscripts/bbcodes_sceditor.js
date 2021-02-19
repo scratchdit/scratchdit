@@ -13,17 +13,17 @@ $(function ($) {
 			},
 			'Facebook': {
 				'match': /facebook\.com\/(?:photo.php\?v=|video\/video.php\?v=|video\/embed\?video_id=|v\/?)(\d+)/,
-				'url': '//www.facebook.com/video/embed?video_id=',
+				'url': 'https://www.facebook.com/video/embed?video_id=',
 				'html': '<iframe src="{url}" width="625" height="350" frameborder="0" data-mybb-vt="{type}" data-mybb-vsrc="{src}"></iframe>'
 			},
 			'Liveleak': {
 				'match': /liveleak\.com\/(?:view\?[a-z]=)([^\/]+)/,
-				'url': '//www.liveleak.com/ll_embed?i=',
+				'url': 'http://www.liveleak.com/ll_embed?i=',
 				'html': '<iframe width="500" height="300" src="{url}" frameborder="0" data-mybb-vt="{type}" data-mybb-vsrc="{src}"></iframe>'
 			},
 			'MetaCafe': {
 				'match': /metacafe\.com\/watch\/([^\/]+)/,
-				'url': '//www.metacafe.com/embed/',
+				'url': 'http://www.metacafe.com/embed/',
 				'html': '<iframe src="{url}" width="440" height="248" frameborder=0 data-mybb-vt="{type}" data-mybb-vsrc="{src}"></iframe>'
 			},
 			'Mixer': {
@@ -159,7 +159,7 @@ $(function ($) {
 				// Eliminate redundant [size] tags for unformatted text.
 				// Part of the fix for the browser-dependent bug of issue #4184.
 				// Also fixes the browser-dependent bug described here:
-				//   <//community.mybb.com/thread-229726.html>
+				//   <https://community.mybb.com/thread-229726.html>
 				fontsize = -1;
 			} else if (!isNaN(size) && size >= 1 && size <= mybbCmd.fsStr.length) {
 				fontsize = mybbCmd.fsStr[size - 1];
@@ -558,7 +558,7 @@ $(function ($) {
 				'</div>' +
 				'<div>' +
 				'<label for="link">' + editor._('Video URL:') + '</label> ' +
-				'<input type="text" id="videourl" placeholder="//" />' +
+				'<input type="text" id="videourl" placeholder="http://" />' +
 				'</div>' +
 				'<div><input type="button" class="button" value="' + editor._('Insert') + '" /></div>' +
 				'</div>'
@@ -568,7 +568,7 @@ $(function ($) {
 				videourl = $content.find('#videourl').val();
 				videotype = $content.find('#videotype').val();
 
-				if (videourl !== '' && videourl !== '//')
+				if (videourl !== '' && videourl !== 'http://')
 					editor.insert('[video=' + videotype + ']' + videourl + '[/video]');
 
 				editor.closeDropDown(true);
@@ -642,7 +642,7 @@ $(function ($) {
 				'<div>' +
 				'<div>' +
 				'<label for="image">' + editor._('URL') + ':</label> ' +
-				'<input type="text" id="image" placeholder="//" />' +
+				'<input type="text" id="image" placeholder="https://" />' +
 				'</div>' +
 				'<div>' +
 				'<label for="width">' + editor._('Width (optional)') + ':</label> ' +

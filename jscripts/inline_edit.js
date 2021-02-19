@@ -48,7 +48,7 @@ var inlineEditor = {
 							$(this).html(values.subject);
 						}
 					}
-
+					
 					$('#tid_' + tid + '_temp').remove();
 				},
 				data: function(value, settings)
@@ -63,7 +63,7 @@ var inlineEditor = {
 				// Take tid out of the id attribute
 				id = $(this).attr('id');
 				tid = id.replace( /[^\d.]/g, '');
-
+				
 				// We may click again in the textbox and we'd be adding a new (invalid) clone - we don't want that!
 				if(!$('#tid_' + tid + '_temp').length)
 					$(this).clone().attr('id','tid_' + tid + '_temp').hide().appendTo("body");
@@ -79,7 +79,7 @@ var inlineEditor = {
 
 		return false;
 	},
-
+	
 	jeditableTimeout : function(tid)
 	{
 		$('#tid_' + tid).trigger("hold" + tid);

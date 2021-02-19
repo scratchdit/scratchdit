@@ -137,17 +137,17 @@ var UserCP = {
 				$.each(exp_buddies, function(index, buddy)
 				{
 					buddy = buddy.replace(/^\s+|\s+$/g, "");
-
+					
 					var newbuddy = { id: buddy, text: buddy };
 					newbuddies.push(newbuddy);
 				});
-
+				
 				// Merge both
 				var newarray = $.merge(existing_buddies, newbuddies);
-
+				
 				// Update data
 				$(this.buddy_field).select2("data", newarray);
-
+				
 			}
 			else
 			{
@@ -210,7 +210,7 @@ var UserCP = {
 				{
 					$("#sentrequests").html(request.responseText);
 				}
-
+				
 		        type_submit.prop("disabled", false);
 		        type_add_username.prop("disabled", false);
 		        type_submit.attr("value", old_value);
