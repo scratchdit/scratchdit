@@ -832,14 +832,6 @@ class UserDataHandler extends DataHandler
 	 */
 	function verify_checkfields()
 	{
-		$user = &$this->data;
-
-		// An invalid language has been specified?
-		if ($user['regcheck1'] !== "" || $user['regcheck2'] !== "TRUE") {
-			$this->set_error("invalid_checkfield");
-			return FALSE;
-		}
-
 		return TRUE;
 	}
 
