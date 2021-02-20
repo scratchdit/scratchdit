@@ -240,11 +240,10 @@ class UserDataHandler extends DataHandler
 		}
 
 		// Check if this is a proper email address.
-		if (!validate_email_format($user['email'])) {
-			$this->set_error('invalid_email_format');
-			echo "Invalid format email: {$user['email']} ...!";
-			return FALSE;
-		}
+	#	if (!validate_email_format($user['email'])) {
+	#		$this->set_error('invalid_email_format');
+	#		return FALSE;
+	#	}
 
 		// Check banned emails
 		if (is_banned_email($user['email'], TRUE)) {
