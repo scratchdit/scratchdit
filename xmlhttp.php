@@ -806,7 +806,6 @@ else if($mybb->input['action'] == "validate_captcha")
 	if(my_strtolower($imagestring) == my_strtolower($mybb->get_input('imagestring')))
 	{
 		//echo json_encode(array("success" => $lang->captcha_matches));
-		echo json_encode("TRUE");
 		exit;
 	}
 	else
@@ -917,7 +916,6 @@ elseif($mybb->input['action'] == "validate_question" && $mybb->settings['securit
 		}
 		else
 		{
-			echo json_encode("TRUE");
 			exit;
 		}
 	}
@@ -940,7 +938,6 @@ else if($mybb->input['action'] == "complex_password")
 	else
 	{
 		// Return nothing but an OK password if passes regex
-		echo json_encode("TRUE");
 	}
 
 	exit;
@@ -999,7 +996,6 @@ else if($mybb->input['action'] == "username_availability")
 	else
 	{
 		//$lang->username_available = $lang->sprintf($lang->username_available, htmlspecialchars_uni($username));
-		echo json_encode("TRUE");
 		exit;
 	}
 }
@@ -1039,7 +1035,6 @@ else if($mybb->input['action'] == "email_availability")
 	}
 	else
 	{
-		echo json_encode("TRUE");
 		exit;
 	}
 }
