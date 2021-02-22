@@ -440,7 +440,8 @@
 		"ADD",
 		"TEST",
 		"REMOVE",
-		"BOOKMARK"
+		"BOOKMARK",
+		"ROP"
 	],
 	"typescript.format.insertSpaceAfterConstructor": true,
 	"typescript.format.insertSpaceAfterTypeAssertion": true,
