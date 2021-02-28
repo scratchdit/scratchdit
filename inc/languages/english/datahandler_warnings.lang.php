@@ -1,8 +1,8 @@
 <?php
 /**
- * MyBB 1.8 English Language Pack
- * Copyright 2014 MyBB Group, All Rights Reserved
- */
+ * @package MyBB 1.8
+ * @author MyBB Group English Language Pack
+ * @license Copyright 2014 MyBB Group, All Rights Reserved. See http://www.mybb.com/about/license */
 
 $l['warnings_reached_max_warnings_day'] = "You cannot warn anyone as you have reached your limit on the number of warnings you can give out per day.<br /><br />The maximum number of warnings you can give out per day is {1}.";
 $l['warnings_error_invalid_user'] = "Selected user doesn't exist.";

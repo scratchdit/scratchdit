@@ -1,8 +1,8 @@
 <?php
 /**
- * MyBB 1.8 English Language Pack
- * Copyright 2014 MyBB Group, All Rights Reserved
- */
+ * @package MyBB 1.8
+ * @author MyBB Group English Language Pack
+ * @license Copyright 2014 MyBB Group, All Rights Reserved. See http://www.mybb.com/about/license */
 
 $l['dashboard'] = "Dashboard";
 $l['dashboard_description'] = "This section allows you to see some of the various statistics relating to your board. You may also add other notes for other administrators to see.";

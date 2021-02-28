@@ -1,8 +1,8 @@
 <?php
 /**
- * MyBB 1.8 English Language Pack
- * Copyright 2014 MyBB Group, All Rights Reserved
- */
+ * @package MyBB 1.8
+ * @author MyBB Group English Language Pack
+ * @license Copyright 2014 MyBB Group, All Rights Reserved. See http://www.mybb.com/about/license */
 
 $l['click_no_wait'] = "Click here if you don't want to wait any longer.";
 $l['redirect_return_forum'] = "<br /><br />Alternatively, <a href=\"{1}\">return to the forum</a>.";

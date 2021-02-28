@@ -1,8 +1,8 @@
 <?php
 /**
- * MyBB 1.8 English Language Pack
- * Copyright 2014 MyBB Group, All Rights Reserved
- */
+ * @package MyBB 1.8
+ * @author MyBB Group English Language Pack
+ * @license Copyright 2014 MyBB Group, All Rights Reserved. See http://www.mybb.com/about/license */
 
 $l['logindata_invalidpwordusername'] = "You have entered an invalid username/password combination. <br /><br />If you have forgotten your password please <a href=\"member.php?action=lostpw\">retrieve a new one</a>.";
 $l['logindata_invalidpwordusernameemail'] = "You have entered an invalid email/password combination. <br /><br />If you have forgotten your password please <a href=\"member.php?action=lostpw\">retrieve a new one</a>.";

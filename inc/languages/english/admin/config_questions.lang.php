@@ -1,8 +1,8 @@
 <?php
 /**
- * MyBB 1.8 English Language Pack
- * Copyright 2014 MyBB Group, All Rights Reserved
- */
+ * @package MyBB 1.8
+ * @author MyBB Group English Language Pack
+ * @license Copyright 2014 MyBB Group, All Rights Reserved. See http://www.mybb.com/about/license */
 
 $l['security_questions'] = "Security Questions";
 $l['security_questions_desc'] = "Here you can create and manage security questions that will be randomly shown during registration.";

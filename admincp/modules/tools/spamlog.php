@@ -1,8 +1,8 @@
 <?php
 /**
- * MyBB 1.8
- * Copyright 2014 MyBB Group, All Rights Reserved
- * Website: //www.mybb.com
+ * @package MyBB 1.8
+ * @author MyBB Group
+ * @license Copyright 2014 MyBB Group, All Rights Reserved. See http://www.mybb.com/about/license * Website: //www.mybb.com
  * License: //www.mybb.com/about/license
 
  */

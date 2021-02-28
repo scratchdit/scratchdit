@@ -1,8 +1,8 @@
 <?php
 /**
- * MyBB 1.8 English Language Pack
- * Copyright 2014 MyBB Group, All Rights Reserved
- */
+ * @package MyBB 1.8
+ * @author MyBB Group English Language Pack
+ * @license Copyright 2014 MyBB Group, All Rights Reserved. See http://www.mybb.com/about/license */
 
 $l['preferences_and_personal_notes'] = "Preferences &amp; Personal Notes";
 $l['prefs_and_personal_notes_description'] = "Here you can manage your Admin Control Panel preferences and leave personal notes for yourself.";

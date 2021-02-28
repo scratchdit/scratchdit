@@ -1,8 +1,8 @@
 <?php
 /**
- * MyBB 1.8 English Language Pack
- * Copyright 2014 MyBB Group, All Rights Reserved
- */
+ * @package MyBB 1.8
+ * @author MyBB Group English Language Pack
+ * @license Copyright 2014 MyBB Group, All Rights Reserved. See http://www.mybb.com/about/license */
 
 $l['custom_profile_fields'] = "Custom Profile Fields";
 $l['custom_profile_fields_desc'] = "This section allows you to edit, delete, and manage your custom profile fields.";

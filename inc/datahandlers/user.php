@@ -1,9 +1,9 @@
 <?php
 
 /**
- * MyBB 1.8
- * Copyright 2014 MyBB Group, All Rights Reserved
- *
+ * @package MyBB 1.8
+ * @author MyBB Group
+ * @license Copyright 2014 MyBB Group, All Rights Reserved. See http://www.mybb.com/about/license *
  * Website: //www.mybb.com
  * License: //www.mybb.com/about/license
  */
@@ -229,7 +229,6 @@ class UserDataHandler extends DataHandler
 	 */
 	function verify_email()
 	{
-		return TRUE; // ROP
 		global $mybb;
 
 		$user = &$this->data;

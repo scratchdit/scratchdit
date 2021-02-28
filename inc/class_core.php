@@ -1,11 +1,12 @@
 <?php
 
 /**
- * MyBB 1.8
- * Copyright 2014 MyBB Group, All Rights Reserved
+ * The MyBB core
  *
- * Website: //www.mybb.com
- * License: //www.mybb.com/about/license
+ * @package MyBBv1.8
+ * @author  MyBB Group <contact@mybb.com>
+ * @license Copyright 2014 MyBB Group, All Rights Reserved. See http://www.mybb.com/about/license *
+ * @link    http://www.mybb.com
  */
 
 class MyBB
@@ -286,8 +287,10 @@ class MyBB
 	 * Parses the incoming variables.
 	 *
 	 * @param array $array The array of incoming variables.
+	 *
+	 * @return void
 	 */
-	function parse_incoming($array)
+	function parse_incoming(array $array)
 	{
 		if (!is_array($array)) {
 			return;
@@ -300,6 +303,8 @@ class MyBB
 
 	/**
 	 * Parses the incoming cookies
+	 *
+	 * @return void
 	 */
 	function parse_cookies()
 	{
@@ -330,8 +335,10 @@ class MyBB
 	 * Strips slashes out of a given array.
 	 *
 	 * @param array $array The array to strip.
+	 *
+	 * @return void
 	 */
-	function strip_slashes_array(&$array)
+	function strip_slashes_array(array &$array)
 	{
 		foreach ($array as $key => $val) {
 			if (is_array($array[$key])) {
@@ -346,8 +353,10 @@ class MyBB
 	 * Unsets globals from a specific array.
 	 *
 	 * @param array $array The array to unset from.
+	 *
+	 * @return void
 	 */
-	function unset_globals($array)
+	function unset_globals(array $array)
 	{
 		if (!is_array($array)) {
 			return;
@@ -361,6 +370,8 @@ class MyBB
 
 	/**
 	 * Cleans predefined input variables.
+	 *
+	 * @return void
 	 */
 	function clean_input()
 	{
@@ -391,12 +402,12 @@ class MyBB
 	/**
 	 * Checks the input data type before usage.
 	 *
-	 * @param string $name Variable name ($mybb->input)
-	 * @param int $type The type of the variable to get. Should be one of MyBB::INPUT_INT, MyBB::INPUT_ARRAY or MyBB::INPUT_STRING.
+	 * @param string  $name Variable name ($mybb->input).
+	 * @param integer $type The type of the variable to get. Should be one of MyBB::INPUT_INT, MyBB::INPUT_ARRAY or MyBB::INPUT_STRING.
 	 *
-	 * @return int|float|array|string Checked data. Type depending on $type
+	 * @return integer|float|array|string Checked data. Type depending on $type
 	 */
-	function get_input($name, $type = self::INPUT_STRING)
+	function get_input(string $name, int $type = self::INPUT_STRING)
 	{
 		switch ($type) {
 			case self::INPUT_ARRAY:
@@ -430,12 +441,12 @@ class MyBB
 	/**
 	 * Get the path to an asset using the CDN URL if configured.
 	 *
-	 * @param string $path    The path to the file.
-	 * @param bool   $use_cdn Whether to use the configured CDN options.
+	 * @param string  $path    The path to the file.
+	 * @param boolean $use_cdn Whether to use the configured CDN options.
 	 *
 	 * @return string The complete URL to the asset.
 	 */
-	public function get_asset_url($path = '', $use_cdn = TRUE)
+	public function get_asset_url(string $path = '', bool $use_cdn = TRUE)
 	{
 		$path = ltrim((string)$path, '/');
 		if (substr($path, 0, 4) != 'http') {
@@ -465,8 +476,10 @@ class MyBB
 	 * Triggers a generic error.
 	 *
 	 * @param string $code The error code.
+	 *
+	 * @return void;
 	 */
-	function trigger_generic_error($code)
+	function trigger_generic_error(string $code)
 	{
 		global $error_handler;
 
@@ -527,9 +540,13 @@ class MyBB
 		$error_handler->trigger($message, $error_code);
 	}
 
+	/**
+	 * Run shutdown function
+	 *
+	 * @return void
+	 */
 	function __destruct()
 	{
-		// Run shutdown function
 		if (function_exists("run_shutdown")) {
 			run_shutdown();
 		}

@@ -1,8 +1,8 @@
 <?php
 /**
- * MyBB 1.8 English Language Pack
- * Copyright 2014 MyBB Group, All Rights Reserved
- */
+ * @package MyBB 1.8
+ * @author MyBB Group English Language Pack
+ * @license Copyright 2014 MyBB Group, All Rights Reserved. See http://www.mybb.com/about/license */
 
 $l['spiders_bots'] = "Spiders / Bots";
 $l['spiders_bots_desc'] = "This section allows you to manage the search engine spiders &amp; bots automatically detected by your forum. You're also able to see when a particular bot last visited.";

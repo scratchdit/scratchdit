@@ -1,8 +1,8 @@
 <?php
 /**
- * MyBB 1.8 English Language Pack
- * Copyright 2014 MyBB Group, All Rights Reserved
- */
+ * @package MyBB 1.8
+ * @author MyBB Group English Language Pack
+ * @license Copyright 2014 MyBB Group, All Rights Reserved. See http://www.mybb.com/about/license */
 
 $l['user_titles'] = "User Titles";
 $l['user_titles_desc'] = "This section allows management of user titles. User titles are assigned to users based on the number of posts they make and also allow a custom 'Star' image to be shown based on the number of posts the user has.";

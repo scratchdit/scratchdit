@@ -1,8 +1,8 @@
 <?php
 /**
- * MyBB 1.8 English Language Pack
- * Copyright 2014 MyBB Group, All Rights Reserved
- */
+ * @package MyBB 1.8
+ * @author MyBB Group English Language Pack
+ * @license Copyright 2014 MyBB Group, All Rights Reserved. See http://www.mybb.com/about/license */
 
 $l['attachment_types'] = "Attachment Types";
 $l['attachment_types_desc'] = "Here you can create and manage attachment types which define which types of files users can attach to posts. Note: Disabling an attachment type will make existing attachments of this type inaccessible.";

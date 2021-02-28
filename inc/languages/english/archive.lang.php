@@ -1,7 +1,8 @@
 <?php
 /**
- * MyBB 1.8 English Language Pack
- * Copyright 2014 MyBB Group, All Rights Reserved
+ * @package MyBB 1.8
+ * @author MyBB Group English Language Pack
+ * @license . See http://www.mybb.com/about/license
  */
 
 $l['archive_fullversion'] = "Full Version:";

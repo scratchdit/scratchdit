@@ -1,8 +1,8 @@
 <?php
 /**
- * MyBB 1.8 English Language Pack
- * Copyright 2014 MyBB Group, All Rights Reserved
- */
+ * @package MyBB 1.8
+ * @author MyBB Group English Language Pack
+ * @license Copyright 2014 MyBB Group, All Rights Reserved. See http://www.mybb.com/about/license */
 
 $l['postdata_invalid_user_id'] = 'The user id does not exist. Please supply a valid user id.';
 $l['postdata_firstpost_no_subject'] = 'The thread does not have a subject. Please enter a subject.';

@@ -1,8 +1,8 @@
 <?php
 /**
- * MyBB 1.8 English Language Pack
- * Copyright 2014 MyBB Group, All Rights Reserved
- */
+ * @package MyBB 1.8
+ * @author MyBB Group English Language Pack
+ * @license Copyright 2014 MyBB Group, All Rights Reserved. See http://www.mybb.com/about/license */
 
 $l['recount_rebuild'] = "Recount &amp; Rebuild";
 $l['recount_rebuild_desc'] = "Here you can recount &amp; rebuild data to fix any synchronization errors in your forum.";

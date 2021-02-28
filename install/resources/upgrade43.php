@@ -1,6 +1,7 @@
 <?php
 /**
- * MyBB 1.8
+ * @package MyBB 1.8
+ * @author MyBB Group
  * Copyright 2018 MyBB Group, All Rights Reserved
  *
  * Website: //www.mybb.com

@@ -1,8 +1,8 @@
 <?php
 /**
- * MyBB 1.8 English Language Pack
- * Copyright 2014 MyBB Group, All Rights Reserved
- */
+ * @package MyBB 1.8
+ * @author MyBB Group English Language Pack
+ * @license Copyright 2014 MyBB Group, All Rights Reserved. See http://www.mybb.com/about/license */
 
 $l['languages'] = "Languages";
 $l['languages_desc'] = "The language packs you have installed on your forum are shown below. You can choose to edit the language files, edit the files with another language, or edit the language's properties.";

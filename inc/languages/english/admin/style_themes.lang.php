@@ -1,8 +1,8 @@
 <?php
 /**
- * MyBB 1.8 English Language Pack
- * Copyright 2014 MyBB Group, All Rights Reserved
- */
+ * @package MyBB 1.8
+ * @author MyBB Group English Language Pack
+ * @license Copyright 2014 MyBB Group, All Rights Reserved. See http://www.mybb.com/about/license */
 
 $l['themes'] = "Themes";
 $l['themes_desc'] = "Here you can manage the themes set up on your forum. Themes allow you to customize the appearance of your forum. A list of the themes currently set up are shown below.";
