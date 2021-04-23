@@ -1,5 +1,9 @@
 /*! SCEditor | (C) 2011-2013, Sam Clarke | sceditor.com/license */
-html, body, p, code:before, table {
+html,
+body,
+p,
+code:before,
+table {
 	margin: 0;
 	padding: 0;
 	font-family: Tahoma, Verdana, Arial, Sans-Serif;
@@ -28,7 +32,8 @@ body {
 	word-wrap: break-word;
 }
 
-table, td {
+table,
+td {
 	border: 1px dotted #000;
 
 	/* Show empty cells so they can be edited */
@@ -37,7 +42,7 @@ table, td {
 
 code:before {
 	font-weight: bold;
-	content: 'Code:';
+	content: "Code:";
 	display: block;
 	border-bottom: 1px solid #ccc;
 	padding: 4px 0 3px 0;
@@ -45,7 +50,7 @@ code:before {
 }
 
 code.phpcodeblock:before {
-	content: 'PHP Code:' !important;
+	content: "PHP Code:" !important;
 }
 
 code {
@@ -54,7 +59,7 @@ code {
 	padding: 10px;
 	position: relative;
 	background: white;
-	margin: .25em .05em 0 0;
+	margin: 0.25em 0.05em 0 0;
 	border: 1px solid #ccc;
 	white-space: pre-wrap;
 	display: block;
@@ -63,11 +68,13 @@ code {
 	border-radius: 6px;
 }
 
-.ie6 code, .ie7 code {
+.ie6 code,
+.ie7 code {
 	margin-top: 0;
 }
 
-code:before, code {
+code:before,
+code {
 	display: block;
 	text-align: left;
 }
@@ -75,7 +82,7 @@ code:before, code {
 blockquote {
 	position: relative;
 	background: white;
-	margin: .25em .05em 0 0;
+	margin: 0.25em 0.05em 0 0;
 	border: 1px solid #ccc;
 	padding: 10px;
 	-moz-border-radius: 6px;
@@ -98,12 +105,18 @@ div {
 	min-height: 1.25em;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
 	padding: 0;
 	margin: 0;
 }
 
-ul, ol {
+ul,
+ol {
 	margin-top: 0;
 	margin-bottom: 0;
 	padding-top: 0;
@@ -115,29 +128,29 @@ img {
 }
 
 font[size="1"] {
-    font-size: xx-small;
+	font-size: xx-small;
 }
 
 font[size="2"] {
-    font-size: x-small;
+	font-size: x-small;
 }
 
 font[size="3"] {
-    font-size: small;
+	font-size: small;
 }
 
 font[size="4"] {
-    font-size: medium;
+	font-size: medium;
 }
 
 font[size="5"] {
-    font-size: large;
+	font-size: large;
 }
 
 font[size="6"] {
-    font-size: x-large;
+	font-size: x-large;
 }
 
 font[size="7"] {
-    font-size: xx-large;
+	font-size: xx-large;
 }

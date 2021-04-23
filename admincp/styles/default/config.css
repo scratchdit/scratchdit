@@ -49,7 +49,7 @@
 }
 
 .langeditor_textarea_editwith {
-	background: #E0E0E0;
+	background: #e0e0e0;
 }
 .langeditor_textarea_edit,
 .langeditor_textarea_editwith {
@@ -68,10 +68,10 @@
 
 .langeditor_rtl {
 	direction: rtl;
-    unicode-bidi: bidi-override;
+	unicode-bidi: bidi-override;
 }
 
 .langeditor_ltr {
 	direction: ltr;
-    unicode-bidi: bidi-override;
+	unicode-bidi: bidi-override;
 }

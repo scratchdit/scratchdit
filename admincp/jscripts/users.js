@@ -1,13 +1,10 @@
 var Users = {
-	last_value: '',
-	cached_users: '',
+	last_value: "",
+	cached_users: "",
 
-	init: function()
-	{
-	}
+	init: function () {},
 };
 
-$(function()
-{
+$(function () {
 	Users.init();
 });

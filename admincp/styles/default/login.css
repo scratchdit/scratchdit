@@ -4,7 +4,7 @@
  */
 
 body {
-	font-family: 'Lucida Grande', Tahoma, Verdana, Arial, sans-serif;
+	font-family: "Lucida Grande", Tahoma, Verdana, Arial, sans-serif;
 	font-size: 12px;
 	background: #fff;
 	color: #000000;
@@ -12,12 +12,12 @@ body {
 }
 
 a {
-	color: #0072BC;
+	color: #0072bc;
 	text-decoration: none;
 }
 
 a:hover {
-	color: #0072BC;
+	color: #0072bc;
 	text-decoration: underline;
 }
 
@@ -52,7 +52,8 @@ a:hover {
 	-webkit-border-radius: 6px;
 }
 
-p, form {
+p,
+form {
 	padding: 0 10px 10px 10px;
 }
 
@@ -71,7 +72,7 @@ form p {
 h2 {
 	background: #02426c url(images/thead.png) repeat-x top left;
 	border-bottom: 1px solid #263c30;
-	color:#fff;
+	color: #fff;
 	margin: 0;
 	padding: 8px;
 	font-size: 14px;
@@ -85,7 +86,7 @@ input.text_input {
 	width: 255px;
 	padding: 4px;
 	font-size: 13px;
-	font-family: 'Lucida Grande', Tahoma, Verdana, Arial, sans-serif;
+	font-family: "Lucida Grande", Tahoma, Verdana, Arial, sans-serif;
 	border-radius: 5px;
 	-moz-border-radius: 5px;
 	-webkit-border-radius: 5px;
@@ -108,14 +109,14 @@ input.text_input:focus {
 }
 
 #message.error {
-	border: 1px solid #FC6;
-	background: #FFC;
-	color: #C00;
+	border: 1px solid #fc6;
+	background: #ffc;
+	color: #c00;
 }
 
 #message.success {
 	border: #080 1px solid;
-	background-color: #E8FCDC;
+	background-color: #e8fcdc;
 	color: #080;
 }
 
@@ -156,7 +157,7 @@ p.submit input {
 	background: #e3e3e3 url(images/submit_bg.png) repeat-x top;
 	color: #444;
 	font-weight: bold;
-	font-family: 'Lucida Grande', Tahoma, Verdana, Arial, sans-serif;
+	font-family: "Lucida Grande", Tahoma, Verdana, Arial, sans-serif;
 	margin-right: 3px;
 	font-size: 1.1em;
 	border-radius: 5px;
@@ -181,7 +182,7 @@ p.submit input:hover {
 
 .alert {
 	padding: 5px 10px;
-	border: #FC6 1px solid;
+	border: #fc6 1px solid;
 	background-color: #ffc;
 	color: #900;
 	font-style: normal;

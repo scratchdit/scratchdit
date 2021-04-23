@@ -35,7 +35,7 @@ a:active {
 }
 
 .tt-suggestion.tt-is-under-cursor {
-    background-color: #48715b;
+	background-color: #48715b;
 	color: #fff;
 }
 
@@ -44,4 +44,3 @@ a:active {
 	color: #fff;
 	border-color: #263c30;
 }
-	

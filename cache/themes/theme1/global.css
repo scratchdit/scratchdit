@@ -10,17 +10,18 @@ body {
 }
 
 a:link {
-	color: #0072BC;
+	color: #0072bc;
 	text-decoration: none;
 }
 
 a:visited {
-	color: #0072BC;
+	color: #0072bc;
 	text-decoration: none;
 }
 
-a:hover, a:active {
-	color: #0072BC;
+a:hover,
+a:active {
+	color: #0072bc;
 	text-decoration: underline;
 }
 
@@ -106,7 +107,8 @@ a:hover, a:active {
 	margin-left: 10px;
 }
 
-#panel .upper a.login, #panel .upper a.lost_password {
+#panel .upper a.login,
+#panel .upper a.lost_password {
 	background: url(../../../images/headerlinks_sprite.png) 0 -100px no-repeat;
 	padding-left: 20px;
 	margin-left: 10px;
@@ -154,7 +156,10 @@ a:hover, a:active {
 	clear: both;
 }
 
-#panel .upper a:link, #panel .upper a:visited, #panel .upper a:hover, #panel .upper a:active {
+#panel .upper a:link,
+#panel .upper a:visited,
+#panel .upper a:hover,
+#panel .upper a:active {
 	color: #fff;
 }
 
@@ -166,7 +171,10 @@ a:hover, a:active {
 	padding: 5px;
 }
 
-#panel .lower a:link, #panel .lower a:visited, #panel .lower a:hover, #panel .lower a:active {
+#panel .lower a:link,
+#panel .lower a:visited,
+#panel .lower a:hover,
+#panel .lower a:active {
 	color: #666;
 }
 
@@ -178,7 +186,8 @@ a:hover, a:active {
 	vertical-align: middle;
 }
 
-#search input.button, #search input.textbox {
+#search input.button,
+#search input.textbox {
 	border-color: #000;
 }
 
@@ -220,7 +229,10 @@ a:hover, a:active {
 	overflow: hidden;
 }
 
-#footer a:link, #footer a:visited, #footer a:hover, #footer a:active {
+#footer a:link,
+#footer a:visited,
+#footer a:hover,
+#footer a:active {
 	color: #777;
 }
 
@@ -256,12 +268,14 @@ a:hover, a:active {
 	font-size: 11px;
 }
 
-#footer .lower a:link, #footer .lower a:visited {
+#footer .lower a:link,
+#footer .lower a:visited {
 	color: #444;
 	font-weight: bold;
 }
 
-#footer .lower a:hover, #footer .lower a:active {
+#footer .lower a:hover,
+#footer .lower a:active {
 	color: #333;
 	text-decoration: underline;
 	font-weight: bold;
@@ -365,7 +379,8 @@ table {
 	text-decoration: none;
 }
 
-.thead a:hover, .thead a:active {
+.thead a:hover,
+.thead a:active {
 	color: #ffffff;
 	text-decoration: underline;
 }
@@ -387,7 +402,8 @@ table {
 	color: #fff;
 }
 
-.tcat a:hover, .tcat a:active {
+.tcat a:hover,
+.tcat a:active {
 	color: #fff;
 }
 
@@ -433,18 +449,23 @@ table {
 	border-top-color: #ffb8be;
 }
 
-.trow_deleted, .post.deleted_post {
-	background: #E8DEFF;
+.trow_deleted,
+.post.deleted_post {
+	background: #e8deff;
 }
 
-.trow_selected, tr.trow_selected td {
-	background: #FFFBD9;
+.trow_selected,
+tr.trow_selected td {
+	background: #fffbd9;
 	color: #333;
-	border-right-color: #F7E86A;
-	border-bottom-color: #F7E86A;
+	border-right-color: #f7e86a;
+	border-bottom-color: #f7e86a;
 }
 
-.trow_selected a:link, .trow_selected a:visited, .trow_selected a:hover, .trow_selected a:active {
+.trow_selected a:link,
+.trow_selected a:visited,
+.trow_selected a:hover,
+.trow_selected a:active {
 	color: #333;
 }
 
@@ -474,12 +495,14 @@ table {
 	text-decoration: none;
 }
 
-.tfoot a:hover, .tfoot a:active {
+.tfoot a:hover,
+.tfoot a:active {
 	color: #444;
 	text-decoration: underline;
 }
 
-.thead input.textbox, .thead select {
+.thead input.textbox,
+.thead select {
 	border: 1px solid #263c30;
 }
 
@@ -503,7 +526,8 @@ table {
 	text-decoration: none;
 }
 
-.navigation a:hover, .navigation a:active {
+.navigation a:hover,
+.navigation a:active {
 	text-decoration: underline;
 }
 
@@ -528,7 +552,8 @@ fieldset {
 	margin: 0;
 }
 
-fieldset.trow1, fieldset.trow2 {
+fieldset.trow1,
+fieldset.trow2 {
 	border-color: #bbb;
 }
 
@@ -570,7 +595,8 @@ select {
 	font-size: 13px;
 }
 
-button, input.button {
+button,
+input.button {
 	padding: 3px 8px;
 	cursor: pointer;
 	font-family: Tahoma, Verdana, Arial, Sans-Serif;
@@ -581,7 +607,8 @@ button, input.button {
 	outline: 0;
 }
 
-button:hover, input.button:hover {
+button:hover,
+input.button:hover {
 	border-color: #aaa;
 }
 
@@ -590,12 +617,16 @@ form {
 	padding: 0;
 }
 
-input.error, textarea.error, select.error {
+input.error,
+textarea.error,
+select.error {
 	border: 1px solid #f30;
 	color: #f30;
 }
 
-input.valid, textarea.valid, select.valid {
+input.valid,
+textarea.valid,
+select.valid {
 	border: 1px solid #0c0;
 }
 
@@ -637,7 +668,7 @@ form #message {
 }
 
 .popup_menu .popup_item:hover {
-	background: #0072BC;
+	background: #0072bc;
 	color: #fff;
 }
 
@@ -668,19 +699,19 @@ form #message {
 }
 
 ._neutral {
-	background-color: #FAFAFA;
+	background-color: #fafafa;
 	color: #999999;
-	border: 1px solid #CCCCCC;
+	border: 1px solid #cccccc;
 }
 
 ._minus {
-	background-color: #FDD2D1;
-	color: #CB0200;
+	background-color: #fdd2d1;
+	color: #cb0200;
 	border: 1px solid #980201;
 }
 
 ._plus {
-	background-color: #E8FCDC;
+	background-color: #e8fcdc;
 	color: #008800;
 	border: 1px solid #008800;
 }
@@ -690,7 +721,7 @@ img {
 }
 
 img.attachment {
-	border: 1px solid #E9E5D7;
+	border: 1px solid #e9e5d7;
 	padding: 2px;
 }
 
@@ -724,8 +755,8 @@ hr {
 }
 
 .selectall {
-	background: #FFFBD9;
-	border-bottom: 1px solid #F7E86A;
+	background: #fffbd9;
+	border-bottom: 1px solid #f7e86a;
 	color: #333;
 	text-align: center;
 }
@@ -737,7 +768,7 @@ hr {
 	margin-top: 3px;
 }
 
-.tcat_menu>.expcolimage {
+.tcat_menu > .expcolimage {
 	margin-top: 0;
 }
 
@@ -757,7 +788,7 @@ blockquote cite {
 	margin: 0 0 10px 0;
 }
 
-blockquote cite>span {
+blockquote cite > span {
 	float: right;
 	font-weight: normal;
 	font-size: 12px;
@@ -829,14 +860,14 @@ blockquote cite span.highlight {
 }
 
 .highlight {
-	background: #FFFFCC;
+	background: #ffffcc;
 	padding-top: 3px;
 	padding-bottom: 3px;
 }
 
 .pm_alert {
-	background: #FFF6BF;
-	border: 1px solid #FFD324;
+	background: #fff6bf;
+	border: 1px solid #ffd324;
 	text-align: center;
 	padding: 5px 20px;
 	margin-bottom: 15px;
@@ -844,9 +875,9 @@ blockquote cite span.highlight {
 }
 
 .red_alert {
-	background: #FBE3E4;
-	border: 1px solid #A5161A;
-	color: #A5161A;
+	background: #fbe3e4;
+	border: 1px solid #a5161a;
+	color: #a5161a;
 	text-align: center;
 	padding: 5px 20px;
 	margin-bottom: 15px;
@@ -854,20 +885,23 @@ blockquote cite span.highlight {
 	word-wrap: break-word;
 }
 
-.red_alert a:link, .red_alert a:visited, .red_alert a:hover, .red_alert a:active {
-	color: #A5161A;
+.red_alert a:link,
+.red_alert a:visited,
+.red_alert a:hover,
+.red_alert a:active {
+	color: #a5161a;
 }
 
 .high_warning {
-	color: #CC0000;
+	color: #cc0000;
 }
 
 .moderate_warning {
-	color: #F3611B;
+	color: #f3611b;
 }
 
 .low_warning {
-	color: #AE5700;
+	color: #ae5700;
 }
 
 .imminent_banned {
@@ -875,11 +909,11 @@ blockquote cite span.highlight {
 }
 
 .high_banned {
-	color: #FF0000;
+	color: #ff0000;
 }
 
 .moderate_banned {
-	color: #FF6600;
+	color: #ff6600;
 }
 
 .low_banned {
@@ -887,17 +921,17 @@ blockquote cite span.highlight {
 }
 
 .online {
-	color: #15A018;
+	color: #15a018;
 }
 
 .offline {
-	color: #C7C7C7;
+	color: #c7c7c7;
 }
 
 div.error {
 	padding: 5px 10px;
-	border: 2px solid #FFD324;
-	background: #FFF6BF;
+	border: 2px solid #ffd324;
+	background: #fff6bf;
 	font-size: 12px;
 }
 
@@ -912,7 +946,7 @@ div.error p em {
 	font-weight: bold;
 	padding-left: 24px;
 	display: block;
-	color: #C00;
+	color: #c00;
 	background: url(../../../images/error.png) no-repeat 0;
 }
 
@@ -926,7 +960,8 @@ div.error ul {
 	margin-bottom: 5px;
 }
 
-.tfoot .pagination, .tcat .pagination {
+.tfoot .pagination,
+.tcat .pagination {
 	padding-top: 0;
 }
 
@@ -934,7 +969,8 @@ div.error ul {
 	font-weight: bold;
 }
 
-.pagination .pagination_current, .pagination a {
+.pagination .pagination_current,
+.pagination a {
 	padding: 3px 6px;
 	margin-bottom: 3px;
 }
@@ -952,7 +988,7 @@ div.error ul {
 }
 
 .pagination a:hover {
-	background: #0072BC;
+	background: #0072bc;
 	color: #fff;
 	border-color: #263c30;
 	text-decoration: none;
@@ -981,7 +1017,8 @@ div.error ul {
 	cursor: pointer;
 }
 
-.thread_legend, .thread_legend dd {
+.thread_legend,
+.thread_legend dd {
 	margin: 0;
 	padding: 0;
 }
@@ -996,7 +1033,9 @@ div.error ul {
 	vertical-align: bottom;
 }
 
-.forum_legend, .forum_legend dt, .forum_legend dd {
+.forum_legend,
+.forum_legend dt,
+.forum_legend dd {
 	margin: 0;
 	padding: 0;
 }
@@ -1020,7 +1059,7 @@ div.error ul {
 }
 
 .error_message {
-	color: #C00;
+	color: #c00;
 	font-weight: bold;
 	font-size: 10px;
 	margin-bottom: 10px;
@@ -1181,11 +1220,13 @@ div.error ul {
 	color: #999;
 }
 
-.post .post_meta a:link, .post .post_meta a:visited {
+.post .post_meta a:link,
+.post .post_meta a:visited {
 	color: #777;
 }
 
-.post .post_meta a:hover, .post .post_meta a:active {
+.post .post_meta a:hover,
+.post .post_meta a:active {
 	color: #777;
 }
 
@@ -1197,7 +1238,10 @@ div.error ul {
 	overflow: hidden;
 }
 
-.postbit_buttons>a:link, .postbit_buttons>a:hover, .postbit_buttons>a:visited, .postbit_buttons>a:active {
+.postbit_buttons > a:link,
+.postbit_buttons > a:hover,
+.postbit_buttons > a:visited,
+.postbit_buttons > a:active {
 	display: inline-block;
 	padding: 2px 5px;
 	margin: 2px;
@@ -1207,7 +1251,7 @@ div.error ul {
 	color: #555;
 }
 
-.postbit_buttons>a:hover {
+.postbit_buttons > a:hover {
 	border-color: #bbb;
 }
 
@@ -1291,11 +1335,16 @@ div.error ul {
 	background-position: 0 -320px;
 }
 
-.post:not(.deleted_post) .postbit_qrestore, .post:not(.deleted_post) .status_type, .post.deleted_post .postbit_mirage {
+.post:not(.deleted_post) .postbit_qrestore,
+.post:not(.deleted_post) .status_type,
+.post.deleted_post .postbit_mirage {
 	display: none;
 }
 
-a.button:link, a.button:hover, a.button:visited, a.button:active {
+a.button:link,
+a.button:hover,
+a.button:visited,
+a.button:active {
 	background: #0f0f0f url(../../../images/tcat.png) repeat-x;
 	color: #fff;
 	display: inline-block;
@@ -1389,28 +1438,124 @@ a.button.report_user_button span {
 .ie6.top-right {
 	right: auto;
 	bottom: auto;
-	left: expression( ( 0 - jGrowl.offsetWidth + ( document.documentElement.clientWidth ? document.documentElement.clientWidth: document.body.clientWidth) + ( ignoreMe2=document.documentElement.scrollLeft ? document.documentElement.scrollLeft: document.body.scrollLeft)) + 'px');
-	top: expression( ( 0 + ( ignoreMe=document.documentElement.scrollTop ? document.documentElement.scrollTop: document.body.scrollTop)) + 'px');
+	left: expression(
+		(
+				0 - jGrowl.offsetWidth +
+					(
+						document.documentElement.clientWidth ? document.documentElement.clientWidth:
+							document.body.clientWidth
+					) +
+					(
+						ignoreMe2=document.documentElement.scrollLeft ? document.documentElement.scrollLeft:
+							document.body.scrollLeft
+					)
+			) + "px"
+	);
+	top: expression(
+		(
+				0 +
+					(
+						ignoreMe=document.documentElement.scrollTop ? document.documentElement.scrollTop:
+							document.body.scrollTop
+					)
+			) + "px"
+	);
 }
 
 .ie6.top-left {
-	left: expression( ( 0 + ( ignoreMe2=document.documentElement.scrollLeft ? document.documentElement.scrollLeft: document.body.scrollLeft)) + 'px');
-	top: expression( ( 0 + ( ignoreMe=document.documentElement.scrollTop ? document.documentElement.scrollTop: document.body.scrollTop)) + 'px');
+	left: expression(
+		(
+				0 +
+					(
+						ignoreMe2=document.documentElement.scrollLeft ? document.documentElement.scrollLeft:
+							document.body.scrollLeft
+					)
+			) + "px"
+	);
+	top: expression(
+		(
+				0 +
+					(
+						ignoreMe=document.documentElement.scrollTop ? document.documentElement.scrollTop:
+							document.body.scrollTop
+					)
+			) + "px"
+	);
 }
 
 .ie6.bottom-right {
-	left: expression( ( 0 - jGrowl.offsetWidth + ( document.documentElement.clientWidth ? document.documentElement.clientWidth: document.body.clientWidth) + ( ignoreMe2=document.documentElement.scrollLeft ? document.documentElement.scrollLeft: document.body.scrollLeft)) + 'px');
-	top: expression( ( 0 - jGrowl.offsetHeight + ( document.documentElement.clientHeight ? document.documentElement.clientHeight: document.body.clientHeight) + ( ignoreMe=document.documentElement.scrollTop ? document.documentElement.scrollTop: document.body.scrollTop)) + 'px');
+	left: expression(
+		(
+				0 - jGrowl.offsetWidth +
+					(
+						document.documentElement.clientWidth ? document.documentElement.clientWidth:
+							document.body.clientWidth
+					) +
+					(
+						ignoreMe2=document.documentElement.scrollLeft ? document.documentElement.scrollLeft:
+							document.body.scrollLeft
+					)
+			) + "px"
+	);
+	top: expression(
+		(
+				0 - jGrowl.offsetHeight +
+					(
+						document.documentElement.clientHeight ? document.documentElement.clientHeight:
+							document.body.clientHeight
+					) +
+					(
+						ignoreMe=document.documentElement.scrollTop ? document.documentElement.scrollTop:
+							document.body.scrollTop
+					)
+			) + "px"
+	);
 }
 
 .ie6.bottom-left {
-	left: expression( ( 0 + ( ignoreMe2=document.documentElement.scrollLeft ? document.documentElement.scrollLeft: document.body.scrollLeft)) + 'px');
-	top: expression( ( 0 - jGrowl.offsetHeight + ( document.documentElement.clientHeight ? document.documentElement.clientHeight: document.body.clientHeight) + ( ignoreMe=document.documentElement.scrollTop ? document.documentElement.scrollTop: document.body.scrollTop)) + 'px');
+	left: expression(
+		(
+				0 +
+					(
+						ignoreMe2=document.documentElement.scrollLeft ? document.documentElement.scrollLeft:
+							document.body.scrollLeft
+					)
+			) + "px"
+	);
+	top: expression(
+		(
+				0 - jGrowl.offsetHeight +
+					(
+						document.documentElement.clientHeight ? document.documentElement.clientHeight:
+							document.body.clientHeight
+					) +
+					(
+						ignoreMe=document.documentElement.scrollTop ? document.documentElement.scrollTop:
+							document.body.scrollTop
+					)
+			) + "px"
+	);
 }
 
 .ie6.center {
-	left: expression( ( 0 + ( ignoreMe2=document.documentElement.scrollLeft ? document.documentElement.scrollLeft: document.body.scrollLeft)) + 'px');
-	top: expression( ( 0 + ( ignoreMe=document.documentElement.scrollTop ? document.documentElement.scrollTop: document.body.scrollTop)) + 'px');
+	left: expression(
+		(
+				0 +
+					(
+						ignoreMe2=document.documentElement.scrollLeft ? document.documentElement.scrollLeft:
+							document.body.scrollLeft
+					)
+			) + "px"
+	);
+	top: expression(
+		(
+				0 +
+					(
+						ignoreMe=document.documentElement.scrollTop ? document.documentElement.scrollTop:
+							document.body.scrollTop
+					)
+			) + "px"
+	);
 	width: 100%;
 }
 
@@ -1452,7 +1597,8 @@ a.button.report_user_button span {
 
 /** Cross Browser Styling **/
 
-.jGrowl.center .jGrowl-notification, .jGrowl.center .jGrowl-closer {
+.jGrowl.center .jGrowl-notification,
+.jGrowl.center .jGrowl-closer {
 	margin-left: auto;
 	margin-right: auto;
 }
@@ -1478,7 +1624,9 @@ a.button.report_user_button span {
 	min-height: 40px;
 }
 
-.jGrowl-notification .ui-state-highlight, .jGrowl-notification .ui-widget-content .ui-state-highlight, .jGrowl-notification .ui-widget-header .ui-state-highlight {
+.jGrowl-notification .ui-state-highlight,
+.jGrowl-notification .ui-widget-content .ui-state-highlight,
+.jGrowl-notification .ui-widget-header .ui-state-highlight {
 	border: 1px solid #000;
 	background: #000;
 	color: #fff;
@@ -1486,7 +1634,7 @@ a.button.report_user_button span {
 
 .jGrowl-notification .jGrowl-header {
 	font-weight: bold;
-	font-size: .85em;
+	font-size: 0.85em;
 }
 
 .jGrowl-notification .jGrowl-close {
@@ -1516,12 +1664,14 @@ a.button.report_user_button span {
 	padding-top: 4px;
 	padding-bottom: 4px;
 	cursor: pointer;
-	font-size: .9em;
+	font-size: 0.9em;
 	font-weight: bold;
 	text-align: center;
 }
 
-.jGrowl-closer .ui-state-highlight, .jGrowl-closer .ui-widget-content .ui-state-highlight, .jGrowl-closer .ui-widget-header .ui-state-highlight {
+.jGrowl-closer .ui-state-highlight,
+.jGrowl-closer .ui-widget-content .ui-state-highlight,
+.jGrowl-closer .ui-widget-header .ui-state-highlight {
 	border: 1px solid #000;
 	background: #000;
 	color: #fff;
@@ -1539,7 +1689,8 @@ a.button.report_user_button span {
 	color: #333;
 }
 
-.jGrowl .jGrowl-notification.jgrowl_process, .jGrowl .jGrowl-closer {
+.jGrowl .jGrowl-notification.jgrowl_process,
+.jGrowl .jGrowl-closer {
 	background: yellow;
 	border: 1px solid yellow;
 	color: #333;
@@ -1670,7 +1821,8 @@ div.jqi {
 	padding: 7px;
 }
 
-div.jqi .jqicontainer {}
+div.jqi .jqicontainer {
+}
 
 div.jqi .jqiclose {
 	position: absolute;
@@ -1730,7 +1882,8 @@ div.jqi .jqibuttons button.jqidefaultbutton {
 	color: #489afe;
 }
 
-div.jqi .jqibuttons button:hover, div.jqi .jqibuttons button:focus {
+div.jqi .jqibuttons button:hover,
+div.jqi .jqibuttons button:focus {
 	color: #287ade;
 	outline: none;
 }
@@ -1749,7 +1902,7 @@ div.jqi .jqiparentstate::after {
 	background-color: #777;
 	opacity: 0.6;
 	filter: alpha(opacity=60);
-	content: '';
+	content: "";
 	position: absolute;
 	top: 0;
 	left: 0;

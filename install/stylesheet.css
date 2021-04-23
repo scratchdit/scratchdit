@@ -4,7 +4,7 @@
  */
 
 body {
-	font-family: 'Lucida Grande', Tahoma, Verdana, Arial, sans-serif;
+	font-family: "Lucida Grande", Tahoma, Verdana, Arial, sans-serif;
 	font-size: 12px;
 	background: #fff;
 	color: #333;
@@ -22,13 +22,13 @@ a:hover {
 }
 
 #container {
- margin: auto auto;
- width: 880px;
+	margin: auto auto;
+	width: 880px;
 }
 
 /* Logo */
 #logo h1 {
-	background: #fff url('images/logo.png') no-repeat 0 5px;
+	background: #fff url("images/logo.png") no-repeat 0 5px;
 	height: 82px;
 	margin: 0 0 2px 0;
 	padding: 3px;
@@ -171,7 +171,8 @@ h4 {
 }
 
 /* Next Button */
-#next_button, .next_button {
+#next_button,
+.next_button {
 	text-align: right;
 	width: auto;
 }
@@ -276,7 +277,8 @@ table.general th {
 	text-align: left;
 }
 
-table.general th a, table.general th {
+table.general th a,
+table.general th {
 	color: #fff;
 	text-decoration: none;
 }
@@ -291,7 +293,7 @@ input.text_input {
 	width: 300px;
 	padding: 4px;
 	font-size: 13px;
-	font-family: 'Lucida Grande', Tahoma, Verdana, Arial, sans-serif;
+	font-family: "Lucida Grande", Tahoma, Verdana, Arial, sans-serif;
 	border-radius: 5px;
 	-moz-border-radius: 5px;
 	-webkit-border-radius: 5px;
@@ -302,14 +304,15 @@ select {
 	border: 1px solid #aaa;
 	padding: 4px;
 	font-size: 12px;
-	font-family: 'Lucida Grande', Tahoma, Verdana, Arial, sans-serif;
+	font-family: "Lucida Grande", Tahoma, Verdana, Arial, sans-serif;
 	border-radius: 5px;
 	-moz-border-radius: 5px;
 	-webkit-border-radius: 5px;
 	outline: 0;
 }
 
-input.text_input:focus, select:focus {
+input.text_input:focus,
+select:focus {
 	border: 1px solid #777;
 }
 
@@ -319,7 +322,7 @@ input.submit_button {
 	background: #e3e3e3 url(images/submit_bg.png) repeat-x top;
 	color: #444;
 	font-weight: bold;
-	font-family: 'Lucida Grande', Tahoma, Verdana, Arial, sans-serif;
+	font-family: "Lucida Grande", Tahoma, Verdana, Arial, sans-serif;
 	margin-right: 3px;
 	font-size: 1.1em;
 	border-radius: 5px;
@@ -338,7 +341,8 @@ label {
 	font-weight: bold;
 }
 
-.field_description, small {
+.field_description,
+small {
 	color: #444;
 	font-size: 11px;
 }
@@ -357,8 +361,8 @@ label {
 }
 
 .error {
-	background: #FFF6BF;
-	border: 1px solid #FFD324;
+	background: #fff6bf;
+	border: 1px solid #ffd324;
 	margin: 10px auto;
 	padding: 5px 10px 10px 10px;
 	border-radius: 5px;
@@ -371,8 +375,8 @@ label {
 }
 
 .success {
-	background: #D6ECA6;
-	border: 1px solid #8DC93E;
+	background: #d6eca6;
+	border: 1px solid #8dc93e;
 	text-align: center;
 	margin: 10px auto;
 	padding: 10px;

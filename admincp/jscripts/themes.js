@@ -4,7 +4,6 @@
  */
 
 var ThemeSelector = {
-
 	/**
 	 * Constructor
 	 *
@@ -17,7 +16,7 @@ var ThemeSelector = {
 	 * @param  number the theme id
 	 * @return void
 	 */
-	init: function(url, saveUrl, selector, styleSheet, file, selectorForm, tid) {
+	init: function (url, saveUrl, selector, styleSheet, file, selectorForm, tid) {
 		// verify input
 		if (!url || !saveUrl || !selector || !styleSheet || !file || !selectorForm || !tid) {
 			return;
@@ -42,29 +41,29 @@ var ThemeSelector = {
 		ThemeSelector.font_style = $("#css_bits\\[font_style\\]").val();
 		ThemeSelector.font_weight = $("#css_bits\\[font_weight\\]").val();
 
-		$("#save").on('click', function(event) { ThemeSelector.save(event, true); } );
-		$("#save_close").on('click', function(event) { ThemeSelector.saveClose(event); } );
-		
+		$("#save").on("click", function (event) {
+			ThemeSelector.save(event, true);
+		});
+		$("#save_close").on("click", function (event) {
+			ThemeSelector.saveClose(event);
+		});
 
-		$(window).on('beforeunload', function(event){
-			if(ThemeSelector.isChanged())
-			{
-				return ' ';
+		$(window).on("beforeunload", function (event) {
+			if (ThemeSelector.isChanged()) {
+				return " ";
 			}
 		});
 
-		
-		
 		ThemeSelector.selector.on("change", ThemeSelector.updateSelector);
 		ThemeSelector.selectorForm.on("submit", ThemeSelector.updateSelector);
-    },
+	},
 
 	/**
 	 * prevents no-save warning messaging when saving
 	 *
 	 * @return void
 	 */
-	saveClose: function(e) {
+	saveClose: function (e) {
 		ThemeSelector.isClosing = true;
 	},
 
@@ -75,20 +74,30 @@ var ThemeSelector = {
 	 * @param  object the event
 	 * @return void
 	 */
-	updateSelector: function(e) {
+	updateSelector: function (e) {
 		var postData;
 
-		e.preventDefault()
+		e.preventDefault();
 
 		ThemeSelector.saveCheck(e, true);
 
-		postData = "file=" + encodeURIComponent(ThemeSelector.file) + "&tid=" + encodeURIComponent(ThemeSelector.tid) + "&selector=" + encodeURIComponent(ThemeSelector.selector.val()) + "&my_post_key=" + encodeURIComponent(my_post_key);
+		postData =
+			"file=" +
+			encodeURIComponent(ThemeSelector.file) +
+			"&tid=" +
+			encodeURIComponent(ThemeSelector.tid) +
+			"&selector=" +
+			encodeURIComponent(ThemeSelector.selector.val()) +
+			"&my_post_key=" +
+			encodeURIComponent(my_post_key);
 
 		ThemeSelector.selectorGoText = $("#mini_spinner").html();
-		$("#mini_spinner").html("&nbsp;<img src=\"" + ThemeSelector.miniSpinnerImage + "\" style=\"vertical-align: middle;\" alt=\"\" /> ");
+		$("#mini_spinner").html(
+			'&nbsp;<img src="' + ThemeSelector.miniSpinnerImage + '" style="vertical-align: middle;" alt="" /> ',
+		);
 
 		$.ajax({
-			type: 'post',
+			type: "post",
 			url: ThemeSelector.url,
 			data: postData,
 			complete: ThemeSelector.onComplete,
@@ -101,7 +110,7 @@ var ThemeSelector = {
 	 * @param  object the request
 	 * @return true
 	 */
-	onComplete: function(request) {
+	onComplete: function (request) {
 		var message, saved;
 
 		if (request.responseText.match(/<error>(.*)<\/error>/)) {
@@ -110,8 +119,10 @@ var ThemeSelector = {
 			if (!message[1]) {
 				message[1] = lang.unknown_error;
 			}
-			$.jGrowl(lang.theme_info_fetch_error + '\n\n' + message[1], {theme:'jgrowl_error'});
-		} else if(request.responseText) {
+			$.jGrowl(lang.theme_info_fetch_error + "\n\n" + message[1], {
+				theme: "jgrowl_error",
+			});
+		} else if (request.responseText) {
 			if ($("#saved").html()) {
 				saved = $("#saved").html();
 			}
@@ -130,28 +141,29 @@ var ThemeSelector = {
 
 		if (saved) {
 			$("#saved").html(saved);
-			window.setTimeout(function() {
+			window.setTimeout(function () {
 				$("#saved").html("");
 			}, 30000);
 		}
 
 		$("#mini_spinner").html(ThemeSelector.selectorGoText);
-		ThemeSelector.selectorGoText = '';
+		ThemeSelector.selectorGoText = "";
 
 		return true;
 	},
 
-	isChanged: function()
-	{
-		return (ThemeSelector.background != $("#css_bits\\[background\\]").val() ||
-				ThemeSelector.width != $("#css_bits\\[width\\]").val() ||
-				ThemeSelector.color != $("#css_bits\\[color\\]").val() ||
-				ThemeSelector.extra != $("#css_bits\\[extra\\]").val() ||
-				ThemeSelector.text_decoration != $("#css_bits\\[text_decoration\\]").val() ||
-				ThemeSelector.font_family != $("#css_bits\\[font_family\\]").val() ||
-				ThemeSelector.font_size != $("#css_bits\\[font_size\\]").val() ||
-				ThemeSelector.font_style != $("#css_bits\\[font_style\\]").val() ||
-				ThemeSelector.font_weight != $("#css_bits\\[font_weight\\]").val());
+	isChanged: function () {
+		return (
+			ThemeSelector.background != $("#css_bits\\[background\\]").val() ||
+			ThemeSelector.width != $("#css_bits\\[width\\]").val() ||
+			ThemeSelector.color != $("#css_bits\\[color\\]").val() ||
+			ThemeSelector.extra != $("#css_bits\\[extra\\]").val() ||
+			ThemeSelector.text_decoration != $("#css_bits\\[text_decoration\\]").val() ||
+			ThemeSelector.font_family != $("#css_bits\\[font_family\\]").val() ||
+			ThemeSelector.font_size != $("#css_bits\\[font_size\\]").val() ||
+			ThemeSelector.font_style != $("#css_bits\\[font_style\\]").val() ||
+			ThemeSelector.font_weight != $("#css_bits\\[font_weight\\]").val()
+		);
 	},
 
 	/**
@@ -161,33 +173,25 @@ var ThemeSelector = {
 	 * @param  bool true if AJAX, false if not
 	 * @return true
 	 */
-	saveCheck: function(e, isAjax) {
-
-	
+	saveCheck: function (e, isAjax) {
 		if (ThemeSelector.isClosing == true) {
 			return true;
 		}
 
-		if(e != null && isAjax == true)
-			e.preventDefault();
+		if (e != null && isAjax == true) e.preventDefault();
 
 		if (ThemeSelector.isChanged()) {
-			
 			e.preventDefault();
-			
-			if(isAjax == false)
-				return save_changes_lang_string;
-			else
-			{
+
+			if (isAjax == false) return save_changes_lang_string;
+			else {
 				confirmReturn = confirm(save_changes_lang_string);
 				if (confirmReturn == true) {
 					ThemeSelector.save(false, isAjax);
-					$.jGrowl(lang.saved, {theme:'jgrowl_success'});
+					$.jGrowl(lang.saved, { theme: "jgrowl_success" });
 				}
 			}
-		}
-		else if(isAjax == true)
-		{
+		} else if (isAjax == true) {
 			ThemeSelector.selectorPrevOpt = ThemeSelector.selector.val();
 			return true;
 		}
@@ -200,26 +204,39 @@ var ThemeSelector = {
 	 * @param  bool true if AJAX, false if not
 	 * @return true
 	 */
-	save: function(e, isAjax) {
-		var cssBits, postData, completeMethod = 'onUnloadSaveComplete';
+	save: function (e, isAjax) {
+		var cssBits,
+			postData,
+			completeMethod = "onUnloadSaveComplete";
 
 		if (e) {
 			e.preventDefault();
 		}
 
 		cssBits = {
-			'background': $('#css_bits\\[background\\]').val(),
-			'width': $('#css_bits\\[width\\]').val(),
-			'color': $('#css_bits\\[color\\]').val(),
-			'extra': $('#css_bits\\[extra\\]').val(),
-			'text_decoration': $('#css_bits\\[text_decoration\\]').val(),
-			'font_family': $('#css_bits\\[font_family\\]').val(),
-			'font_size': $('#css_bits\\[font_size\\]').val(),
-			'font_style': $('#css_bits\\[font_style\\]').val(),
-			'font_weight': $('#css_bits\\[font_weight\\]').val()
+			background: $("#css_bits\\[background\\]").val(),
+			width: $("#css_bits\\[width\\]").val(),
+			color: $("#css_bits\\[color\\]").val(),
+			extra: $("#css_bits\\[extra\\]").val(),
+			text_decoration: $("#css_bits\\[text_decoration\\]").val(),
+			font_family: $("#css_bits\\[font_family\\]").val(),
+			font_size: $("#css_bits\\[font_size\\]").val(),
+			font_style: $("#css_bits\\[font_style\\]").val(),
+			font_weight: $("#css_bits\\[font_weight\\]").val(),
 		};
 
-		postData = "css_bits=" + encodeURIComponent(jsArrayToPhpArray(cssBits)) + "&selector=" + encodeURIComponent(ThemeSelector.selectorPrevOpt) + "&file=" + encodeURIComponent(ThemeSelector.file) + "&tid=" + encodeURIComponent(ThemeSelector.tid) + "&my_post_key=" + encodeURIComponent(my_post_key) + "&serialized=1";
+		postData =
+			"css_bits=" +
+			encodeURIComponent(jsArrayToPhpArray(cssBits)) +
+			"&selector=" +
+			encodeURIComponent(ThemeSelector.selectorPrevOpt) +
+			"&file=" +
+			encodeURIComponent(ThemeSelector.file) +
+			"&tid=" +
+			encodeURIComponent(ThemeSelector.tid) +
+			"&my_post_key=" +
+			encodeURIComponent(my_post_key) +
+			"&serialized=1";
 
 		if (isAjax == true) {
 			postData += "&ajax=1";
@@ -228,12 +245,12 @@ var ThemeSelector = {
 		ThemeSelector.isAjax = isAjax;
 
 		if (isAjax == true) {
-			completeMethod = 'onSaveComplete';
-			$.jGrowl(lang.saving, {theme:'jgrowl_process'});
+			completeMethod = "onSaveComplete";
+			$.jGrowl(lang.saving, { theme: "jgrowl_process" });
 		}
 
 		$.ajax({
-			type: 'post',
+			type: "post",
 			url: ThemeSelector.saveUrl,
 			data: postData,
 			complete: ThemeSelector[completeMethod],
@@ -247,7 +264,7 @@ var ThemeSelector = {
 	 * @param  object the request
 	 * @return true
 	 */
-	onSaveComplete: function(request) {
+	onSaveComplete: function (request) {
 		var message;
 
 		if (request.responseText.match(/<error>(.*)<\/error>/)) {
@@ -256,12 +273,14 @@ var ThemeSelector = {
 			if (!message[1]) {
 				message[1] = lang.unkown_error;
 			}
-			$.jGrowl(lang.theme_info_save_error + '\n\n' + message[1], {theme:'jgrowl_error'});
+			$.jGrowl(lang.theme_info_save_error + "\n\n" + message[1], {
+				theme: "jgrowl_error",
+			});
 			return false;
-		} else if(request.responseText) {
-			$("#saved").html(" (" + lang.saved + " @ "+ Date() + ")");
+		} else if (request.responseText) {
+			$("#saved").html(" (" + lang.saved + " @ " + Date() + ")");
 			if ($("#ajax_alert")) {
-				$("#ajax_alert").html('').hide();
+				$("#ajax_alert").html("").hide();
 			}
 		}
 
@@ -284,7 +303,7 @@ var ThemeSelector = {
 	 * @param  object the request
 	 * @return true
 	 */
-	onUnloadSaveComplete: function(request) {
+	onUnloadSaveComplete: function (request) {
 		var message;
 
 		if (request.responseText.match(/<error>(.*)<\/error>/)) {
@@ -293,7 +312,9 @@ var ThemeSelector = {
 			if (!message[1]) {
 				message[1] = lang.unkown_error;
 			}
-			$.jGrowl(lang.theme_info_save_error + '\n\n' + message[1], {theme:'jgrowl_error'});
+			$.jGrowl(lang.theme_info_save_error + "\n\n" + message[1], {
+				theme: "jgrowl_error",
+			});
 			return false;
 		}
 		return true;
@@ -320,7 +341,7 @@ var ThemeSelector = {
 	font_family: null,
 	font_size: null,
 	font_style: null,
-	font_weight: null
+	font_weight: null,
 };
 
 /**
@@ -330,16 +351,22 @@ var ThemeSelector = {
  * @return string the JSON
  */
 function jsArrayToPhpArray(a) {
-    var a_php = "", total = 0;
+	var a_php = "",
+		total = 0;
 
-    for (var key in a) {
-        ++total;
-        a_php += "s:" +
-		String(key).length + ":\"" +
-		String(key) + "\";s:" +
-		String(a[key]).length +
-		":\"" + String(a[key]) + "\";";
-    }
-    a_php = "a:" + total + ":{" + a_php + "}";
-    return a_php;
+	for (var key in a) {
+		++total;
+		a_php +=
+			"s:" +
+			String(key).length +
+			':"' +
+			String(key) +
+			'";s:' +
+			String(a[key]).length +
+			':"' +
+			String(a[key]) +
+			'";';
+	}
+	a_php = "a:" + total + ":{" + a_php + "}";
+	return a_php;
 }

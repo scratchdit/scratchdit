@@ -7,8 +7,8 @@
 
 .star_rating {
 	position: relative;
-	width:80px;
-	height:16px;
+	width: 80px;
+	height: 16px;
 	overflow: hidden;
 	list-style: none;
 	margin: 0;
@@ -33,8 +33,8 @@ td .star_rating {
 	outline: none;
 	overflow: hidden;
 	border: none;
-	top:0;
-	left:0;
+	top: 0;
+	left: 0;
 }
 
 .star_rating_notrated li a:hover {
@@ -42,32 +42,32 @@ td .star_rating {
 }
 
 .star_rating li a.one_star {
-	width:20%;
-	z-index:6;
+	width: 20%;
+	z-index: 6;
 }
 
 .star_rating li a.two_stars {
-	width:40%;
-	z-index:5;
+	width: 40%;
+	z-index: 5;
 }
 
 .star_rating li a.three_stars {
-	width:60%;
-	z-index:4;
+	width: 60%;
+	z-index: 4;
 }
 
 .star_rating li a.four_stars {
-	width:80%;
-	z-index:3;
+	width: 80%;
+	z-index: 3;
 }
 
 .star_rating li a.five_stars {
-	width:100%;
-	z-index:2;
+	width: 100%;
+	z-index: 2;
 }
 
 .star_rating .current_rating {
-	z-index:1;
+	z-index: 1;
 	background-position: left center;
 }
 

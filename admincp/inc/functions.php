@@ -1,7 +1,7 @@
 <?php
 /**
  * @package MyBB 1.8
- * @author MyBB Group
+ * @author  MyBB Group
  * @license Copyright 2014 MyBB Group, All Rights Reserved. See http://www.mybb.com/about/license *
  * Website: //www.mybb.com
  * License: //www.mybb.com/about/license
@@ -16,13 +16,11 @@ function log_admin_action()
 
 	$data = func_get_args();
 
-	if(count($data) == 1 && is_array($data[0]))
-	{
+	if(count($data) == 1 && is_array($data[0])) {
 		$data = $data[0];
 	}
 
-	if(!is_array($data))
-	{
+	if(!is_array($data)) {
 		$data = array($data);
 	}
 
@@ -45,8 +43,7 @@ function log_admin_action()
  */
 function admin_redirect($url)
 {
-	if(!headers_sent())
-	{
+	if(!headers_sent()) {
 		$url = str_replace("&amp;", "&", $url);
 		header("Location: $url");
 	}
@@ -54,21 +51,22 @@ function admin_redirect($url)
 	{
 		echo "<meta http-equiv=\"refresh\" content=\"0; url={$url}\">";
 	}
+
 	exit;
 }
 
 /**
  * Updates an administration session data array.
  *
- * @param string $name The name of the item in the data session to update
- * @param mixed $value The value
+ * @param string $name  The name of the item in the data session to update
+ * @param mixed  $value The value
  */
 function update_admin_session($name, $value)
 {
 	global $db, $admin_session;
 
 	$admin_session['data'][$name] = $value;
-	$updated_session = array(
+	$updated_session              = array(
 		"data" => $db->escape_string(@my_serialize($admin_session['data']))
 	);
 	$db->update_query("adminsessions", $updated_session, "sid='{$admin_session['sid']}'");
@@ -78,7 +76,7 @@ function update_admin_session($name, $value)
  * Saves a "flash message" for the current user to be shown on their next page visit.
  *
  * @param string $message The message to show
- * @param string $type The type of message to be shown (success|error)
+ * @param string $type    The type of message to be shown (success|error)
  */
 function flash_message($message, $type='')
 {
@@ -89,18 +87,17 @@ function flash_message($message, $type='')
 /**
  * Draw pagination for pages in the Admin CP.
  *
- * @param int $page The current page we're on
- * @param int $per_page The number of items per page
- * @param int $total_items The total number of items in this collection
- * @param string $url The URL for pagination of this collection
+ * @param  integer $page        The current page we're on
+ * @param  integer $per_page    The number of items per page
+ * @param  integer $total_items The total number of items in this collection
+ * @param  string  $url         The URL for pagination of this collection
  * @return string The built pagination
  */
 function draw_admin_pagination($page, $per_page, $total_items, $url)
 {
 	global $mybb, $lang;
 
-	if($total_items <= $per_page)
-	{
+	if($total_items <= $per_page) {
 		return '';
 	}
 
@@ -108,56 +105,48 @@ function draw_admin_pagination($page, $per_page, $total_items, $url)
 
 	$pagination = "<div class=\"pagination\"><span class=\"pages\">{$lang->pages}: </span>\n";
 
-	if($page > 1)
-	{
-		$prev = $page-1;
-		$prev_page = fetch_page_url($url, $prev);
+	if($page > 1) {
+		$prev        = $page-1;
+		$prev_page   = fetch_page_url($url, $prev);
 		$pagination .= "<a href=\"{$prev_page}\" class=\"pagination_previous\">&laquo; {$lang->previous}</a> \n";
 	}
 
 	// Maximum number of "page bits" to show
-	if(!$mybb->settings['maxmultipagelinks'])
-	{
+	if(!$mybb->settings['maxmultipagelinks']) {
 		$mybb->settings['maxmultipagelinks'] = 5;
 	}
 
 	$max_links = $mybb->settings['maxmultipagelinks'];
 
 	$from = $page-floor($mybb->settings['maxmultipagelinks']/2);
-	$to = $page+floor($mybb->settings['maxmultipagelinks']/2);
+	$to   = $page+floor($mybb->settings['maxmultipagelinks']/2);
 
-	if($from <= 0)
-	{
+	if($from <= 0) {
 		$from = 1;
-		$to = $from+$max_links-1;
+		$to   = $from+$max_links-1;
 	}
 
-	if($to > $pages)
-	{
-		$to = $pages;
+	if($to > $pages) {
+		$to   = $pages;
 		$from = $pages-$max_links+1;
-		if($from <= 0)
-		{
+		if($from <= 0) {
 			$from = 1;
 		}
 	}
 
-	if($to == 0)
-	{
+	if($to == 0) {
 		$to = $pages;
 	}
 
-	if($from > 2)
-	{
-		$first = fetch_page_url($url, 1);
+	if($from > 2) {
+		$first       = fetch_page_url($url, 1);
 		$pagination .= "<a href=\"{$first}\" title=\"{$lang->page} 1\" class=\"pagination_first\">1</a> ... ";
 	}
 
 	for($i = $from; $i <= $to; ++$i)
 	{
 		$page_url = fetch_page_url($url, $i);
-		if($page == $i)
-		{
+		if($page == $i) {
 			$pagination .= "<span class=\"pagination_current\">{$i}</span> \n";
 		}
 		else
@@ -166,18 +155,17 @@ function draw_admin_pagination($page, $per_page, $total_items, $url)
 		}
 	}
 
-	if($to < $pages)
-	{
-		$last = fetch_page_url($url, $pages);
+	if($to < $pages) {
+		$last        = fetch_page_url($url, $pages);
 		$pagination .= "... <a href=\"{$last}\" title=\"{$lang->page} {$pages}\" class=\"pagination_last\">{$pages}</a>";
 	}
 
-	if($page < $pages)
-	{
-		$next = $page+1;
-		$next_page = fetch_page_url($url, $next);
+	if($page < $pages) {
+		$next        = $page+1;
+		$next_page   = fetch_page_url($url, $next);
 		$pagination .= " <a href=\"{$next_page}\" class=\"pagination_next\">{$lang->next} &raquo;</a>\n";
 	}
+
 	$pagination .= "</div>\n";
 	return $pagination;
 }
@@ -185,16 +173,15 @@ function draw_admin_pagination($page, $per_page, $total_items, $url)
 /**
  * Builds a CSV parent list for a particular forum.
  *
- * @param int $fid The forum ID
- * @param string $navsep Optional separator - defaults to comma for CSV list
+ * @param  integer $fid    The forum ID
+ * @param  string  $navsep Optional separator - defaults to comma for CSV list
  * @return string The built parent list
  */
 function make_parent_list($fid, $navsep=",")
 {
 	global $pforumcache, $db;
 
-	if(!$pforumcache)
-	{
+	if(!$pforumcache) {
 		$query = $db->simple_select("forums", "name, fid, pid", "", array("order_by" => "disporder, pid"));
 		while($forum = $db->fetch_array($query))
 		{
@@ -209,25 +196,24 @@ function make_parent_list($fid, $navsep=",")
 
 	foreach($pforumcache[$fid] as $key => $forum)
 	{
-		if($fid == $forum['fid'])
-		{
-			if(!empty($pforumcache[$forum['pid']]))
-			{
+		if($fid == $forum['fid']) {
+			if(!empty($pforumcache[$forum['pid']])) {
 				$navigation = make_parent_list($forum['pid'], $navsep).$navigation;
 			}
 
-			if($navigation)
-			{
+			if($navigation) {
 				$navigation .= $navsep;
 			}
+
 			$navigation .= $forum['fid'];
 		}
 	}
+
 	return $navigation;
 }
 
 /**
- * @param int $fid
+ * @param integer $fid
  */
 function save_quick_perms($fid)
 {
@@ -238,8 +224,7 @@ function save_quick_perms($fid)
 	$field_list = $db->show_fields_from("forumpermissions");
 	foreach($field_list as $field)
 	{
-		if(strpos($field['Field'], 'can') !== false || strpos($field['Field'], 'mod') !== false)
-		{
+		if(strpos($field['Field'], 'can') !== FALSE || strpos($field['Field'], 'mod') !== FALSE) {
 			$permission_fields[$field['Field']] = 1;
 		}
 	}
@@ -252,12 +237,11 @@ function save_quick_perms($fid)
 	$query = $db->simple_select("usergroups", "gid");
 	while($usergroup = $db->fetch_array($query))
 	{
-		$query2 = $db->simple_select("forumpermissions", $db->escape_string(implode(',', array_keys($permission_fields))), "fid='{$fid}' AND gid='{$usergroup['gid']}'", array('limit' => 1));
+		$query2               = $db->simple_select("forumpermissions", $db->escape_string(implode(',', array_keys($permission_fields))), "fid='{$fid}' AND gid='{$usergroup['gid']}'", array('limit' => 1));
 		$existing_permissions = $db->fetch_array($query2);
 
-		if(!$existing_permissions)
-		{
-			$query2 = $db->simple_select("usergroups", $db->escape_string(implode(',', array_keys($usergroup_permission_fields))), "gid='{$usergroup['gid']}'", array('limit' => 1));
+		if(!$existing_permissions) {
+			$query2               = $db->simple_select("usergroups", $db->escape_string(implode(',', array_keys($usergroup_permission_fields))), "gid='{$usergroup['gid']}'", array('limit' => 1));
 			$existing_permissions = $db->fetch_array($query2);
 		}
 
@@ -265,10 +249,8 @@ function save_quick_perms($fid)
 		$db->delete_query("forumpermissions", "fid='{$fid}' AND gid='{$usergroup['gid']}'");
 
 		// Only insert the new ones if we're using custom permissions
-		if($inherit[$usergroup['gid']] != 1)
-		{
-			if($canview[$usergroup['gid']] == 1)
-			{
+		if($inherit[$usergroup['gid']] != 1) {
+			if($canview[$usergroup['gid']] == 1) {
 				$pview = 1;
 			}
 			else
@@ -276,8 +258,7 @@ function save_quick_perms($fid)
 				$pview = 0;
 			}
 
-			if($canpostthreads[$usergroup['gid']] == 1)
-			{
+			if($canpostthreads[$usergroup['gid']] == 1) {
 				$pthreads = 1;
 			}
 			else
@@ -285,8 +266,7 @@ function save_quick_perms($fid)
 				$pthreads = 0;
 			}
 
-			if($canpostreplies[$usergroup['gid']] == 1)
-			{
+			if($canpostreplies[$usergroup['gid']] == 1) {
 				$preplies = 1;
 			}
 			else
@@ -294,8 +274,7 @@ function save_quick_perms($fid)
 				$preplies = 0;
 			}
 
-			if($canpostpolls[$usergroup['gid']] == 1)
-			{
+			if($canpostpolls[$usergroup['gid']] == 1) {
 				$ppolls = 1;
 			}
 			else
@@ -303,8 +282,7 @@ function save_quick_perms($fid)
 				$ppolls = 0;
 			}
 
-			if(!$preplies && !$pthreads)
-			{
+			if(!$preplies && !$pthreads) {
 				$ppost = 0;
 			}
 			else
@@ -323,8 +301,7 @@ function save_quick_perms($fid)
 
 			foreach($permission_fields as $field => $value)
 			{
-				if(array_key_exists($field, $insertquery))
-				{
+				if(array_key_exists($field, $insertquery)) {
 					continue;
 				}
 
@@ -334,34 +311,31 @@ function save_quick_perms($fid)
 			$db->insert_query("forumpermissions", $insertquery);
 		}
 	}
+
 	$cache->update_forumpermissions();
 }
 
 /**
  * Checks if a particular user has the necessary permissions to access a particular page.
  *
- * @param array $action Array containing module and action to check for
- * @param bool $error
- * @return bool
+ * @param  array   $action Array containing module and action to check for
+ * @param  boolean $error
+ * @return boolean
  */
 function check_admin_permissions($action, $error = TRUE)
 {
 	global $mybb, $page, $lang, $modules_dir;
 
-	if(is_super_admin($mybb->user['uid']))
-	{
+	if(is_super_admin($mybb->user['uid'])) {
 		return TRUE;
 	}
 
-	require_once $modules_dir."/".$action['module']."/module_meta.php";
-	if(function_exists($action['module']."_admin_permissions"))
-	{
-		$func = $action['module']."_admin_permissions";
+	include_once $modules_dir."/".$action['module']."/module_meta.php";
+	if(function_exists($action['module']."_admin_permissions")) {
+		$func        = $action['module']."_admin_permissions";
 		$permissions = $func();
-		if($permissions['permissions'][$action['action']] && $mybb->admin['permissions'][$action['module']][$action['action']] != 1)
-		{
-			if($error)
-			{
+		if($permissions['permissions'][$action['action']] && $mybb->admin['permissions'][$action['module']][$action['action']] != 1) {
+			if($error) {
 				$page->output_header($lang->access_denied);
 				$page->add_breadcrumb_item($lang->access_denied, "index.php?module=home-index");
 				$page->output_error("<b>{$lang->access_denied}</b><ul><li style=\"list-style-type: none;\">{$lang->access_denied_desc}</li></ul>");
@@ -370,7 +344,7 @@ function check_admin_permissions($action, $error = TRUE)
 			}
 			else
 			{
-				return false;
+				return FALSE;
 			}
 		}
 	}
@@ -381,8 +355,8 @@ function check_admin_permissions($action, $error = TRUE)
 /**
  * Fetches the list of administrator permissions for a particular user or group
  *
- * @param int $get_uid The user ID to fetch permissions for
- * @param int $get_gid The (optional) group ID to fetch permissions for
+ * @param  integer $get_uid The user ID to fetch permissions for
+ * @param  integer $get_gid The (optional) group ID to fetch permissions for
  * @return array Array of permissions for specified user or group
  */
 function get_admin_permissions($get_uid=0, $get_gid=0)
@@ -395,22 +369,18 @@ function get_admin_permissions($get_uid=0, $get_gid=0)
 
 	$gid_array = array();
 
-	if($uid === 0)
-	{
+	if($uid === 0) {
 		$uid = $mybb->user['uid'];
 	}
 
-	if(!$gid)
-	{
+	if(!$gid) {
 		// Prepare user's groups since the group isn't specified
 		$gid_array[] = (-1) * (int)$mybb->user['usergroup'];
 
-		if($mybb->user['additionalgroups'])
-		{
+		if($mybb->user['additionalgroups']) {
 			$additional_groups = explode(',', $mybb->user['additionalgroups']);
 
-			if(!empty($additional_groups))
-			{
+			if(!empty($additional_groups)) {
 				// Make sure gids are negative
 				foreach($additional_groups as $g)
 				{
@@ -427,8 +397,7 @@ function get_admin_permissions($get_uid=0, $get_gid=0)
 	}
 
 	// What are we trying to find?
-	if($get_gid && !$get_uid)
-	{
+	if($get_gid && !$get_uid) {
 		// A group only
 
 		$options = array(
@@ -436,7 +405,7 @@ function get_admin_permissions($get_uid=0, $get_gid=0)
 			"order_dir" => "ASC",
 			"limit" => "1"
 		);
-		$query = $db->simple_select("adminoptions", "permissions", "(uid='-{$get_gid}' OR uid='0') AND permissions != ''", $options);
+		$query   = $db->simple_select("adminoptions", "permissions", "(uid='-{$get_gid}' OR uid='0') AND permissions != ''", $options);
 		return my_unserialize($db->fetch_field($query, "permissions"));
 	}
 	else
@@ -456,19 +425,17 @@ function get_admin_permissions($get_uid=0, $get_gid=0)
 		}
 
 		$perms_group = array();
-		$query = $db->simple_select("adminoptions", "permissions, uid", "(uid='{$uid}'{$group_sql}) AND permissions != ''", $options);
+		$query       = $db->simple_select("adminoptions", "permissions, uid", "(uid='{$uid}'{$group_sql}) AND permissions != ''", $options);
 		while($perm = $db->fetch_array($query))
 		{
 			$perm['permissions'] = my_unserialize($perm['permissions']);
 
 			// Sorting out which permission is which
-			if($perm['uid'] > 0)
-			{
+			if($perm['uid'] > 0) {
 				$perms_user = $perm;
 				return $perms_user['permissions'];
 			}
-			elseif($perm['uid'] < 0)
-			{
+			else if($perm['uid'] < 0) {
 				$perms_group[] = $perm['permissions'];
 			}
 			else
@@ -480,8 +447,7 @@ function get_admin_permissions($get_uid=0, $get_gid=0)
 		// Figure out group permissions...ugh.
 		foreach($perms_group as $gperms)
 		{
-			if(!isset($final_group_perms))
-			{
+			if(!isset($final_group_perms)) {
 				// Use this group as the base for admin group permissions
 				$final_group_perms = $gperms;
 				continue;
@@ -490,8 +456,7 @@ function get_admin_permissions($get_uid=0, $get_gid=0)
 			// Loop through each specific permission to find the highest permission
 			foreach($gperms as $perm_name => $perm_value)
 			{
-				if($final_group_perms[$perm_name] != '1' && $perm_value == '1')
-				{
+				if($final_group_perms[$perm_name] != '1' && $perm_value == '1') {
 					$final_group_perms[$perm_name] = '1';
 				}
 			}
@@ -499,12 +464,10 @@ function get_admin_permissions($get_uid=0, $get_gid=0)
 
 		// Send specific user, or group permissions before default.
 		// If user's permission are explicitly set, they've already been returned above.
-		if(isset($final_group_perms))
-		{
+		if(isset($final_group_perms)) {
 			return $final_group_perms;
 		}
-		elseif(isset($perms_def))
-		{
+		else if(isset($perms_def)) {
 			return $perms_def;
 		}
 
@@ -515,7 +478,7 @@ function get_admin_permissions($get_uid=0, $get_gid=0)
 /**
  * Fetch the iconv/mb encoding for a particular MySQL encoding
  *
- * @param string $mysql_encoding The MySQL encoding
+ * @param  string $mysql_encoding The MySQL encoding
  * @return string The iconv/mb encoding
  */
 function fetch_iconv_encoding($mysql_encoding)
@@ -537,8 +500,8 @@ function fetch_iconv_encoding($mysql_encoding)
 /**
  * Adds/Updates a Page/Tab to the permissions array in the adminoptions table
  *
- * @param string $tab The name of the tab that is being affected
- * @param string $page The name of the page being affected (optional - if not specified, will affect everything under the specified tab)
+ * @param string  $tab     The name of the tab that is being affected
+ * @param string  $page    The name of the page being affected (optional - if not specified, will affect everything under the specified tab)
  * @param integer $default Default permissions for the page (1 for allowed - 0 for disallowed - -1 to remove)
  */
 function change_admin_permission($tab, $page="", $default=1)
@@ -550,10 +513,8 @@ function change_admin_permission($tab, $page="", $default=1)
 	{
 		$adminoption['permissions'] = my_unserialize($adminoption['permissions']);
 
-		if($default == -1)
-		{
-			if(!empty($page))
-			{
+		if($default == -1) {
+			if(!empty($page)) {
 				unset($adminoption['permissions'][$tab][$page]);
 			}
 			else
@@ -563,10 +524,8 @@ function change_admin_permission($tab, $page="", $default=1)
 		}
 		else
 		{
-			if(!empty($page))
-			{
-				if($adminoption['uid'] == 0)
-				{
+			if(!empty($page)) {
+				if($adminoption['uid'] == 0) {
 					$adminoption['permissions'][$tab][$page] = 0;
 				}
 				else
@@ -576,8 +535,7 @@ function change_admin_permission($tab, $page="", $default=1)
 			}
 			else
 			{
-				if($adminoption['uid'] == 0)
-				{
+				if($adminoption['uid'] == 0) {
 					$adminoption['permissions'][$tab]['tab'] = 0;
 				}
 				else
@@ -594,59 +552,52 @@ function change_admin_permission($tab, $page="", $default=1)
 /**
  * Checks if we have had too many attempts at logging into the ACP
  *
- * @param integer $uid The uid of the admin to check
- * @param boolean $return_num Return an array of the number of attempts and expiry time? (default false)
+ * @param  integer $uid        The uid of the admin to check
+ * @param  boolean $return_num Return an array of the number of attempts and expiry time? (default false)
  * @return mixed Return an array if the second parameter is TRUE, boolean otherwise.
  */
-function login_attempt_check_acp($uid=0, $return_num=false)
+function login_attempt_check_acp($uid=0, $return_num=FALSE)
 {
 	global $db, $mybb;
 
 	$attempts['loginattempts'] = 0;
 
-	if($uid > 0)
-	{
-		$query = $db->simple_select("adminoptions", "loginattempts, loginlockoutexpiry", "uid='".(int)$uid."'", 1);
+	if($uid > 0) {
+		$query    = $db->simple_select("adminoptions", "loginattempts, loginlockoutexpiry", "uid='".(int)$uid."'", 1);
 		$attempts = $db->fetch_array($query);
 
-		if(!$attempts)
-		{
-			return false;
+		if(!$attempts) {
+			return FALSE;
 		}
 	}
 
-	if($attempts['loginattempts'] <= 0)
-	{
-		return false;
+	if($attempts['loginattempts'] <= 0) {
+		return FALSE;
 	}
 
-	if($mybb->settings['maxloginattempts'] > 0 && $attempts['loginattempts'] >= $mybb->settings['maxloginattempts'])
-	{
+	if($mybb->settings['maxloginattempts'] > 0 && $attempts['loginattempts'] >= $mybb->settings['maxloginattempts']) {
 		// Has the expiry dateline been set yet?
-		if($attempts['loginlockoutexpiry'] == 0 && $return_num == false)
-		{
+		if($attempts['loginlockoutexpiry'] == 0 && $return_num == FALSE) {
 			$db->update_query("adminoptions", array("loginlockoutexpiry" => TIME_NOW+((int)$mybb->settings['loginattemptstimeout']*60)), "uid='".(int)$uid."'");
 		}
 
 		// Are we returning the # of login attempts?
-		if($return_num == TRUE)
-		{
+		if($return_num == TRUE) {
 			return $attempts;
 		}
 		// Otherwise are we still locked out?
-		else if($attempts['loginlockoutexpiry'] > TIME_NOW)
-		{
+		else if($attempts['loginlockoutexpiry'] > TIME_NOW) {
 			return TRUE;
 		}
 	}
 
-	return false;
+	return FALSE;
 }
 
 /**
  * Checks whether the administrator is on a mobile device
  *
- * @param string $useragent The useragent to be checked
+ * @param  string $useragent The useragent to be checked
  * @return boolean A TRUE/false depending on if the administrator is on a mobile
  */
 function is_mobile($useragent)
@@ -657,38 +608,35 @@ function is_mobile($useragent)
 /**
  * Checks whether there are any 'security' issues in templates via complex syntax
  *
- * @param string $template The template to be scanned
+ * @param  string $template The template to be scanned
  * @return boolean A TRUE/false depending on if an issue was detected
  */
 function check_template($template)
 {
 	// Check to see if our database password is in the template
-	if(preg_match('#\$config\[(([\'|"]database[\'|"])|([^\'"].*?))\]\[(([\'|"](database|hostname|password|table_prefix|username)[\'|"])|([^\'"].*?))\]#i', $template))
-	{
+	if(preg_match('#\$config\[(([\'|"]database[\'|"])|([^\'"].*?))\]\[(([\'|"](database|hostname|password|table_prefix|username)[\'|"])|([^\'"].*?))\]#i', $template)) {
 		return TRUE;
 	}
 
 	// System calls via backtick
-	if(preg_match('#\$\s*\{#', $template))
-	{
+	if(preg_match('#\$\s*\{#', $template)) {
 		return TRUE;
 	}
 
 	// Any other malicious acts?
 	// Courtesy of ZiNgA BuRgA
-	if(preg_match("~\\{\\$.+?\\}~s", preg_replace('~\\{\\$+[a-zA-Z_][a-zA-Z_0-9]*((?:-\\>|\\:\\:)\\$*[a-zA-Z_][a-zA-Z_0-9]*|\\[\s*\\$*([\'"]?)[a-zA-Z_ 0-9 ]+\\2\\]\s*)*\\}~', '', $template)))
-	{
+	if(preg_match("~\\{\\$.+?\\}~s", preg_replace('~\\{\\$+[a-zA-Z_][a-zA-Z_0-9]*((?:-\\>|\\:\\:)\\$*[a-zA-Z_][a-zA-Z_0-9]*|\\[\s*\\$*([\'"]?)[a-zA-Z_ 0-9 ]+\\2\\]\s*)*\\}~', '', $template))) {
 		return TRUE;
 	}
 
-	return false;
+	return FALSE;
 }
 
 /**
  * Provides a function to entirely delete a user's posts, and find the threads attached to them
  *
- * @param integer $uid The uid of the user
- * @param int $date A UNIX timestamp to delete posts that are older
+ * @param  integer $uid  The uid of the user
+ * @param  integer $date A UNIX timestamp to delete posts that are older
  * @return array An array of threads to delete, threads/forums to recount
  */
 function delete_user_posts($uid, $date)
@@ -698,21 +646,19 @@ function delete_user_posts($uid, $date)
 
 	// Build an array of posts to delete
 	$postcache = array();
-	$query = $db->simple_select("posts", "pid", "uid = '".$uid."' AND dateline < '".$date."'");
+	$query     = $db->simple_select("posts", "pid", "uid = '".$uid."' AND dateline < '".$date."'");
 	while($post = $db->fetch_array($query))
 	{
 		$postcache[] = $post['pid'];
 	}
 
-	if(!$db->num_rows($query))
-	{
-		return false;
+	if(!$db->num_rows($query)) {
+		return FALSE;
 	}
-	elseif(!empty($postcache))
-	{
+	else if(!empty($postcache)) {
 		// Let's start deleting posts
 		$user_posts = implode(",", $postcache);
-		$query = $db->query("
+		$query      = $db->query("
 			SELECT p.pid, p.visible, f.usepostcounts, t.tid AS thread, t.firstpost, t.fid AS forum
 			FROM ".TABLE_PREFIX."posts p
 			LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=p.fid)
@@ -720,34 +666,30 @@ function delete_user_posts($uid, $date)
 			WHERE p.pid IN ({$user_posts})
 		");
 
-		$post_count = 0; // Collect the post number to deduct from the user's postcount
-		$thread_list = array();
-		$forum_list = array();
+		$post_count         = 0; // Collect the post number to deduct from the user's postcount
+		$thread_list        = array();
+		$forum_list         = array();
 		$delete_thread_list = array();
-		if(!$db->num_rows($query))
-		{
-			return false;
+		if(!$db->num_rows($query)) {
+			return FALSE;
 		}
 		else
 		{
 			while($post = $db->fetch_array($query))
 			{
-				if($post['usepostcounts'] != 0 && $post['visible'] == 1)
-				{
+				if($post['usepostcounts'] != 0 && $post['visible'] == 1) {
 					++$post_count;
 				}
 
-				if($post['pid'] == $post['firstpost'])
-				{
+				if($post['pid'] == $post['firstpost']) {
 					$delete_thread_list[] = $post['thread'];
 				}
 
-				if(!in_array($post['thread'], $thread_list) && !in_array($post['thread'], $delete_thread_list))
-				{
+				if(!in_array($post['thread'], $thread_list) && !in_array($post['thread'], $delete_thread_list)) {
 					$thread_list[] = $post['thread']; // Threads that have been affected by this action, that aren't marked to be deleted
 				}
-				if(!in_array($post['forum'], $forum_list))
-				{
+
+				if(!in_array($post['forum'], $forum_list)) {
 					$forum_list[] = $post['forum']; // Forums that have been affected, too
 				}
 
@@ -775,10 +717,9 @@ function delete_user_posts($uid, $date)
  */
 function print_selection_javascript()
 {
-	static $already_printed = false;
+	static $already_printed = FALSE;
 
-	if($already_printed)
-	{
+	if($already_printed) {
 		return;
 	}
 
@@ -810,25 +751,21 @@ function print_selection_javascript()
 </script>";
 }
 
-if(!function_exists('array_column'))
-{
+if(!function_exists('array_column')) {
 	function array_column($input, $column_key)
 	{
 		$values = array();
 
-		if(!is_array($input))
-		{
+		if(!is_array($input)) {
 			$input = array($input);
 		}
 
 		foreach($input as $val)
 		{
-			if(is_array($val) && isset($val[$column_key]))
-			{
+			if(is_array($val) && isset($val[$column_key])) {
 				$values[] = $val[$column_key];
 			}
-			elseif(is_object($val) && isset($val->$column_key))
-			{
+			else if(is_object($val) && isset($val->$column_key)) {
 				$values[] = $val->$column_key;
 			}
 		}
@@ -840,7 +777,7 @@ if(!function_exists('array_column'))
 /**
  * Output the auto redirect block.
  *
- * @param \Form $form An existing form instance to wrap the redirect within.
+ * @param \Form  $form   An existing form instance to wrap the redirect within.
  * @param string $prompt The prompt to show.
  */
 function output_auto_redirect($form, $prompt)

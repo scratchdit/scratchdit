@@ -1,21 +1,20 @@
 name: HTML Check
 
 on:
-  push:
-
+    push:
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2 # Requried will all actions
-    - name: Checks HTML5
-      uses: Cyb3r-Jak3/html5validator-action@v0.4.2
-      with:
-        format: text
-        log_level: DEBUG
-        css: true
-    - uses: actions/upload-artifact@v2
-      with:
-        name: log
-        path: log.log
+    build:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v2 # Requried will all actions
+            - name: Checks HTML5
+              uses: Cyb3r-Jak3/html5validator-action@v0.4.2
+              with:
+                  format: text
+                  log_level: DEBUG
+                  css: true
+            - uses: actions/upload-artifact@v2
+              with:
+                  name: log
+                  path: log.log

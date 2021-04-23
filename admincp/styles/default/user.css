@@ -46,11 +46,13 @@
 	padding: 0 4px;
 }
 
-.view_fields #fields_enabled, .view_fields #fields_disabled {
+.view_fields #fields_enabled,
+.view_fields #fields_disabled {
 	min-height: 300px;
 }
 
-#fields_enabled li, #fields_disabled li {
+#fields_enabled li,
+#fields_disabled li {
 	border-radius: 3px;
 	-moz-border-radius: 3px;
 	-webkit-border-radius: 3px;

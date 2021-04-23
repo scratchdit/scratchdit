@@ -1,23 +1,26 @@
 var AdminCP = {
-	init: function()
-	{
-	},
+	init: function () {},
 
-	deleteConfirmation: function(element, message)
-	{
-		if(!element) return false;
-		confirmReturn = confirm(message);
-		if(confirmReturn == true)
-		{
-			form = $("<form />", { method: "post", action: element.href, style: "display: none;" });
-			$("body").append(form);
-			form.trigger('submit');
+	deleteConfirmation: function (element, message) {
+		if (!element) {
+			return false;
 		}
+
+		confirmReturn = confirm(message);
+		if (confirmReturn == true) {
+			form = $("<form />", {
+				method: "post",
+				action: element.href,
+				style: "display: none;",
+			});
+			$("body").append(form);
+			form.trigger("submit");
+		}
+
 		return false;
-	}
+	},
 };
 
-$(function()
-{
+$(function () {
 	AdminCP.init();
 });

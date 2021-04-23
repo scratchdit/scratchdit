@@ -18,7 +18,9 @@
 	margin-right: 8px;
 }
 
-.label_radio_ignore, .label_radio_delete, .label_radio_approve {
+.label_radio_ignore,
+.label_radio_delete,
+.label_radio_approve {
 	font-weight: bold;
 }
 

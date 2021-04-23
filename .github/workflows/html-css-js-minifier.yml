@@ -1,7 +1,7 @@
 name: HTML/CSS/JS Minifier
 on: push
 jobs:
-  build:
-    runs-on: ubuntu-latest      # Docker-based github actions have to run on a linux environment
-    steps:
-        uses: docker://devatherock/minify-js:latest   # To use a specific release, use a docker tag like 1.0.2 instead of latest
+    build:
+        runs-on: ubuntu-latest # Docker-based github actions have to run on a linux environment
+        steps:
+            uses: docker://devatherock/minify-js:latest # To use a specific release, use a docker tag like 1.0.2 instead of latest

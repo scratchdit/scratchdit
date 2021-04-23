@@ -3,10 +3,10 @@ name: Composer
 on: [push]
 
 jobs:
-  phpunit:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Install Composer Dependencies
-        run: |
-          cd ../..
-          composer install --prefer-dist
+    phpunit:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Install Composer Dependencies
+              run: |
+                  cd ../..
+                  composer install --prefer-dist
