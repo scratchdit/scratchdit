@@ -2,18 +2,24 @@
 name: Feature request
 about: Suggest an idea for this project
 title: ""
-labels: "status: needs triage, type: enhancement"
+labels: enhancement
 assignees: ""
 ---
 
-**Is your feature request related to a problem? Please describe.**
-A clear and concise description of what the problem is. Ex. I'm always frustrated when [...]
+# One line summary
 
-**Describe the solution you'd like**
-A clear and concise description of what you want to happen.
+## What feature do you want?
 
-**Describe alternatives you've considered**
-A clear and concise description of any alternative solutions or features you've considered.
+_A clear and concise description of what you want._
 
-**Additional context**
-Add any other context or screenshots about the feature request here.
+## Why do you want this feature?
+
+_I'm always frustrated when ... / It would be nice if ..._
+
+## Describe alternatives you've considered
+
+_A clear and concise description of any alternative solutions or features you've considered._
+
+## Additional context
+
+_Add any other context or screenshots about the feature request here._

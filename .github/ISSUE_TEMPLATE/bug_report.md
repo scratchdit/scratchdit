@@ -1,40 +1,33 @@
 ---
 name: Bug report
-about: Create a report to help us improve
+about: Create a report and help us improve
 title: ""
-labels: "status: needs triage, type: bug"
+labels: bug
 assignees: ""
 ---
 
-**Describe the bug**
-A clear and concise description of what the bug is.
+# _One line summary_
 
-**To Reproduce**
-Steps to reproduce the behavior:
+## Describe the bug
 
-1. Go to '...'
-2. Click on '....'
-3. Scroll down to '....'
-4. See error
+_A clear and concise description of what the bug is._
 
-**Expected behavior**
-A clear and concise description of what you expected to happen.
+## To Reproduce
 
-**Screenshots**
-If applicable, add screenshots to help explain your problem.
+_Steps to reproduce the behavior_
 
-**Desktop (please complete the following information):**
+## Expected behavior
 
-- OS: [e.g. iOS]
-- Browser [e.g. chrome, safari]
-- Version [e.g. 22]
+_A clear and concise description of what you expected to happen._
 
-**Smartphone (please complete the following information):**
+## Screenshots
 
-- Device: [e.g. iPhone6]
-- OS: [e.g. iOS8.1]
-- Browser [e.g. stock browser, safari]
-- Version [e.g. 22]
+_If applicable, add screenshots to help explain your problem._
 
-**Additional context**
-Add any other context about the problem here.
+## Device info
+
+_What device are you using?_
+
+## Additional context
+
+_Add any other context about the problem here._
