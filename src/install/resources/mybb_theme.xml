@@ -2699,19 +2699,19 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 										<div class="smalltext"><label>
 											<input type="radio" name="repeats_4_type" id="repeats_4_type_1" value="1" style="vertical-align: middle;" {$repeats_4_type[1]} />
 											{$lang->repeats_on_day}</label>
-											<input type="text" class="textbox" name="repeats_4_day" value="{$repeats_4_day}" onfocus="$('#repeats_4_type_1').prop('checked', TRUE);" size="2" /> {$lang->of_every} <input type="text" class="textbox" name="repeats_4_months" value="{$repeats_4_months}" size="2" onfocus="$('#repeats_4_type_1').prop('checked', TRUE);" /> {$lang->month_or_months}
+											<input type="text" class="textbox" name="repeats_4_day" value="{$repeats_4_day}" onfocus="$('#repeats_4_type_1').prop('checked', true);" size="2" /> {$lang->of_every} <input type="text" class="textbox" name="repeats_4_months" value="{$repeats_4_months}" size="2" onfocus="$('#repeats_4_type_1').prop('checked', true);" /> {$lang->month_or_months}
 										</div>
 										<div class="smalltext" style="margin-top: 5px;"><label>
 											<input type="radio" name="repeats_4_type" id="repeats_4_type_2" value="2" style="vertical-align: middle;" {$repeats_4_type[2]} />
 											{$lang->repeats_on_the}</label>
-											<select name="repeats_4_occurance" onfocus="$('#repeats_4_type_2').prop('checked', TRUE);">
+											<select name="repeats_4_occurance" onfocus="$('#repeats_4_type_2').prop('checked', true);">
 												<option value="1"{$repeats_4_occurance[1]}>{$lang->first}</option>
 												<option value="2"{$repeats_4_occurance[2]}>{$lang->second}</option>
 												<option value="3"{$repeats_4_occurance[3]}>{$lang->third}</option>
 												<option value="4"{$repeats_4_occurance[4]}>{$lang->fourth}</option>
 												<option value="last"{$repeats_4_occurance['last']}>{$lang->last}</option>
 											</select>
-											<select name="repeats_4_weekday" onfocus="$('#repeats_4_type_2').prop('checked', TRUE);">
+											<select name="repeats_4_weekday" onfocus="$('#repeats_4_type_2').prop('checked', true);">
 												<option value="0"{$repeats_4_weekday[0]}>{$lang->sunday}</option>
 												<option value="1"{$repeats_4_weekday[1]}>{$lang->monday}</option>
 												<option value="2"{$repeats_4_weekday[2]}>{$lang->tuesday}</option>
@@ -2721,15 +2721,15 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 												<option value="6"{$repeats_4_weekday[6]}>{$lang->saturday}</option>
 											</select>
 											{$lang->of_every}
-											<input type="text" class="textbox" name="repeats_4_months2" value="{$repeats_4_months2}" size="2" onfocus="$('#repeats_4_type_2').prop('checked', TRUE);" /> {$lang->month_or_months}
+											<input type="text" class="textbox" name="repeats_4_months2" value="{$repeats_4_months2}" size="2" onfocus="$('#repeats_4_type_2').prop('checked', true);" /> {$lang->month_or_months}
 										</div>
 									</div>
 									<div class="repeats_type" id="repeats_type_5" style="padding: 4px;">
 										<div class="smalltext"><label>
 											<input type="radio" name="repeats_5_type" value="1" id="repeats_5_type_1" style="vertical-align: middle;" {$repeats_5_type[1]} />
 											{$lang->repeats_on}</label>
-											<input type="text" class="textbox" name="repeats_5_day" onfocus="$('#repeats_5_type_1').prop('checked', TRUE);" value="{$repeats_5_day}" size="2" />
-											<select name="repeats_5_month" onfocus="$('#repeats_5_type_1').prop('checked', TRUE);" >
+											<input type="text" class="textbox" name="repeats_5_day" onfocus="$('#repeats_5_type_1').prop('checked', true);" value="{$repeats_5_day}" size="2" />
+											<select name="repeats_5_month" onfocus="$('#repeats_5_type_1').prop('checked', true);" >
 												<option value="1"{$repeats_5_month['1']}>{$lang->month_1}</option>
 												<option value="2"{$repeats_5_month['2']}>{$lang->month_2}</option>
 												<option value="3"{$repeats_5_month['3']}>{$lang->month_3}</option>
@@ -2744,19 +2744,19 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 												<option value="12"{$repeats_5_month['12']}>{$lang->month_12}</option>
 											</select>
 											{$lang->every}
-											<input type="text" class="textbox" name="repeats_5_years" value="{$repeats_5_years}" onfocus="$('#repeats_5_type_1').prop('checked', TRUE);" size="2" /> {$lang->year_or_years}
+											<input type="text" class="textbox" name="repeats_5_years" value="{$repeats_5_years}" onfocus="$('#repeats_5_type_1').prop('checked', true);" size="2" /> {$lang->year_or_years}
 										</div>
 										<div class="smalltext" style="margin-top: 5px;"><label>
 											<input type="radio" name="repeats_5_type" value="2" id="repeats_5_type_2" style="vertical-align: middle;" {$repeats_5_type[2]} />
 											{$lang->repeats_on_the}</label>
-											<select name="repeats_5_occurance" onfocus="$('#repeats_5_type_2').prop('checked', TRUE);" >
+											<select name="repeats_5_occurance" onfocus="$('#repeats_5_type_2').prop('checked', true);" >
 												<option value="1"{$repeats_5_occurance[1]}>{$lang->first}</option>
 												<option value="2"{$repeats_5_occurance[2]}>{$lang->second}</option>
 												<option value="3"{$repeats_5_occurance[3]}>{$lang->third}</option>
 												<option value="4"{$repeats_5_occurance[4]}>{$lang->fourth}</option>
 												<option value="last"{$repeats_4_occurance['last']}>{$lang->last}</option>
 											</select>
-											<select name="repeats_5_weekday" onfocus="$('#repeats_5_type_2').prop('checked', TRUE);" >
+											<select name="repeats_5_weekday" onfocus="$('#repeats_5_type_2').prop('checked', true);" >
 												<option value="0"{$repeats_5_weekday[0]}>{$lang->sunday}</option>
 												<option value="1"{$repeats_5_weekday[1]}>{$lang->monday}</option>
 												<option value="2"{$repeats_5_weekday[2]}>{$lang->tuesday}</option>
@@ -2766,7 +2766,7 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 												<option value="6"{$repeats_5_weekday[6]}>{$lang->saturday}</option>
 											</select>
 											{$lang->of}
-											<select name="repeats_5_month2" onfocus="$('#repeats_5_type_2').prop('checked', TRUE);" >
+											<select name="repeats_5_month2" onfocus="$('#repeats_5_type_2').prop('checked', true);" >
 												<option value="1"{$repeats_5_month2['1']}>{$lang->month_1}</option>
 												<option value="2"{$repeats_5_month2['2']}>{$lang->month_2}</option>
 												<option value="3"{$repeats_5_month2['3']}>{$lang->month_3}</option>
@@ -2781,7 +2781,7 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 												<option value="12"{$repeats_5_month2['12']}>{$lang->month_12}</option>
 											</select>
 											{$lang->every}
-											<input type="text" class="textbox" name="repeats_5_years2" value="{$repeats_5_years}" size="2" onfocus="$('#repeats_5_type_2').prop('checked', TRUE);" /> {$lang->year_or_years}
+											<input type="text" class="textbox" name="repeats_5_years2" value="{$repeats_5_years}" size="2" onfocus="$('#repeats_5_type_2').prop('checked', true);" /> {$lang->year_or_years}
 										</div>
 									</div>
 								</td>
@@ -3123,19 +3123,19 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 										<div class="smalltext"><label>
 											<input type="radio" name="repeats_4_type" id="repeats_4_type_1" value="1" style="vertical-align: middle;" {$repeats_4_type[1]} />
 											{$lang->repeats_on_day}</label>
-											<input type="text" class="textbox" name="repeats_4_day" value="{$repeats_4_day}" onfocus="$('repeats_4_type_1').checked=TRUE;" size="2" /> {$lang->of_every} <input type="text" class="textbox" name="repeats_4_months" value="{$repeats_4_months}" size="2" onfocus="$('repeats_4_type_1').checked=TRUE;" /> {$lang->month_or_months}
+											<input type="text" class="textbox" name="repeats_4_day" value="{$repeats_4_day}" onfocus="$('repeats_4_type_1').checked=true;" size="2" /> {$lang->of_every} <input type="text" class="textbox" name="repeats_4_months" value="{$repeats_4_months}" size="2" onfocus="$('repeats_4_type_1').checked=true;" /> {$lang->month_or_months}
 										</div>
 										<div class="smalltext" style="margin-top: 5px;"><label>
 											<input type="radio" name="repeats_4_type" id="repeats_4_type_2" value="2" style="vertical-align: middle;" {$repeats_4_type[2]} />
 											{$lang->repeats_on_the}</label>
-											<select name="repeats_4_occurance" onfocus="$('repeats_4_type_2').checked=TRUE;">
+											<select name="repeats_4_occurance" onfocus="$('repeats_4_type_2').checked=true;">
 												<option value="1"{$repeats_4_occurance[1]}>{$lang->first}</option>
 												<option value="2"{$repeats_4_occurance[2]}>{$lang->second}</option>
 												<option value="3"{$repeats_4_occurance[3]}>{$lang->third}</option>
 												<option value="4"{$repeats_4_occurance[4]}>{$lang->fourth}</option>
 												<option value="last"{$repeats_4_occurance['last']}>{$lang->last}</option>
 											</select>
-											<select name="repeats_4_weekday" onfocus="$('repeats_4_type_2').checked=TRUE;">
+											<select name="repeats_4_weekday" onfocus="$('repeats_4_type_2').checked=true;">
 												<option value="0"{$repeats_4_weekday[0]}>{$lang->sunday}</option>
 												<option value="1"{$repeats_4_weekday[1]}>{$lang->monday}</option>
 												<option value="2"{$repeats_4_weekday[2]}>{$lang->tuesday}</option>
@@ -3145,15 +3145,15 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 												<option value="6"{$repeats_4_weekday[6]}>{$lang->saturday}</option>
 											</select>
 											{$lang->of_every}
-											<input type="text" class="textbox" name="repeats_4_months2" value="{$repeats_4_months2}" size="2" onfocus="$('repeats_4_type_2').checked=TRUE;" /> {$lang->month_or_months}
+											<input type="text" class="textbox" name="repeats_4_months2" value="{$repeats_4_months2}" size="2" onfocus="$('repeats_4_type_2').checked=true;" /> {$lang->month_or_months}
 										</div>
 									</div>
 									<div class="repeats_type" id="repeats_type_5" style="padding: 4px;">
 										<div class="smalltext"><label>
 											<input type="radio" name="repeats_5_type" value="1" id="repeats_5_type_1" style="vertical-align: middle;" {$repeats_5_type[1]} />
 											{$lang->repeats_on}</label>
-											<input type="text" class="textbox" name="repeats_5_day" onfocus="$('repeats_5_type_1').checked=TRUE;" value="{$repeats_5_day}" size="2" />
-											<select name="repeats_5_month" onfocus="$('repeats_5_type_1').checked=TRUE;" >
+											<input type="text" class="textbox" name="repeats_5_day" onfocus="$('repeats_5_type_1').checked=true;" value="{$repeats_5_day}" size="2" />
+											<select name="repeats_5_month" onfocus="$('repeats_5_type_1').checked=true;" >
 												<option value="1"{$repeats_5_month['1']}>{$lang->month_1}</option>
 												<option value="2"{$repeats_5_month['2']}>{$lang->month_2}</option>
 												<option value="3"{$repeats_5_month['3']}>{$lang->month_3}</option>
@@ -3168,19 +3168,19 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 												<option value="12"{$repeats_5_month['12']}>{$lang->month_12}</option>
 											</select>
 											{$lang->every}
-											<input type="text" class="textbox" name="repeats_5_years" value="{$repeats_5_years}" onfocus="$('repeats_5_type_1').checked=TRUE;" size="2" /> {$lang->year_or_years}
+											<input type="text" class="textbox" name="repeats_5_years" value="{$repeats_5_years}" onfocus="$('repeats_5_type_1').checked=true;" size="2" /> {$lang->year_or_years}
 										</div>
 										<div class="smalltext" style="margin-top: 5px;"><label>
 											<input type="radio" name="repeats_5_type" value="2" id="repeats_5_type_2" style="vertical-align: middle;" {$repeats_5_type[2]} />
 											{$lang->repeats_on_the}</label>
-											<select name="repeats_5_occurance" onfocus="$('repeats_5_type_2').checked=TRUE;" >
+											<select name="repeats_5_occurance" onfocus="$('repeats_5_type_2').checked=true;" >
 												<option value="1"{$repeats_5_occurance[1]}>{$lang->first}</option>
 												<option value="2"{$repeats_5_occurance[2]}>{$lang->second}</option>
 												<option value="3"{$repeats_5_occurance[3]}>{$lang->third}</option>
 												<option value="4"{$repeats_5_occurance[4]}>{$lang->fourth}</option>
 												<option value="last"{$repeats_4_occurance['last']}>{$lang->last}</option>
 											</select>
-											<select name="repeats_5_weekday" onfocus="$('repeats_5_type_2').checked=TRUE;" >
+											<select name="repeats_5_weekday" onfocus="$('repeats_5_type_2').checked=true;" >
 												<option value="0"{$repeats_5_weekday[0]}>{$lang->sunday}</option>
 												<option value="1"{$repeats_5_weekday[1]}>{$lang->monday}</option>
 												<option value="2"{$repeats_5_weekday[2]}>{$lang->tuesday}</option>
@@ -3190,7 +3190,7 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 												<option value="6"{$repeats_5_weekday[6]}>{$lang->saturday}</option>
 											</select>
 											{$lang->of}
-											<select name="repeats_5_month2" onfocus="$('repeats_5_type_2').checked=TRUE;" >
+											<select name="repeats_5_month2" onfocus="$('repeats_5_type_2').checked=true;" >
 												<option value="1"{$repeats_5_month2['1']}>{$lang->month_1}</option>
 												<option value="2"{$repeats_5_month2['2']}>{$lang->month_2}</option>
 												<option value="3"{$repeats_5_month2['3']}>{$lang->month_3}</option>
@@ -3205,7 +3205,7 @@ var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm
 												<option value="12"{$repeats_5_month2['12']}>{$lang->month_12}</option>
 											</select>
 											{$lang->every}
-											<input type="text" class="textbox" name="repeats_5_years2" value="{$repeats_5_years}" size="2" onfocus="$('repeats_5_type_2').checked=TRUE;" /> {$lang->year_or_years}
+											<input type="text" class="textbox" name="repeats_5_years2" value="{$repeats_5_years}" size="2" onfocus="$('repeats_5_type_2').checked=true;" /> {$lang->year_or_years}
 										</div>
 									</div>
 								</td>
@@ -4258,7 +4258,7 @@ $(".forumjump").on('change', function() {
 						</fieldset>
 						</form>]]></template>
 		<template name="header_welcomeblock_guest" version="1816"><![CDATA[						<!-- Continuation of div(class="upper") as opened in the header template -->
-						<span class="welcome">{$lang->welcome_guest} <a href="{$mybb->settings['bburl']}/member.php?action=login" onclick="$('#quick_login').modal({ fadeDuration: 250, keepelement: TRUE, zIndex: (typeof modal_zindex !== 'undefined' ? modal_zindex : 9999) }); return false;" class="login">{$lang->welcome_login}</a> <a href="{$mybb->settings['bburl']}/member.php?action=register" class="register">{$lang->welcome_register}</a></span>
+						<span class="welcome">{$lang->welcome_guest} <a href="{$mybb->settings['bburl']}/member.php?action=login" onclick="$('#quick_login').modal({ fadeDuration: 250, keepelement: true, zIndex: (typeof modal_zindex !== 'undefined' ? modal_zindex : 9999) }); return false;" class="login">{$lang->welcome_login}</a> <a href="{$mybb->settings['bburl']}/member.php?action=register" class="register">{$lang->welcome_register}</a></span>
 					</div>
 				</div>
 				<div class="modal" id="quick_login" style="display: none;">
@@ -4326,7 +4326,7 @@ $(".forumjump").on('change', function() {
 </div>]]></template>
 		<template name="header_welcomeblock_member_admin" version="1800"><![CDATA[<li><a href="{$mybb->settings['bburl']}/{$admin_dir}/index.php" class="admincp">{$lang->welcome_admin}</a></li>]]></template>
 		<template name="header_welcomeblock_member_moderator" version="1800"><![CDATA[<li><a href="{$mybb->settings['bburl']}/modcp.php" class="modcp">{$lang->welcome_modcp}</a></li>]]></template>
-		<template name="header_welcomeblock_member_buddy" version="1821"><![CDATA[<li><a id="buddylink" href="javascript:void(0)" onclick="MyBB.popupWindow('{$mybb->settings['bburl']}/misc.php?action=buddypopup&modal=1', null, TRUE); return false;">{$lang->welcome_open_buddy_list}</a></li>]]></template>
+		<template name="header_welcomeblock_member_buddy" version="1821"><![CDATA[<li><a id="buddylink" href="javascript:void(0)" onclick="MyBB.popupWindow('{$mybb->settings['bburl']}/misc.php?action=buddypopup&modal=1', null, true); return false;">{$lang->welcome_open_buddy_list}</a></li>]]></template>
 		<template name="header_welcomeblock_member_pms" version="1809"><![CDATA[<li><a href="{$mybb->settings['bburl']}/private.php">{$lang->welcome_pms}</a> {$lang->welcome_pms_usage}</li>]]></template>
 		<template name="header_welcomeblock_member_search" version="1809"><![CDATA[<li><a href="{$mybb->settings['bburl']}/search.php?action=getnew">{$lang->welcome_newposts}</a></li>
 <li><a href="{$mybb->settings['bburl']}/search.php?action=getdaily">{$lang->welcome_todaysposts}</a></li>]]></template>
@@ -4475,7 +4475,7 @@ if(use_xmlhttprequest == "1")
 		placeholder: "{$lang->search_user}",
 		minimumInputLength: 2,
 		multiple: false,
-		allowClear: TRUE,
+		allowClear: true,
 		ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
 			url: "xmlhttp.php?action=get_users",
 			dataType: 'json',
@@ -4530,7 +4530,7 @@ if(use_xmlhttprequest == "1")
 		placeholder: "{$lang->search_user}",
 		minimumInputLength: 2,
 		multiple: false,
-		allowClear: TRUE,
+		allowClear: true,
 		ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
 			url: "xmlhttp.php?action=get_users",
 			dataType: 'json',
@@ -5111,7 +5111,7 @@ if(use_xmlhttprequest == "1")
 </head>
 <body>
 {$header}
-<form action="member.php" method="post" id="registration_form"><input type="text" style="visibility: hidden;" value="" name="regcheck1" /><input type="text" style="visibility: hidden;" value="TRUE" name="regcheck2" />
+<form action="member.php" method="post" id="registration_form"><input type="text" style="visibility: hidden;" value="" name="regcheck1" /><input type="text" style="visibility: hidden;" value="true" name="regcheck2" />
 {$regerrors}
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
@@ -5465,7 +5465,7 @@ if(use_xmlhttprequest == "1")
 		placeholder: "{$lang->search_user}",
 		minimumInputLength: 2,
 		multiple: false,
-		allowClear: TRUE,
+		allowClear: true,
 		ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
 			url: "xmlhttp.php?action=get_users",
 			dataType: 'json',
@@ -5539,7 +5539,7 @@ if(use_xmlhttprequest == "1")
 		grecaptcha.render(target.get(0), {
 				'sitekey': '{$public_key}',
 				'callback': captchaOnSubmit
-			}, TRUE);
+			}, true);
 
 	}
 
@@ -5572,7 +5572,7 @@ if(use_xmlhttprequest == "1")
 		hcaptcha.render(target.get(0), {
 				'sitekey': '{$public_key}',
 				'callback': captchaOnSubmit
-			}, TRUE);
+			}, true);
 
 	}
 
@@ -5772,7 +5772,7 @@ if(use_xmlhttprequest == "1")
 		placeholder: "{$lang->search_user}",
 		minimumInputLength: 2,
 		multiple: false,
-		allowClear: TRUE,
+		allowClear: true,
 		ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
 			url: "xmlhttp.php?action=get_users",
 			dataType: 'json',
@@ -5894,7 +5894,7 @@ if(use_xmlhttprequest == "1")
 		placeholder: "{$lang->search_user}",
 		minimumInputLength: 2,
 		multiple: false,
-		allowClear: TRUE,
+		allowClear: true,
 		ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
 			url: "xmlhttp.php?action=get_users",
 			dataType: 'json',
@@ -6729,7 +6729,7 @@ if(use_xmlhttprequest == "1")
 		placeholder: "{$lang->search_user}",
 		minimumInputLength: 2,
 		multiple: false,
-		allowClear: TRUE,
+		allowClear: true,
 		ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
 			url: "xmlhttp.php?action=get_users",
 			dataType: 'json',
@@ -7017,7 +7017,7 @@ if(use_xmlhttprequest == "1")
 			}
 			else
 			{
-				$("#modpost").attr("checked", TRUE);
+				$("#modpost").attr("checked", true);
 				$("#modposts_action").show();
 			}
 		}
@@ -7034,7 +7034,7 @@ if(use_xmlhttprequest == "1")
 			}
 			else
 			{
-				$("#suspost").attr("checked", TRUE);
+				$("#suspost").attr("checked", true);
 				$("#susposts_action").show();
 			}
 		}
@@ -7107,7 +7107,7 @@ if(use_xmlhttprequest == "1")
 
 	function toggleAction()
 	{
-		if($("#suspend_action").is(":visible") == TRUE)
+		if($("#suspend_action").is(":visible") == true)
 		{
 			$("#suspend_action").hide();
 		}
@@ -7216,7 +7216,7 @@ if(use_xmlhttprequest == "1")
 		placeholder: "{$lang->find_users}",
 		minimumInputLength: 2,
 		multiple: false,
-		allowClear: TRUE,
+		allowClear: true,
 		ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
 			url: "xmlhttp.php?action=get_users",
 			dataType: 'json',
@@ -7549,9 +7549,9 @@ if(use_xmlhttprequest == "1")
 		<template name="modcp_modqueue_link_forum" version="1800"><![CDATA[<strong>{$lang->meta_forum} <a href="{$forum_link}">{$forum_name}</a></strong><br />]]></template>
 		<template name="modcp_modqueue_link_thread" version="1800"><![CDATA[<strong>{$lang->meta_thread} <a href="{$post['threadlink']}">{$post['threadsubject']}</a></strong>]]></template>
 		<template name="modcp_modqueue_masscontrols" version="1809"><![CDATA[<ul class="modqueue_mass">
-	<li><a href="javascript:void(0)" class="mass_ignore" onclick="$('input.radio_ignore').each(function(){ $(this).prop('checked', TRUE); }); return false;">{$lang->mark_all_ignored}</a></li>
-	<li><a href="javascript:void(0)" class="mass_delete" onclick="$('input.radio_delete').each(function(){ $(this).prop('checked', TRUE); }); return false;">{$lang->mark_all_deletion}</a></li>
-	<li><a href="javascript:void(0)" class="mass_approve" onclick="$('input.radio_approve').each(function(){ $(this).prop('checked', TRUE); }); return false;">{$lang->mark_all_approved}</a></li>
+	<li><a href="javascript:void(0)" class="mass_ignore" onclick="$('input.radio_ignore').each(function(){ $(this).prop('checked', true); }); return false;">{$lang->mark_all_ignored}</a></li>
+	<li><a href="javascript:void(0)" class="mass_delete" onclick="$('input.radio_delete').each(function(){ $(this).prop('checked', true); }); return false;">{$lang->mark_all_deletion}</a></li>
+	<li><a href="javascript:void(0)" class="mass_approve" onclick="$('input.radio_approve').each(function(){ $(this).prop('checked', true); }); return false;">{$lang->mark_all_approved}</a></li>
 </ul>]]></template>
 		<template name="modcp_modqueue_posts" version="1820"><![CDATA[<html>
 <head>
@@ -7933,7 +7933,7 @@ if(use_xmlhttprequest == "1")
 		placeholder: "{$lang->search_user}",
 		minimumInputLength: 2,
 		multiple: false,
-		allowClear: TRUE,
+		allowClear: true,
 		ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
 			url: "xmlhttp.php?action=get_users",
 			dataType: 'json',
@@ -8053,12 +8053,12 @@ if(use_xmlhttprequest == "1")
 	{
 		if($('#type_merge'))
 		{
-			if($('#type_movecopythread').prop('checked') == TRUE)
+			if($('#type_movecopythread').prop('checked') == true)
 			{
 				$('#type_merge_expanded').hide();
 				$('#type_movecopythread_expanded').show();
 			}
-			else if($('#type_merge').prop('checked') == TRUE)
+			else if($('#type_merge').prop('checked') == true)
 			{
 				$('#type_movecopythread_expanded').hide();
 				$('#type_merge_expanded').show();
@@ -8071,7 +8071,7 @@ if(use_xmlhttprequest == "1")
 		}
 		else
 		{
-			if($('#type_movecopythread').prop('checked') == TRUE)
+			if($('#type_movecopythread').prop('checked') == true)
 			{
 				$('#type_movecopythread_expanded').show();
 			}
@@ -9526,7 +9526,7 @@ if(use_xmlhttprequest == "1")
 		grecaptcha.render(captchaTarget.get(0), {
 				'sitekey': '{$public_key}',
 				'callback': captchaOnSubmit
-			}, TRUE);
+			}, true);
 
 	}
 
@@ -9575,7 +9575,7 @@ if(use_xmlhttprequest == "1")
 		hcaptcha.render(captchaTarget.get(0), {
 				'sitekey': '{$public_key}',
 				'callback': captchaOnSubmit
-			}, TRUE);
+			}, true);
 
 	}
 
@@ -10027,7 +10027,7 @@ if(use_xmlhttprequest == "1")
 		placeholder: "{$lang->search_user}",
 		minimumInputLength: 2,
 		multiple: false,
-		allowClear: TRUE,
+		allowClear: true,
 		ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
 			url: "xmlhttp.php?action=get_users",
 			dataType: 'json',
@@ -10571,7 +10571,7 @@ if(use_xmlhttprequest == "1")
 			}
 			return Math.max(1, {$mybb->usergroup['maxpmrecipients']} - $("#bcc").select2('data').length);
 		},
-		multiple: TRUE,
+		multiple: true,
 		ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
 			url: "xmlhttp.php?action=get_users",
 			dataType: 'json',
@@ -10615,7 +10615,7 @@ if(use_xmlhttprequest == "1")
 		}
 		else
 		{
-			$("#bcc").select2("enable", TRUE);
+			$("#bcc").select2("enable", true);
 		}
 	});
 
@@ -10629,7 +10629,7 @@ if(use_xmlhttprequest == "1")
 			}
 			return Math.max(1, {$mybb->usergroup['maxpmrecipients']} - $("#to").select2('data').length);
 		},
-		multiple: TRUE,
+		multiple: true,
 		ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
 			url: "xmlhttp.php?action=get_users",
 			dataType: 'json',
@@ -10673,7 +10673,7 @@ if(use_xmlhttprequest == "1")
 		}
 		else
 		{
-			$("#to").select2("enable", TRUE);
+			$("#to").select2("enable", true);
 		}
 	});
 }
@@ -11154,7 +11154,7 @@ if(use_xmlhttprequest == "1")
 		placeholder: "{$lang->search_user}",
 		minimumInputLength: 2,
 		multiple: false,
-		allowClear: TRUE,
+		allowClear: true,
 		ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
 			url: "xmlhttp.php?action=get_users",
 			dataType: 'json',
@@ -11900,7 +11900,7 @@ if(use_xmlhttprequest == "1")
 </table>
 </div>]]></template>
 		<template name="smilieinsert_getmore" version="1809"><![CDATA[<tr>
-  <td class="trow2" align="center"><span class="smalltext"><strong>[<a href="javascript:void(0)" onclick="MyBB.popupWindow('/misc.php?action=smilies&popup=TRUE&editor=MyBBEditor&modal=1'); return false;">{$lang->smilieinsert_getmore}</a>]</strong></span></td>
+  <td class="trow2" align="center"><span class="smalltext"><strong>[<a href="javascript:void(0)" onclick="MyBB.popupWindow('/misc.php?action=smilies&popup=true&editor=MyBBEditor&modal=1'); return false;">{$lang->smilieinsert_getmore}</a>]</strong></span></td>
 </tr>]]></template>
 		<template name="smilieinsert_row" version="1808"><![CDATA[<tr>{$smilie_icons}</tr>]]></template>
 		<template name="smilieinsert_row_empty" version="1808"><![CDATA[<tr>{$smilie_icons}<td colspan="{$colspan}">&nbsp;</td></tr>]]></template>
@@ -12372,7 +12372,7 @@ if(use_xmlhttprequest == "1")
 										placeholder: "{$lang->search_user}",
 										minimumInputLength: 2,
 										maximumSelectionSize: 5,
-										multiple: TRUE,
+										multiple: true,
 										ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
 											url: "xmlhttp.php?action=get_users",
 											dataType: 'json',
@@ -12444,7 +12444,7 @@ if(use_xmlhttprequest == "1")
 										placeholder: "{$lang->search_user}",
 										minimumInputLength: 2,
 										maximumSelectionSize: 5,
-										multiple: TRUE,
+										multiple: true,
 										ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
 											url: "xmlhttp.php?action=get_users",
 											dataType: 'json',
@@ -13761,11 +13761,11 @@ if(use_xmlhttprequest == "1")
 		<template name="video_dailymotion_embed" version="1807"><![CDATA[<iframe frameborder="0" width="480" height="270" src="//www.dailymotion.com/embed/video/{$id}" allowfullscreen></iframe>]]></template>
 		<template name="video_facebook_embed" version="1800"><![CDATA[<iframe src="//www.facebook.com/video/embed?video_id={$id}" width="625" height="350" frameborder="0"></iframe>]]></template>
 		<template name="video_liveleak_embed" version="1811"><![CDATA[<iframe width="500" height="300" src="//www.liveleak.com/ll_embed?i={$id}" frameborder="0" allowfullscreen></iframe>]]></template>
-		<template name="video_myspacetv_embed" version="1807"><![CDATA[<iframe width="480" height="270" src="//media.myspace.com/play/video/{$id}" frameborder="0" allowtransparency="TRUE" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>]]></template>
+		<template name="video_myspacetv_embed" version="1807"><![CDATA[<iframe width="480" height="270" src="//media.myspace.com/play/video/{$id}" frameborder="0" allowtransparency="true" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>]]></template>
 		<template name="video_youtube_embed" version="1824"><![CDATA[<iframe width="560" height="315" src="//www.youtube-nocookie.com/embed/{$id}" frameborder="0" allowfullscreen></iframe>]]></template>
-		<template name="video_mixer_embed" version="1818"><![CDATA[<iframe allowfullscreen="TRUE" src="//mixer.com/embed/player/{$id}?disableLowLatency=1" width="620" height="349"></iframe>]]></template>
+		<template name="video_mixer_embed" version="1818"><![CDATA[<iframe allowfullscreen="true" src="//mixer.com/embed/player/{$id}?disableLowLatency=1" width="620" height="349"></iframe>]]></template>
 		<template name="video_vimeo_embed" version="1807"><![CDATA[<iframe src="//player.vimeo.com/video/{$id}" width="500" height="375" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>]]></template>
-		<template name="video_yahoo_embed" version="1807"><![CDATA[<iframe width="640" height="360" scrolling="no" frameborder="0" src="//{$local}screen.yahoo.com/{$id}?format=embed" allowfullscreen="TRUE" mozallowfullscreen="TRUE" webkitallowfullscreen="TRUE" allowtransparency="TRUE"></iframe>]]></template>
+		<template name="video_yahoo_embed" version="1807"><![CDATA[<iframe width="640" height="360" scrolling="no" frameborder="0" src="//{$local}screen.yahoo.com/{$id}?format=embed" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true" allowtransparency="true"></iframe>]]></template>
 		<template name="video_twitch_embed" version="1813"><![CDATA[<iframe src="//player.twitch.tv/?{$id}&amp;autoplay=false" frameborder="0" scrolling="no" height="378" width="620"></iframe>]]></template>
 		<template name="warnings" version="1400"><![CDATA[<html>
 <head>
@@ -13953,7 +13953,7 @@ if(use_xmlhttprequest == "1")
 
                       $('.types_check').each(function(e, val)
 						{
-							if($(this).prop('checked') == TRUE)
+							if($(this).prop('checked') == true)
 							{
 								checked = $(this).val();
 							}
@@ -14044,7 +14044,7 @@ if(use_xmlhttprequest == "1")
 				// <!--
 					function togglePM()
 					{
-						if($('#send_pm').prop('checked') == TRUE)
+						if($('#send_pm').prop('checked') == true)
 						{
 							$('#pm_input').show();
 							$('#pm_smilie_insert').show();
@@ -14108,7 +14108,7 @@ if(use_xmlhttprequest == "1")
 	<thead>
 		<tr>
 			<td class="thead">
-				<div class="float_right" style="margin-top: 3px;"><span class="smalltext"><a href="javascript:void(0)" onclick="UserCP.closeBuddySelect(TRUE); return false;">{$lang->close}</a></span></div>
+				<div class="float_right" style="margin-top: 3px;"><span class="smalltext"><a href="javascript:void(0)" onclick="UserCP.closeBuddySelect(true); return false;">{$lang->close}</a></span></div>
 				<div><strong>{$lang->select_buddies}</strong></div>
 			</td>
 		</tr>
@@ -14131,7 +14131,7 @@ if(use_xmlhttprequest == "1")
 			<td class="trow1">
 				<div class="smalltext"><strong>{$lang->selected_recipients}</strong></div>
 				<div id="buddyselect_buddies" class="smalltext" style="padding-left: 10px; height: 50px; overflow: auto;"></div>
-				<div style="text-align: right;"><input type="button" class="button" value="{$lang->ok}" onclick="UserCP.closeBuddySelect();" /> <input type="button" class="button" value="{$lang->cancel}" onclick="UserCP.closeBuddySelect(TRUE);" /></div>
+				<div style="text-align: right;"><input type="button" class="button" value="{$lang->ok}" onclick="UserCP.closeBuddySelect();" /> <input type="button" class="button" value="{$lang->cancel}" onclick="UserCP.closeBuddySelect(true);" /></div>
 			</td>
 		</tr>
 	</tbody>
@@ -14160,8 +14160,8 @@ opt_editor = {
 	rtl: {$lang->settings['rtl']},
 	locale: "mybblang",
 	width: "100%",
-	enablePasteFiltering: TRUE,
-	autoUpdate: TRUE,
+	enablePasteFiltering: true,
+	autoUpdate: true,
 	emoticonsEnabled: {$emoticons_enabled},
 	emoticons: {
 		// Emoticons to be included in the dropdown
@@ -14177,7 +14177,7 @@ opt_editor = {
 			{$hiddensmilies}
 		}
 	},
-	emoticonsCompat: TRUE,
+	emoticonsCompat: true,
 	toolbar: "{$basic1}{$align}{$font}{$size}{$color}{$removeformat}{$basic2}image,{$email}{$link}|video{$emoticon}|{$list}{$code}quote|maximize,source",
 };
 {$editor_language}

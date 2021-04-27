@@ -41,41 +41,46 @@
 		wordsOnly: false,
 		annotateScrollbar: false,
 		showToken: false,
-		trim: true,
+		trim: true
 	};
 
 	function State(options) {
 		this.options = {};
 		for (var name in defaults) {
-			this.options[name] = (options && options.hasOwnProperty(name) ? options : defaults)[name];
+			this.options[name] = (options && options.hasOwnProperty(name)
+				? options				: defaults)[name];
 		}
 
-		this.overlay = this.timeout = null;
+		this.overlay         = this.timeout = null;
 		this.matchesonscroll = null;
-		this.active = false;
+		this.active          = false;
 	}
 
-	CodeMirror.defineOption("highlightSelectionMatches", false, function (cm, val, old) {
-		if (old && old != CodeMirror.Init) {
-			removeOverlay(cm);
-			clearTimeout(cm.state.matchHighlighter.timeout);
-			cm.state.matchHighlighter = null;
-			cm.off("cursorActivity", cursorActivity);
-			cm.off("focus", onFocus);
-		}
-
-		if (val) {
-			var state = (cm.state.matchHighlighter = new State(val));
-			if (cm.hasFocus()) {
-				state.active = true;
-				highlightMatches(cm);
-			} else {
-				cm.on("focus", onFocus);
+	CodeMirror.defineOption(
+		"highlightSelectionMatches",
+		false,
+		function (cm, val, old) {
+			if (old && old != CodeMirror.Init) {
+				removeOverlay(cm);
+				clearTimeout(cm.state.matchHighlighter.timeout);
+				cm.state.matchHighlighter = null;
+				cm.off("cursorActivity", cursorActivity);
+				cm.off("focus", onFocus);
 			}
 
-			cm.on("cursorActivity", cursorActivity);
-		}
-	});
+			if (val) {
+				var state = (cm.state.matchHighlighter = new State(val));
+				if (cm.hasFocus()) {
+					state.active = true;
+					highlightMatches(cm);
+				} else {
+					cm.on("focus", onFocus);
+				}
+
+				cm.on("cursorActivity", cursorActivity);
+			}
+		},
+	);
 
 	function cursorActivity(cm) {
 		var state = cm.state.matchHighlighter;
@@ -103,10 +108,16 @@
 		var state = cm.state.matchHighlighter;
 		cm.addOverlay((state.overlay = makeOverlay(query, hasBoundary, style)));
 		if (state.options.annotateScrollbar && cm.showMatchesOnScrollbar) {
-			var searchFor = hasBoundary ? new RegExp("\\b" + query + "\\b") : query;
-			state.matchesonscroll = cm.showMatchesOnScrollbar(searchFor, false, {
-				className: "CodeMirror-selection-highlight-scrollbar",
-			});
+			var searchFor         = hasBoundary
+				? new RegExp("\\b" + query + "\\b")
+				: query;
+			state.matchesonscroll = cm.showMatchesOnScrollbar(
+				searchFor,
+				false,
+				{
+					className: "CodeMirror-selection-highlight-scrollbar"
+				},
+			);
 		}
 	}
 
@@ -127,11 +138,14 @@
 			var state = cm.state.matchHighlighter;
 			removeOverlay(cm);
 			if (!cm.somethingSelected() && state.options.showToken) {
-				var re = state.options.showToken === true ? /[\w$]/ : state.options.showToken;
+				var re  =
+					state.options.showToken === true
+						? /[\w$]/
+						: state.options.showToken;
 				var cur = cm.getCursor(),
-					line = cm.getLine(cur.line),
-					start = cur.ch,
-					end = start;
+					line   = cm.getLine(cur.line),
+					start  = cur.ch,
+					end    = start;
 				while (start && re.test(line.charAt(start - 1))) {
 					--start;
 				}
@@ -141,14 +155,19 @@
 				}
 
 				if (start < end) {
-					addOverlay(cm, line.slice(start, end), re, state.options.style);
+					addOverlay(
+						cm,
+						line.slice(start, end),
+						re,
+						state.options.style,
+					);
 				}
 
 				return;
 			}
 
 			var from = cm.getCursor("from"),
-				to = cm.getCursor("to");
+				to      = cm.getCursor("to");
 			if (from.line != to.line) {
 				return;
 			}
@@ -195,21 +214,25 @@
 
 	function boundariesAround(stream, re) {
 		return (
-			(!stream.start || !re.test(stream.string.charAt(stream.start - 1))) &&
-			(stream.pos == stream.string.length || !re.test(stream.string.charAt(stream.pos)))
+			(!stream.start ||
+				!re.test(stream.string.charAt(stream.start - 1))) &&
+			(stream.pos == stream.string.length ||
+				!re.test(stream.string.charAt(stream.pos)))
 		);
 	}
 
 	function makeOverlay(query, hasBoundary, style) {
 		return {
 			token: function (stream) {
-				if (stream.match(query) && (!hasBoundary || boundariesAround(stream, hasBoundary))) {
+				if (stream.match(query)
+        && (!hasBoundary || boundariesAround(stream, hasBoundary))
+				) {
 					return style;
 				}
 
 				stream.next();
 				stream.skipTo(query.charAt(0)) || stream.skipToEnd();
-			},
+			}
 		};
 	}
 });

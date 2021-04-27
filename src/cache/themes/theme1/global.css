@@ -1442,11 +1442,13 @@ a.button.report_user_button span {
 		(
 				0 - jGrowl.offsetWidth +
 					(
-						document.documentElement.clientWidth ? document.documentElement.clientWidth:
+						document.documentElement.clientWidth ?
+							document.documentElement.clientWidth:
 							document.body.clientWidth
 					) +
 					(
-						ignoreMe2=document.documentElement.scrollLeft ? document.documentElement.scrollLeft:
+						ignoreMe2=document.documentElement.scrollLeft ?
+							document.documentElement.scrollLeft:
 							document.body.scrollLeft
 					)
 			) + "px"
@@ -1455,7 +1457,8 @@ a.button.report_user_button span {
 		(
 				0 +
 					(
-						ignoreMe=document.documentElement.scrollTop ? document.documentElement.scrollTop:
+						ignoreMe=document.documentElement.scrollTop ?
+							document.documentElement.scrollTop:
 							document.body.scrollTop
 					)
 			) + "px"
@@ -1467,7 +1470,8 @@ a.button.report_user_button span {
 		(
 				0 +
 					(
-						ignoreMe2=document.documentElement.scrollLeft ? document.documentElement.scrollLeft:
+						ignoreMe2=document.documentElement.scrollLeft ?
+							document.documentElement.scrollLeft:
 							document.body.scrollLeft
 					)
 			) + "px"
@@ -1476,7 +1480,8 @@ a.button.report_user_button span {
 		(
 				0 +
 					(
-						ignoreMe=document.documentElement.scrollTop ? document.documentElement.scrollTop:
+						ignoreMe=document.documentElement.scrollTop ?
+							document.documentElement.scrollTop:
 							document.body.scrollTop
 					)
 			) + "px"
@@ -1488,11 +1493,13 @@ a.button.report_user_button span {
 		(
 				0 - jGrowl.offsetWidth +
 					(
-						document.documentElement.clientWidth ? document.documentElement.clientWidth:
+						document.documentElement.clientWidth ?
+							document.documentElement.clientWidth:
 							document.body.clientWidth
 					) +
 					(
-						ignoreMe2=document.documentElement.scrollLeft ? document.documentElement.scrollLeft:
+						ignoreMe2=document.documentElement.scrollLeft ?
+							document.documentElement.scrollLeft:
 							document.body.scrollLeft
 					)
 			) + "px"
@@ -1501,11 +1508,13 @@ a.button.report_user_button span {
 		(
 				0 - jGrowl.offsetHeight +
 					(
-						document.documentElement.clientHeight ? document.documentElement.clientHeight:
+						document.documentElement.clientHeight ?
+							document.documentElement.clientHeight:
 							document.body.clientHeight
 					) +
 					(
-						ignoreMe=document.documentElement.scrollTop ? document.documentElement.scrollTop:
+						ignoreMe=document.documentElement.scrollTop ?
+							document.documentElement.scrollTop:
 							document.body.scrollTop
 					)
 			) + "px"
@@ -1517,7 +1526,8 @@ a.button.report_user_button span {
 		(
 				0 +
 					(
-						ignoreMe2=document.documentElement.scrollLeft ? document.documentElement.scrollLeft:
+						ignoreMe2=document.documentElement.scrollLeft ?
+							document.documentElement.scrollLeft:
 							document.body.scrollLeft
 					)
 			) + "px"
@@ -1526,11 +1536,13 @@ a.button.report_user_button span {
 		(
 				0 - jGrowl.offsetHeight +
 					(
-						document.documentElement.clientHeight ? document.documentElement.clientHeight:
+						document.documentElement.clientHeight ?
+							document.documentElement.clientHeight:
 							document.body.clientHeight
 					) +
 					(
-						ignoreMe=document.documentElement.scrollTop ? document.documentElement.scrollTop:
+						ignoreMe=document.documentElement.scrollTop ?
+							document.documentElement.scrollTop:
 							document.body.scrollTop
 					)
 			) + "px"
@@ -1542,7 +1554,8 @@ a.button.report_user_button span {
 		(
 				0 +
 					(
-						ignoreMe2=document.documentElement.scrollLeft ? document.documentElement.scrollLeft:
+						ignoreMe2=document.documentElement.scrollLeft ?
+							document.documentElement.scrollLeft:
 							document.body.scrollLeft
 					)
 			) + "px"
@@ -1551,7 +1564,8 @@ a.button.report_user_button span {
 		(
 				0 +
 					(
-						ignoreMe=document.documentElement.scrollTop ? document.documentElement.scrollTop:
+						ignoreMe=document.documentElement.scrollTop ?
+							document.documentElement.scrollTop:
 							document.body.scrollTop
 					)
 			) + "px"

@@ -8,7 +8,9 @@ var inlineReports = {
 		}
 
 		var inlineIds = inlineReports.getCookie(inlineReports.cookieName);
-		var removedIds = inlineReports.getCookie(inlineReports.cookieName + "_removed");
+		var removedIds = inlineReports.getCookie(
+			inlineReports.cookieName + "_removed",
+		);
 		var allChecked = true;
 
 		$(inputs).each(function () {
@@ -29,7 +31,8 @@ var inlineReports = {
 				if (inlineCheck[0] == "reports") {
 					if (
 						inlineIds.indexOf(id) != -1 ||
-						(inlineIds.indexOf("ALL") != -1 && removedIds.indexOf(id) == -1)
+						(inlineIds.indexOf("ALL") != -1 &&
+							removedIds.indexOf(id) == -1)
 					) {
 						element.prop("checked", true);
 						var report = element.parents(".inline_row");
@@ -79,7 +82,9 @@ var inlineReports = {
 		}
 
 		var inlineIds = inlineReports.getCookie(inlineReports.cookieName);
-		var removedIds = inlineReports.getCookie(inlineReports.cookieName + "_removed");
+		var removedIds = inlineReports.getCookie(
+			inlineReports.cookieName + "_removed",
+		);
 
 		if (element.prop("checked") == true) {
 			if (inlineIds.indexOf("ALL") == -1) {
@@ -137,7 +142,8 @@ var inlineReports = {
 			if (!element.val()) return;
 			if (
 				element.attr("type") == "checkbox" &&
-				((element.attr("id") && element.attr("id").split("_")[0] == "reports") ||
+				((element.attr("id") &&
+					element.attr("id").split("_")[0] == "reports") ||
 					element.attr("name") == "allbox")
 			) {
 				element.prop("checked", false);
@@ -164,14 +170,20 @@ var inlineReports = {
 		}
 
 		var inlineIds = inlineReports.getCookie(inlineReports.cookieName);
-		var removedIds = inlineReports.getCookie(inlineReports.cookieName + "_removed");
+		var removedIds = inlineReports.getCookie(
+			inlineReports.cookieName + "_removed",
+		);
 
 		var newIds = new Array();
 		$(inputs).each(function () {
 			var element = $(this);
 			if (!element.val() || !element.attr("id")) return;
 			inlineCheck = element.attr("id").split("_");
-			if (element.attr("name") != "allbox" && element.attr("type") == "checkbox" && inlineCheck[0] == "reports") {
+			if (
+				element.attr("name") != "allbox" &&
+				element.attr("type") == "checkbox" &&
+				inlineCheck[0] == "reports"
+			) {
 				var id = inlineCheck[1];
 				var changed = element.prop("checked") != master.prop("checked");
 				element.prop("checked", master.prop("checked"));
@@ -268,7 +280,10 @@ var inlineReports = {
 			inlineReports.clearChecked();
 		} else {
 			inlineReports.setCookie(inlineReports.cookieName, inlineIds);
-			inlineReports.setCookie(inlineReports.cookieName + "_removed", removedIds);
+			inlineReports.setCookie(
+				inlineReports.cookieName + "_removed",
+				removedIds,
+			);
 		}
 		return count;
 	},

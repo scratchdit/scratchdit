@@ -182,7 +182,8 @@
 				stream.skipToEnd();
 				return ret("error", "error");
 			} else if (isOperatorChar.test(ch)) {
-				if (ch != ">" || !state.lexical || state.lexical.type != ">") stream.eatWhile(isOperatorChar);
+				if (ch != ">" || !state.lexical || state.lexical.type != ">")
+					stream.eatWhile(isOperatorChar);
 				return ret("operator", "operator", stream.current());
 			} else if (wordRE.test(ch)) {
 				stream.eatWhile(wordRE);
@@ -192,7 +193,8 @@
 						var kw = keywords[word];
 						return ret(kw.type, kw.style, word);
 					}
-					if (word == "async" && stream.match(/^\s*[\(\w]/, false)) return ret("async", "keyword", word);
+					if (word == "async" && stream.match(/^\s*[\(\w]/, false))
+						return ret("async", "keyword", word);
 				}
 				return ret("variable", "variable", word);
 			}
@@ -202,7 +204,11 @@
 			return function (stream, state) {
 				var escaped = false,
 					next;
-				if (jsonldMode && stream.peek() == "@" && stream.match(isJsonldKeyword)) {
+				if (
+					jsonldMode &&
+					stream.peek() == "@" &&
+					stream.match(isJsonldKeyword)
+				) {
 					state.tokenize = tokenBase;
 					return ret("jsonld-keyword", "meta");
 				}
@@ -232,7 +238,10 @@
 			var escaped = false,
 				next;
 			while ((next = stream.next()) != null) {
-				if (!escaped && (next == "`" || (next == "$" && stream.eat("{")))) {
+				if (
+					!escaped &&
+					(next == "`" || (next == "$" && stream.eat("{")))
+				) {
 					state.tokenize = tokenBase;
 					break;
 				}
@@ -256,7 +265,9 @@
 
 			if (isTS) {
 				// Try to skip TypeScript return type declarations after the arguments
-				var m = /:\s*(?:\w+(?:<[^>]*>|\[\])?|\{[^}]*\})\s*$/.exec(stream.string.slice(stream.start, arrow));
+				var m = /:\s*(?:\w+(?:<[^>]*>|\[\])?|\{[^}]*\})\s*$/.exec(
+					stream.string.slice(stream.start, arrow),
+				);
 				if (m) arrow = m.index;
 			}
 
@@ -310,9 +321,11 @@
 		}
 
 		function inScope(state, varname) {
-			for (var v = state.localVars; v; v = v.next) if (v.name == varname) return true;
+			for (var v = state.localVars; v; v = v.next)
+				if (v.name == varname) return true;
 			for (var cx = state.context; cx; cx = cx.prev) {
-				for (var v = cx.vars; v; v = v.next) if (v.name == varname) return true;
+				for (var v = cx.vars; v; v = v.next)
+					if (v.name == varname) return true;
 			}
 		}
 
@@ -325,14 +338,20 @@
 			(cx.marked = null), (cx.cc = cc);
 			cx.style = style;
 
-			if (!state.lexical.hasOwnProperty("align")) state.lexical.align = true;
+			if (!state.lexical.hasOwnProperty("align"))
+				state.lexical.align = true;
 
 			while (true) {
-				var combinator = cc.length ? cc.pop() : jsonMode ? expression : statement;
+				var combinator = cc.length
+					? cc.pop()
+					: jsonMode
+					? expression
+					: statement;
 				if (combinator(type, content)) {
 					while (cc.length && cc[cc.length - 1].lex) cc.pop()();
 					if (cx.marked) return cx.marked;
-					if (type == "variable" && inScope(state, content)) return "variable-2";
+					if (type == "variable" && inScope(state, content))
+						return "variable-2";
 					return style;
 				}
 			}
@@ -342,7 +361,8 @@
 
 		var cx = { state: null, column: null, marked: null, cc: null };
 		function pass() {
-			for (var i = arguments.length - 1; i >= 0; i--) cx.cc.push(arguments[i]);
+			for (var i = arguments.length - 1; i >= 0; i--)
+				cx.cc.push(arguments[i]);
 		}
 		function cont() {
 			pass.apply(null, arguments);
@@ -350,7 +370,8 @@
 		}
 		function register(varname) {
 			function inList(list) {
-				for (var v = list; v; v = v.next) if (v.name == varname) return true;
+				for (var v = list; v; v = v.next)
+					if (v.name == varname) return true;
 				return false;
 			}
 			var state = cx.state;
@@ -360,7 +381,11 @@
 				state.localVars = { name: varname, next: state.localVars };
 			} else {
 				if (inList(state.globalVars)) return;
-				if (parserConfig.globalVars) state.globalVars = { name: varname, next: state.globalVars };
+				if (parserConfig.globalVars)
+					state.globalVars = {
+						name: varname,
+						next: state.globalVars,
+					};
 			}
 		}
 
@@ -368,7 +393,10 @@
 
 		var defaultVars = { name: "this", next: { name: "arguments" } };
 		function pushcontext() {
-			cx.state.context = { prev: cx.state.context, vars: cx.state.localVars };
+			cx.state.context = {
+				prev: cx.state.context,
+				vars: cx.state.localVars,
+			};
 			cx.state.localVars = defaultVars;
 		}
 		function popcontext() {
@@ -379,11 +407,23 @@
 			var result = function () {
 				var state = cx.state,
 					indent = state.indented;
-				if (state.lexical.type == "stat") indent = state.lexical.indented;
+				if (state.lexical.type == "stat")
+					indent = state.lexical.indented;
 				else
-					for (var outer = state.lexical; outer && outer.type == ")" && outer.align; outer = outer.prev)
+					for (
+						var outer = state.lexical;
+						outer && outer.type == ")" && outer.align;
+						outer = outer.prev
+					)
 						indent = outer.indented;
-				state.lexical = new JSLexical(indent, cx.stream.column(), type, null, state.lexical, info);
+				state.lexical = new JSLexical(
+					indent,
+					cx.stream.column(),
+					type,
+					null,
+					state.lexical,
+					info,
+				);
 			};
 			result.lex = true;
 			return result;
@@ -391,7 +431,8 @@
 		function poplex() {
 			var state = cx.state;
 			if (state.lexical.prev) {
-				if (state.lexical.type == ")") state.indented = state.lexical.indented;
+				if (state.lexical.type == ")")
+					state.indented = state.lexical.indented;
 				state.lexical = state.lexical.prev;
 			}
 		}
@@ -407,22 +448,45 @@
 		}
 
 		function statement(type, value) {
-			if (type == "var") return cont(pushlex("vardef", value.length), vardef, expect(";"), poplex);
-			if (type == "keyword a") return cont(pushlex("form"), parenExpr, statement, poplex);
-			if (type == "keyword b") return cont(pushlex("form"), statement, poplex);
+			if (type == "var")
+				return cont(
+					pushlex("vardef", value.length),
+					vardef,
+					expect(";"),
+					poplex,
+				);
+			if (type == "keyword a")
+				return cont(pushlex("form"), parenExpr, statement, poplex);
+			if (type == "keyword b")
+				return cont(pushlex("form"), statement, poplex);
 			if (type == "{") return cont(pushlex("}"), block, poplex);
 			if (type == ";") return cont();
 			if (type == "if") {
-				if (cx.state.lexical.info == "else" && cx.state.cc[cx.state.cc.length - 1] == poplex)
+				if (
+					cx.state.lexical.info == "else" &&
+					cx.state.cc[cx.state.cc.length - 1] == poplex
+				)
 					cx.state.cc.pop()();
-				return cont(pushlex("form"), parenExpr, statement, poplex, maybeelse);
+				return cont(
+					pushlex("form"),
+					parenExpr,
+					statement,
+					poplex,
+					maybeelse,
+				);
 			}
 			if (type == "function") return cont(functiondef);
-			if (type == "for") return cont(pushlex("form"), forspec, statement, poplex);
+			if (type == "for")
+				return cont(pushlex("form"), forspec, statement, poplex);
 			if (type == "variable") {
 				if (isTS && value == "type") {
 					cx.marked = "keyword";
-					return cont(typeexpr, expect("operator"), typeexpr, expect(";"));
+					return cont(
+						typeexpr,
+						expect("operator"),
+						typeexpr,
+						expect(";"),
+					);
 				}
 				if (isTS && value == "declare") {
 					cx.marked = "keyword";
@@ -432,7 +496,15 @@
 				}
 			}
 			if (type == "switch")
-				return cont(pushlex("form"), parenExpr, expect("{"), pushlex("}", "switch"), block, poplex, poplex);
+				return cont(
+					pushlex("form"),
+					parenExpr,
+					expect("{"),
+					pushlex("}", "switch"),
+					block,
+					poplex,
+					poplex,
+				);
 			if (type == "case") return cont(expression, expect(":"));
 			if (type == "default") return cont(expect(":"));
 			if (type == "catch")
@@ -446,11 +518,22 @@
 					poplex,
 					popcontext,
 				);
-			if (type == "class") return cont(pushlex("form"), className, poplex);
-			if (type == "export") return cont(pushlex("stat"), afterExport, poplex);
-			if (type == "import") return cont(pushlex("stat"), afterImport, poplex);
+			if (type == "class")
+				return cont(pushlex("form"), className, poplex);
+			if (type == "export")
+				return cont(pushlex("stat"), afterExport, poplex);
+			if (type == "import")
+				return cont(pushlex("stat"), afterImport, poplex);
 			if (type == "module")
-				return cont(pushlex("form"), pattern, expect("{"), pushlex("}"), block, poplex, poplex);
+				return cont(
+					pushlex("form"),
+					pattern,
+					expect("{"),
+					pushlex("}"),
+					block,
+					poplex,
+					poplex,
+				);
 			if (type == "async") return cont(statement);
 			if (value == "@") return cont(expression, statement);
 			return pass(pushlex("stat"), expression, expect(";"), poplex);
@@ -478,17 +561,35 @@
 						body,
 						popcontext,
 					);
-				else if (type == "variable") return pass(pushcontext, pattern, expect("=>"), body, popcontext);
+				else if (type == "variable")
+					return pass(
+						pushcontext,
+						pattern,
+						expect("=>"),
+						body,
+						popcontext,
+					);
 			}
 
 			var maybeop = noComma ? maybeoperatorNoComma : maybeoperatorComma;
 			if (atomicTypes.hasOwnProperty(type)) return cont(maybeop);
 			if (type == "function") return cont(functiondef, maybeop);
-			if (type == "class") return cont(pushlex("form"), classExpression, poplex);
-			if (type == "keyword c" || type == "async") return cont(noComma ? maybeexpressionNoComma : maybeexpression);
-			if (type == "(") return cont(pushlex(")"), maybeexpression, expect(")"), poplex, maybeop);
-			if (type == "operator" || type == "spread") return cont(noComma ? expressionNoComma : expression);
-			if (type == "[") return cont(pushlex("]"), arrayLiteral, poplex, maybeop);
+			if (type == "class")
+				return cont(pushlex("form"), classExpression, poplex);
+			if (type == "keyword c" || type == "async")
+				return cont(noComma ? maybeexpressionNoComma : maybeexpression);
+			if (type == "(")
+				return cont(
+					pushlex(")"),
+					maybeexpression,
+					expect(")"),
+					poplex,
+					maybeop,
+				);
+			if (type == "operator" || type == "spread")
+				return cont(noComma ? expressionNoComma : expression);
+			if (type == "[")
+				return cont(pushlex("]"), arrayLiteral, poplex, maybeop);
 			if (type == "{") return contCommasep(objprop, "}", null, maybeop);
 			if (type == "quasi") return pass(quasi, maybeop);
 			if (type == "new") return cont(maybeTarget(noComma));
@@ -508,11 +609,18 @@
 			return maybeoperatorNoComma(type, value, false);
 		}
 		function maybeoperatorNoComma(type, value, noComma) {
-			var me = noComma == false ? maybeoperatorComma : maybeoperatorNoComma;
+			var me =
+				noComma == false ? maybeoperatorComma : maybeoperatorNoComma;
 			var expr = noComma == false ? expression : expressionNoComma;
-			if (type == "=>") return cont(pushcontext, noComma ? arrowBodyNoComma : arrowBody, popcontext);
+			if (type == "=>")
+				return cont(
+					pushcontext,
+					noComma ? arrowBodyNoComma : arrowBody,
+					popcontext,
+				);
 			if (type == "operator") {
-				if (/\+\+|--/.test(value) || (isTS && value == "!")) return cont(me);
+				if (/\+\+|--/.test(value) || (isTS && value == "!"))
+					return cont(me);
 				if (value == "?") return cont(expression, expect(":"), expr);
 				return cont(expr);
 			}
@@ -520,9 +628,17 @@
 				return pass(quasi, me);
 			}
 			if (type == ";") return;
-			if (type == "(") return contCommasep(expressionNoComma, ")", "call", me);
+			if (type == "(")
+				return contCommasep(expressionNoComma, ")", "call", me);
 			if (type == ".") return cont(property, me);
-			if (type == "[") return cont(pushlex("]"), maybeexpression, expect("]"), poplex, me);
+			if (type == "[")
+				return cont(
+					pushlex("]"),
+					maybeexpression,
+					expect("]"),
+					poplex,
+					me,
+				);
 			if (isTS && value == "as") {
 				cx.marked = "keyword";
 				return cont(typeexpr, me);
@@ -557,7 +673,10 @@
 			return function (type) {
 				if (type == ".") return cont(noComma ? targetNoComma : target);
 				else if (type == "variable" && isTS)
-					return cont(maybeTypeArgs, noComma ? maybeoperatorNoComma : maybeoperatorComma);
+					return cont(
+						maybeTypeArgs,
+						noComma ? maybeoperatorNoComma : maybeoperatorComma,
+					);
 				else return pass(noComma ? expressionNoComma : expression);
 			};
 		}
@@ -591,7 +710,11 @@
 				cx.marked = "property";
 				if (value == "get" || value == "set") return cont(getterSetter);
 				var m; // Work around fat-arrow-detection complication for detecting typescript typed arrow params
-				if (isTS && cx.state.fatArrowAt == cx.stream.start && (m = cx.stream.match(/^\s*:\s*/, false)))
+				if (
+					isTS &&
+					cx.state.fatArrowAt == cx.stream.start &&
+					(m = cx.stream.match(/^\s*:\s*/, false))
+				)
 					cx.state.fatArrowAt = cx.stream.pos + m[0].length;
 				return cont(afterprop);
 			} else if (type == "number" || type == "string") {
@@ -660,10 +783,24 @@
 					return cont(afterType);
 				}
 			}
-			if (type == "string" || type == "number" || type == "atom") return cont(afterType);
-			if (type == "[") return cont(pushlex("]"), commasep(typeexpr, "]", ","), poplex, afterType);
-			if (type == "{") return cont(pushlex("}"), commasep(typeprop, "}", ",;"), poplex, afterType);
-			if (type == "(") return cont(commasep(typearg, ")"), maybeReturnType);
+			if (type == "string" || type == "number" || type == "atom")
+				return cont(afterType);
+			if (type == "[")
+				return cont(
+					pushlex("]"),
+					commasep(typeexpr, "]", ","),
+					poplex,
+					afterType,
+				);
+			if (type == "{")
+				return cont(
+					pushlex("}"),
+					commasep(typeprop, "}", ",;"),
+					poplex,
+					afterType,
+				);
+			if (type == "(")
+				return cont(commasep(typearg, ")"), maybeReturnType);
 		}
 		function maybeReturnType(type) {
 			if (type == "=>") return cont(typeexpr);
@@ -685,13 +822,25 @@
 			else if (type == ":") return cont(typeexpr);
 		}
 		function afterType(type, value) {
-			if (value == "<") return cont(pushlex(">"), commasep(typeexpr, ">"), poplex, afterType);
+			if (value == "<")
+				return cont(
+					pushlex(">"),
+					commasep(typeexpr, ">"),
+					poplex,
+					afterType,
+				);
 			if (value == "|" || type == ".") return cont(typeexpr);
 			if (type == "[") return cont(expect("]"), afterType);
 			if (value == "extends") return cont(typeexpr);
 		}
 		function maybeTypeArgs(_, value) {
-			if (value == "<") return cont(pushlex(">"), commasep(typeexpr, ">"), poplex, afterType);
+			if (value == "<")
+				return cont(
+					pushlex(">"),
+					commasep(typeexpr, ">"),
+					poplex,
+					afterType,
+				);
 		}
 		function vardef() {
 			return pass(pattern, maybetype, maybeAssign, vardefCont);
@@ -723,10 +872,12 @@
 			if (type == ",") return cont(vardef);
 		}
 		function maybeelse(type, value) {
-			if (type == "keyword b" && value == "else") return cont(pushlex("form", "else"), statement, poplex);
+			if (type == "keyword b" && value == "else")
+				return cont(pushlex("form", "else"), statement, poplex);
 		}
 		function forspec(type) {
-			if (type == "(") return cont(pushlex(")"), forspec1, expect(")"), poplex);
+			if (type == "(")
+				return cont(pushlex(")"), forspec1, expect(")"), poplex);
 		}
 		function forspec1(type) {
 			if (type == "var") return cont(vardef, expect(";"), forspec2);
@@ -762,8 +913,22 @@
 				return cont(functiondef);
 			}
 			if (type == "(")
-				return cont(pushcontext, pushlex(")"), commasep(funarg, ")"), poplex, maybetype, statement, popcontext);
-			if (isTS && value == "<") return cont(pushlex(">"), commasep(typeexpr, ">"), poplex, functiondef);
+				return cont(
+					pushcontext,
+					pushlex(")"),
+					commasep(funarg, ")"),
+					poplex,
+					maybetype,
+					statement,
+					popcontext,
+				);
+			if (isTS && value == "<")
+				return cont(
+					pushlex(">"),
+					commasep(typeexpr, ">"),
+					poplex,
+					functiondef,
+				);
 		}
 		function funarg(type, value) {
 			if (value == "@") cont(expression, funarg);
@@ -782,8 +947,18 @@
 			}
 		}
 		function classNameAfter(type, value) {
-			if (value == "<") return cont(pushlex(">"), commasep(typeexpr, ">"), poplex, classNameAfter);
-			if (value == "extends" || value == "implements" || (isTS && type == ","))
+			if (value == "<")
+				return cont(
+					pushlex(">"),
+					commasep(typeexpr, ">"),
+					poplex,
+					classNameAfter,
+				);
+			if (
+				value == "extends" ||
+				value == "implements" ||
+				(isTS && type == ",")
+			)
 				return cont(isTS ? typeexpr : expression, classNameAfter);
 			if (type == "{") return cont(pushlex("}"), classBody, poplex);
 		}
@@ -802,7 +977,13 @@
 				cx.marked = "property";
 				return cont(isTS ? classfield : functiondef, classBody);
 			}
-			if (type == "[") return cont(expression, expect("]"), isTS ? classfield : functiondef, classBody);
+			if (type == "[")
+				return cont(
+					expression,
+					expect("]"),
+					isTS ? classfield : functiondef,
+					classBody,
+				);
 			if (value == "*") {
 				cx.marked = "keyword";
 				return cont(classBody);
@@ -826,7 +1007,8 @@
 				cx.marked = "keyword";
 				return cont(expression, expect(";"));
 			}
-			if (type == "{") return cont(commasep(exportField, "}"), maybeFrom, expect(";"));
+			if (type == "{")
+				return cont(commasep(exportField, "}"), maybeFrom, expect(";"));
 			return pass(statement);
 		}
 		function exportField(type, value) {
@@ -881,7 +1063,10 @@
 					/^(?:operator|sof|keyword [bc]|case|new|export|default|spread|[\[{}\(,;:]|=>)$/.test(
 						state.lastType,
 					)) ||
-				(state.lastType == "quasi" && /\{\s*$/.test(stream.string.slice(0, stream.pos - (backUp || 0))))
+				(state.lastType == "quasi" &&
+					/\{\s*$/.test(
+						stream.string.slice(0, stream.pos - (backUp || 0)),
+					))
 			);
 		}
 
@@ -893,26 +1078,41 @@
 					tokenize: tokenBase,
 					lastType: "sof",
 					cc: [],
-					lexical: new JSLexical((basecolumn || 0) - indentUnit, 0, "block", false),
+					lexical: new JSLexical(
+						(basecolumn || 0) - indentUnit,
+						0,
+						"block",
+						false,
+					),
 					localVars: parserConfig.localVars,
-					context: parserConfig.localVars && { vars: parserConfig.localVars },
+					context: parserConfig.localVars && {
+						vars: parserConfig.localVars,
+					},
 					indented: basecolumn || 0,
 				};
-				if (parserConfig.globalVars && typeof parserConfig.globalVars == "object")
+				if (
+					parserConfig.globalVars &&
+					typeof parserConfig.globalVars == "object"
+				)
 					state.globalVars = parserConfig.globalVars;
 				return state;
 			},
 
 			token: function (stream, state) {
 				if (stream.sol()) {
-					if (!state.lexical.hasOwnProperty("align")) state.lexical.align = false;
+					if (!state.lexical.hasOwnProperty("align"))
+						state.lexical.align = false;
 					state.indented = stream.indentation();
 					findFatArrow(stream, state);
 				}
-				if (state.tokenize != tokenComment && stream.eatSpace()) return null;
+				if (state.tokenize != tokenComment && stream.eatSpace())
+					return null;
 				var style = state.tokenize(stream, state);
 				if (type == "comment") return style;
-				state.lastType = type == "operator" && (content == "++" || content == "--") ? "incdec" : type;
+				state.lastType =
+					type == "operator" && (content == "++" || content == "--")
+						? "incdec"
+						: type;
 				return parseJS(state, style, type, content, stream);
 			},
 
@@ -933,28 +1133,50 @@
 					(lexical.type == "stat" || lexical.type == "form") &&
 					(firstChar == "}" ||
 						((top = state.cc[state.cc.length - 1]) &&
-							(top == maybeoperatorComma || top == maybeoperatorNoComma) &&
+							(top == maybeoperatorComma ||
+								top == maybeoperatorNoComma) &&
 							!/^[,\.=+\-*:?[\(]/.test(textAfter)))
 				)
 					lexical = lexical.prev;
-				if (statementIndent && lexical.type == ")" && lexical.prev.type == "stat") lexical = lexical.prev;
+				if (
+					statementIndent &&
+					lexical.type == ")" &&
+					lexical.prev.type == "stat"
+				)
+					lexical = lexical.prev;
 				var type = lexical.type,
 					closing = firstChar == type;
 
 				if (type == "vardef")
 					return (
 						lexical.indented +
-						(state.lastType == "operator" || state.lastType == "," ? lexical.info + 1 : 0)
+						(state.lastType == "operator" || state.lastType == ","
+							? lexical.info + 1
+							: 0)
 					);
-				else if (type == "form" && firstChar == "{") return lexical.indented;
+				else if (type == "form" && firstChar == "{")
+					return lexical.indented;
 				else if (type == "form") return lexical.indented + indentUnit;
 				else if (type == "stat")
 					return (
-						lexical.indented + (isContinuedStatement(state, textAfter) ? statementIndent || indentUnit : 0)
+						lexical.indented +
+						(isContinuedStatement(state, textAfter)
+							? statementIndent || indentUnit
+							: 0)
 					);
-				else if (lexical.info == "switch" && !closing && parserConfig.doubleIndentSwitch != false)
-					return lexical.indented + (/^(?:case|default)\b/.test(textAfter) ? indentUnit : 2 * indentUnit);
-				else if (lexical.align) return lexical.column + (closing ? 0 : 1);
+				else if (
+					lexical.info == "switch" &&
+					!closing &&
+					parserConfig.doubleIndentSwitch != false
+				)
+					return (
+						lexical.indented +
+						(/^(?:case|default)\b/.test(textAfter)
+							? indentUnit
+							: 2 * indentUnit)
+					);
+				else if (lexical.align)
+					return lexical.column + (closing ? 0 : 1);
 				else return lexical.indented + (closing ? 0 : indentUnit);
 			},
 
@@ -973,7 +1195,8 @@
 
 			skipExpression: function (state) {
 				var top = state.cc[state.cc.length - 1];
-				if (top == expression || top == expressionNoComma) state.cc.pop();
+				if (top == expression || top == expressionNoComma)
+					state.cc.pop();
 			},
 		};
 	});
@@ -985,7 +1208,10 @@
 	CodeMirror.defineMIME("application/javascript", "javascript");
 	CodeMirror.defineMIME("application/x-javascript", "javascript");
 	CodeMirror.defineMIME("application/ecmascript", "javascript");
-	CodeMirror.defineMIME("application/json", { name: "javascript", json: true });
+	CodeMirror.defineMIME("application/json", {
+		name: "javascript",
+		json: true,
+	});
 	CodeMirror.defineMIME("application/x-json", {
 		name: "javascript",
 		json: true,

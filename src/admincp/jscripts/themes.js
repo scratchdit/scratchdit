@@ -16,9 +16,25 @@ var ThemeSelector = {
 	 * @param  number the theme id
 	 * @return void
 	 */
-	init: function (url, saveUrl, selector, styleSheet, file, selectorForm, tid) {
+	init: function (
+		url,
+		saveUrl,
+		selector,
+		styleSheet,
+		file,
+		selectorForm,
+		tid,
+	) {
 		// verify input
-		if (!url || !saveUrl || !selector || !styleSheet || !file || !selectorForm || !tid) {
+		if (
+			!url ||
+			!saveUrl ||
+			!selector ||
+			!styleSheet ||
+			!file ||
+			!selectorForm ||
+			!tid
+		) {
 			return;
 		}
 
@@ -35,7 +51,9 @@ var ThemeSelector = {
 		ThemeSelector.width = $("#css_bits\\[width\\]").val();
 		ThemeSelector.color = $("#css_bits\\[color\\]").val();
 		ThemeSelector.extra = $("#css_bits\\[extra\\]").val();
-		ThemeSelector.text_decoration = $("#css_bits\\[text_decoration\\]").val();
+		ThemeSelector.text_decoration = $(
+			"#css_bits\\[text_decoration\\]",
+		).val();
 		ThemeSelector.font_family = $("#css_bits\\[font_family\\]").val();
 		ThemeSelector.font_size = $("#css_bits\\[font_size\\]").val();
 		ThemeSelector.font_style = $("#css_bits\\[font_style\\]").val();
@@ -93,7 +111,9 @@ var ThemeSelector = {
 
 		ThemeSelector.selectorGoText = $("#mini_spinner").html();
 		$("#mini_spinner").html(
-			'&nbsp;<img src="' + ThemeSelector.miniSpinnerImage + '" style="vertical-align: middle;" alt="" /> ',
+			'&nbsp;<img src="' +
+				ThemeSelector.miniSpinnerImage +
+				'" style="vertical-align: middle;" alt="" /> ',
 		);
 
 		$.ajax({
@@ -133,7 +153,9 @@ var ThemeSelector = {
 		ThemeSelector.width = $("#css_bits\\[width\\]").val();
 		ThemeSelector.color = $("#css_bits\\[color\\]").val();
 		ThemeSelector.extra = $("#css_bits\\[extra\\]").val();
-		ThemeSelector.text_decoration = $("#css_bits\\[text_decoration\\]").val();
+		ThemeSelector.text_decoration = $(
+			"#css_bits\\[text_decoration\\]",
+		).val();
 		ThemeSelector.font_family = $("#css_bits\\[font_family\\]").val();
 		ThemeSelector.font_size = $("#css_bits\\[font_size\\]").val();
 		ThemeSelector.font_style = $("#css_bits\\[font_style\\]").val();
@@ -158,8 +180,10 @@ var ThemeSelector = {
 			ThemeSelector.width != $("#css_bits\\[width\\]").val() ||
 			ThemeSelector.color != $("#css_bits\\[color\\]").val() ||
 			ThemeSelector.extra != $("#css_bits\\[extra\\]").val() ||
-			ThemeSelector.text_decoration != $("#css_bits\\[text_decoration\\]").val() ||
-			ThemeSelector.font_family != $("#css_bits\\[font_family\\]").val() ||
+			ThemeSelector.text_decoration !=
+				$("#css_bits\\[text_decoration\\]").val() ||
+			ThemeSelector.font_family !=
+				$("#css_bits\\[font_family\\]").val() ||
 			ThemeSelector.font_size != $("#css_bits\\[font_size\\]").val() ||
 			ThemeSelector.font_style != $("#css_bits\\[font_style\\]").val() ||
 			ThemeSelector.font_weight != $("#css_bits\\[font_weight\\]").val()
@@ -288,7 +312,9 @@ var ThemeSelector = {
 		ThemeSelector.width = $("#css_bits\\[width\\]").val();
 		ThemeSelector.color = $("#css_bits\\[color\\]").val();
 		ThemeSelector.extra = $("#css_bits\\[extra\\]").val();
-		ThemeSelector.text_decoration = $("#css_bits\\[text_decoration\\]").val();
+		ThemeSelector.text_decoration = $(
+			"#css_bits\\[text_decoration\\]",
+		).val();
 		ThemeSelector.font_family = $("#css_bits\\[font_family\\]").val();
 		ThemeSelector.font_size = $("#css_bits\\[font_size\\]").val();
 		ThemeSelector.font_style = $("#css_bits\\[font_style\\]").val();

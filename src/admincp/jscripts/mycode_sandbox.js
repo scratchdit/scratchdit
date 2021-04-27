@@ -1,5 +1,20 @@
-function MyCodeSandbox(url, button, regex_textbox, replacement_textbox, test_textbox, html_textbox, actual_div) {
-	if (button && regex_textbox && replacement_textbox && test_textbox && html_textbox && actual_div) {
+function MyCodeSandbox(
+	url,
+	button,
+	regex_textbox,
+	replacement_textbox,
+	test_textbox,
+	html_textbox,
+	actual_div,
+) {
+	if (
+		button &&
+		regex_textbox &&
+		replacement_textbox &&
+		test_textbox &&
+		html_textbox &&
+		actual_div
+	) {
 		this.url = url;
 		this.button = button;
 		this.regex_textbox = regex_textbox;

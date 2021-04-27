@@ -30,10 +30,10 @@ jobs:
                   RANGE=$START_PARENT_SHA..$HEAD_SHA
 
                   echo "cherry-pick $RANGE"
-                  git cherry-pick --no-commit $RANGE &> /dev/null || TRUE
+                  git cherry-pick --no-commit $RANGE &> /dev/null || true
                   echo
-                  git diff --check && echo "No conflicts detected" || TRUE
+                  git diff --check && echo "No conflicts detected" || true
 
             - name: "Cleanup"
               run: |
-                  git cherry-pick --abort || TRUE
+                  git cherry-pick --abort || true

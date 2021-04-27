@@ -13,8 +13,12 @@
 		// To maintain compatibility with older version that only supported one instance we'll create the base container.
 		if ($("#jGrowl").length === 0)
 			$('<div id="jGrowl"></div>')
-				.addClass(o && o.position ? o.position : $.jGrowl.defaults.position)
-				.appendTo(o && o.appendTo ? o.appendTo : $.jGrowl.defaults.appendTo);
+				.addClass(
+					o && o.position ? o.position : $.jGrowl.defaults.position,
+				)
+				.appendTo(
+					o && o.appendTo ? o.appendTo : $.jGrowl.defaults.appendTo,
+				);
 
 		// Create a notification on the container.
 		$("#jGrowl").jGrowl(m, o);
@@ -49,7 +53,10 @@
 				if ($.isFunction($(this).data("jGrowl.instance")[m])) {
 					$(this)
 						.data("jGrowl.instance")
-						[m].apply($(this).data("jGrowl.instance"), $.makeArray(args).slice(1));
+						[m].apply(
+							$(this).data("jGrowl.instance"),
+							$.makeArray(args).slice(1),
+						);
 				} else {
 					$(this).data("jGrowl.instance").create(m, o);
 				}
@@ -122,16 +129,23 @@
 			var o = n.options;
 
 			// Support for jQuery theme-states, if this is not used it displays a widget header
-			o.themeState = o.themeState === "" ? "" : "ui-state-" + o.themeState;
+			o.themeState =
+				o.themeState === "" ? "" : "ui-state-" + o.themeState;
 
 			var notification = $("<div/>")
 				.addClass(
 					"jGrowl-notification alert " +
 						o.themeState +
 						" ui-corner-all" +
-						(o.group !== undefined && o.group !== "" ? " " + o.group : ""),
+						(o.group !== undefined && o.group !== ""
+							? " " + o.group
+							: ""),
 				)
-				.append($("<button/>").addClass("jGrowl-close").html(o.closeTemplate))
+				.append(
+					$("<button/>")
+						.addClass("jGrowl-close")
+						.html(o.closeTemplate),
+				)
 				.append($("<div/>").addClass("jGrowl-header").html(o.header))
 				.append($("<div/>").addClass("jGrowl-message").html(message))
 				.data("jGrowl", o)
@@ -146,62 +160,127 @@
 			/** Notification Actions **/
 			$(notification)
 				.bind("mouseover.jGrowl", function () {
-					$(".jGrowl-notification", self.element).data("jGrowl.pause", true);
+					$(".jGrowl-notification", self.element).data(
+						"jGrowl.pause",
+						true,
+					);
 				})
 				.bind("mouseout.jGrowl", function () {
-					$(".jGrowl-notification", self.element).data("jGrowl.pause", false);
+					$(".jGrowl-notification", self.element).data(
+						"jGrowl.pause",
+						false,
+					);
 				})
 				.bind("jGrowl.beforeOpen", function () {
-					if (o.beforeOpen.apply(notification, [notification, message, o, self.element]) !== false) {
+					if (
+						o.beforeOpen.apply(notification, [
+							notification,
+							message,
+							o,
+							self.element,
+						]) !== false
+					) {
 						$(this).trigger("jGrowl.open");
 					}
 				})
 				.bind("jGrowl.open", function () {
-					if (o.open.apply(notification, [notification, message, o, self.element]) !== false) {
+					if (
+						o.open.apply(notification, [
+							notification,
+							message,
+							o,
+							self.element,
+						]) !== false
+					) {
 						if (o.glue == "after") {
-							$(".jGrowl-notification:last", self.element).after(notification);
+							$(".jGrowl-notification:last", self.element).after(
+								notification,
+							);
 						} else {
-							$(".jGrowl-notification:first", self.element).before(notification);
+							$(
+								".jGrowl-notification:first",
+								self.element,
+							).before(notification);
 						}
 
-						$(this).animate(o.animateOpen, o.openDuration, o.easing, function () {
-							// Fixes some anti-aliasing issues with IE filters.
-							if ($.support.opacity === false) this.style.removeAttribute("filter");
+						$(this).animate(
+							o.animateOpen,
+							o.openDuration,
+							o.easing,
+							function () {
+								// Fixes some anti-aliasing issues with IE filters.
+								if ($.support.opacity === false)
+									this.style.removeAttribute("filter");
 
-							if ($(this).data("jGrowl") !== null && typeof $(this).data("jGrowl") !== "undefined")
-								// Happens when a notification is closing before it's open.
-								$(this).data("jGrowl").created = new Date();
+								if (
+									$(this).data("jGrowl") !== null &&
+									typeof $(this).data("jGrowl") !==
+										"undefined"
+								)
+									// Happens when a notification is closing before it's open.
+									$(this).data("jGrowl").created = new Date();
 
-							$(this).trigger("jGrowl.afterOpen");
-						});
+								$(this).trigger("jGrowl.afterOpen");
+							},
+						);
 					}
 				})
 				.bind("jGrowl.afterOpen", function () {
-					o.afterOpen.apply(notification, [notification, message, o, self.element]);
+					o.afterOpen.apply(notification, [
+						notification,
+						message,
+						o,
+						self.element,
+					]);
 				})
 				.bind("click", function () {
-					o.click.apply(notification, [notification, message, o, self.element]);
+					o.click.apply(notification, [
+						notification,
+						message,
+						o,
+						self.element,
+					]);
 				})
 				.bind("jGrowl.beforeClose", function () {
-					if (o.beforeClose.apply(notification, [notification, message, o, self.element]) !== false)
+					if (
+						o.beforeClose.apply(notification, [
+							notification,
+							message,
+							o,
+							self.element,
+						]) !== false
+					)
 						$(this).trigger("jGrowl.close");
 				})
 				.bind("jGrowl.close", function () {
 					// Pause the notification, lest during the course of animation another close event gets called.
 					$(this).data("jGrowl.pause", true);
-					$(this).animate(o.animateClose, o.closeDuration, o.easing, function () {
-						if ($.isFunction(o.close)) {
-							if (o.close.apply(notification, [notification, message, o, self.element]) !== false)
+					$(this).animate(
+						o.animateClose,
+						o.closeDuration,
+						o.easing,
+						function () {
+							if ($.isFunction(o.close)) {
+								if (
+									o.close.apply(notification, [
+										notification,
+										message,
+										o,
+										self.element,
+									]) !== false
+								)
+									$(this).remove();
+							} else {
 								$(this).remove();
-						} else {
-							$(this).remove();
-						}
-					});
+							}
+						},
+					);
 				})
 				.trigger("jGrowl.beforeOpen");
 
 			/** Optional Corners Plugin **/
-			if (o.corners !== "" && $.fn.corner !== undefined) $(notification).corner(o.corners);
+			if (o.corners !== "" && $.fn.corner !== undefined)
+				$(notification).corner(o.corners);
 
 			/** Add a Global Closer if more than one notification exists **/
 			if (
@@ -210,15 +289,25 @@
 				this.defaults.closer !== false
 			) {
 				$(this.defaults.closerTemplate)
-					.addClass("jGrowl-closer " + this.defaults.themeState + " ui-corner-all")
+					.addClass(
+						"jGrowl-closer " +
+							this.defaults.themeState +
+							" ui-corner-all",
+					)
 					.addClass(this.defaults.theme)
 					.appendTo(self.element)
-					.animate(this.defaults.animateOpen, this.defaults.speed, this.defaults.easing)
+					.animate(
+						this.defaults.animateOpen,
+						this.defaults.speed,
+						this.defaults.easing,
+					)
 					.bind("click.jGrowl", function () {
 						$(this).siblings().trigger("jGrowl.beforeClose");
 
 						if ($.isFunction(self.defaults.closer)) {
-							self.defaults.closer.apply($(this).parent()[0], [$(this).parent()[0]]);
+							self.defaults.closer.apply($(this).parent()[0], [
+								$(this).parent()[0],
+							]);
 						}
 					});
 			}
@@ -232,10 +321,12 @@
 					if (
 						$(this).data("jGrowl") !== undefined &&
 						$(this).data("jGrowl").created !== undefined &&
-						$(this).data("jGrowl").created.getTime() + parseInt($(this).data("jGrowl").life, 10) <
+						$(this).data("jGrowl").created.getTime() +
+							parseInt($(this).data("jGrowl").life, 10) <
 							new Date().getTime() &&
 						$(this).data("jGrowl").sticky !== true &&
-						($(this).data("jGrowl.pause") === undefined || $(this).data("jGrowl.pause") !== true)
+						($(this).data("jGrowl.pause") === undefined ||
+							$(this).data("jGrowl.pause") !== true)
 					) {
 						// Pause the notification, lest during the course of animation another close event gets called.
 						$(this).trigger("jGrowl.beforeClose");
@@ -245,22 +336,32 @@
 			if (
 				this.notifications.length > 0 &&
 				(this.defaults.pool === 0 ||
-					$(this.element).find(".jGrowl-notification:parent").length < this.defaults.pool)
+					$(this.element).find(".jGrowl-notification:parent").length <
+						this.defaults.pool)
 			)
 				this.render(this.notifications.shift());
 
-			if ($(this.element).find(".jGrowl-notification:parent").length < 2) {
+			if (
+				$(this.element).find(".jGrowl-notification:parent").length < 2
+			) {
 				$(this.element)
 					.find(".jGrowl-closer")
-					.animate(this.defaults.animateClose, this.defaults.speed, this.defaults.easing, function () {
-						$(this).remove();
-					});
+					.animate(
+						this.defaults.animateClose,
+						this.defaults.speed,
+						this.defaults.easing,
+						function () {
+							$(this).remove();
+						},
+					);
 			}
 		},
 
 		/** Setup the jGrowl Notification Container **/
 		startup: function (e) {
-			this.element = $(e).addClass("jGrowl").append('<div class="jGrowl-notification"></div>');
+			this.element = $(e)
+				.addClass("jGrowl")
+				.append('<div class="jGrowl-notification"></div>');
 			this.interval = setInterval(function () {
 				// some error in chage ^^
 				var instance = $(e).data("jGrowl.instance");
@@ -272,7 +373,12 @@
 
 		/** Shutdown jGrowl, removing it and clearing the interval **/
 		shutdown: function () {
-			$(this.element).removeClass("jGrowl").find(".jGrowl-notification").trigger("jGrowl.close").parent().empty();
+			$(this.element)
+				.removeClass("jGrowl")
+				.find(".jGrowl-notification")
+				.trigger("jGrowl.close")
+				.parent()
+				.empty();
 
 			clearInterval(this.interval);
 		},
@@ -313,7 +419,9 @@
 				selected = false;
 			for (i = modals.length - 1; i >= 0; i--) {
 				if (modals[i].$blocker) {
-					modals[i].$blocker.toggleClass("current", !selected).toggleClass("behind", selected);
+					modals[i].$blocker
+						.toggleClass("current", !selected)
+						.toggleClass("behind", selected);
 					selected = true;
 				}
 			}
@@ -325,7 +433,8 @@
 		this.options = $.extend({}, $.modal.defaults, options);
 		this.options.doFade = !isNaN(parseInt(this.options.fadeDuration, 10));
 		this.$blocker = null;
-		if (this.options.closeExisting) while ($.modal.isActive()) $.modal.close(); // Close any open modals.
+		if (this.options.closeExisting)
+			while ($.modal.isActive()) $.modal.close(); // Close any open modals.
 		modals.push(this);
 		if (el.is("a")) {
 			target = el.attr("href");
@@ -349,7 +458,10 @@
 						if (!$.modal.isActive()) return;
 						el.trigger($.modal.AJAX_SUCCESS);
 						var current = getCurrent();
-						current.$elm.empty().append(html).on($.modal.CLOSE, remove);
+						current.$elm
+							.empty()
+							.append(html)
+							.on($.modal.CLOSE, remove);
 						current.hideSpinner();
 						current.open();
 						el.trigger($.modal.AJAX_COMPLETE);
@@ -386,7 +498,8 @@
 				.off("keydown.modal")
 				.on("keydown.modal", function (event) {
 					var current = getCurrent();
-					if (event.which == 27 && current.options.escapeClose) current.close();
+					if (event.which == 27 && current.options.escapeClose)
+						current.close();
 				});
 			if (this.options.clickClose)
 				this.$blocker.on("click", function (e) {
@@ -404,17 +517,24 @@
 		block: function () {
 			this.$elm.trigger($.modal.BEFORE_BLOCK, [this._ctx()]);
 			this.$body.css("overflow", "hidden");
-			this.$blocker = $('<div class="jquery-modal blocker current"></div>').appendTo(this.$body);
+			this.$blocker = $(
+				'<div class="jquery-modal blocker current"></div>',
+			).appendTo(this.$body);
 			selectCurrent();
 			if (this.options.doFade) {
-				this.$blocker.css("opacity", 0).animate({ opacity: 1 }, this.options.fadeDuration);
+				this.$blocker
+					.css("opacity", 0)
+					.animate({ opacity: 1 }, this.options.fadeDuration);
 			}
 			this.$elm.trigger($.modal.BLOCK, [this._ctx()]);
 		},
 
 		unblock: function (now) {
 			if (!now && this.options.doFade)
-				this.$blocker.fadeOut(this.options.fadeDuration, this.unblock.bind(this, true));
+				this.$blocker.fadeOut(
+					this.options.fadeDuration,
+					this.unblock.bind(this, true),
+				);
 			else {
 				this.$blocker.children().appendTo(this.$body);
 				this.$blocker.remove();
@@ -438,7 +558,10 @@
 			}
 			this.$elm.addClass(this.options.modalClass).appendTo(this.$blocker);
 			if (this.options.doFade) {
-				this.$elm.css("opacity", 0).show().animate({ opacity: 1 }, this.options.fadeDuration);
+				this.$elm
+					.css("opacity", 0)
+					.show()
+					.animate({ opacity: 1 }, this.options.fadeDuration);
 			} else {
 				this.$elm.show();
 			}
@@ -465,7 +588,11 @@
 			if (!this.options.showSpinner) return;
 			this.spinner =
 				this.spinner ||
-				$('<div class="' + this.options.modalClass + '-spinner"></div>').append(this.options.spinnerHtml);
+				$(
+					'<div class="' +
+						this.options.modalClass +
+						'-spinner"></div>',
+				).append(this.options.spinnerHtml);
 			this.$body.append(this.spinner);
 			this.spinner.show();
 		},
@@ -476,7 +603,11 @@
 
 		//Return context for custom events
 		_ctx: function () {
-			return { elm: this.$elm, $blocker: this.$blocker, options: this.options };
+			return {
+				elm: this.$elm,
+				$blocker: this.$blocker,
+				options: this.options,
+			};
 		},
 	};
 
@@ -585,7 +716,8 @@
 				} else {
 					if (
 						$(e.target).closest("#" + el.attr("id")).length == 0 &&
-						$(e.target).closest("#" + el.attr("id") + "_popup").length == 0
+						$(e.target).closest("#" + el.attr("id") + "_popup")
+							.length == 0
 					) {
 						popup.close();
 					}
@@ -662,12 +794,16 @@
 
 				if (typeof attributes.expires === "number") {
 					var expires = new Date();
-					expires.setMilliseconds(expires.getMilliseconds() + attributes.expires * 864e5);
+					expires.setMilliseconds(
+						expires.getMilliseconds() + attributes.expires * 864e5,
+					);
 					attributes.expires = expires;
 				}
 
 				// We're using "expires" because "max-age" is not supported by IE
-				attributes.expires = attributes.expires ? attributes.expires.toUTCString() : "";
+				attributes.expires = attributes.expires
+					? attributes.expires.toUTCString()
+					: "";
 
 				try {
 					result = JSON.stringify(value);
@@ -686,7 +822,10 @@
 				}
 
 				key = encodeURIComponent(String(key));
-				key = key.replace(/%(23|24|26|2B|5E|60|7C)/g, decodeURIComponent);
+				key = key.replace(
+					/%(23|24|26|2B|5E|60|7C)/g,
+					decodeURIComponent,
+				);
 				key = key.replace(/[\(\)]/g, escape);
 
 				var stringifiedAttributes = "";
@@ -701,7 +840,8 @@
 					}
 					stringifiedAttributes += "=" + attributes[attributeName];
 				}
-				return (document.cookie = key + "=" + value + stringifiedAttributes);
+				return (document.cookie =
+					key + "=" + value + stringifiedAttributes);
 			}
 
 			// Read
@@ -729,7 +869,8 @@
 					var name = parts[0].replace(rdecode, decodeURIComponent);
 					cookie = converter.read
 						? converter.read(cookie, name)
-						: converter(cookie, name) || cookie.replace(rdecode, decodeURIComponent);
+						: converter(cookie, name) ||
+						  cookie.replace(rdecode, decodeURIComponent);
 
 					if (this.json) {
 						try {

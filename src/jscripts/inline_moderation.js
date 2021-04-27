@@ -12,7 +12,9 @@ var inlineModeration = {
 		}
 
 		var inlineIds = inlineModeration.getCookie(inlineModeration.cookieName);
-		var removedIds = inlineModeration.getCookie(inlineModeration.cookieName + "_removed");
+		var removedIds = inlineModeration.getCookie(
+			inlineModeration.cookieName + "_removed",
+		);
 		var allChecked = true;
 
 		$(inputs).each(function () {
@@ -33,7 +35,8 @@ var inlineModeration = {
 				if (inlineCheck[0] == "inlinemod") {
 					if (
 						inlineIds.indexOf(id) != -1 ||
-						(inlineIds.indexOf("ALL") != -1 && removedIds.indexOf(id) == -1)
+						(inlineIds.indexOf("ALL") != -1 &&
+							removedIds.indexOf(id) == -1)
 					) {
 						element.prop("checked", true);
 						var post = element.parents(".post");
@@ -94,7 +97,9 @@ var inlineModeration = {
 		}
 
 		var inlineIds = inlineModeration.getCookie(inlineModeration.cookieName);
-		var removedIds = inlineModeration.getCookie(inlineModeration.cookieName + "_removed");
+		var removedIds = inlineModeration.getCookie(
+			inlineModeration.cookieName + "_removed",
+		);
 
 		if (element.prop("checked") == true) {
 			if (inlineIds.indexOf("ALL") == -1) {
@@ -158,7 +163,8 @@ var inlineModeration = {
 			if (!element.val()) return;
 			if (
 				element.attr("type") == "checkbox" &&
-				((element.attr("id") && element.attr("id").split("_")[0] == "inlinemod") ||
+				((element.attr("id") &&
+					element.attr("id").split("_")[0] == "inlinemod") ||
 					element.attr("name") == "allbox")
 			) {
 				element.prop("checked", false);
@@ -189,7 +195,9 @@ var inlineModeration = {
 		}
 
 		var inlineIds = inlineModeration.getCookie(inlineModeration.cookieName);
-		var removedIds = inlineModeration.getCookie(inlineModeration.cookieName + "_removed");
+		var removedIds = inlineModeration.getCookie(
+			inlineModeration.cookieName + "_removed",
+		);
 
 		var newIds = new Array();
 		$(inputs).each(function () {
@@ -236,11 +244,17 @@ var inlineModeration = {
 						if (inlineIds.indexOf("ALL") == -1) {
 							inlineIds = inlineModeration.addId(inlineIds, id);
 						} else {
-							removedIds = inlineModeration.removeId(removedIds, id);
+							removedIds = inlineModeration.removeId(
+								removedIds,
+								id,
+							);
 						}
 					} else {
 						if (inlineIds.indexOf("ALL") == -1) {
-							inlineIds = inlineModeration.removeId(inlineIds, id);
+							inlineIds = inlineModeration.removeId(
+								inlineIds,
+								id,
+							);
 						} else {
 							removedIds = inlineModeration.addId(removedIds, id);
 						}
@@ -314,7 +328,10 @@ var inlineModeration = {
 			inlineModeration.clearChecked();
 		} else {
 			inlineModeration.setCookie(inlineModeration.cookieName, inlineIds);
-			inlineModeration.setCookie(inlineModeration.cookieName + "_removed", removedIds);
+			inlineModeration.setCookie(
+				inlineModeration.cookieName + "_removed",
+				removedIds,
+			);
 		}
 		return count;
 	},

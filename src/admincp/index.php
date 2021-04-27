@@ -603,7 +603,7 @@ if($mybb->input['do'] == "do_2fa" && $mybb->request_method == "post") {
 			// Have we set an expiry yet?
 			if($loginattempts['loginlockoutexpiry'] == 0) {
 				$db->update_query("adminoptions", array("loginlockoutexpiry" => TIME_NOW+((int)$mybb->settings['loginattemptstimeout']*60)), "uid='{$mybb->user['uid']}'");
- 			}
+ 		}
 
 			// Did we hit lockout for the first time? Send the unlock email to the administrator
 			if($loginattempts['loginattempts'] == $mybb->settings['maxloginattempts']) {

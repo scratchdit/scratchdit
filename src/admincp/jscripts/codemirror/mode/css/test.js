@@ -9,10 +9,16 @@
 
 	// Error, because "foobarhello" is neither a known type or property, but
 	// property was expected (after "and"), and it should be in parentheses.
-	MT("atMediaUnknownType", "[def @media] [attribute screen] [keyword and] [error foobarhello] { }");
+	MT(
+		"atMediaUnknownType",
+		"[def @media] [attribute screen] [keyword and] [error foobarhello] { }",
+	);
 
 	// Soft error, because "foobarhello" is not a known property or type.
-	MT("atMediaUnknownProperty", "[def @media] [attribute screen] [keyword and] ([error foobarhello]) { }");
+	MT(
+		"atMediaUnknownProperty",
+		"[def @media] [attribute screen] [keyword and] ([error foobarhello]) { }",
+	);
 
 	// Make sure nesting works with media queries
 	MT(
@@ -20,9 +26,15 @@
 		"[def @media] [attribute screen] [keyword and] ([property max-width]: [number 25px]) { [tag foo] { } }",
 	);
 
-	MT("atMediaFeatureValueKeyword", "[def @media] ([property orientation]: [keyword landscape]) { }");
+	MT(
+		"atMediaFeatureValueKeyword",
+		"[def @media] ([property orientation]: [keyword landscape]) { }",
+	);
 
-	MT("atMediaUnknownFeatureValueKeyword", "[def @media] ([property orientation]: [error upsidedown]) { }");
+	MT(
+		"atMediaUnknownFeatureValueKeyword",
+		"[def @media] ([property orientation]: [error upsidedown]) { }",
+	);
 
 	MT("tagSelector", "[tag foo] { }");
 
@@ -30,13 +42,25 @@
 
 	MT("idSelector", "[builtin #foo] { [error #foo] }");
 
-	MT("tagSelectorUnclosed", "[tag foo] { [property margin]: [number 0] } [tag bar] { }");
+	MT(
+		"tagSelectorUnclosed",
+		"[tag foo] { [property margin]: [number 0] } [tag bar] { }",
+	);
 
-	MT("tagStringNoQuotes", "[tag foo] { [property font-family]: [variable hello] [variable world]; }");
+	MT(
+		"tagStringNoQuotes",
+		"[tag foo] { [property font-family]: [variable hello] [variable world]; }",
+	);
 
-	MT("tagStringDouble", '[tag foo] { [property font-family]: [string "hello world"]; }');
+	MT(
+		"tagStringDouble",
+		'[tag foo] { [property font-family]: [string "hello world"]; }',
+	);
 
-	MT("tagStringSingle", "[tag foo] { [property font-family]: [string 'hello world']; }");
+	MT(
+		"tagStringSingle",
+		"[tag foo] { [property font-family]: [string 'hello world']; }",
+	);
 
 	MT(
 		"tagColorKeyword",
@@ -53,21 +77,39 @@
 
 	MT("tagColorHex6", "[tag foo] { [property background]: [atom #ffffff]; }");
 
-	MT("tagColorHex8", "[tag foo] { [property background]: [atom #ffffffff]; }");
+	MT(
+		"tagColorHex8",
+		"[tag foo] { [property background]: [atom #ffffffff]; }",
+	);
 
-	MT("tagColorHex5Invalid", "[tag foo] { [property background]: [atom&error #fffff]; }");
+	MT(
+		"tagColorHex5Invalid",
+		"[tag foo] { [property background]: [atom&error #fffff]; }",
+	);
 
-	MT("tagColorHexInvalid", "[tag foo] { [property background]: [atom&error #ffg]; }");
+	MT(
+		"tagColorHexInvalid",
+		"[tag foo] { [property background]: [atom&error #ffg]; }",
+	);
 
 	MT("tagNegativeNumber", "[tag foo] { [property margin]: [number -5px]; }");
 
 	MT("tagPositiveNumber", "[tag foo] { [property padding]: [number 5px]; }");
 
-	MT("tagVendor", "[tag foo] { [meta -foo-][property box-sizing]: [meta -foo-][atom border-box]; }");
+	MT(
+		"tagVendor",
+		"[tag foo] { [meta -foo-][property box-sizing]: [meta -foo-][atom border-box]; }",
+	);
 
-	MT("tagBogusProperty", "[tag foo] { [property&error barhelloworld]: [number 0]; }");
+	MT(
+		"tagBogusProperty",
+		"[tag foo] { [property&error barhelloworld]: [number 0]; }",
+	);
 
-	MT("tagTwoProperties", "[tag foo] { [property margin]: [number 0]; [property padding]: [number 0]; }");
+	MT(
+		"tagTwoProperties",
+		"[tag foo] { [property margin]: [number 0]; [property padding]: [number 0]; }",
+	);
 
 	MT(
 		"tagTwoPropertiesURL",
@@ -93,7 +135,13 @@
 		"}",
 	);
 
-	MT("indent_comma", "[tag foo] {", "  [property font-family]: [variable verdana],", "    [atom sans-serif];", "}");
+	MT(
+		"indent_comma",
+		"[tag foo] {",
+		"  [property font-family]: [variable verdana],",
+		"    [atom sans-serif];",
+		"}",
+	);
 
 	MT(
 		"indent_parentheses",
@@ -161,13 +209,25 @@
 		"}",
 	);
 
-	MT("document_url", "[def @document] [tag url]([string http://blah]) { [qualifier .class] { } }");
+	MT(
+		"document_url",
+		"[def @document] [tag url]([string http://blah]) { [qualifier .class] { } }",
+	);
 
-	MT("document_urlPrefix", "[def @document] [tag url-prefix]([string https://]) { [builtin #id] { } }");
+	MT(
+		"document_urlPrefix",
+		"[def @document] [tag url-prefix]([string https://]) { [builtin #id] { } }",
+	);
 
-	MT("document_domain", "[def @document] [tag domain]([string blah.com]) { [tag foo] { } }");
+	MT(
+		"document_domain",
+		"[def @document] [tag domain]([string blah.com]) { [tag foo] { } }",
+	);
 
-	MT("document_regexp", '[def @document] [tag regexp]([string ".*blah.+"]) { [builtin #id] { } }');
+	MT(
+		"document_regexp",
+		'[def @document] [tag regexp]([string ".*blah.+"]) { [builtin #id] { } }',
+	);
 
 	MT(
 		"counter-style",
@@ -189,7 +249,10 @@
 		"}",
 	);
 
-	MT("counter-style-use", "[tag ol][qualifier .roman] { [property list-style]: [variable simple-roman]; }");
+	MT(
+		"counter-style-use",
+		"[tag ol][qualifier .roman] { [property list-style]: [variable simple-roman]; }",
+	);
 
 	MT(
 		"counter-style-symbols",

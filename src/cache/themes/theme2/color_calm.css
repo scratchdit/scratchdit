@@ -6,7 +6,8 @@ a:active {
 }
 
 #logo {
-	background: #385947 url(../../../images/colors/calm_header.png) top left repeat-x;
+	background: #385947 url(../../../images/colors/calm_header.png) top left
+		repeat-x;
 	border-bottom: 1px solid #263c30;
 }
 
@@ -15,11 +16,13 @@ a:active {
 }
 
 #panel input.button {
-	background: #385947 url(../../../images/colors/calm_thead.png) top left repeat-x;
+	background: #385947 url(../../../images/colors/calm_thead.png) top left
+		repeat-x;
 }
 
 .thead {
-	background: #385947 url(../../../images/colors/calm_thead.png) top left repeat-x;
+	background: #385947 url(../../../images/colors/calm_thead.png) top left
+		repeat-x;
 	color: #ffffff;
 	border-bottom: 1px solid #263c30;
 }

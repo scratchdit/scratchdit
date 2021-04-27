@@ -6,7 +6,8 @@ a:active {
 }
 
 #logo {
-	background: #202020 url(../../../images/colors/black_header.png) top left repeat-x;
+	background: #202020 url(../../../images/colors/black_header.png) top left
+		repeat-x;
 	border-bottom: 1px solid #000;
 }
 
@@ -33,13 +34,15 @@ a:active {
 }
 
 #panel input.button {
-	background: #202121 url(../../../images/colors/black_thead.png) top left repeat-x;
+	background: #202121 url(../../../images/colors/black_thead.png) top left
+		repeat-x;
 	color: #fff;
 	border-color: #000;
 }
 
 .thead {
-	background: #202121 url(../../../images/colors/black_thead.png) top left repeat-x;
+	background: #202121 url(../../../images/colors/black_thead.png) top left
+		repeat-x;
 	border-bottom: 1px solid #000;
 }
 

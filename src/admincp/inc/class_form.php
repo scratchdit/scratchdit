@@ -923,12 +923,12 @@ class DefaultForm
 class DefaultFormContainer
 {
 	/**
-     * @var Table
-     */
+  * @var Table
+  */
 	private $_container;
 	/**
-     * @var string
-     */
+  * @var string
+  */
 	public $_title;
 
 	/**

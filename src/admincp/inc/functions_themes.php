@@ -749,7 +749,7 @@ function parse_css_properties($values)
 	{
 		$value = trim($value);
 		if(!$value) { continue;
-        }
+  }
 
 		list($property, $css_value) = explode(":", $value, 2);
 		$property                   = trim($property);

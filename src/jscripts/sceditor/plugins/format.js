@@ -32,10 +32,16 @@
 						txtExec: a,
 						tooltip: "Format Paragraph",
 					}),
-				e.toolbar === i.defaultOptions.toolbar && (e.toolbar = e.toolbar.replace(",color,", ",color,format,")));
+				e.toolbar === i.defaultOptions.toolbar &&
+					(e.toolbar = e.toolbar.replace(
+						",color,",
+						",color,format,",
+					)));
 		}),
 			(n = function (e, t) {
-				e.sourceMode() ? e.insert("<" + t + ">", "</" + t + ">") : e.execCommand("formatblock", "<" + t + ">");
+				e.sourceMode()
+					? e.insert("<" + t + ">", "</" + t + ">")
+					: e.execCommand("formatblock", "<" + t + ">");
 			}),
 			(a = function (e) {
 				var o = this,
@@ -45,7 +51,9 @@
 					(e.className = "sceditor-option"),
 						(e.textContent = a.name || a),
 						e.addEventListener("click", function (e) {
-							o.closeDropDown(!0), a.exec ? a.exec(o) : n(o, t), e.preventDefault();
+							o.closeDropDown(!0),
+								a.exec ? a.exec(o) : n(o, t),
+								e.preventDefault();
 						}),
 						r.appendChild(e);
 				}),

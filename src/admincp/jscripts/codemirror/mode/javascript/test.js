@@ -82,7 +82,10 @@
 		"}",
 	);
 
-	MT("import_trailing_comma", "[keyword import] {[def foo], [def bar],} [keyword from] [string 'baz']");
+	MT(
+		"import_trailing_comma",
+		"[keyword import] {[def foo], [def bar],} [keyword from] [string 'baz']",
+	);
 
 	MT(
 		"const",
@@ -91,7 +94,10 @@
 		"}",
 	);
 
-	MT("for/of", "[keyword for]([keyword let] [def of] [keyword of] [variable something]) {}");
+	MT(
+		"for/of",
+		"[keyword for]([keyword let] [def of] [keyword of] [variable something]) {}",
+	);
 
 	MT(
 		"generator",
@@ -170,7 +176,13 @@
 		"[keyword debugger];",
 	);
 
-	MT("indent_c_style", "[keyword function] [def foo]()", "{", "  [keyword debugger];", "}");
+	MT(
+		"indent_c_style",
+		"[keyword function] [def foo]()",
+		"{",
+		"  [keyword debugger];",
+		"}",
+	);
 
 	MT(
 		"indent_else",
@@ -192,7 +204,13 @@
 		"};",
 	);
 
-	MT("indent_below_if", "[keyword for] (;;)", "  [keyword if] ([variable foo])", "    [number 1];", "[number 2];");
+	MT(
+		"indent_below_if",
+		"[keyword for] (;;)",
+		"  [keyword if] ([variable foo])",
+		"    [number 1];",
+		"[number 2];",
+	);
 
 	MT(
 		"indent_semicolonless_if",
@@ -211,7 +229,11 @@
 		"}",
 	);
 
-	MT("multilinestring", "[keyword var] [def x] [operator =] [string 'foo\\]", "[string bar'];");
+	MT(
+		"multilinestring",
+		"[keyword var] [def x] [operator =] [string 'foo\\]",
+		"[string bar'];",
+	);
 
 	MT("scary_regexp", "[string-2 /foo[[/]]bar/];");
 
@@ -241,14 +263,20 @@
 		"}",
 	);
 
-	MT("async", "[keyword async] [keyword function] [def foo]([def args]) { [keyword return] [atom true]; }");
+	MT(
+		"async",
+		"[keyword async] [keyword function] [def foo]([def args]) { [keyword return] [atom true]; }",
+	);
 
 	MT(
 		"async_assignment",
 		"[keyword const] [def foo] [operator =] [keyword async] [keyword function] ([def args]) { [keyword return] [atom true]; };",
 	);
 
-	MT("async_object", "[keyword let] [def obj] [operator =] { [property async]: [atom false] };");
+	MT(
+		"async_object",
+		"[keyword let] [def obj] [operator =] { [property async]: [atom false] };",
+	);
 
 	// async be highlighet as keyword and foo as def, but it requires potentially expensive look-ahead. See #4173
 	MT(
@@ -304,7 +332,10 @@
 		"[string-2 `${]{} [operator /] [string-2 /\\//}`];",
 	);
 
-	var ts_mode = CodeMirror.getMode({ indentUnit: 2 }, "application/typescript");
+	var ts_mode = CodeMirror.getMode(
+		{ indentUnit: 2 },
+		"application/typescript",
+	);
 	function TS(name) {
 		test.mode(name, ts_mode, Array.prototype.slice.call(arguments, 1));
 	}
@@ -314,7 +345,10 @@
 		"[keyword class] [def Foo] [keyword extends] [type Some][operator <][type Type][operator >] {}",
 	);
 
-	TS("typescript_arrow_type", "[keyword let] [def x]: ([variable arg]: [type Type]) [operator =>] [type ReturnType]");
+	TS(
+		"typescript_arrow_type",
+		"[keyword let] [def x]: ([variable arg]: [type Type]) [operator =>] [type ReturnType]",
+	);
 
 	TS(
 		"typescript_class",
@@ -453,7 +487,10 @@
 
 	TS("arrow prop", "({[property a]: [def p] [operator =>] [variable-2 p]})");
 
-	var jsonld_mode = CodeMirror.getMode({ indentUnit: 2 }, { name: "javascript", jsonld: true });
+	var jsonld_mode = CodeMirror.getMode(
+		{ indentUnit: 2 },
+		{ name: "javascript", jsonld: true },
+	);
 	function LD(name) {
 		test.mode(name, jsonld_mode, Array.prototype.slice.call(arguments, 1));
 	}

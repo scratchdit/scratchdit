@@ -467,7 +467,7 @@ document.write('".str_replace("/", "\/", $field_select)."');
 			foreach($conditions as $name => $condition)
 			{
 				if(!$conditions) { continue;
-                }
+    }
 
 				if(is_array($condition)) {
 					$condition     = my_serialize($condition);

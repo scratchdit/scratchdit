@@ -3,7 +3,15 @@ $(function ($) {
 
 	var mybbCmd = {
 		align: ["left", "center", "right", "justify"],
-		fsStr: ["xx-small", "x-small", "small", "medium", "large", "x-large", "xx-large"],
+		fsStr: [
+			"xx-small",
+			"x-small",
+			"small",
+			"medium",
+			"large",
+			"x-large",
+			"xx-large",
+		],
 		fSize: [9, 12, 15, 17, 23, 31],
 		video: {
 			Dailymotion: {
@@ -70,7 +78,11 @@ $(function ($) {
 	$.sceditor.formats.bbcode.set("align", {
 		html: function (element, attrs, content) {
 			return (
-				'<div align="' + ($.sceditor.escapeEntities(attrs.defaultattr) || "left") + '">' + content + "</div>"
+				'<div align="' +
+				($.sceditor.escapeEntities(attrs.defaultattr) || "left") +
+				'">' +
+				content +
+				"</div>"
 			);
 		},
 		isInline: false,
@@ -170,7 +182,11 @@ $(function ($) {
 				// Also fixes the browser-dependent bug described here:
 				//   <https://community.mybb.com/thread-229726.html>
 				fontsize = -1;
-			} else if (!isNaN(size) && size >= 1 && size <= mybbCmd.fsStr.length) {
+			} else if (
+				!isNaN(size) &&
+				size >= 1 &&
+				size <= mybbCmd.fsStr.length
+			) {
 				fontsize = mybbCmd.fsStr[size - 1];
 			} else if ($.inArray(scefontsize, mybbCmd.fsStr) !== -1) {
 				fontsize = scefontsize;
@@ -178,7 +194,9 @@ $(function ($) {
 				fontsize = parsed;
 			}
 
-			return fontsize != -1 ? "[size=" + fontsize + "]" + content + "[/size]" : content;
+			return fontsize != -1
+				? "[size=" + fontsize + "]" + content + "[/size]"
+				: content;
 		},
 		html: function (token, attrs, content) {
 			var size = 0,
@@ -238,18 +256,25 @@ $(function ($) {
 		exec: function (caller) {
 			var editor = this;
 
-			$.sceditor.command.get("size")._dropDown(editor, caller, function (fontSize) {
-				editor.execCommand("fontsize", fontSize);
-			});
+			$.sceditor.command
+				.get("size")
+				._dropDown(editor, caller, function (fontSize) {
+					editor.execCommand("fontsize", fontSize);
+				});
 		},
 		txtExec: function (caller) {
 			var editor = this;
 
-			$.sceditor.command.get("size")._dropDown(editor, caller, function (size) {
-				size = ~~size;
-				size = size > 7 ? 7 : size < 1 ? 1 : size;
-				editor.insertText("[size=" + mybbCmd.fsStr[size - 1] + "]", "[/size]");
-			});
+			$.sceditor.command
+				.get("size")
+				._dropDown(editor, caller, function (size) {
+					size = ~~size;
+					size = size > 7 ? 7 : size < 1 ? 1 : size;
+					editor.insertText(
+						"[size=" + mybbCmd.fsStr[size - 1] + "]",
+						"[/size]",
+					);
+				});
 		},
 	});
 
@@ -274,21 +299,30 @@ $(function ($) {
 
 			if ($elm.data("pid")) author += " pid='" + $elm.data("pid") + "'";
 
-			if ($elm.data("dateline")) author += " dateline='" + $elm.data("dateline") + "'";
+			if ($elm.data("dateline"))
+				author += " dateline='" + $elm.data("dateline") + "'";
 
 			return "[quote" + author + "]" + content + "[/quote]";
 		},
 		html: function (token, attrs, content) {
 			var data = "";
 
-			if (attrs.pid) data += ' data-pid="' + $.sceditor.escapeEntities(attrs.pid) + '"';
+			if (attrs.pid)
+				data +=
+					' data-pid="' + $.sceditor.escapeEntities(attrs.pid) + '"';
 
-			if (attrs.dateline) data += ' data-dateline="' + $.sceditor.escapeEntities(attrs.dateline) + '"';
+			if (attrs.dateline)
+				data +=
+					' data-dateline="' +
+					$.sceditor.escapeEntities(attrs.dateline) +
+					'"';
 
 			if (typeof attrs.defaultattr !== "undefined")
 				content =
 					"<cite>" +
-					$.sceditor.escapeEntities(attrs.defaultattr).replace(/ /g, "&nbsp;") +
+					$.sceditor
+						.escapeEntities(attrs.defaultattr)
+						.replace(/ /g, "&nbsp;") +
 					"</cite>" +
 					content;
 
@@ -307,7 +341,10 @@ $(function ($) {
 	$.sceditor.formats.bbcode.set("font", {
 		format: function (element, content) {
 			var font;
-			if (element.nodeName.toLowerCase() !== "font" || !(font = $(element).attr("face")))
+			if (
+				element.nodeName.toLowerCase() !== "font" ||
+				!(font = $(element).attr("face"))
+			)
 				font = $(element).css("font-family");
 
 			var iframe = $(".sceditor-container iframe");
@@ -324,7 +361,11 @@ $(function ($) {
 				font = font.trim();
 				// Strip all-enclosing double quotes from fonts so long as
 				// they are the only double quotes present...
-				if (font[0] == '"' && font[font.length - 1] == '"' && (font.match(/"/g) || []).length == 2) {
+				if (
+					font[0] == '"' &&
+					font[font.length - 1] == '"' &&
+					(font.match(/"/g) || []).length == 2
+				) {
 					font = font.substr(1, font.length - 2);
 				}
 				// ...and then replace any other occurrence(s) of double quotes
@@ -343,7 +384,13 @@ $(function ($) {
 				attrs.defaultattr != "" &&
 				attrs.defaultattr != "{defaultattr}"
 			) {
-				return '<font face="' + $.sceditor.escapeEntities(attrs.defaultattr) + '">' + content + "</font>";
+				return (
+					'<font face="' +
+					$.sceditor.escapeEntities(attrs.defaultattr) +
+					'">' +
+					content +
+					"</font>"
+				);
 			} else {
 				return content;
 			}
@@ -357,7 +404,10 @@ $(function ($) {
 			var iframe = $(".sceditor-container iframe");
 			var editor_body = $("body", iframe.contents());
 
-			if (element.nodeName.toLowerCase() != "font" || !(color = $(element).attr("color"))) {
+			if (
+				element.nodeName.toLowerCase() != "font" ||
+				!(color = $(element).attr("color"))
+			) {
 				color = $(element).css("color");
 			}
 
@@ -366,12 +416,17 @@ $(function ($) {
 
 			// Eliminate redundant [color] tags for unformatted text.
 			// Part of the fix for the browser-dependent bug of issue #4184.
-			return color != defaultColor ? "[color=" + color + "]" + content + "[/color]" : content;
+			return color != defaultColor
+				? "[color=" + color + "]" + content + "[/color]"
+				: content;
 		},
 		html: function (token, attrs, content) {
 			return (
 				'<font color="' +
-				$.sceditor.escapeEntities(_normaliseColour(attrs.defaultattr), true) +
+				$.sceditor.escapeEntities(
+					_normaliseColour(attrs.defaultattr),
+					true,
+				) +
 				'">' +
 				content +
 				"</font>"
@@ -537,10 +592,15 @@ $(function ($) {
 					// needed for IE to reset the last range
 					$(editor).trigger("focus");
 
-					if (!editor.getRangeHelper().selectedHtml() || description) {
+					if (
+						!editor.getRangeHelper().selectedHtml() ||
+						description
+					) {
 						if (!description) description = val;
 
-						editor.insert("[email=" + val + "]" + description + "[/email]");
+						editor.insert(
+							"[email=" + val + "]" + description + "[/email]",
+						);
 					} else editor.execCommand("createlink", "mailto:" + val);
 				}
 
@@ -565,11 +625,21 @@ $(function ($) {
 			},
 		},
 		format: function ($element, content) {
-			return "[video=" + $($element).data("mybb-vt") + "]" + $($element).data("mybb-vsrc") + "[/video]";
+			return (
+				"[video=" +
+				$($element).data("mybb-vt") +
+				"]" +
+				$($element).data("mybb-vsrc") +
+				"[/video]"
+			);
 		},
 		html: function (token, attrs, content) {
 			var params =
-				mybbCmd.video[Object.keys(mybbCmd.video).find((key) => key.toLowerCase() === attrs.defaultattr)];
+				mybbCmd.video[
+					Object.keys(mybbCmd.video).find(
+						(key) => key.toLowerCase() === attrs.defaultattr,
+					)
+				];
 			var matches, url;
 			var n = attrs.defaultattr == "dailymotion" ? 2 : 1;
 			if (typeof params !== "undefined") {
@@ -582,7 +652,9 @@ $(function ($) {
 					.replace("{src}", content)
 					.replace("{type}", attrs.defaultattr);
 			}
-			return $.sceditor.escapeEntities(token.val + content + (token.closing ? token.closing.val : ""));
+			return $.sceditor.escapeEntities(
+				token.val + content + (token.closing ? token.closing.val : ""),
+			);
 		},
 	});
 
@@ -591,7 +663,12 @@ $(function ($) {
 			var $content, videourl, videotype, videoOpts;
 
 			$.each(mybbCmd.video, function (provider, data) {
-				videoOpts += '<option value="' + provider.toLowerCase() + '">' + editor._(provider) + "</option>";
+				videoOpts +=
+					'<option value="' +
+					provider.toLowerCase() +
+					'">' +
+					editor._(provider) +
+					"</option>";
 			});
 			$content = $(
 				"<div>" +
@@ -620,7 +697,9 @@ $(function ($) {
 				videotype = $content.find("#videotype").val();
 
 				if (videourl !== "" && videourl !== "http://")
-					editor.insert("[video=" + videotype + "]" + videourl + "[/video]");
+					editor.insert(
+						"[video=" + videotype + "]" + videourl + "[/video]",
+					);
 
 				editor.closeDropDown(true);
 				e.preventDefault();
@@ -648,10 +727,14 @@ $(function ($) {
 				align = $(element).data("scealign");
 
 			var attrs =
-				width !== undefined && height !== undefined && width > 0 && height > 0
+				width !== undefined &&
+				height !== undefined &&
+				width > 0 &&
+				height > 0
 					? "=" + width + "x" + height
 					: "";
-			if (align === "left" || align === "right") attrs += " align=" + align;
+			if (align === "left" || align === "right")
+				attrs += " align=" + align;
 
 			return "[img" + attrs + "]" + url + "[/img]";
 		},
@@ -669,7 +752,12 @@ $(function ($) {
 				width = match[0];
 				height = match.length === 2 ? match[1] : match[0];
 
-				if (width !== undefined && height !== undefined && width > 0 && height > 0) {
+				if (
+					width !== undefined &&
+					height !== undefined &&
+					width > 0 &&
+					height > 0
+				) {
 					attribs +=
 						' width="' +
 						$.sceditor.escapeEntities(width, true) +
@@ -681,9 +769,20 @@ $(function ($) {
 			}
 
 			if (align === "left" || align === "right")
-				attribs += ' style="float: ' + align + '" data-scealign="' + align + '"';
+				attribs +=
+					' style="float: ' +
+					align +
+					'" data-scealign="' +
+					align +
+					'"';
 
-			return "<img" + attribs + ' src="' + $.sceditor.escapeUriScheme(content) + '" />';
+			return (
+				"<img" +
+				attribs +
+				' src="' +
+				$.sceditor.escapeUriScheme(content) +
+				'" />'
+			);
 		},
 	});
 
@@ -724,7 +823,10 @@ $(function ($) {
 					width = $content.find("#width").val(),
 					height = $content.find("#height").val();
 				var attrs =
-					width !== undefined && height !== undefined && width > 0 && height > 0
+					width !== undefined &&
+					height !== undefined &&
+					width > 0 &&
+					height > 0
 						? "=" + width + "x" + height
 						: "";
 				if (url) editor.insert("[img" + attrs + "]" + url + "[/img]");
@@ -765,7 +867,12 @@ $(function ($) {
 
 	// Remove code and quote if in partial mode
 	if (partialmode) {
-		$.sceditor.formats.bbcode.remove("code").remove("php").remove("quote").remove("video").remove("img");
+		$.sceditor.formats.bbcode
+			.remove("code")
+			.remove("php")
+			.remove("quote")
+			.remove("video")
+			.remove("img");
 		$.sceditor.command.set("quote", {
 			exec: function () {
 				this.insert("[quote]", "[/quote]");
@@ -780,7 +887,9 @@ $(function ($) {
 
 			return (
 				'<a href="' +
-				$.sceditor.escapeUriScheme($.sceditor.escapeEntities(attrs.defaultattr)) +
+				$.sceditor.escapeUriScheme(
+					$.sceditor.escapeEntities(attrs.defaultattr),
+				) +
 				'">' +
 				content +
 				"</a>"
@@ -826,18 +935,34 @@ $(function ($) {
 		colorStr = colorStr || "#000";
 
 		// rgb(n,n,n);
-		if ((match = colorStr.match(/rgb\((\d{1,3}),\s*?(\d{1,3}),\s*?(\d{1,3})\)/i))) {
+		if (
+			(match = colorStr.match(
+				/rgb\((\d{1,3}),\s*?(\d{1,3}),\s*?(\d{1,3})\)/i,
+			))
+		) {
 			return "#" + toHex(match[1]) + toHex(match[2]) + toHex(match[3]);
 		}
 
 		// rgba(n,n,n,f.p);
-		if ((match = colorStr.match(/rgba\((\d{1,3}),\s*?(\d{1,3}),\s*?(\d{1,3}),\s*?(\d*\.?\d+\s*)\)/i))) {
+		if (
+			(match = colorStr.match(
+				/rgba\((\d{1,3}),\s*?(\d{1,3}),\s*?(\d{1,3}),\s*?(\d*\.?\d+\s*)\)/i,
+			))
+		) {
 			return "#" + toHex(match[1]) + toHex(match[2]) + toHex(match[3]);
 		}
 
 		// expand shorthand
 		if ((match = colorStr.match(/#([0-f])([0-f])([0-f])\s*?$/i))) {
-			return "#" + match[1] + match[1] + match[2] + match[2] + match[3] + match[3];
+			return (
+				"#" +
+				match[1] +
+				match[1] +
+				match[2] +
+				match[2] +
+				match[3] +
+				match[3]
+			);
 		}
 
 		return colorStr;

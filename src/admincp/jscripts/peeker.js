@@ -56,7 +56,11 @@ var Peeker = (function () {
 
 		if (this.isNodelist) {
 			this.controller.each(function (i, el) {
-				if ($(el).is(":visible") && el.checked && el.value.match(regex)) {
+				if (
+					$(el).is(":visible") &&
+					el.checked &&
+					el.value.match(regex)
+				) {
 					show = true;
 					return false;
 				}
@@ -64,7 +68,11 @@ var Peeker = (function () {
 			this.domain[show ? "show" : "hide"]();
 		} else {
 			type = this.controller.val() || "";
-			this.domain[type.match(regex) && this.controller.is(":visible") ? "show" : "hide"]();
+			this.domain[
+				type.match(regex) && this.controller.is(":visible")
+					? "show"
+					: "hide"
+			]();
 		}
 
 		$(this.domain).each(function () {

@@ -3,7 +3,9 @@ var captcha = {
 		var imagehash_value = $("#imagehash").val();
 
 		$.ajax({
-			url: "xmlhttp.php?action=refresh_captcha&imagehash=" + imagehash_value,
+			url:
+				"xmlhttp.php?action=refresh_captcha&imagehash=" +
+				imagehash_value,
 			method: "get",
 			dataType: "json",
 			complete: function (request) {
@@ -23,7 +25,10 @@ var captcha = {
 				});
 			});
 		} else if (json.imagehash) {
-			$("#captcha_img").attr("src", "captcha.php?action=regimage&imagehash=" + json.imagehash);
+			$("#captcha_img").attr(
+				"src",
+				"captcha.php?action=regimage&imagehash=" + json.imagehash,
+			);
 			$("#imagehash").val(json.imagehash);
 		}
 

@@ -10,7 +10,9 @@ $(function () {
 			activeContent,
 			links = $(this).find("a");
 
-		activeTab = $(links.filter('[href="' + location.hash + '"]')[0] || links[0]);
+		activeTab = $(
+			links.filter('[href="' + location.hash + '"]')[0] || links[0],
+		);
 		activeTab.addClass("active");
 		activeContent = $(activeTab.attr("href"));
 

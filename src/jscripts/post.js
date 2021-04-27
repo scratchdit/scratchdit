@@ -85,7 +85,9 @@ var Post = {
 					var form = $("input[name^='rem']").parents("form");
 
 					if (use_xmlhttprequest != 1) {
-						form.append('<input type="submit" id="rem_submit" class="hidden" />');
+						form.append(
+							'<input type="submit" id="rem_submit" class="hidden" />',
+						);
 						$("#rem_submit").trigger("click");
 						return false;
 					}
@@ -97,9 +99,12 @@ var Post = {
 						success: function (data) {
 							if (data.hasOwnProperty("errors")) {
 								$.each(data.errors, function (i, message) {
-									$.jGrowl(lang.post_fetch_error + " " + message, {
-										theme: "jgrowl_error",
-									});
+									$.jGrowl(
+										lang.post_fetch_error + " " + message,
+										{
+											theme: "jgrowl_error",
+										},
+									);
 								});
 								return false;
 							} else if (data.success) {
@@ -110,21 +115,27 @@ var Post = {
 								$("#attachment_" + aid).hide(500, function () {
 									var instance = MyBBEditor;
 									if (typeof MyBBEditor === "undefined") {
-										instance = $("#message").sceditor("instance");
+										instance = $("#message").sceditor(
+											"instance",
+										);
 									}
 
 									if (instance.sourceMode()) {
 										instance.setSourceEditorValue(
 											instance
 												.getSourceEditorValue(false)
-												.split("[attachment=" + aid + "]")
+												.split(
+													"[attachment=" + aid + "]",
+												)
 												.join(""),
 										);
 									} else {
 										instance.setWysiwygEditorValue(
 											instance
 												.getWysiwygEditorValue(false)
-												.split("[attachment=" + aid + "]")
+												.split(
+													"[attachment=" + aid + "]",
+												)
 												.join(""),
 										);
 									}
@@ -159,8 +170,16 @@ var Post = {
 			return true;
 		}
 
-		if (file.files.length > php_max_file_uploads && php_max_file_uploads != 0) {
-			alert(lang.attachment_too_many_files.replace("{1}", php_max_file_uploads));
+		if (
+			file.files.length > php_max_file_uploads &&
+			php_max_file_uploads != 0
+		) {
+			alert(
+				lang.attachment_too_many_files.replace(
+					"{1}",
+					php_max_file_uploads,
+				),
+			);
 			file.value = "";
 			return false;
 		}
@@ -173,8 +192,14 @@ var Post = {
 		});
 
 		if (totalSize > php_max_upload_size && php_max_upload_size > 0) {
-			var php_max_upload_size_pretty = Math.round(php_max_upload_size / 1e4) / 1e2;
-			alert(lang.attachment_too_big_upload.replace("{1}", php_max_upload_size_pretty));
+			var php_max_upload_size_pretty =
+				Math.round(php_max_upload_size / 1e4) / 1e2;
+			alert(
+				lang.attachment_too_big_upload.replace(
+					"{1}",
+					php_max_upload_size_pretty,
+				),
+			);
 			file.value = "";
 			return false;
 		}

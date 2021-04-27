@@ -6,7 +6,8 @@ a:active {
 }
 
 #logo {
-	background: #750000 url(../../../images/colors/flame_header.png) top left repeat-x;
+	background: #750000 url(../../../images/colors/flame_header.png) top left
+		repeat-x;
 	border-bottom: 1px solid #550000;
 }
 
@@ -15,11 +16,13 @@ a:active {
 }
 
 #panel input.button {
-	background: #750000 url(../../../images/colors/flame_thead.png) top left repeat-x;
+	background: #750000 url(../../../images/colors/flame_thead.png) top left
+		repeat-x;
 }
 
 .thead {
-	background: #750000 url(../../../images/colors/flame_thead.png) top left repeat-x;
+	background: #750000 url(../../../images/colors/flame_thead.png) top left
+		repeat-x;
 	border-bottom: 1px solid #550000;
 }
 

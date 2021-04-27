@@ -128,7 +128,8 @@
 			if (ch == "<") {
 				if (stream.eat("!")) {
 					if (stream.eat("[")) {
-						if (stream.match("CDATA[")) return chain(inBlock("atom", "]]>"));
+						if (stream.match("CDATA["))
+							return chain(inBlock("atom", "]]>"));
 						else return null;
 					} else if (stream.match("--")) {
 						return chain(inBlock("comment", "-->"));
@@ -243,7 +244,10 @@
 			this.tagName = tagName;
 			this.indent = state.indented;
 			this.startOfLine = startOfLine;
-			if (config.doNotIndent.hasOwnProperty(tagName) || (state.context && state.context.noIndent))
+			if (
+				config.doNotIndent.hasOwnProperty(tagName) ||
+				(state.context && state.context.noIndent)
+			)
 				this.noIndent = true;
 		}
 		function popContext(state) {
@@ -258,7 +262,9 @@
 				parentTagName = state.context.tagName;
 				if (
 					!config.contextGrabbers.hasOwnProperty(parentTagName) ||
-					!config.contextGrabbers[parentTagName].hasOwnProperty(nextTagName)
+					!config.contextGrabbers[parentTagName].hasOwnProperty(
+						nextTagName,
+					)
 				) {
 					return;
 				}
@@ -292,10 +298,15 @@
 				if (
 					state.context &&
 					state.context.tagName != tagName &&
-					config.implicitlyClosed.hasOwnProperty(state.context.tagName)
+					config.implicitlyClosed.hasOwnProperty(
+						state.context.tagName,
+					)
 				)
 					popContext(state);
-				if ((state.context && state.context.tagName == tagName) || config.matchClosing === false) {
+				if (
+					(state.context && state.context.tagName == tagName) ||
+					config.matchClosing === false
+				) {
 					setStyle = "tag";
 					return closeState;
 				} else {
@@ -329,11 +340,18 @@
 				var tagName = state.tagName,
 					tagStart = state.tagStart;
 				state.tagName = state.tagStart = null;
-				if (type == "selfcloseTag" || config.autoSelfClosers.hasOwnProperty(tagName)) {
+				if (
+					type == "selfcloseTag" ||
+					config.autoSelfClosers.hasOwnProperty(tagName)
+				) {
 					maybePopContext(state, tagName);
 				} else {
 					maybePopContext(state, tagName);
-					state.context = new Context(state, tagName, tagStart == state.indented);
+					state.context = new Context(
+						state,
+						tagName,
+						tagStart == state.indented,
+					);
 				}
 				return baseState;
 			}
@@ -374,7 +392,8 @@
 			},
 
 			token: function (stream, state) {
-				if (!state.tagName && stream.sol()) state.indented = stream.indentation();
+				if (!state.tagName && stream.sol())
+					state.indented = stream.indentation();
 
 				if (stream.eatSpace()) return null;
 				type = null;
@@ -382,7 +401,9 @@
 				if ((style || type) && style != "comment") {
 					setStyle = null;
 					state.state = state.state(type || style, stream, state);
-					if (setStyle) style = setStyle == "error" ? style + " error" : setStyle;
+					if (setStyle)
+						style =
+							setStyle == "error" ? style + " error" : setStyle;
 				}
 				return style;
 			},
@@ -391,7 +412,8 @@
 				var context = state.context;
 				// Indent multi-line strings (e.g. css).
 				if (state.tokenize.isInAttribute) {
-					if (state.tagStart == state.indented) return state.stringStartCol + 1;
+					if (state.tagStart == state.indented)
+						return state.stringStartCol + 1;
 					else return state.indented + indentUnit;
 				}
 				if (context && context.noIndent) return CodeMirror.Pass;
@@ -399,18 +421,29 @@
 					return fullLine ? fullLine.match(/^(\s*)/)[0].length : 0;
 				// Indent the starts of attribute names.
 				if (state.tagName) {
-					if (config.multilineTagIndentPastTag !== false) return state.tagStart + state.tagName.length + 2;
-					else return state.tagStart + indentUnit * (config.multilineTagIndentFactor || 1);
+					if (config.multilineTagIndentPastTag !== false)
+						return state.tagStart + state.tagName.length + 2;
+					else
+						return (
+							state.tagStart +
+							indentUnit * (config.multilineTagIndentFactor || 1)
+						);
 				}
-				if (config.alignCDATA && /<!\[CDATA\[/.test(textAfter)) return 0;
-				var tagAfter = textAfter && /^<(\/)?([\w_:\.-]*)/.exec(textAfter);
+				if (config.alignCDATA && /<!\[CDATA\[/.test(textAfter))
+					return 0;
+				var tagAfter =
+					textAfter && /^<(\/)?([\w_:\.-]*)/.exec(textAfter);
 				if (tagAfter && tagAfter[1]) {
 					// Closing tag spotted
 					while (context) {
 						if (context.tagName == tagAfter[2]) {
 							context = context.prev;
 							break;
-						} else if (config.implicitlyClosed.hasOwnProperty(context.tagName)) {
+						} else if (
+							config.implicitlyClosed.hasOwnProperty(
+								context.tagName,
+							)
+						) {
 							context = context.prev;
 						} else {
 							break;
@@ -420,11 +453,13 @@
 					// Opening tag spotted
 					while (context) {
 						var grabbers = config.contextGrabbers[context.tagName];
-						if (grabbers && grabbers.hasOwnProperty(tagAfter[2])) context = context.prev;
+						if (grabbers && grabbers.hasOwnProperty(tagAfter[2]))
+							context = context.prev;
 						else break;
 					}
 				}
-				while (context && context.prev && !context.startOfLine) context = context.prev;
+				while (context && context.prev && !context.startOfLine)
+					context = context.prev;
 				if (context) return context.indent + indentUnit;
 				else return state.baseIndent || 0;
 			},

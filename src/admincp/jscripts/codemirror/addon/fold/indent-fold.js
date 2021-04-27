@@ -17,9 +17,13 @@
 	"use strict";
 
 	function lineIndent(cm, lineNo) {
-		var text = cm.getLine(lineNo);
+		var text    = cm.getLine(lineNo);
 		var spaceTo = text.search(/\S/);
-		if (spaceTo == -1 || /\bcomment\b/.test(cm.getTokenTypeAt(CodeMirror.Pos(lineNo, spaceTo + 1)))) {
+		if (spaceTo == -1
+      || /\bcomment\b/.test(
+				cm.getTokenTypeAt(CodeMirror.Pos(lineNo, spaceTo + 1)),
+			)
+		) {
 			return -1;
 		}
 
@@ -53,7 +57,10 @@
 		if (lastLineInFold)
 			return {
 				from: CodeMirror.Pos(start.line, cm.getLine(start.line).length),
-				to: CodeMirror.Pos(lastLineInFold, cm.getLine(lastLineInFold).length),
+				to: CodeMirror.Pos(
+					lastLineInFold,
+					cm.getLine(lastLineInFold).length,
+				),
 			};
 	});
 });

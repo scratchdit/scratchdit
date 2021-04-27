@@ -8,7 +8,9 @@ var Rating = {
 				elements.each(function () {
 					var element = $(this);
 					element.on("click", function () {
-						var parameterString = element.attr("href").replace(/.*\?(.*)/, "$1");
+						var parameterString = element
+							.attr("href")
+							.replace(/.*\?(.*)/, "$1");
 						return Rating.add_rating(parameterString);
 					});
 				});
@@ -21,7 +23,10 @@ var Rating = {
 						.attr("href")
 						.replace(/.*\?(.*)/, "$1")
 						.match(/tid=(.*)&(.*)&/)[1];
-					element.attr("title", $("#current_rating_" + element_id).text());
+					element.attr(
+						"title",
+						$("#current_rating_" + element_id).text(),
+					);
 				});
 			}
 		});
@@ -48,7 +53,15 @@ var Rating = {
 			list_element_a
 				.addClass(list_classes[i])
 				.attr("title", lang.stars[i])
-				.attr("href", "./ratethread.php?tid=" + tid + "&rating=" + i + "&my_post_key=" + my_post_key)
+				.attr(
+					"href",
+					"./ratethread.php?tid=" +
+						tid +
+						"&rating=" +
+						i +
+						"&my_post_key=" +
+						my_post_key,
+				)
 				.html(i);
 			list_element.append(list_element_a);
 			list.append(list_element);
@@ -59,7 +72,13 @@ var Rating = {
 		var tid = parameterString.match(/tid=(.*)&(.*)&/)[1];
 		var rating = parameterString.match(/rating=(.*)&(.*)/)[1];
 		$.ajax({
-			url: "ratethread.php?ajax=1&my_post_key=" + my_post_key + "&tid=" + tid + "&rating=" + rating,
+			url:
+				"ratethread.php?ajax=1&my_post_key=" +
+				my_post_key +
+				"&tid=" +
+				tid +
+				"&rating=" +
+				rating,
 			async: true,
 			method: "post",
 			dataType: "json",
@@ -95,11 +114,17 @@ var Rating = {
 				if (rating_element.hasClass("star_rating_notrated")) {
 					elements.each(function () {
 						var element = $(this);
-						if (element.attr("id") == "rating_thread_" + element_id) {
+						if (
+							element.attr("id") ==
+							"rating_thread_" + element_id
+						) {
 							element
 								.attr("onclick", "return false;")
 								.css("cursor", "default")
-								.attr("title", $("#current_rating_" + element_id).text());
+								.attr(
+									"title",
+									$("#current_rating_" + element_id).text(),
+								);
 						}
 					});
 				}

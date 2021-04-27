@@ -17,7 +17,9 @@
 					r.sourceMode(e.sourceMode),
 					r.val(e.value, !1),
 					r.focus(),
-					e.sourceMode ? r.sourceEditorCaret(e.caret) : r.getRangeHelper().restoreRange(),
+					e.sourceMode
+						? r.sourceEditorCaret(e.caret)
+						: r.getRangeHelper().restoreRange(),
 					(s = !1);
 			};
 		(e.init = function () {
@@ -45,7 +47,11 @@
 			}),
 			(e.redo = function () {
 				var e = n.pop();
-				return c.length || (c.push(e), (e = n.pop())), e && (c.push(e), l(e)), !1;
+				return (
+					c.length || (c.push(e), (e = n.pop())),
+					e && (c.push(e), l(e)),
+					!1
+				);
 			}),
 			(e.signalReady = function () {
 				var e = r.val(null, !1);
@@ -71,9 +77,15 @@
 								n = e.length,
 								c = t.length,
 								s = Math.max(n, c);
-							for (r = 0; r < s && e.charAt(r) === t.charAt(r); r++);
 							for (
-								u = n < c ? c - n : 0, a = c < n ? n - c : 0, o = s - 1;
+								r = 0;
+								r < s && e.charAt(r) === t.charAt(r);
+								r++
+							);
+							for (
+								u = n < c ? c - n : 0,
+									a = c < n ? n - c : 0,
+									o = s - 1;
 								0 <= o && e.charAt(o - u) === t.charAt(o - a);
 								o--
 							);

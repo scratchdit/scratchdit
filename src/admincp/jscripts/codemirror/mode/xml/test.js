@@ -23,7 +23,11 @@
 		"  [tag&bracket </][tag&error tip][tag&bracket&error >]",
 	);
 
-	MT("doctype", "[meta <!doctype foobar>]", "[tag&bracket <][tag top][tag&bracket />]");
+	MT(
+		"doctype",
+		"[meta <!doctype foobar>]",
+		"[tag&bracket <][tag top][tag&bracket />]",
+	);
 
 	MT(
 		"cdata",

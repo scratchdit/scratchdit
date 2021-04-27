@@ -39,28 +39,28 @@
 		}
 
 		var firstLine = cm.getLine(start.line),
-			nextLine = cm.getLine(start.line + 1);
-		var level = headerLevel(start.line, firstLine, nextLine);
+			nextLine     = cm.getLine(start.line + 1);
+		var level     = headerLevel(start.line, firstLine, nextLine);
 		if (level === maxDepth) {
 			return undefined;
 		}
 
 		var lastLineNo = cm.lastLine();
-		var end = start.line,
-			nextNextLine = cm.getLine(end + 2);
+		var end        = start.line,
+			nextNextLine  = cm.getLine(end + 2);
 		while (end < lastLineNo) {
 			if (headerLevel(end + 1, nextLine, nextNextLine) <= level) {
 				break;
 			}
 
 			++end;
-			nextLine = nextNextLine;
+			nextLine     = nextNextLine;
 			nextNextLine = cm.getLine(end + 2);
 		}
 
 		return {
 			from: CodeMirror.Pos(start.line, firstLine.length),
-			to: CodeMirror.Pos(end, cm.getLine(end).length),
+			to: CodeMirror.Pos(end, cm.getLine(end).length)
 		};
 	});
 });

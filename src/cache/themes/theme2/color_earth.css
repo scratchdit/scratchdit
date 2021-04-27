@@ -6,7 +6,8 @@ a:active {
 }
 
 #logo {
-	background: #4a3a2e url(../../../images/colors/earth_header.png) top left repeat-x;
+	background: #4a3a2e url(../../../images/colors/earth_header.png) top left
+		repeat-x;
 	border-bottom: 1px solid #31261e;
 }
 
@@ -15,11 +16,13 @@ a:active {
 }
 
 #panel input.button {
-	background: #4a3b2f url(../../../images/colors/earth_thead.png) top left repeat-x;
+	background: #4a3b2f url(../../../images/colors/earth_thead.png) top left
+		repeat-x;
 }
 
 .thead {
-	background: #4a3b2f url(../../../images/colors/earth_thead.png) top left repeat-x;
+	background: #4a3b2f url(../../../images/colors/earth_thead.png) top left
+		repeat-x;
 	border-bottom: 1px solid #31261e;
 }
 

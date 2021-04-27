@@ -6,7 +6,8 @@ a:active {
 }
 
 #logo {
-	background: #273a46 url(../../../images/colors/twilight_header.png) top left repeat-x;
+	background: #273a46 url(../../../images/colors/twilight_header.png) top left
+		repeat-x;
 	border-bottom: 1px solid #1d2b34;
 }
 
@@ -15,11 +16,13 @@ a:active {
 }
 
 #panel input.button {
-	background: #273a46 url(../../../images/colors/twilight_thead.png) top left repeat-x;
+	background: #273a46 url(../../../images/colors/twilight_thead.png) top left
+		repeat-x;
 }
 
 .thead {
-	background: #273a46 url(../../../images/colors/twilight_thead.png) top left repeat-x;
+	background: #273a46 url(../../../images/colors/twilight_thead.png) top left
+		repeat-x;
 	border-bottom: 1px solid #1d2b34;
 }
 

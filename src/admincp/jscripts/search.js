@@ -29,7 +29,8 @@ var SettingSearch = {
 		if ($("#search").val() != "") {
 			$.jGrowl(lang.searching, { theme: "jgrowl_process" });
 			pars =
-				"module=config-settings&action=change&ajax_search=1&search=" + encodeURIComponent($("#search").val());
+				"module=config-settings&action=change&ajax_search=1&search=" +
+				encodeURIComponent($("#search").val());
 			$.ajax({
 				type: "get",
 				url: "index.php",
@@ -42,9 +43,12 @@ var SettingSearch = {
 								$("div.jGrowl").jGrowl("close");
 
 								$.each(json.errors, function (i, message) {
-									$.jGrowl(lang.search_error + " " + message, {
-										theme: "jgrowl_error",
-									});
+									$.jGrowl(
+										lang.search_error + " " + message,
+										{
+											theme: "jgrowl_error",
+										},
+									);
 								});
 								return false;
 							}

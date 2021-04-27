@@ -3,7 +3,9 @@ var question = {
 		var question_id = $("#question_id").val();
 
 		$.ajax({
-			url: "xmlhttp.php?action=refresh_question&question_id=" + question_id,
+			url:
+				"xmlhttp.php?action=refresh_question&question_id=" +
+				question_id,
 			method: "get",
 			dataType: "json",
 			complete: function (request) {

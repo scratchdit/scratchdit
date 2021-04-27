@@ -13,39 +13,48 @@ var inlineEditor = {
 			id = $(this).attr("id");
 			tid = id.replace(/[^\d.]/g, "");
 
-			$(this).editable("xmlhttp.php?action=edit_subject&my_post_key=" + my_post_key + "&tid=" + tid, {
-				indicator: spinner,
-				type: "text",
-				submit: "",
-				cancel: "",
-				tooltip: lang.inline_edit_description,
-				onblur: "submit",
-				event: "hold" + tid,
-				callback: function (values, settings) {
-					id = $(this).attr("id");
-					tid = id.replace(/[^\d.]/g, "");
+			$(this).editable(
+				"xmlhttp.php?action=edit_subject&my_post_key=" +
+					my_post_key +
+					"&tid=" +
+					tid,
+				{
+					indicator: spinner,
+					type: "text",
+					submit: "",
+					cancel: "",
+					tooltip: lang.inline_edit_description,
+					onblur: "submit",
+					event: "hold" + tid,
+					callback: function (values, settings) {
+						id = $(this).attr("id");
+						tid = id.replace(/[^\d.]/g, "");
 
-					values = JSON.parse(values);
-					if (typeof values == "object") {
-						if (values.hasOwnProperty("errors")) {
-							$.each(values.errors, function (i, message) {
-								$.jGrowl(lang.post_fetch_error + " " + message, {
-									theme: "jgrowl_error",
+						values = JSON.parse(values);
+						if (typeof values == "object") {
+							if (values.hasOwnProperty("errors")) {
+								$.each(values.errors, function (i, message) {
+									$.jGrowl(
+										lang.post_fetch_error + " " + message,
+										{
+											theme: "jgrowl_error",
+										},
+									);
 								});
-							});
-							$(this).html($("#tid_" + tid + "_temp").html());
-						} else {
-							// Change subject
-							$(this).html(values.subject);
+								$(this).html($("#tid_" + tid + "_temp").html());
+							} else {
+								// Change subject
+								$(this).html(values.subject);
+							}
 						}
-					}
 
-					$("#tid_" + tid + "_temp").remove();
+						$("#tid_" + tid + "_temp").remove();
+					},
+					data: function (value, settings) {
+						return $(value).text();
+					},
 				},
-				data: function (value, settings) {
-					return $(value).text();
-				},
-			});
+			);
 
 			// Hold event
 			$(this).on("mousedown", function (e) {
@@ -61,7 +70,11 @@ var inlineEditor = {
 						.hide()
 						.appendTo("body");
 
-				inlineEditor.timeouts[tid] = setTimeout(inlineEditor.jeditableTimeout, 700, tid);
+				inlineEditor.timeouts[tid] = setTimeout(
+					inlineEditor.jeditableTimeout,
+					700,
+					tid,
+				);
 			});
 
 			$(this).on("mouseup mouseleave", function () {

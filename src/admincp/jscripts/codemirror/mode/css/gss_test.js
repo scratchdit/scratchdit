@@ -9,5 +9,12 @@
 		test.mode(name, mode, Array.prototype.slice.call(arguments, 1), "gss");
 	}
 
-	MT("atComponent", "[def @component] {", "[tag foo] {", "  [property color]: [keyword black];", "}", "}");
+	MT(
+		"atComponent",
+		"[def @component] {",
+		"[tag foo] {",
+		"  [property color]: [keyword black];",
+		"}",
+		"}",
+	);
 })();

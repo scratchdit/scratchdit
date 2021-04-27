@@ -6,7 +6,8 @@ a:active {
 }
 
 #logo {
-	background: #386e21 url(../../../images/colors/leaf_header.png) top left repeat-x;
+	background: #386e21 url(../../../images/colors/leaf_header.png) top left
+		repeat-x;
 	border-bottom: 1px solid #234615;
 }
 
@@ -15,11 +16,13 @@ a:active {
 }
 
 #panel input.button {
-	background: #386e21 url(../../../images/colors/leaf_thead.png) top left repeat-x;
+	background: #386e21 url(../../../images/colors/leaf_thead.png) top left
+		repeat-x;
 }
 
 .thead {
-	background: #386e21 url(../../../images/colors/leaf_thead.png) top left repeat-x;
+	background: #386e21 url(../../../images/colors/leaf_thead.png) top left
+		repeat-x;
 	border-bottom: 1px solid #234615;
 }
 

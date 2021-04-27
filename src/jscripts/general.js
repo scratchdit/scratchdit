@@ -14,7 +14,10 @@ var MyBB = {
 		$('[name="allbox"]').each(function (key, value) {
 			var allbox = this;
 			var checked = $(this).is(":checked");
-			var checkboxes = $(this).closest("form").find(":checkbox").not('[name="allbox"]');
+			var checkboxes = $(this)
+				.closest("form")
+				.find(":checkbox")
+				.not('[name="allbox"]');
 
 			checkboxes.on("change", function () {
 				if (checked && !$(this).prop("checked")) {
@@ -42,7 +45,10 @@ var MyBB = {
 			initialfocus.trigger("focus");
 		}
 
-		if (typeof use_xmlhttprequest != "undefined" && use_xmlhttprequest == 1) {
+		if (
+			typeof use_xmlhttprequest != "undefined" &&
+			use_xmlhttprequest == 1
+		) {
 			mark_read_imgs = $(".ajax_mark_read");
 			mark_read_imgs.each(function () {
 				var element = $(this);
@@ -53,7 +59,8 @@ var MyBB = {
 					element.hasClass("subforum_minioff") ||
 					element.hasClass("subforum_minioffclose") ||
 					element.hasClass("subforum_miniofflink") ||
-					(element.attr("title") && element.attr("title") == lang.no_new_posts)
+					(element.attr("title") &&
+						element.attr("title") == lang.no_new_posts)
 				)
 					return;
 
@@ -65,7 +72,10 @@ var MyBB = {
 				if (element.attr("title")) {
 					element.attr("title", element.attr("title") + " - ");
 				}
-				element.attr("title", element.attr("title") + lang.click_mark_read);
+				element.attr(
+					"title",
+					element.attr("title") + lang.click_mark_read,
+				);
 			});
 		}
 
@@ -95,7 +105,8 @@ var MyBB = {
 		if (!options)
 			options = {
 				fadeDuration: 250,
-				zIndex: typeof modal_zindex !== "undefined" ? modal_zindex : 9999,
+				zIndex:
+					typeof modal_zindex !== "undefined" ? modal_zindex : 9999,
 			};
 		if (root != true) url = rootpath + url;
 
@@ -113,7 +124,10 @@ var MyBB = {
 			title = "";
 
 		for (var i in options.buttons) {
-			buttonsText += templates.modal_button.replace("__title__", options.buttons[i].title);
+			buttonsText += templates.modal_button.replace(
+				"__title__",
+				options.buttons[i].title,
+			);
 		}
 
 		// Support passing custom title
@@ -134,7 +148,8 @@ var MyBB = {
 		buttons.on("click", function (e) {
 			e.preventDefault();
 			var index = $(this).index();
-			if (options.submit(e, options.buttons[index].value) == false) return;
+			if (options.submit(e, options.buttons[index].value) == false)
+				return;
 
 			$.modal.close();
 		});
@@ -208,19 +223,31 @@ var MyBB = {
 			var pid = 0;
 		}
 
-		MyBB.popupWindow("/reputation.php?action=add&uid=" + uid + "&pid=" + pid + "&modal=1");
+		MyBB.popupWindow(
+			"/reputation.php?action=add&uid=" +
+				uid +
+				"&pid=" +
+				pid +
+				"&modal=1",
+		);
 	},
 
 	viewNotes: function (uid) {
-		MyBB.popupWindow("/member.php?action=viewnotes&uid=" + uid + "&modal=1");
+		MyBB.popupWindow(
+			"/member.php?action=viewnotes&uid=" + uid + "&modal=1",
+		);
 	},
 
 	getIP: function (pid) {
-		MyBB.popupWindow("/moderation.php?action=getip&pid=" + pid + "&modal=1");
+		MyBB.popupWindow(
+			"/moderation.php?action=getip&pid=" + pid + "&modal=1",
+		);
 	},
 
 	getPMIP: function (pmid) {
-		MyBB.popupWindow("/moderation.php?action=getpmip&pmid=" + pmid + "&modal=1");
+		MyBB.popupWindow(
+			"/moderation.php?action=getpmip&pmid=" + pmid + "&modal=1",
+		);
 	},
 
 	deleteReputation: function (uid, rid) {
@@ -317,7 +344,11 @@ var MyBB = {
 		}
 
 		$.ajax({
-			url: "misc.php?action=markread&fid=" + fid + "&ajax=1&my_post_key=" + my_post_key,
+			url:
+				"misc.php?action=markread&fid=" +
+				fid +
+				"&ajax=1&my_post_key=" +
+				my_post_key,
 			async: true,
 			success: function (request) {
 				MyBB.forumMarkedRead(fid, request);
@@ -329,11 +360,15 @@ var MyBB = {
 		if (request == 1) {
 			var markreadfid = $("#mark_read_" + fid);
 			if (markreadfid.hasClass("subforum_minion")) {
-				markreadfid.removeClass("subforum_minion").addClass("subforum_minioff");
+				markreadfid
+					.removeClass("subforum_minion")
+					.addClass("subforum_minioff");
 			} else {
 				markreadfid.removeClass("forum_on").addClass("forum_off");
 			}
-			markreadfid.css("cursor", "default").attr("title", lang.no_new_posts);
+			markreadfid
+				.css("cursor", "default")
+				.attr("title", lang.no_new_posts);
 		}
 	},
 
@@ -457,7 +492,10 @@ var MyBB = {
 			],
 			submit: function (e, v, m, f) {
 				if (v == true) {
-					window.location = data.href.replace("action=delete_announcement", "action=do_delete_announcement");
+					window.location = data.href.replace(
+						"action=delete_announcement",
+						"action=do_delete_announcement",
+					);
 				}
 			},
 		});
@@ -503,7 +541,10 @@ var MyBB = {
 					if (n == 1) {
 						return lang.select2_inputtooshort_single;
 					} else {
-						return lang.select2_inputtooshort_plural.replace("{1}", n);
+						return lang.select2_inputtooshort_plural.replace(
+							"{1}",
+							n,
+						);
 					}
 				},
 				formatInputTooLong: function (input, max) {
@@ -511,14 +552,20 @@ var MyBB = {
 					if (n == 1) {
 						return lang.select2_inputtoolong_single;
 					} else {
-						return lang.select2_inputtoolong_plural.replace("{1}", n);
+						return lang.select2_inputtoolong_plural.replace(
+							"{1}",
+							n,
+						);
 					}
 				},
 				formatSelectionTooBig: function (limit) {
 					if (limit == 1) {
 						return lang.select2_selectiontoobig_single;
 					} else {
-						return lang.select2_selectiontoobig_plural.replace("{1}", limit);
+						return lang.select2_selectiontoobig_plural.replace(
+							"{1}",
+							limit,
+						);
 					}
 				},
 				formatLoadMore: function (pageNumber) {
@@ -621,12 +668,23 @@ var expandables = {
 				element
 					.attr(
 						"src",
-						element.attr("src").replace(/collapse_collapsed\.(gif|jpg|jpeg|bmp|png)$/i, "collapse.$1"),
+						element
+							.attr("src")
+							.replace(
+								/collapse_collapsed\.(gif|jpg|jpeg|bmp|png)$/i,
+								"collapse.$1",
+							),
 					)
 					.attr("alt", "[-]")
 					.attr("title", "[-]");
-				element.parent().parent("td").removeClass("tcat_collapse_collapsed");
-				element.parent().parent(".thead").removeClass("thead_collapsed");
+				element
+					.parent()
+					.parent("td")
+					.removeClass("tcat_collapse_collapsed");
+				element
+					.parent()
+					.parent(".thead")
+					.removeClass("thead_collapsed");
 				this.saveCollapsed(controls);
 			}
 			// Collapsing
@@ -635,11 +693,19 @@ var expandables = {
 				element
 					.attr(
 						"src",
-						element.attr("src").replace(/collapse\.(gif|jpg|jpeg|bmp|png)$/i, "collapse_collapsed.$1"),
+						element
+							.attr("src")
+							.replace(
+								/collapse\.(gif|jpg|jpeg|bmp|png)$/i,
+								"collapse_collapsed.$1",
+							),
 					)
 					.attr("alt", "[+]")
 					.attr("title", "[+]");
-				element.parent().parent("td").addClass("tcat_collapse_collapsed");
+				element
+					.parent()
+					.parent("td")
+					.addClass("tcat_collapse_collapsed");
 				element.parent().parent(".thead").addClass("thead_collapsed");
 				this.saveCollapsed(controls, 1);
 			}

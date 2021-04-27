@@ -44,7 +44,7 @@
 
 	function State(options) {
 		this.options = options;
-		this.from = this.to = 0;
+		this.from    = this.to = 0;
 	}
 
 	function parseOptions(opts) {
@@ -78,7 +78,7 @@
 
 	function marker(spec) {
 		if (typeof spec == "string") {
-			var elt = document.createElement("div");
+			var elt       = document.createElement("div");
 			elt.className = spec + " CodeMirror-guttermarker-subtle";
 			return elt;
 		} else {
@@ -87,16 +87,16 @@
 	}
 
 	function updateFoldInfo(cm, from, to) {
-		var opts = cm.state.foldGutter.options,
-			cur = from;
+		var opts    = cm.state.foldGutter.options,
+			cur        = from;
 		var minSize = cm.foldOption(opts, "minFoldSize");
-		var func = cm.foldOption(opts, "rangeFinder");
+		var func    = cm.foldOption(opts, "rangeFinder");
 		cm.eachLine(from, to, function (line) {
 			var mark = null;
 			if (isFolded(cm, cur)) {
 				mark = marker(opts.indicatorFolded);
 			} else {
-				var pos = Pos(cur, 0);
+				var pos   = Pos(cur, 0);
 				var range = func && func(cm, pos);
 				if (range && range.to.line - range.from.line >= minSize) {
 					mark = marker(opts.indicatorOpen);
@@ -119,7 +119,7 @@
 			updateFoldInfo(cm, vp.from, vp.to);
 		});
 		state.from = vp.from;
-		state.to = vp.to;
+		state.to   = vp.to;
 	}
 
 	function onGutterClick(cm, line, gutter) {
@@ -147,7 +147,7 @@
 			return;
 		}
 
-		var opts = state.options;
+		var opts   = state.options;
 		state.from = state.to = 0;
 		clearTimeout(state.changeUpdate);
 		state.changeUpdate = setTimeout(function () {
@@ -165,7 +165,10 @@
 		clearTimeout(state.changeUpdate);
 		state.changeUpdate = setTimeout(function () {
 			var vp = cm.getViewport();
-			if (state.from == state.to || vp.from - state.to > 20 || state.from - vp.to > 20) {
+			if (state.from == state.to
+       || vp.from - state.to > 20
+       || state.from - vp.to > 20
+			) {
 				updateInViewport(cm);
 			} else {
 				cm.operation(function () {

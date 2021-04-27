@@ -19,22 +19,33 @@
 			bold: { txtExec: ["<strong>", "</strong>"] },
 			italic: { txtExec: ["<em>", "</em>"] },
 			underline: {
-				txtExec: ['<span style="text-decoration:underline;">', "</span>"],
+				txtExec: [
+					'<span style="text-decoration:underline;">',
+					"</span>",
+				],
 			},
 			strike: {
-				txtExec: ['<span style="text-decoration:line-through;">', "</span>"],
+				txtExec: [
+					'<span style="text-decoration:line-through;">',
+					"</span>",
+				],
 			},
 			subscript: { txtExec: ["<sub>", "</sub>"] },
 			superscript: { txtExec: ["<sup>", "</sup>"] },
 			left: { txtExec: ['<div style="text-align:left;">', "</div>"] },
 			center: { txtExec: ['<div style="text-align:center;">', "</div>"] },
 			right: { txtExec: ['<div style="text-align:right;">', "</div>"] },
-			justify: { txtExec: ['<div style="text-align:justify;">', "</div>"] },
+			justify: {
+				txtExec: ['<div style="text-align:justify;">', "</div>"],
+			},
 			font: {
 				txtExec: function (t) {
 					var e = this;
 					l("font")._dropDown(e, t, function (t) {
-						e.insertText('<span style="font-family:' + t + ';">', "</span>");
+						e.insertText(
+							'<span style="font-family:' + t + ';">',
+							"</span>",
+						);
 					});
 				},
 			},
@@ -42,7 +53,10 @@
 				txtExec: function (t) {
 					var e = this;
 					l("size")._dropDown(e, t, function (t) {
-						e.insertText('<span style="font-size:' + t + ';">', "</span>");
+						e.insertText(
+							'<span style="font-size:' + t + ';">',
+							"</span>",
+						);
 					});
 				},
 			},
@@ -50,7 +64,10 @@
 				txtExec: function (t) {
 					var e = this;
 					l("color")._dropDown(e, t, function (t) {
-						e.insertText('<span style="color:' + t + ';">', "</span>");
+						e.insertText(
+							'<span style="color:' + t + ';">',
+							"</span>",
+						);
 					});
 				},
 			},
@@ -74,7 +91,13 @@
 				txtExec: function (t, n) {
 					var i = this;
 					l("email")._dropDown(i, t, function (t, e) {
-						i.insertText('<a href="mailto:' + t + '">' + (e || n || t) + "</a>");
+						i.insertText(
+							'<a href="mailto:' +
+								t +
+								'">' +
+								(e || n || t) +
+								"</a>",
+						);
 					});
 				},
 			},
@@ -82,7 +105,9 @@
 				txtExec: function (t, n) {
 					var i = this;
 					l("link")._dropDown(i, t, function (t, e) {
-						i.insertText('<a href="' + t + '">' + (e || n || t) + "</a>");
+						i.insertText(
+							'<a href="' + t + '">' + (e || n || t) + "</a>",
+						);
 					});
 				},
 			},
@@ -161,13 +186,29 @@
 										s = z.allowedEmptyTags || [];
 									if (n && "br" === r) return !0;
 									if (T(e, ".sceditor-ignore")) return !0;
-									if (-1 < s.indexOf(r) || "td" === r || !C.canHaveChildren(e)) return !1;
+									if (
+										-1 < s.indexOf(r) ||
+										"td" === r ||
+										!C.canHaveChildren(e)
+									)
+										return !1;
 									if (a && /\S|\u00A0/.test(a)) return !1;
-									for (; l--; ) if (!t(o[l], n && !e.previousSibling && !e.nextSibling)) return !1;
+									for (; l--; )
+										if (
+											!t(
+												o[l],
+												n &&
+													!e.previousSibling &&
+													!e.nextSibling,
+											)
+										)
+											return !1;
 									return (
 										!e.getBoundingClientRect ||
-										(!e.className && !e.hasAttributes("style")) ||
-										!(i = e.getBoundingClientRect()).width ||
+										(!e.className &&
+											!e.hasAttributes("style")) ||
+										!(i = e.getBoundingClientRect())
+											.width ||
 										!i.height
 									);
 								})(t, s && c && "br" !== n),
@@ -177,12 +218,18 @@
 							v = z.disallowedTags;
 						if (
 							3 !== o &&
-							(4 === o ? (n = "!cdata") : ("!" !== n && 8 !== o) || (n = "!comment"),
+							(4 === o
+								? (n = "!cdata")
+								: ("!" !== n && 8 !== o) || (n = "!comment"),
 							1 === o &&
 								T(t, ".sceditor-nlf") &&
-								(!g || (!E && 1 === t.childNodes.length && /br/i.test(g.nodeName))
+								(!g ||
+								(!E &&
+									1 === t.childNodes.length &&
+									/br/i.test(g.nodeName))
 									? (u = !0)
-									: (t.classList.remove("sceditor-nlf"), t.className || A(t, "class"))),
+									: (t.classList.remove("sceditor-nlf"),
+									  t.className || A(t, "class"))),
 							u
 								? (e = !0)
 								: f && f.length
@@ -192,12 +239,18 @@
 						) {
 							if (!u) {
 								for (
-									r && a && C.isInline(a) && i.insertBefore(d.createTextNode(" "), t);
+									r &&
+									a &&
+									C.isInline(a) &&
+									i.insertBefore(d.createTextNode(" "), t);
 									t.firstChild;
 
 								)
 									i.insertBefore(t.firstChild, l);
-								r && l && C.isInline(l) && i.insertBefore(d.createTextNode(" "), l);
+								r &&
+									l &&
+									C.isInline(l) &&
+									i.insertBefore(d.createTextNode(" "), l);
 							}
 							i.removeChild(t);
 						}
@@ -209,15 +262,31 @@
 				(x = (v = z.disallowedAttribs) && !N(v)),
 				(p = {}),
 				C.traverse(r, function (t) {
-					if (t.attributes && ((a = t.nodeName.toLowerCase()), (c = t.attributes.length)))
-						for (p[a] || (p[a] = g ? w(f["*"], f[a]) : w(v["*"], v[a])); c--; )
+					if (
+						t.attributes &&
+						((a = t.nodeName.toLowerCase()),
+						(c = t.attributes.length))
+					)
+						for (
+							p[a] ||
+							(p[a] = g ? w(f["*"], f[a]) : w(v["*"], v[a]));
+							c--;
+
+						)
 							(l = t.attributes[c]),
 								(s = l.name),
 								(u = p[a][s]),
 								(d = !1),
 								g
-									? (d = null !== u && (!Array.isArray(u) || u.indexOf(l.value) < 0))
-									: x && (d = null === u || (Array.isArray(u) && -1 < u.indexOf(l.value))),
+									? (d =
+											null !== u &&
+											(!Array.isArray(u) ||
+												u.indexOf(l.value) < 0))
+									: x &&
+									  (d =
+											null === u ||
+											(Array.isArray(u) &&
+												-1 < u.indexOf(l.value))),
 								d && t.removeAttribute(s);
 				}),
 				t ||
@@ -229,7 +298,11 @@
 						for (; i; )
 							(n = i.nextSibling),
 								C.isInline(i) && !T(i, ".sceditor-ignore")
-									? (e || ((e = t.ownerDocument.createElement("p")), i.parentNode.insertBefore(e, i)),
+									? (e ||
+											((e = t.ownerDocument.createElement(
+												"p",
+											)),
+											i.parentNode.insertBefore(e, i)),
 									  e.appendChild(i))
 									: (e = null),
 								(i = n);
@@ -258,7 +331,9 @@
 				t && r(n, t),
 				e &&
 					a(e, function (t, e) {
-						Array.isArray(e) ? (n[t] = (n[t] || []).concat(e)) : n[t] || (n[t] = null);
+						Array.isArray(e)
+							? (n[t] = (n[t] || []).concat(e))
+							: n[t] || (n[t] = null);
 					}),
 				n
 			);
@@ -306,23 +381,45 @@
 									a = "iframe" === r,
 									l = t.attributes.length,
 									s = t.firstChild,
-									c = e || /pre(?:\-wrap)?$/i.test(S(t, "whiteSpace")),
-									u = !t.firstChild && !C.canHaveChildren(t) && !a;
+									c =
+										e ||
+										/pre(?:\-wrap)?$/i.test(
+											S(t, "whiteSpace"),
+										),
+									u =
+										!t.firstChild &&
+										!C.canHaveChildren(t) &&
+										!a;
 								if (T(t, ".sceditor-ignore")) return;
 								v("<" + r, !e && h(t));
 								for (; l--; )
 									(i = t.attributes[l]),
 										(o = i.value),
-										v(" " + i.name.toLowerCase() + '="' + f(o) + '"', !1);
+										v(
+											" " +
+												i.name.toLowerCase() +
+												'="' +
+												f(o) +
+												'"',
+											!1,
+										);
 								v(u ? " />" : ">", !1), a || (n = s);
-								for (; n; ) d++, g(n, c), (n = n.nextSibling), d--;
-								u || v("</" + r + ">", !c && !a && h(t) && s && h(s));
+								for (; n; )
+									d++, g(n, c), (n = n.nextSibling), d--;
+								u ||
+									v(
+										"</" + r + ">",
+										!c && !a && h(t) && s && h(s),
+									);
 						  })(t, e);
 					break;
 				case 3:
 					!(function (t, e) {
 						var n = t.nodeValue;
-						e || (n = n.replace(/[\r\n]/, " ").replace(/[^\S|\u00A0]+/g, " "));
+						e ||
+							(n = n
+								.replace(/[\r\n]/, " ")
+								.replace(/[^\S|\u00A0]+/g, " "));
 						n && v(f(n), !e && h(t));
 					})(t, e);
 					break;
@@ -345,15 +442,19 @@
 		}
 		function v(t, e) {
 			var n = d;
-			if (!1 !== e) for (o.length && o.push("\n"); n--; ) o.push(i.indentStr);
+			if (!1 !== e)
+				for (o.length && o.push("\n"); n--; ) o.push(i.indentStr);
 			o.push(t);
 		}
 		function h(t) {
 			var e = t.previousSibling;
-			return 1 !== t.nodeType && e ? !C.isInline(e) : (!e && !C.isInline(t.parentNode)) || !C.isInline(t);
+			return 1 !== t.nodeType && e
+				? !C.isInline(e)
+				: (!e && !C.isInline(t.parentNode)) || !C.isInline(t);
 		}
 		this.serialize = function (t, e) {
-			if (((o = []), e)) for (t = t.firstChild; t; ) g(t), (t = t.nextSibling);
+			if (((o = []), e))
+				for (t = t.firstChild; t; ) g(t), (t = t.nextSibling);
 			else g(t);
 			return o.join("");
 		};
@@ -423,13 +524,17 @@
 			{
 				tags: { "*": { vspace: null } },
 				conv: function (t) {
-					S(t, "marginTop", n(t, "vspace") - 0), S(t, "marginBottom", n(t, "vspace") - 0), A(t, "vspace");
+					S(t, "marginTop", n(t, "vspace") - 0),
+						S(t, "marginBottom", n(t, "vspace") - 0),
+						A(t, "vspace");
 				},
 			},
 			{
 				tags: { "*": { hspace: null } },
 				conv: function (t) {
-					S(t, "marginLeft", n(t, "hspace") - 0), S(t, "marginRight", n(t, "hspace") - 0), A(t, "hspace");
+					S(t, "marginLeft", n(t, "hspace") - 0),
+						S(t, "marginRight", n(t, "hspace") - 0),
+						A(t, "hspace");
 				},
 			},
 			{

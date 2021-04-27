@@ -29,7 +29,9 @@ var UserCP = {
 				var json = JSON.parse(request.responseText);
 				if (json.hasOwnProperty("errors")) {
 					$.each(json.errors, function (i, message) {
-						$.jGrowl(lang.buddylist_error + message, { theme: "jgrowl_error" });
+						$.jGrowl(lang.buddylist_error + message, {
+							theme: "jgrowl_error",
+						});
 					});
 					return false;
 				}
@@ -57,7 +59,11 @@ var UserCP = {
 		// Clone off screen
 		var clone = container.clone(true);
 		$("body").append(clone);
-		clone.css("width", "300px").css("top", "-10000px").css("display", "block").remove();
+		clone
+			.css("width", "300px")
+			.css("top", "-10000px")
+			.css("display", "block")
+			.remove();
 
 		// Center it on the page
 		$("#buddyselect_container")
@@ -67,8 +73,14 @@ var UserCP = {
 			.css("display", "block")
 			.css("z-index", "1000")
 			.css("text-align", "left")
-			.css("margin-left", -$("#buddyselect_container").outerWidth() / 2 + "px")
-			.css("margin-top", -$("#buddyselect_container").outerHeight() / 2 + "px");
+			.css(
+				"margin-left",
+				-$("#buddyselect_container").outerWidth() / 2 + "px",
+			)
+			.css(
+				"margin-top",
+				-$("#buddyselect_container").outerHeight() / 2 + "px",
+			);
 	},
 
 	selectBuddy: function (uid, username) {
@@ -81,7 +93,10 @@ var UserCP = {
 			var buddies = buddyselect_buddies.text();
 			if (buddies.charAt(0) == ",") {
 				first_buddy = buddyselect_buddies.children()[0];
-				first_buddy.innerHTML = first_buddy.innerHTML.substr(1, first_buddy.innerHTML.length);
+				first_buddy.innerHTML = first_buddy.innerHTML.substr(
+					1,
+					first_buddy.innerHTML.length,
+				);
 			}
 		}
 		// Add buddy to list
@@ -161,7 +176,11 @@ var UserCP = {
 
 		$.ajax({
 			type: "post",
-			url: "usercp.php?action=do_editlists&my_post_key=" + my_post_key + "&manage=" + type,
+			url:
+				"usercp.php?action=do_editlists&my_post_key=" +
+				my_post_key +
+				"&manage=" +
+				type,
 			data: { ajax: 1, add_username: type_add_username.val() },
 			async: true,
 			complete: function (request) {
