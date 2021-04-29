@@ -55,7 +55,7 @@
 
 			var dialog = dialogDiv(this, template, options.bottom);
 			var closed = false,
-				me        = this;
+				me = this;
 			function close(newVal) {
 				if (typeof newVal == "string") {
 					inp.value = newVal;
@@ -99,15 +99,17 @@
 				}
 
 				CodeMirror.on(inp, "keydown", function (e) {
-					if (options
-         && options.onKeyDown
-         && options.onKeyDown(e, inp.value, close)
+					if (
+						options &&
+						options.onKeyDown &&
+						options.onKeyDown(e, inp.value, close)
 					) {
 						return;
 					}
 
-					if (e.keyCode == 27
-         || (options.closeOnEnter !== false && e.keyCode == 13)
+					if (
+						e.keyCode == 27 ||
+						(options.closeOnEnter !== false && e.keyCode == 13)
 					) {
 						inp.blur();
 						CodeMirror.e_stop(e);
@@ -143,11 +145,11 @@
 		"openConfirm",
 		function (template, callbacks, options) {
 			closeNotification(this, null);
-			var dialog  = dialogDiv(this, template, options && options.bottom);
+			var dialog = dialogDiv(this, template, options && options.bottom);
 			var buttons = dialog.getElementsByTagName("button");
-			var closed  = false,
-				me         = this,
-				blurring   = 1;
+			var closed = false,
+				me = this,
+				blurring = 1;
 			function close() {
 				if (closed) {
 					return;
@@ -196,12 +198,13 @@
 		"openNotification",
 		function (template, options) {
 			closeNotification(this, close);
-			var dialog   = dialogDiv(this, template, options && options.bottom);
-			var closed   = false,
+			var dialog = dialogDiv(this, template, options && options.bottom);
+			var closed = false,
 				doneTimer;
 			var duration =
 				options && typeof options.duration !== "undefined"
-					? options.duration					: 5000;
+					? options.duration
+					: 5000;
 
 			function close() {
 				if (closed) {

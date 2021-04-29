@@ -40,8 +40,8 @@
 	);
 
 	function SearchAnnotation(cm, query, caseFold, options) {
-		this.cm             = cm;
-		this.options        = options;
+		this.cm = cm;
+		this.options = options;
 		var annotateOptions = { listenForChanges: false };
 		for (var prop in options) {
 			annotateOptions[prop] = options[prop];
@@ -52,16 +52,16 @@
 		}
 
 		this.annotation = cm.annotateScrollbar(annotateOptions);
-		this.query      = query;
-		this.caseFold   = caseFold;
-		this.gap        = { from: cm.firstLine(), to: cm.lastLine() + 1 };
-		this.matches    = [];
-		this.update     = null;
+		this.query = query;
+		this.caseFold = caseFold;
+		this.gap = { from: cm.firstLine(), to: cm.lastLine() + 1 };
+		this.matches = [];
+		this.update = null;
 
 		this.findMatches();
 		this.annotation.update(this.matches);
 
-		var self             = this;
+		var self = this;
 		cm.on(
 			"change",
 			(this.changeHandler = function (_cm, change) {
@@ -88,7 +88,7 @@
 			}
 		}
 
-		var cursor     = this.cm.getSearchCursor(
+		var cursor = this.cm.getSearchCursor(
 			this.query,
 			CodeMirror.Pos(this.gap.from, 0),
 			this.caseFold,
@@ -119,15 +119,15 @@
 	}
 
 	SearchAnnotation.prototype.onChange = function (change) {
-		var startLine  = change.from.line;
-		var endLine    = CodeMirror.changeEnd(change).line;
+		var startLine = change.from.line;
+		var endLine = CodeMirror.changeEnd(change).line;
 		var sizeChange = endLine - change.to.line;
 		if (this.gap) {
 			this.gap.from = Math.min(
 				offsetLine(this.gap.from, startLine, sizeChange),
 				change.from.line,
 			);
-			this.gap.to   = Math.max(
+			this.gap.to = Math.max(
 				offsetLine(this.gap.to, startLine, sizeChange),
 				change.from.line,
 			);
@@ -137,7 +137,7 @@
 
 		if (sizeChange) {
 			for (var i = 0; i < this.matches.length; i++) {
-				var match   = this.matches[i];
+				var match = this.matches[i];
 				var newFrom = offsetLine(
 					match.from.line,
 					startLine,
@@ -155,7 +155,7 @@
 		}
 
 		clearTimeout(this.update);
-		var self    = this;
+		var self = this;
 		this.update = setTimeout(function () {
 			self.updateAfterChange();
 		}, 250);
