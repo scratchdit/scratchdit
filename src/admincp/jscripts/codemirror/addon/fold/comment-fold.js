@@ -23,18 +23,18 @@
 			return mode.blockCommentStart && mode.blockCommentEnd;
 		},
 		function (cm, start) {
-			var mode    = cm.getModeAt(start),
+			var mode = cm.getModeAt(start),
 				startToken = mode.blockCommentStart,
-				endToken   = mode.blockCommentEnd;
+				endToken = mode.blockCommentEnd;
 			if (!startToken || !endToken) {
 				return;
 			}
 
-			var line  = start.line,
+			var line = start.line,
 				lineText = cm.getLine(line);
 
 			var startCh;
-			for (var at = start.ch, pass = 0;;) {
+			for (var at = start.ch, pass = 0; ; ) {
 				var found =
 					at <= 0 ? -1 : lineText.lastIndexOf(startToken, at - 1);
 				if (found == -1) {
@@ -43,7 +43,7 @@
 					}
 
 					pass = 1;
-					at   = lineText.length;
+					at = lineText.length;
 					continue;
 				}
 
@@ -51,12 +51,14 @@
 					return;
 				}
 
-				if (/comment/.test(
+				if (
+					/comment/.test(
 						cm.getTokenTypeAt(CodeMirror.Pos(line, found + 1)),
-					)
-        && (found == 0
-        || lineText.slice(found - endToken.length, found) ==        endToken
-        || !/comment/.test(
+					) &&
+					(found == 0 ||
+						lineText.slice(found - endToken.length, found) ==
+							endToken ||
+						!/comment/.test(
 							cm.getTokenTypeAt(CodeMirror.Pos(line, found)),
 						))
 				) {
@@ -73,10 +75,10 @@
 				endCh;
 			outer: for (var i = line; i <= lastLine; ++i) {
 				var text = cm.getLine(i),
-					pos     = i == line ? startCh : 0;
+					pos = i == line ? startCh : 0;
 				for (;;) {
 					var nextOpen = text.indexOf(startToken, pos),
-						nextClose   = text.indexOf(endToken, pos);
+						nextClose = text.indexOf(endToken, pos);
 					if (nextOpen < 0) {
 						nextOpen = text.length;
 					}
@@ -93,7 +95,7 @@
 					if (pos == nextOpen) {
 						++depth;
 					} else if (!--depth) {
-						end   = i;
+						end = i;
 						endCh = pos;
 						break outer;
 					}
@@ -108,7 +110,7 @@
 
 			return {
 				from: CodeMirror.Pos(line, startCh),
-				to: CodeMirror.Pos(end, endCh)
+				to: CodeMirror.Pos(end, endCh),
 			};
 		},
 	);

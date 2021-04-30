@@ -41,19 +41,20 @@
 		wordsOnly: false,
 		annotateScrollbar: false,
 		showToken: false,
-		trim: true
+		trim: true,
 	};
 
 	function State(options) {
 		this.options = {};
 		for (var name in defaults) {
 			this.options[name] = (options && options.hasOwnProperty(name)
-				? options				: defaults)[name];
+				? options
+				: defaults)[name];
 		}
 
-		this.overlay         = this.timeout = null;
+		this.overlay = this.timeout = null;
 		this.matchesonscroll = null;
-		this.active          = false;
+		this.active = false;
 	}
 
 	CodeMirror.defineOption(
@@ -108,14 +109,14 @@
 		var state = cm.state.matchHighlighter;
 		cm.addOverlay((state.overlay = makeOverlay(query, hasBoundary, style)));
 		if (state.options.annotateScrollbar && cm.showMatchesOnScrollbar) {
-			var searchFor         = hasBoundary
+			var searchFor = hasBoundary
 				? new RegExp("\\b" + query + "\\b")
 				: query;
 			state.matchesonscroll = cm.showMatchesOnScrollbar(
 				searchFor,
 				false,
 				{
-					className: "CodeMirror-selection-highlight-scrollbar"
+					className: "CodeMirror-selection-highlight-scrollbar",
 				},
 			);
 		}
@@ -138,14 +139,14 @@
 			var state = cm.state.matchHighlighter;
 			removeOverlay(cm);
 			if (!cm.somethingSelected() && state.options.showToken) {
-				var re  =
+				var re =
 					state.options.showToken === true
 						? /[\w$]/
 						: state.options.showToken;
 				var cur = cm.getCursor(),
-					line   = cm.getLine(cur.line),
-					start  = cur.ch,
-					end    = start;
+					line = cm.getLine(cur.line),
+					start = cur.ch,
+					end = start;
 				while (start && re.test(line.charAt(start - 1))) {
 					--start;
 				}
@@ -167,7 +168,7 @@
 			}
 
 			var from = cm.getCursor("from"),
-				to      = cm.getCursor("to");
+				to = cm.getCursor("to");
 			if (from.line != to.line) {
 				return;
 			}
@@ -224,15 +225,16 @@
 	function makeOverlay(query, hasBoundary, style) {
 		return {
 			token: function (stream) {
-				if (stream.match(query)
-        && (!hasBoundary || boundariesAround(stream, hasBoundary))
+				if (
+					stream.match(query) &&
+					(!hasBoundary || boundariesAround(stream, hasBoundary))
 				) {
 					return style;
 				}
 
 				stream.next();
 				stream.skipTo(query.charAt(0)) || stream.skipToEnd();
-			}
+			},
 		};
 	}
 });

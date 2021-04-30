@@ -51,10 +51,12 @@
 				}
 
 				var match;
-				if ((match = /^\s*([\+\-]?\d+)\s*\:\s*(\d+)\s*$/.exec(posStr))
+				if (
+					(match = /^\s*([\+\-]?\d+)\s*\:\s*(\d+)\s*$/.exec(posStr))
 				) {
 					cm.setCursor(interpretLine(cm, match[1]), Number(match[2]));
-				} else if ((match = /^\s*([\+\-]?\d+(\.\d+)?)\%\s*/.exec(posStr))
+				} else if (
+					(match = /^\s*([\+\-]?\d+(\.\d+)?)\%\s*/.exec(posStr))
 				) {
 					var line = Math.round(
 						(cm.lineCount() * Number(match[1])) / 100,

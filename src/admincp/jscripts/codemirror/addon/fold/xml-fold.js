@@ -23,22 +23,22 @@
 
 	var nameStartChar =
 		"A-Z_a-z\\u00C0-\\u00D6\\u00D8-\\u00F6\\u00F8-\\u02FF\\u0370-\\u037D\\u037F-\\u1FFF\\u200C-\\u200D\\u2070-\\u218F\\u2C00-\\u2FEF\\u3001-\\uD7FF\\uF900-\\uFDCF\\uFDF0-\\uFFFD";
-	var nameChar      =
+	var nameChar =
 		nameStartChar + "-:.0-9\\u00B7\\u0300-\\u036F\\u203F-\\u2040";
-	var xmlTagStart   = new RegExp(
+	var xmlTagStart = new RegExp(
 		"<(/?)([" + nameStartChar + "][" + nameChar + "]*)",
 		"g",
 	);
 
 	function Iter(cm, line, ch, range) {
 		this.line = line;
-		this.ch   = ch;
-		this.cm   = cm;
+		this.ch = ch;
+		this.cm = cm;
 		this.text = cm.getLine(line);
-		this.min  = range
+		this.min = range
 			? Math.max(range.from, cm.firstLine())
 			: cm.firstLine();
-		this.max  = range
+		this.max = range
 			? Math.min(range.to - 1, cm.lastLine())
 			: cm.lastLine();
 	}
@@ -53,7 +53,7 @@
 			return;
 		}
 
-		iter.ch   = 0;
+		iter.ch = 0;
 		iter.text = iter.cm.getLine(++iter.line);
 		return true;
 	}
@@ -63,7 +63,7 @@
 		}
 
 		iter.text = iter.cm.getLine(--iter.line);
-		iter.ch   = iter.text.length;
+		iter.ch = iter.text.length;
 		return true;
 	}
 
@@ -87,7 +87,7 @@
 			var selfClose =
 				lastSlash > -1 &&
 				!/\S/.test(iter.text.slice(lastSlash + 1, gt));
-			iter.ch       = gt + 1;
+			iter.ch = gt + 1;
 			return selfClose ? "selfClose" : "regular";
 		}
 	}
@@ -108,8 +108,8 @@
 			}
 
 			xmlTagStart.lastIndex = lt;
-			iter.ch               = lt;
-			var match             = xmlTagStart.exec(iter.text);
+			iter.ch = lt;
+			var match = xmlTagStart.exec(iter.text);
 			if (match && match.index == lt) {
 				return match;
 			}
@@ -119,7 +119,7 @@
 	function toNextTag(iter) {
 		for (;;) {
 			xmlTagStart.lastIndex = iter.ch;
-			var found             = xmlTagStart.exec(iter.text);
+			var found = xmlTagStart.exec(iter.text);
 			if (!found) {
 				if (nextLine(iter)) {
 					continue;
@@ -157,7 +157,7 @@
 			var selfClose =
 				lastSlash > -1 &&
 				!/\S/.test(iter.text.slice(lastSlash + 1, gt));
-			iter.ch       = gt + 1;
+			iter.ch = gt + 1;
 			return selfClose ? "selfClose" : "regular";
 		}
 	}
@@ -165,10 +165,10 @@
 	function findMatchingClose(iter, tag) {
 		var stack = [];
 		for (;;) {
-			var next   = toNextTag(iter),
+			var next = toNextTag(iter),
 				end,
 				startLine = iter.line,
-				startCh   = iter.ch - (next ? next[0].length : 0);
+				startCh = iter.ch - (next ? next[0].length : 0);
 			if (!next || !(end = toTagEnd(iter))) {
 				return;
 			}
@@ -212,8 +212,8 @@
 			}
 
 			var endLine = iter.line,
-				endCh      = iter.ch;
-			var start   = toTagStart(iter);
+				endCh = iter.ch;
+			var start = toTagStart(iter);
 			if (!start) {
 				return;
 			}
@@ -245,16 +245,17 @@
 		for (;;) {
 			var openTag = toNextTag(iter),
 				end;
-			if (!openTag
-       || iter.line != start.line
-       || !(end = toTagEnd(iter))
+			if (
+				!openTag ||
+				iter.line != start.line ||
+				!(end = toTagEnd(iter))
 			) {
 				return;
 			}
 
 			if (!openTag[1] && end != "selfClose") {
 				var startPos = Pos(iter.line, iter.ch);
-				var endPos   = findMatchingClose(iter, openTag[2]);
+				var endPos = findMatchingClose(iter, openTag[2]);
 				return endPos && { from: startPos, to: endPos.from };
 			}
 		}
@@ -265,8 +266,8 @@
 			return;
 		}
 
-		var end   = toTagEnd(iter),
-			to       = end && Pos(iter.line, iter.ch);
+		var end = toTagEnd(iter),
+			to = end && Pos(iter.line, iter.ch);
 		var start = end && toTagStart(iter);
 		if (!end || !start || cmp(iter, pos) > 0) {
 			return;
@@ -280,7 +281,7 @@
 			return {
 				open: findMatchingOpen(iter, start[2]),
 				close: here,
-				at: "close"
+				at: "close",
 			};
 		} else {
 			// opening tag
@@ -288,7 +289,7 @@
 			return {
 				open: here,
 				close: findMatchingClose(iter, start[2]),
-				at: "open"
+				at: "open",
 			};
 		}
 	};
@@ -302,7 +303,7 @@
 			}
 
 			var forward = new Iter(cm, pos.line, pos.ch, range);
-			var close   = findMatchingClose(forward, open.tag);
+			var close = findMatchingClose(forward, open.tag);
 			if (close) return { open: open, close: close };
 		}
 	};
